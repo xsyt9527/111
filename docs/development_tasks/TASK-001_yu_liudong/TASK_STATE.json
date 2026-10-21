@@ -2,20 +2,58 @@
   "task_id": "TASK-001",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "approved",
-  "learning_status": "not_started",
+  "delivery_status": "in_progress",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": null,
-  "current_checkpoint": "orientation",
-  "next_action": "orientation 检查点：学生打开项目定位 scenes/、scripts/ 目录与四个目标文件名，理解 Main/Yu 分工设计，回答设计选择（A：Main 接收输入写入 Yu 属性；B：Yu 自己监听输入），确认后进入 step-01 实现",
+  "current_step": "step-03",
+  "current_checkpoint": "godot-inspection",
+  "next_action": "等待学生完成 godot-inspection 检查点：在 Godot 编辑器打开 res://scenes/Yu.tscn 检查节点树（Yu -> Sprite2D）与检查器 Yidong Sudu=300；打开 res://scripts/main.gd 找到 _unhandled_input 并说出 ScreenTouch 与 ScreenDrag 各负责什么；打开 res://scenes/Main.tscn 确认 Yu 是实例化场景。学生回报观察结果后进入 step-04（_process 平滑游动）",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
+    "captured_at": "2026-10-21T02:38:15.418064Z",
+    "commit": "f86de3b2c4f92e72f3577a9ef60591dcef0e7768",
     "preexisting_changes": []
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
-  "step_state": [],
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
+      "participation_status": "pending",
+      "changed_files": ["scenes/Yu.tscn", "scripts/yu.gd"],
+      "check_results": [
+        "--headless --import exit 0",
+        "--headless --quit-after 10 exit 0"
+      ],
+      "next_action": "godot-inspection 检查点：学生检查 Yu.tscn 节点树与 @export 速度"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
+      "participation_status": "pending",
+      "changed_files": ["scenes/Main.tscn", "scripts/main.gd", "project.godot"],
+      "check_results": [
+        "--headless --import exit 0",
+        "project.godot run/main_scene=res://scenes/Main.tscn",
+        "--headless --quit-after 10 exit 0"
+      ],
+      "next_action": "godot-inspection 检查点：学生 F5 观察主场景"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
+      "participation_status": "pending",
+      "changed_files": ["scripts/main.gd", "scripts/yu.gd"],
+      "check_results": [
+        "--headless --import exit 0（修正 InputEventScreenMotion -> InputEventScreenDrag 后通过）",
+        "--headless --quit-after 10 exit 0"
+      ],
+      "next_action": "等待学生在编辑器完成 godot-inspection 检查；手动验证 F5 按住拖动时 Output 面板 mubiao_dian 坐标更新、松手停止"
+    }
+  ],
   "approval_record": {
     "approved_version": 1,
     "approved_at": "2026-10-21T02:37:00Z",
