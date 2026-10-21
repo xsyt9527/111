@@ -1,13 +1,13 @@
 {
   "task_id": "TASK-001",
   "task_spec_version": 2,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "in_progress",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-03",
   "current_checkpoint": "godot-inspection",
-  "next_action": "等待 v2 审批（白名单新增 Godot 自动生成的 scripts/yu.gd.uid 与 scripts/main.gd.uid）——请回复『确认 TASK-001 v2 进入开发』；审批后重新捕获 v2 实现基线，继续 godot-inspection 检查点",
+  "next_action": "等待学生在编辑器完成 godot-inspection 检查并回报观察（Yu.tscn 节点树、Yidong Sudu=300、main.gd 两个输入事件分工、Main.tscn 中 Yu 为实例、F5 拖动时 Output 坐标变化），随后实现 step-04",
   "implementation_baseline": {
     "captured_at": null,
     "commit": null,
@@ -55,9 +55,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 2,
+    "approved_at": "2026-10-21T07:29:41Z",
+    "exact_user_text": "确认 TASK-001 v2 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",
