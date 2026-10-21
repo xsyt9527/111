@@ -4,7 +4,7 @@
 > 开发策略：plan_driven
 > 参与模式：guided_co_development
 > 执行模式：teaching
-> 任务规格版本：v2
+> 任务规格版本：v3
 > 审批状态：awaiting
 > 交付状态：proposed
 > Git 基线：d2bd9e47e8743d9d9ad5aaec322f8c52ec7231ad
