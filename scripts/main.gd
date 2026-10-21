@@ -1,12 +1,11 @@
 extends Node2D
 # 主场景协调者：接收输入，告诉玩家鱼往哪游
-# Coordinator: receives input, tells the player fish where to go
 
-@onready var yu: Yu = $Yu  # player fish instance
+@onready var yu: Yu = $Yu  # 玩家鱼实例
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# ScreenTouch.pressed: finger went down; ScreenDrag: finger moved while held
+	# ScreenTouch.pressed：手指按下；ScreenDrag：按住期间移动
 	if event is InputEventScreenTouch and event.pressed:
 		_gengxin_mubiao(event.position)
 	elif event is InputEventScreenDrag:
@@ -14,6 +13,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _gengxin_mubiao(pingmu_zuobiao: Vector2) -> void:
-	# update target point; no camera in this scene, so screen coords == world coords
+	# 更新目标点；本场景无相机，屏幕坐标即世界坐标
 	yu.mubiao_dian = pingmu_zuobiao
-	print("mubiao_dian = ", yu.mubiao_dian)  # debug output, remove before course 2
+	print("mubiao_dian = ", yu.mubiao_dian)  # 调试输出，第 2 课前移除
