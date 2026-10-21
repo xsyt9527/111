@@ -1,0 +1,269 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-001",
+  "task_spec_version": 1,
+  "slug": "yu-liudong",
+  "title": "玩家鱼跟随手指游动",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "d2bd9e47e8743d9d9ad5aaec322f8c52ec7231ad",
+  "objective": "在 Main 主场景中，玩家 Yu（鱼）在按住屏幕拖动时朝手指位置平滑游动，松开后停止；F5 运行可直接观察，检查器可调移动速度。",
+  "audit_freshness": {
+    "audited_commit": "d2bd9e47e8743d9d9ad5aaec322f8c52ec7231ad",
+    "environment_checked_at": "2026-10-21T02:25:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线新增或变更",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "玩家鱼移动（输入目标点 -> 朝目标游动）"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn",
+      "res://scenes/Yu.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/main.gd",
+      "res://scripts/yu.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [],
+    "consumed_interfaces": [],
+    "provided_interfaces": [
+      "Yu.mubiao_dian: Vector2 —— 玩家鱼当前游动目标点（世界坐标），由 Main 写入、Yu 读取",
+      "Yu.yidong_sudu: float(@export) —— 移动速度，检查器可调"
+    ],
+    "emitted_signals": [],
+    "received_signals": [],
+    "shared_state": [],
+    "registered_shared_changes": [
+      "project.godot: 新增 run/main_scene = res://scenes/Main.tscn（当前无主场景，本任务建立入口）"
+    ],
+    "conflict_hotspots": [
+      "project.godot —— 仅允许新增 run/main_scene 一项，不得改动其他配置节",
+      "scenes/Main.tscn —— 后续 TASK-002（鱼群）、TASK-006（升级 UI）都将挂入此场景，本任务只建最小骨架"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 无头导入退出码 0（脚本与资源全部可解析）",
+      "F5 运行进入 Main 场景且玩家鱼可见"
+    ]
+  },
+  "allowed_existing_files": [
+    "project.godot",
+    "docs/development_tasks/TASK-001_yu_liudong/TASK_STATE.json",
+    "docs/development_tasks/TASK-001_yu_liudong/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-001_yu_liudong/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-001_yu_liudong/INTEGRATION_HANDOFF.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md"
+  ],
+  "allowed_new_files": [
+    "scenes/Yu.tscn",
+    "scenes/Main.tscn",
+    "scripts/yu.gd",
+    "scripts/main.gd",
+    "docs/development_tasks/TASK-001_yu_liudong/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-001_yu_liudong/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-001_yu_liudong/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "data/（鱼种数据表，第 4 课范围）",
+    "tests/（自动测试，第 9 课范围）",
+    "鱼群生成系统（TASK-002 范围）",
+    "碰撞判定系统（TASK-003 范围）",
+    "经验/成长/升级系统（TASK-005/006 范围）",
+    "任何 Autoload（当前未设立且本任务不新增）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "搭建 Yu（玩家鱼）场景蓝图",
+      "behavior": "scenes/Yu.tscn 存在：Node2D 根节点 + Sprite2D 子节点（Kenney fish_blue 贴图）+ 挂载 yu.gd；单独按 F6 运行 Yu.tscn 时一条鱼显示在屏幕原点附近，无报错；检查器可见 @export yidong_sudu（默认 300）。",
+      "main_concept": "场景即蓝图（复习深化：从『场景是什么』升级到『为复用而设计蓝图』）",
+      "files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器打开 scenes/Yu.tscn，确认节点树为 Yu(Node2D) -> Sprite2D",
+        "选中根节点，检查器 Script 面板可见 yidong_sudu = 300"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "建立 Main 主场景并登记入口",
+      "behavior": "scenes/Main.tscn 存在：Node2D 根 + Haodi（Sprite2D，海床背景贴图）+ 实例化的 Yu；project.godot 登记主场景后 F5 直接进入 Main，可见背景与鱼，无『未设置主场景』提示。",
+      "main_concept": "主场景（run/main_scene）：游戏的入口约定",
+      "files": [
+        "scenes/Main.tscn",
+        "scripts/main.gd",
+        "project.godot"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "project.godot 的 run/main_scene 值为 res://scenes/Main.tscn"
+      ],
+      "manual_checks": [
+        "F5 运行：不弹主场景选择框，直接进入游戏画面",
+        "画面中同时可见海床背景贴图与玩家鱼"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "按住检测：Main 接收触摸并写入目标点",
+      "behavior": "按住屏幕（PC 鼠标按住，emulate_touch_from_mouse 生效）时，main.gd 的 _unhandled_input 收到 InputEventScreenTouch pressed，把屏幕坐标转为世界坐标写入 yu.mubiao_dian；按住期间移动产生 InputEventScreenMotion 持续更新目标点；松手（released）后目标点保持最后位置。此步完成后鱼尚不移动（移动是 step-04），但调试输出（print 或可见的 gizmo）能证明目标点在变。",
+      "main_concept": "InputEvent 事件对象与 _unhandled_input：引擎把输入打包成事件交给场景树",
+      "files": [
+        "scripts/main.gd",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 运行，按住鼠标拖动，Output 面板可见目标点坐标随指针更新",
+        "松手后坐标停止更新"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "平滑游动：Yu 每帧朝目标点游",
+      "behavior": "yu.gd 的 _process 中用 move_toward 朝 mubiao_dian 游动，速度 yidong_sudu 像素/秒，delta 帧率无关；到达目标点（距离 < 5px）停止；游动方向改变时 Sprite2D.flip_h 翻转使鱼头朝前进方向；松手后鱼停在最后目标点。完成后整条『按住 -> 跟随 -> 松手 -> 停止』行为链可玩。",
+      "main_concept": "move_toward + delta：帧率无关的平滑移动（复习深化）",
+      "files": [
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 运行：按住拖动，鱼朝手指平滑游动不瞬移",
+        "松手：鱼到达最后目标点后停下",
+        "检查器把 yidong_sudu 从 300 改成 100，重跑观察明显变慢",
+        "左右往返拖动：鱼头始终朝前进方向（flip_h 生效）"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能够定位 Main.tscn / Yu.tscn / yu.gd / main.gd 四个文件并说出各自职责",
+      "学生能够解释『输入由 Main 接收、目标点写入 Yu 公开属性、Yu 自己移动』的分工，以及为什么这样分工（Yu 保持可复用蓝图）",
+      "学生能够在编辑器中检查节点树、修改 @export 速度并观察行为差异",
+      "学生能够运行 F5 验证并说出本功能的输入、输出、入口和一处故障排查位置"
+    ],
+    "concepts": [
+      "场景即蓝图（复用视角）",
+      "主场景 run/main_scene 入口",
+      "InputEvent 事件对象与 _unhandled_input",
+      "move_toward + delta 帧率无关移动"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "新项目从零建立首个运行场景：当前无任何场景与主场景，不存在受影响的既有生命周期。Main 为唯一入口，Yu 作为 Main 的子场景实例，生命周期完全由 Main 持有（随 Main 进入树创建、退出释放），无跨场景状态、无信号连接、无动画跨边界依赖。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5 运行进入 Main 场景，按住拖动鱼跟随、松手停止",
+    "检查器修改 yidong_sudu 并观察速度变化",
+    "左右往返拖动验证 flip_h 朝向翻转"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增 Autoload、信号、数据资源或除 run/main_scene 外的 project.godot 配置变更",
+    "引入鱼群生成、碰撞判定、经验成长等后续任务系统",
+    "修改范围外文件或新增范围外文件",
+    "场景树结构与本清单声明不符（如 Yu 中出现物理节点——物理身体属 TASK-003）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-001 v1 进入开发"
+  }
+}
