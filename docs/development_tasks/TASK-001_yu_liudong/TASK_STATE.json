@@ -1,13 +1,13 @@
 {
   "task_id": "TASK-001",
-  "task_spec_version": 3,
+  "task_spec_version": 4,
   "approval_status": "awaiting",
   "delivery_status": "proposed",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-04",
   "current_checkpoint": "verification-handoff",
-  "next_action": "等待 v3 审批（白名单修正：本任务创建的 4 个文件同时登记为 allowed_existing_files，因它们在 v2 基线时已存在）——回复『确认 TASK-001 v3 进入开发』后直接跑最终范围检查，不再重新捕获基线（保留 42b0494，覆盖全部实现变更）",
+  "next_action": "等待 v4 审批（补登记任务包 3 个迭代文档到 allowed_existing_files）——回复『确认 TASK-001 v4 进入开发』；审批后直接跑最终范围检查（保留 42b0494 基线）并收尾",
   "implementation_baseline": {
     "captured_at": "2026-10-21T07:30:36.057532Z",
     "commit": "42b04948cb9c6b5b90d5f9518832a5d95f4e9c1c",
