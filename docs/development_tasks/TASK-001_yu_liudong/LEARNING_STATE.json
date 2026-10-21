@@ -1,7 +1,7 @@
 {
   "task_id": "TASK-001",
   "task_spec_version": 4,
-  "learning_status": "in_progress",
+  "learning_status": "partially_demonstrated",
   "concepts_introduced": [
     "场景即蓝图（复用视角）",
     "主场景 run/main_scene",
@@ -15,7 +15,8 @@
     "打开 scenes/Main.tscn 查看节点树"
   ],
   "verification_completed": [
-    "F5 运行并按住拖动，观察 Output 面板 mubiao_dian 坐标随指针更新"
+    "F5 运行并按住拖动，观察 Output 面板 mubiao_dian 坐标随指针更新",
+    "F5 亲测四条行为：按住跟随、松手停止、改速变慢（300→100 已还原）、左右往返朝向翻转，全部确认正确"
   ],
   "integration_contract_understood": null,
   "student_questions": [
