@@ -1,13 +1,13 @@
 {
   "task_id": "TASK-002",
   "task_spec_version": 1,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "current_step": null,
   "current_checkpoint": null,
-  "next_action": "等待用户审批：确认 TASK-002 v1 进入开发。审批前不得捕获基线、不得写 gameplay 代码。",
+  "next_action": "捕获实现基线后进入 step-01（orientation 检查点）",
   "implementation_baseline": {
     "captured_at": null,
     "commit": null,
@@ -54,9 +54,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 1,
+    "approved_at": "2026-10-21T09:02:57Z",
+    "exact_user_text": "确认 TASK-002 v1 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",
