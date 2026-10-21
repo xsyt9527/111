@@ -6,13 +6,21 @@
     "场景即蓝图（复用视角）",
     "主场景 run/main_scene",
     "InputEvent 事件对象与 _unhandled_input",
-    "InputEventScreenDrag（触摸拖动事件；引擎无 ScreenMotion 类型）"
+    "InputEventScreenDrag（触摸拖动事件；引擎无 ScreenMotion 类型）",
+    "move_toward + delta（帧率无关平滑移动）"
   ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "打开 scenes/Yu.tscn 检查节点树与检查器 Yidong Sudu",
+    "打开 scenes/Main.tscn 查看节点树"
+  ],
+  "verification_completed": [
+    "F5 运行并按住拖动，观察 Output 面板 mubiao_dian 坐标随指针更新"
+  ],
   "integration_contract_understood": null,
-  "student_questions": [],
+  "student_questions": [
+    "Main.tscn 里的 Haodi 节点是什么？"
+  ],
   "unresolved_concepts": [],
   "assistance_level": "full",
   "evidence": [
@@ -23,6 +31,30 @@
       "summary": "学生在两个输入归属方案中明确选定方案 A（Main 接收输入、写入 Yu 公开属性 mubiao_dian，Yu 保持纯移动蓝图）",
       "understanding_level": "recognized",
       "observed_at": "2026-10-21T02:40:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生在检查器读到 Yidong Sudu = 300，确认 @export 变量出现在检查器中",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-21T07:50:00Z"
+    },
+    {
+      "evidence_type": "scene_tree_inspection",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生查看 Main.tscn 节点树并提问 Haodi 节点身份（AI 说明其为海床背景 Sprite2D 后学生未再追问）",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-21T07:50:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-03",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生报告 F5 拖动时 mubiao_dian 数字跟随变化但鱼不移动，正确区分了事件接收与移动实现两层",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-21T07:50:00Z"
     }
   ]
 }

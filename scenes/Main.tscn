@@ -1,16 +1,18 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://bowawgrtd5p8v"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Texture2D" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
+[ext_resource type="Script" uid="uid://dm0ffvkk7jrik" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Texture2D" uid="uid://b83bkk62ctmr2" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
 [ext_resource type="PackedScene" path="res://scenes/Yu.tscn" id="3_yu"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
 
-[node name="Haodi" type="Sprite2D" parent="."]
+[node name="Haodi" type="Sprite2D" parent="." unique_id=1956245500]
 position = Vector2(640, 360)
 scale = Vector2(20, 11.25)
 texture = ExtResource("2_haodi")
 
-[node name="Yu" parent="." instance=ExtResource("3_yu")]
+[node name="Yu" parent="." unique_id=546248040 instance=ExtResource("3_yu")]
 position = Vector2(640, 360)
+
+[editable path="Yu"]

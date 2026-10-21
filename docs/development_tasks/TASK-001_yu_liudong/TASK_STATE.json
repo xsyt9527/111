@@ -2,12 +2,12 @@
   "task_id": "TASK-001",
   "task_spec_version": 2,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
+  "delivery_status": "implemented",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": "step-03",
-  "current_checkpoint": "godot-inspection",
-  "next_action": "等待学生在编辑器完成 godot-inspection 检查并回报观察（Yu.tscn 节点树、Yidong Sudu=300、main.gd 两个输入事件分工、Main.tscn 中 Yu 为实例、F5 拖动时 Output 坐标变化），随后实现 step-04",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "等待学生完成 verification-handoff 检查点：F5 按住拖动观察平滑跟随、松手停止、检查器改 yidong_sudu=100 观察变慢、左右往返观察鱼头翻转；学生回报后做最终验证（范围检查、评审、交接文档）",
   "implementation_baseline": {
     "captured_at": "2026-10-21T07:30:36.057532Z",
     "commit": "42b04948cb9c6b5b90d5f9518832a5d95f4e9c1c",
@@ -60,7 +60,7 @@
       "step_id": "step-03",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scripts/main.gd",
         "scripts/yu.gd"
@@ -70,6 +70,20 @@
         "--headless --quit-after 10 exit 0"
       ],
       "next_action": "等待学生在编辑器完成 godot-inspection 检查；手动验证 F5 按住拖动时 Output 面板 mubiao_dian 坐标更新、松手停止"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "--headless --import exit 0",
+        "--headless --quit-after 10 exit 0"
+      ],
+      "next_action": "verification-handoff 检查点：学生 F5 亲测四条行为"
     }
   ],
   "approval_record": {
