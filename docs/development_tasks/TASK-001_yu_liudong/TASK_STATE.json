@@ -9,9 +9,17 @@
   "current_checkpoint": "godot-inspection",
   "next_action": "等待学生在编辑器完成 godot-inspection 检查并回报观察（Yu.tscn 节点树、Yidong Sudu=300、main.gd 两个输入事件分工、Main.tscn 中 Yu 为实例、F5 拖动时 Output 坐标变化），随后实现 step-04",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
-    "preexisting_changes": []
+    "captured_at": "2026-10-21T07:30:36.057532Z",
+    "commit": "42b04948cb9c6b5b90d5f9518832a5d95f4e9c1c",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-001_yu_liudong/TASK_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4b0f460ce1196a57a4b650c24b4ca7a024fdfadee66026fa73fc3ea2ff30aea9"
+      }
+    ]
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
@@ -21,7 +29,10 @@
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": ["scenes/Yu.tscn", "scripts/yu.gd"],
+      "changed_files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
       "check_results": [
         "--headless --import exit 0",
         "--headless --quit-after 10 exit 0"
@@ -33,7 +44,11 @@
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": ["scenes/Main.tscn", "scripts/main.gd", "project.godot"],
+      "changed_files": [
+        "scenes/Main.tscn",
+        "scripts/main.gd",
+        "project.godot"
+      ],
       "check_results": [
         "--headless --import exit 0",
         "project.godot run/main_scene=res://scenes/Main.tscn",
@@ -46,7 +61,10 @@
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": ["scripts/main.gd", "scripts/yu.gd"],
+      "changed_files": [
+        "scripts/main.gd",
+        "scripts/yu.gd"
+      ],
       "check_results": [
         "--headless --import exit 0（修正 InputEventScreenMotion -> InputEventScreenDrag 后通过）",
         "--headless --quit-after 10 exit 0"
