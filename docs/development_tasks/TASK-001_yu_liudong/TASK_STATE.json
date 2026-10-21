@@ -1,16 +1,16 @@
 {
   "task_id": "TASK-001",
-  "task_spec_version": 1,
-  "approval_status": "approved",
-  "delivery_status": "in_progress",
+  "task_spec_version": 2,
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-03",
   "current_checkpoint": "godot-inspection",
-  "next_action": "等待学生完成 godot-inspection 检查点：在 Godot 编辑器打开 res://scenes/Yu.tscn 检查节点树（Yu -> Sprite2D）与检查器 Yidong Sudu=300；打开 res://scripts/main.gd 找到 _unhandled_input 并说出 ScreenTouch 与 ScreenDrag 各负责什么；打开 res://scenes/Main.tscn 确认 Yu 是实例化场景。学生回报观察结果后进入 step-04（_process 平滑游动）",
+  "next_action": "等待 v2 审批（白名单新增 Godot 自动生成的 scripts/yu.gd.uid 与 scripts/main.gd.uid）——请回复『确认 TASK-001 v2 进入开发』；审批后重新捕获 v2 实现基线，继续 godot-inspection 检查点",
   "implementation_baseline": {
-    "captured_at": "2026-10-21T02:38:15.418064Z",
-    "commit": "f86de3b2c4f92e72f3577a9ef60591dcef0e7768",
+    "captured_at": null,
+    "commit": null,
     "preexisting_changes": []
   },
   "last_verified_commit": null,
@@ -55,9 +55,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": 1,
-    "approved_at": "2026-10-21T02:37:00Z",
-    "exact_user_text": "确认 TASK-001 v1 进入开发"
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null
   },
   "capability_decisions": {
     "superpowers": "unavailable",

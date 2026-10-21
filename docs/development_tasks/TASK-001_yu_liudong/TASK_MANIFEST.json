@@ -2,15 +2,15 @@
   "manifest_schema_version": 2,
   "generated_by_skill_version": "2.0.0",
   "task_id": "TASK-001",
-  "task_spec_version": 1,
+  "task_spec_version": 2,
   "slug": "yu-liudong",
   "title": "玩家鱼跟随手指游动",
   "engine_version": "4.7",
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "approved",
-  "delivery_status": "approved",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "d2bd9e47e8743d9d9ad5aaec322f8c52ec7231ad",
@@ -79,6 +79,8 @@
     "scenes/Main.tscn",
     "scripts/yu.gd",
     "scripts/main.gd",
+    "scripts/yu.gd.uid",
+    "scripts/main.gd.uid",
     "docs/development_tasks/TASK-001_yu_liudong/IMPLEMENTATION_REPORT.md",
     "docs/development_tasks/TASK-001_yu_liudong/VERIFICATION_REPORT.md",
     "docs/development_tasks/TASK-001_yu_liudong/CODE_REVIEW.md"
@@ -260,10 +262,10 @@
     "场景树结构与本清单声明不符（如 Yu 中出现物理节点——物理身体属 TASK-003）"
   ],
   "approval": {
-    "approved": true,
-    "approved_version": 1,
-    "approved_at": "2026-10-21T02:37:00Z",
-    "exact_user_text": "确认 TASK-001 v1 进入开发",
-    "canonical_example": "确认 TASK-001 v1 进入开发"
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-001 v2 进入开发"
   }
 }

@@ -4,7 +4,7 @@
 > 开发策略：plan_driven
 > 参与模式：guided_co_development
 > 执行模式：teaching
-> 任务规格版本：v1
+> 任务规格版本：v2
 > 审批状态：awaiting
 > 交付状态：proposed
 > Git 基线：d2bd9e47e8743d9d9ad5aaec322f8c52ec7231ad
@@ -172,6 +172,8 @@ Main (Node2D)          <- scripts/main.gd，接收输入、协调
 | scenes/Main.tscn | 主场景/协调者 | 引擎主场景 |
 | scripts/yu.gd | 移动规则 | Yu.tscn |
 | scripts/main.gd | 输入接收与协调 | Main.tscn |
+| scripts/yu.gd.uid | Godot 自动生成的脚本 UID 元数据（v2 新增登记） | 引擎 |
+| scripts/main.gd.uid | Godot 自动生成的脚本 UID 元数据（v2 新增登记） | 引擎 |
 | docs/development_tasks/TASK-001_yu_liudong/IMPLEMENTATION_REPORT.md | 实施报告 | 工作流 |
 | docs/development_tasks/TASK-001_yu_liudong/VERIFICATION_REPORT.md | 验证报告 | 工作流 |
 | docs/development_tasks/TASK-001_yu_liudong/CODE_REVIEW.md | 评审报告 | 工作流 |
