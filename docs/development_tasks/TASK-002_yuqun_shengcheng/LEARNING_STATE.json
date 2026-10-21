@@ -1,0 +1,19 @@
+{
+  "task_id": "TASK-002",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "随机数 randf_range() / Array.pick_random()（Godot 4 启动时自动播种）",
+    "Timer 节点与 timeout 信号（时间驱动的生成）",
+    "get_viewport_rect() 视口尺寸（运行时取屏幕大小）",
+    "queue_free() 与动态节点生命周期（只生不灭 = 泄漏）"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [],
+  "assistance_level": "full",
+  "evidence": []
+}

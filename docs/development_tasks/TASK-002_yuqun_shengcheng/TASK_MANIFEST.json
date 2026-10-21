@@ -1,0 +1,300 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-002",
+  "task_spec_version": 1,
+  "slug": "yuqun-shengcheng",
+  "title": "鱼群生成与屏幕外回收",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "fa2f75add18699e3b5ddb7243ed3f52016c38fc4",
+  "objective": "在 Main 主场景中持续生成 NPC 鱼：YuNpc 蓝图自带随机外观（贴图、体型），YuQun 生成器用 Timer 按随机间隔从屏幕左/右边缘外侧生成，鱼以随机速度横向游过屏幕，游出另一侧后自动 queue_free 释放；同屏数量有上限，F5 可直接观察且检查器可调全部参数。",
+  "audit_freshness": {
+    "audited_commit": "fa2f75add18699e3b5ddb7243ed3f52016c38fc4",
+    "environment_checked_at": "2026-10-21T08:48:42Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线新增或变更",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "NPC 鱼蓝图（随机外观、横向游动、出屏回收）",
+      "鱼群生成器（Timer 驱动、边缘生成、随机间隔、同屏上限）"
+    ],
+    "owned_scenes": [
+      "res://scenes/YuNpc.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/yu_npc.gd",
+      "res://scripts/yu_qun.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-001（Main 场景、Yu 蓝图惯例与触摸输入）"
+    ],
+    "consumed_interfaces": [
+      "Main.tscn：作为父场景，YuQun 以静态子节点形式挂入",
+      "Kenney fish_*.png：已导入的候选贴图资源"
+    ],
+    "provided_interfaces": [
+      "YuNpc.tixing: float —— 运行时体型系数（0.6~1.6），TASK-003 大小判定读取此值",
+      "YuNpc.sudu: float / YuNpc.fangxiang: float —— 生成器在 add_child 前写入的游速与方向",
+      "YuQun 的 @export 参数（zuixiao_jiange / zuida_jiange / zuida_shuliang / sudu_fanwei）——后续难度调参入口"
+    ],
+    "emitted_signals": [],
+    "received_signals": [
+      "Dingshi.timeout → yu_qun.gd._on_dingshi_timeout（YuQun._ready 内部连接，不跨场景）"
+    ],
+    "shared_state": [],
+    "registered_shared_changes": [],
+    "conflict_hotspots": [
+      "scenes/Main.tscn —— TASK-001 建立，TASK-006 还将挂升级 UI；本任务只追加 YuQun 子树，不改 Haodi / Yu / 根节点",
+      "scripts/main.gd —— 仅删除 TASK-001 遗留的调试 print，输入逻辑一行不动",
+      "YuNpc 与玩家鱼在本课不产生碰撞（Area2D 属 TASK-003），禁止提前加入物理节点"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入退出码 0（新脚本与新场景全部可解析）",
+      "F5 进入 Main：鱼群持续生成，同时玩家鱼手指跟随仍正常（TASK-001 回归）",
+      "新脚本不得引用 project.godot 未登记配置，不得新增 Autoload"
+    ]
+  },
+  "allowed_existing_files": [
+    "scenes/Main.tscn",
+    "scripts/main.gd",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/TASK_STATE.json",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scenes/YuNpc.tscn",
+    "scripts/yu_npc.gd",
+    "scripts/yu_npc.gd.uid",
+    "scripts/yu_qun.gd",
+    "scripts/yu_qun.gd.uid",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-002_yuqun_shengcheng/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "Area2D / 碰撞判定 / 大小比较（TASK-003 范围）",
+    "吃鱼、经验、成长、升级 UI（TASK-003 / TASK-005 / TASK-006 范围）",
+    "data/ 鱼种 Resource 数据表（TASK-004 范围；本课随机外观只用 @export 贴图数组）",
+    "Autoload / 全局游戏账本（TASK-005 范围）",
+    "对象池 / 预加载缓存（后续性能优化，本课直接 instantiate + queue_free）",
+    "Tween / 动画 / 粒子（第 7 课范围）",
+    "project.godot 的任何修改（本任务无新增配置）",
+    "修改 scenes/Yu.tscn 或 scripts/yu.gd 的移动逻辑"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "搭建 YuNpc 蓝图并随机外观",
+      "behavior": "scenes/YuNpc.tscn 存在：Node2D 根 + Sprite2D 子节点，挂 yu_npc.gd；_ready 时在 tixing_fanwei 内随机体型系数并设置 scale，从 tie_tu_shu_zu 随机挑一张贴图，按 fangxiang 决定 flip_h；F6 单独运行 YuNpc.tscn 多次，每次颜色与大小不同；检查器可见候选贴图数组与体型范围。",
+      "main_concept": "随机数：randf_range() 与 Array.pick_random()（Godot 4 启动时自动播种全局随机数）",
+      "files": [
+        "scenes/YuNpc.tscn",
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "F6 运行 YuNpc.tscn 三次以上，确认贴图颜色与大小每次都随机",
+        "检查器确认 tie_tu_shu_zu 数组已放入多种鱼贴图、tixing_fanwei 可见"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "YuQun 生成器挂入 Main，由 Timer 定时生成",
+      "behavior": "Main.tscn 新增 YuQun 节点（挂 yu_qun.gd），其下 Dingshi(Timer, one_shot=true)；YuQun._ready 连接 Dingshi.timeout 并首次 start()；每次超时在视口中央实例化一条 YuNpc 作为子节点，随后用 randf_range 重排下一次 wait_time 再启动。F5 后约 1 秒出现第一条，之后以不均匀的间隔不断出现，Output 无报错。",
+      "main_concept": "Timer 节点与 timeout 信号：把『每帧检查』换成『时间到了通知我』",
+      "files": [
+        "scenes/Main.tscn",
+        "scripts/yu_qun.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --quit-after 180 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 运行：约 1 秒后视口中央出现一条 NPC 鱼，之后间隔不均匀地继续出现",
+        "Remote 面板展开 Main → YuQun，确认子节点中有 Dingshi 与不断新增的 YuNpc"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "两侧边缘生成与横向直线游动",
+      "behavior": "生成器用 get_viewport_rect().size 取屏幕尺寸：随机选左侧或右侧，左侧在 x = -bianju、fangxiang = +1，右侧在 x = 屏宽 + bianju、fangxiang = -1，y 在上下 60px 留边内随机；游速在 sudu_fanwei 内随机，并在 add_child 前写入。YuNpc._process 按 fangxiang * sudu * delta 横向游动，flip_h 朝向与前进方向一致。",
+      "main_concept": "get_viewport_rect()：运行时拿到屏幕尺寸，而不是写死 1280×720",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --quit-after 180 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 运行：每条鱼从左侧或右侧边缘外游入，穿过屏幕",
+        "鱼的贴图、大小、速度、出现高度各不相同；鱼头始终朝前进方向"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "游出屏幕自动回收与同屏数量上限",
+      "behavior": "YuNpc._process 中当 position.x < -bianju 或 > 屏宽 + bianju 时调用 queue_free()；YuQun 每轮生成前统计 YuNpc 子节点数量，达到 zuida_shuliang 就跳过本次生成（但仍重排下一次定时）。F5 运行 30 秒以上，Remote 面板中 YuNpc 数量保持稳定、不无限增长，游出屏幕的鱼从节点树中消失。",
+      "main_concept": "queue_free() 与动态节点生命周期（复习）：只生不灭 = 内存与性能泄漏",
+      "files": [
+        "scripts/yu_npc.gd",
+        "scripts/yu_qun.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --quit-after 300 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 运行观察 30 秒以上：Remote 面板 YuNpc 数量稳定在 zuida_shuliang 附近，不持续增长",
+        "把 zuida_shuliang 临时改为 2：同屏最多两条鱼，游出后才有新的进来"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能够定位 YuNpc.tscn / yu_npc.gd / yu_qun.gd 与 Main.tscn 中的 YuQun 子树，并说出各自职责",
+      "学生能够解释『生成器负责何时、从哪、以多快生成；NPC 自己决定长什么样并负责移动与回收』的分工理由",
+      "学生能够解释 Timer.timeout、随机间隔重排、get_viewport_rect、queue_free 四件事分别解决什么问题",
+      "学生能够在编辑器调整生成参数并 F5 验证，用 Remote 面板解释节点数量的增减"
+    ],
+    "concepts": [
+      "随机数 randf_range / pick_random（Godot 4 自动播种）",
+      "Timer 节点与 timeout 信号",
+      "get_viewport_rect() 视口尺寸",
+      "queue_free() 与动态节点生命周期"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "Main 是常驻入口场景。YuQun 作为 Main 的固定子节点，随 Main 创建/释放；其 Dingshi(Timer) 生命周期与 YuQun 一致，信号在 YuQun._ready 内部连接一次。YuNpc 是运行时动态节点：instantiate → 设置属性 → add_child 进入树 → 游出屏幕 queue_free 离开树，生命周期完全由 YuQun 管理，不跨场景、不写入全局状态、不依赖动画或存档。本任务不做池化，因此不存在跨场景缓存与复用状态。",
+    "current_tree": "Main (Node2D)\n├─ Haodi (Sprite2D，海床背景)\n└─ Yu (Yu.tscn 实例，玩家鱼)",
+    "target_tree": "Main (Node2D)\n├─ Haodi (Sprite2D，海床背景)\n├─ Yu (Yu.tscn 实例，玩家鱼)\n└─ YuQun (Node2D + yu_qun.gd，TASK-002 新增)\n   ├─ Dingshi (Timer, one_shot=true)\n   └─ YuNpc × N (运行时动态生成，游出屏幕自动释放)",
+    "ownership": [
+      "Main / Haodi / Yu：TASK-001 所有；本任务只在 Main 下追加 YuQun，不修改既有节点属性",
+      "YuQun 与 Dingshi：TASK-002 新建并所有",
+      "YuNpc 动态实例：由 YuQun 创建并释放，TASK-002 所有"
+    ],
+    "signal_contracts": [
+      "Dingshi.timeout → yu_qun.gd._on_dingshi_timeout：由 YuQun._ready 用代码 connect，只连接一次；Timer 随 YuQun 释放，无跨场景或持久连接"
+    ],
+    "loading_policy": "无池化。每次生成 instantiate() 新实例、出屏 queue_free()；所有动态节点都是 YuQun 的子节点，随 Main 退出由场景树统一释放。对象池留作后续性能优化。",
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": [
+      "F5 首次进入 Main：YuQun 与 Dingshi 正常创建，生成计时立即开始",
+      "连续 F5 多次：Timer 不重复连接、无残留节点、无报错",
+      "运行 30 秒以上：出屏 YuNpc 被释放，Remote 面板节点数稳定在 zuida_shuliang 内",
+      "停止运行：所有动态 NPC 随场景释放，无跨场景残留"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "\"$GODOT_BIN\" --headless --path . --quit-after 300 退出码 0（覆盖多次生成与回收）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5 运行：鱼持续从左右边缘外游入，颜色/大小/速度随机",
+    "F5 回归：玩家鱼手指跟随仍正常（TASK-001 行为无退化）",
+    "Remote 面板：YuNpc 数量稳定不增长，游出屏幕的鱼消失",
+    "检查器调整生成间隔、同屏上限并观察即时差异"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增 Autoload、信号总线、数据资源或任何 project.godot 配置变更",
+    "引入碰撞、吃鱼、经验、升级、对象池等后续任务系统",
+    "修改范围外文件或新增范围外文件",
+    "场景树结构与 target_tree 声明不符（如 YuNpc 中出现 Area2D 等物理节点）",
+    "生成/回收策略改变（如改为对象池）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-002 v1 进入开发"
+  }
+}
