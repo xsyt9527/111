@@ -2,12 +2,12 @@
   "task_id": "TASK-001",
   "task_spec_version": 4,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
+  "delivery_status": "complete",
   "learning_status": "partially_demonstrated",
   "handoff_status": "ready",
   "current_step": "step-04",
   "current_checkpoint": "verification-handoff",
-  "next_action": "等待 v4 审批（补登记任务包 3 个迭代文档到 allowed_existing_files）——回复『确认 TASK-001 v4 进入开发』；审批后直接跑最终范围检查（保留 42b0494 基线）并收尾",
+  "next_action": "TASK-001 已完成。下一课 TASK-002（鱼群生成）需先生成任务包并等待审批。",
   "implementation_baseline": {
     "captured_at": "2026-10-21T07:30:36.057532Z",
     "commit": "42b04948cb9c6b5b90d5f9518832a5d95f4e9c1c",
@@ -21,7 +21,7 @@
       }
     ]
   },
-  "last_verified_commit": null,
+  "last_verified_commit": "ef7bc3df0583f1100575784bdf5883179d592498",
   "integration_baseline_commit": null,
   "step_state": [
     {
