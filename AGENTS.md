@@ -17,6 +17,8 @@
   例：`yu.gd`（玩家鱼）、`shengji()`（升级 upgrade level）、`YuQun`（鱼群 fish school）。
 - Godot 内置 API、关键字、引擎概念保持英文原名。
 - 每课新代码附「当课引擎词表」，统一收进 `docs/引擎词总表.md`（按文件分类）。
+  每课更新词表后运行 `python tools/shengcheng_cibiao_docx.py`（或双击根目录 `更新引擎词文档.bat`）
+  重新生成 `Godot引擎词总表.docx`，保持 Word 版与 md 源同步。
 
 ## 目录约定
 
