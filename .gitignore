@@ -1,0 +1,16 @@
+# Godot 4 缓存与导入产物
+.godot/
+*.translation
+
+# 导出产物
+export/
+*.apk
+*.aab
+build/
+
+# 密钥与签名文件（永远不进仓库）
+*.keystore
+
+# 系统文件
+Thumbs.db
+.DS_Store

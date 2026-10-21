@@ -1,0 +1,4 @@
+interface:
+  display_name: "Godot 教学功能工作流"
+  short_description: "AI 主导实现、学生参与理解与交接的 Godot 小步工作流"
+  default_prompt: "使用 $godot-guided-feature-workflow 审计当前 Godot 工程，为下一项有明确所有权和集成契约的功能生成待审核任务。默认采用 guided_co_development：AI 完成主要实现，学生参与定位、选择、Godot 检查、验证和交接，并将客观学习记录提交到 Git。"
