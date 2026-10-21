@@ -1,0 +1,17 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/yu_npc.gd" id="1_yu_npc"]
+[ext_resource type="Texture2D" uid="uid://cn6y4pp4rawlo" path="res://assets/sucai/kenney_fish/PNG/Default/fish_blue.png" id="2_tietu"]
+[ext_resource type="Texture2D" uid="uid://dwwtwi5p2ybon" path="res://assets/sucai/kenney_fish/PNG/Default/fish_red.png" id="3_tietu"]
+[ext_resource type="Texture2D" uid="uid://dx04fywl1q04r" path="res://assets/sucai/kenney_fish/PNG/Default/fish_green.png" id="4_tietu"]
+[ext_resource type="Texture2D" uid="uid://byh7e6e58q6pv" path="res://assets/sucai/kenney_fish/PNG/Default/fish_orange.png" id="5_tietu"]
+[ext_resource type="Texture2D" uid="uid://dlbq7ntq5hiiy" path="res://assets/sucai/kenney_fish/PNG/Default/fish_brown.png" id="6_tietu"]
+[ext_resource type="Texture2D" uid="uid://bjpfw8p2epqd1" path="res://assets/sucai/kenney_fish/PNG/Default/fish_pink.png" id="7_tietu"]
+
+[node name="YuNpc" type="Node2D"]
+position = Vector2(640, 360)
+script = ExtResource("1_yu_npc")
+tie_tu_shu_zu = Array[Texture2D]([ExtResource("2_tietu"), ExtResource("3_tietu"), ExtResource("4_tietu"), ExtResource("5_tietu"), ExtResource("6_tietu"), ExtResource("7_tietu")])
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tietu")

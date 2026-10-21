@@ -1,7 +1,7 @@
 {
   "task_id": "TASK-002",
   "task_spec_version": 1,
-  "learning_status": "not_started",
+  "learning_status": "in_progress",
   "concepts_introduced": [
     "随机数 randf_range() / Array.pick_random()（Godot 4 启动时自动播种）",
     "Timer 节点与 timeout 信号（时间驱动的生成）",
@@ -15,5 +15,14 @@
   "student_questions": [],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "学生完成两个设计决策：生成节奏选随机间隔（randf_range 重设 wait_time），随机外观选 NPC 在 _ready 自行决定",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-21T09:05:00Z"
+    }
+  ]
 }
