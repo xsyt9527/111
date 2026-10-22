@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dm0ffvkk7jrik" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Texture2D" uid="uid://b83bkk62ctmr2" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
-[ext_resource type="PackedScene" path="res://scenes/Yu.tscn" id="3_yu"]
+[ext_resource type="PackedScene" uid="uid://begsi5v6owqua" path="res://scenes/Yu.tscn" id="3_yu"]
 [ext_resource type="Script" uid="uid://cuhw2cc365t6" path="res://scripts/yu_qun.gd" id="4_yuqun"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]

@@ -47,9 +47,9 @@ Main (Node2D)
 
 ## 集成检查清单
 
-- [ ] 任务包通过 validate_task.py
-- [ ] headless 导入退出码 0
-- [ ] headless --fixed-fps 60 --quit-after 360 退出码 0
-- [ ] check_task_scope.py 无违例
-- [ ] 学生 verification-handoff 完成
-- [ ] LEARNING_ROADMAP / TASK_INDEX / 引擎词总表（md + docx）更新
+- [x] 任务包通过 validate_task.py（v2）
+- [x] headless 导入退出码 0
+- [x] headless --fixed-fps 60 --quit-after 360 退出码 0
+- [x] check_task_scope.py 无违例（v2 白名单后全绿）
+- [x] 学生 verification-handoff 完成（2026-10-22，四条全过）
+- [x] LEARNING_ROADMAP / TASK_INDEX / 引擎词总表（md + docx）已更新

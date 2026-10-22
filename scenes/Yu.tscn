@@ -1,23 +1,22 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://begsi5v6owqua"]
 
-[ext_resource type="Script" path="res://scripts/yu.gd" id="1_yu"]
-[ext_resource type="Texture2D" path="res://assets/sucai/kenney_fish/PNG/Default/fish_blue.png" id="2_tietu"]
+[ext_resource type="Script" uid="uid://jfusrqxlruww" path="res://scripts/yu.gd" id="1_yu"]
+[ext_resource type="Texture2D" uid="uid://cn6y4pp4rawlo" path="res://assets/sucai/kenney_fish/PNG/Default/fish_blue.png" id="2_tietu"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
 radius = 22.0
 
-[node name="Yu" type="Node2D"]
+[node name="Yu" type="Node2D" unique_id=1627777717]
 script = ExtResource("1_yu")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1941861653]
 texture = ExtResource("2_tietu")
 
-[node name="PandingQu" type="Area2D" parent="."]
-collision_layer = 1
+[node name="PandingQu" type="Area2D" parent="." unique_id=1259984689]
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PandingQu"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PandingQu" unique_id=1578421316]
 shape = SubResource("CircleShape2D_yuan")
 
-[node name="WudiDingshi" type="Timer" parent="."]
-wait_time = 1.0
+[node name="WudiDingshi" type="Timer" parent="." unique_id=1565807978]
 one_shot = true

@@ -9,12 +9,22 @@
     "体型比较规则与受伤无敌帧（Timer 复习 + modulate）"
   ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "检查器核对玩家 PandingQu（Layer 1 / Mask 2）与 NPC PandingQu（Layer 2 / Mask 全空）",
+    "Radius 22→35 判定范围实验，体验后还原",
+    "运行时开启调试→显示碰撞形状，亲眼核对判定圈"
+  ],
+  "verification_completed": [
+    "F5 亲测吃小鱼：挡在路线碰上即消失",
+    "F5 亲测撞大鱼：闪红 1 秒恢复",
+    "F5 亲测无敌帧：红时不连续受伤、期间仍能吃小鱼",
+    "完整回归：移动/生成/回收无退化（学生报告四条全部完成）"
+  ],
   "integration_contract_understood": null,
   "student_questions": [
     "Layer/Mask 的数值是怎么定出来的？如何在编辑器里核对？",
-    "能不能让吃的范围变大、被大鱼伤到的范围不变或变小？（即磁吸雏形，约定第 7 课实现）"
+    "能不能让吃的范围变大、被大鱼伤到的范围不变或变小？（即磁吸雏形，约定第 7 课实现）",
+    "radius 拆成两个是不是再加一个 CollisionShape2D？（讲解：同 Area2D 多形状合并成一个区，分行为须分 Area2D）"
   ],
   "unresolved_concepts": [],
   "assistance_level": "full",
@@ -26,6 +36,30 @@
       "summary": "学生完成两个设计决策：判定由玩家侧单向检测发起（NPC 保持被动）、无敌期采用能吃不能伤规则",
       "understanding_level": "recognized",
       "observed_at": "2026-10-22T03:30:00Z"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生在检查器核对两侧 PandingQu 的 Layer/Mask 勾选，并完成 Radius 22→35 判定范围实验后还原",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-22T06:55:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 亲测吃/伤/无敌帧/回归四条全部完成并确认",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-22T06:58:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生主动追问 radius 拆双范围机制，触及『形状合并 vs 信号归属』的本质区别，并独立提出磁吸式玩法（吃的范围大、伤的范围小）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-22T06:58:00Z"
     }
   ]
 }
