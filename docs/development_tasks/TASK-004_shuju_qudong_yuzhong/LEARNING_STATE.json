@@ -2,7 +2,12 @@
   "task_id": "TASK-004",
   "task_spec_version": 1,
   "learning_status": "in_progress",
-  "concepts_introduced": [],
+  "concepts_introduced": [
+    "自定义 Resource（extends Resource + class_name + @export 字段 = 数据模具）",
+    ".tres 资源文件（数据与代码分离：模具/数据/填表三分工）",
+    "资源注入顺序（生成器 add_child 前赋 yu_zhong，_ready 消费）",
+    "类型化资源数组注册表 Array[YuZhong]"
+  ],
   "concepts_explained_by_student": [],
   "editor_operations_completed": [],
   "verification_completed": [],
@@ -10,5 +15,22 @@
   "student_questions": [],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "学生完成两个设计决策：鱼种表经检查器拖入 Array[YuZhong] 注册表（不用运行时 DirAccess 扫描）、游速归鱼种表管（种族速度，与贴图绑定成套）——均选推荐项 1A 2A",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-22T08:10:00Z"
+    },
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 讲解中定位了外观数据的两处硬编码：YuNpc.tscn 的 tie_tu_shu_zu 数组与 yu_npc.gd 的 tixing_fanwei",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-22T08:10:00Z"
+    }
+  ]
 }
