@@ -1,13 +1,13 @@
 {
   "task_id": "TASK-003",
-  "task_spec_version": 1,
-  "approval_status": "approved",
-  "delivery_status": "in_progress",
+  "task_spec_version": 2,
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-04",
   "current_checkpoint": "godot-inspection",
-  "next_action": "学生检查点：检查器核对两边 PandingQu 的 Layer/Mask、调半径实验；F5 亲测吃小鱼/闪红/无敌帧并完整回归",
+  "next_action": "等待用户确认 TASK-003 v2（白名单补登记：编辑器 uid 记账 + .gitignore 锁文件规则；行为零变化）。确认后继续 step 检查点。",
   "implementation_baseline": {
     "captured_at": "2026-10-22T03:27:52.617085Z",
     "commit": "1b872c7a8f8a94927b5b27f854d720de7f1d9d96",
@@ -77,9 +77,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": 1,
-    "approved_at": "2026-10-22T03:27:34Z",
-    "exact_user_text": "确认 TASK-003 v1 进入开发"
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null
   },
   "capability_decisions": {
     "superpowers": "unavailable",

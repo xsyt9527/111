@@ -14,3 +14,6 @@ build/
 # 系统文件
 Thumbs.db
 .DS_Store
+
+# WPS/Word 打开文档时的锁文件（临时文件，永不进仓库）
+~$*

@@ -2,15 +2,15 @@
   "manifest_schema_version": 2,
   "generated_by_skill_version": "2.0.0",
   "task_id": "TASK-003",
-  "task_spec_version": 1,
+  "task_spec_version": 2,
   "slug": "dachixiao-panding",
   "title": "大吃小判定（Area2D 碰撞 + 体型比较）",
   "engine_version": "4.7",
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "approved",
-  "delivery_status": "approved",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "da0685b7957615d90764651b8038ffd5be6b567f",
@@ -64,7 +64,9 @@
       "Yu/WudiDingshi.timeout → yu.gd._jiechu_wudi（玩家侧代码连接）"
     ],
     "shared_state": [],
-    "registered_shared_changes": [],
+    "registered_shared_changes": [
+      ".gitignore: 新增 ~$* 忽略规则（WPS/Word 锁文件为临时文件，永不入库）——纯仓库卫生，无引擎配置变更"
+    ],
     "conflict_hotspots": [
       "scripts/yu.gd —— TASK-001 的移动逻辑（mubiao_dian/_process/move_toward）一行不动，只追加判定与受伤成员",
       "scenes/Main.tscn —— 本任务不修改（Yu 以 editable 实例挂入，判定子节点加在 Yu.tscn 源头）",
@@ -93,7 +95,9 @@
     "docs/development_tasks/TASK-003_dachixiao_panding/DEVELOPMENT_PROMPT.md",
     "docs/development_tasks/TASK-003_dachixiao_panding/LEARNING_RECORD.md",
     "docs/development_tasks/TASK-003_dachixiao_panding/LEARNING_STATE.json",
-    "docs/development_tasks/TASK-003_dachixiao_panding/INTEGRATION_HANDOFF.md"
+    "docs/development_tasks/TASK-003_dachixiao_panding/INTEGRATION_HANDOFF.md",
+    "scenes/Main.tscn",
+    ".gitignore"
   ],
   "allowed_new_files": [
     "docs/development_tasks/TASK-003_dachixiao_panding/IMPLEMENTATION_REPORT.md",
@@ -296,10 +300,10 @@
     "玩家 tixing 出现任何写入（长大属 TASK-005）"
   ],
   "approval": {
-    "approved": true,
-    "approved_version": 1,
-    "approved_at": "2026-10-22T03:27:34Z",
-    "exact_user_text": "确认 TASK-003 v1 进入开发",
-    "canonical_example": "确认 TASK-003 v1 进入开发"
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-003 v2 进入开发"
   }
 }

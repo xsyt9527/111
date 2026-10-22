@@ -1,6 +1,6 @@
 {
   "task_id": "TASK-003",
-  "task_spec_version": 1,
+  "task_spec_version": 2,
   "learning_status": "in_progress",
   "concepts_introduced": [
     "Area2D 检测区与 CollisionShape2D 形状",
@@ -12,7 +12,10 @@
   "editor_operations_completed": [],
   "verification_completed": [],
   "integration_contract_understood": null,
-  "student_questions": [],
+  "student_questions": [
+    "Layer/Mask 的数值是怎么定出来的？如何在编辑器里核对？",
+    "能不能让吃的范围变大、被大鱼伤到的范围不变或变小？（即磁吸雏形，约定第 7 课实现）"
+  ],
   "unresolved_concepts": [],
   "assistance_level": "full",
   "evidence": [
