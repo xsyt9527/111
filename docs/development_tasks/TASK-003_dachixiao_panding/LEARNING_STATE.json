@@ -1,0 +1,19 @@
+{
+  "task_id": "TASK-003",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "Area2D 检测区与 CollisionShape2D 形状",
+    "collision_layer / collision_mask（层与掩码）",
+    "area_entered 信号与信号参数",
+    "体型比较规则与受伤无敌帧（Timer 复习 + modulate）"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [],
+  "assistance_level": "full",
+  "evidence": []
+}

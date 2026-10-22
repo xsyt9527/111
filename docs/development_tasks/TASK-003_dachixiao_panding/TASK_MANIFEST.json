@@ -1,0 +1,305 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-003",
+  "task_spec_version": 1,
+  "slug": "dachixiao-panding",
+  "title": "大吃小判定（Area2D 碰撞 + 体型比较）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "da0685b7957615d90764651b8038ffd5be6b567f",
+  "objective": "给玩家鱼与 NPC 鱼各加 Area2D 检测区并配置碰撞层/掩码：玩家碰到体型比自己小的 NPC 时吃掉它（NPC 自我释放），碰到体型比自己大的 NPC 时受伤（闪红 + 1 秒无敌，期间不重复受伤但仍能吃小鱼）。F5 可直接观察，判定规则与形状半径在检查器/代码中可调。",
+  "audit_freshness": {
+    "audited_commit": "da0685b7957615d90764651b8038ffd5be6b567f",
+    "environment_checked_at": "2026-10-22T03:11:02Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线新增或变更",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "大吃小判定（Area2D 检测 + tixing 体型比较 + 吃/受伤分支）",
+      "受伤反馈（闪红 + 短暂无敌）"
+    ],
+    "owned_scenes": [
+      "res://scenes/Yu.tscn",
+      "res://scenes/YuNpc.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/yu.gd",
+      "res://scripts/yu_npc.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-001（玩家鱼移动与输入）",
+      "TASK-002（YuNpc.tixing 体型接口与鱼群生成）"
+    ],
+    "consumed_interfaces": [
+      "YuNpc.tixing: float —— TASK-002 提供的体型系数，本任务作为比较依据",
+      "YuQun 生成器持续供给鱼群（本任务不改生成器）"
+    ],
+    "provided_interfaces": [
+      "Yu.tixing: float —— 玩家体型系数（默认 1.0），TASK-005 成长系统将增大它，能吃的鱼随之变多",
+      "YuNpc.bei_chi() —— NPC 被吃的统一入口，TASK-005 经验系统在此挂钩",
+      "Yu._shoushang() —— 玩家受伤入口，TASK-008 血量/死亡系统在此挂钩",
+      "碰撞层约定：Layer 1 = 玩家、Layer 2 = 鱼群 —— 后续任务沿用"
+    ],
+    "emitted_signals": [],
+    "received_signals": [
+      "Yu/PandingQu.area_entered → yu.gd._on_panding_qu_entered（玩家侧代码连接）",
+      "Yu/WudiDingshi.timeout → yu.gd._jiechu_wudi（玩家侧代码连接）"
+    ],
+    "shared_state": [],
+    "registered_shared_changes": [],
+    "conflict_hotspots": [
+      "scripts/yu.gd —— TASK-001 的移动逻辑（mubiao_dian/_process/move_toward）一行不动，只追加判定与受伤成员",
+      "scenes/Main.tscn —— 本任务不修改（Yu 以 editable 实例挂入，判定子节点加在 Yu.tscn 源头）",
+      "scripts/yu_npc.gd —— TASK-002 的生成/游动/回收逻辑不动，只追加 bei_chi()；修改其结构需重审 TASK-002 合同",
+      "scripts/yu_qun.gd / scripts/main.gd —— 完全不碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入退出码 0",
+      "F5 回归：玩家跟随移动、鱼群生成与回收均无退化",
+      "F5 新增行为：小 NPC 撞玩家即消失（被吃）；大 NPC 撞玩家闪红 1 秒"
+    ]
+  },
+  "allowed_existing_files": [
+    "scenes/Yu.tscn",
+    "scenes/YuNpc.tscn",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-003_dachixiao_panding/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-003_dachixiao_panding/TASK_STATE.json",
+    "docs/development_tasks/TASK-003_dachixiao_panding/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-003_dachixiao_panding/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-003_dachixiao_panding/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-003_dachixiao_panding/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-003_dachixiao_panding/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-003_dachixiao_panding/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-003_dachixiao_panding/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-003_dachixiao_panding/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "经验/分数/成长系统（TASK-005 范围）——被吃的鱼只消失，不给分",
+    "血量、死亡、结算（TASK-008 范围）——受伤只做表现（闪红+无敌），不扣血",
+    "Tween 动画 / 粒子 / 吞吃特效（第 7 课范围，闪红用 modulate 直接赋值）",
+    "data/ 鱼种 Resource 数据表（TASK-004 范围）",
+    "Autoload / 全局状态（TASK-005 范围）",
+    "project.godot 任何修改（物理设置用默认值）",
+    "修改 yu_qun.gd（生成器）与 main.gd（输入）",
+    "玩家长大的任何逻辑（tixing 本课只读不写）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "玩家检测区：Yu 加 Area2D 与 tixing",
+      "behavior": "scenes/Yu.tscn 新增 PandingQu(Area2D, collision_layer=1, collision_mask=2) + CollisionShape2D(CircleShape2D 半径 22)；yu.gd 新增 var tixing := 1.0。F5 回归：移动正常、无报错、鱼群行为不变（尚未连接信号，判定未生效）。",
+      "main_concept": "Area2D 与 CollisionShape2D：不可见的物理检测区",
+      "files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器打开 Yu.tscn，确认 PandingQu → CollisionShape2D 子树，形状为圆形",
+        "选中 PandingQu，检查器 Layer 1 勾选、Mask 2 勾选（其余不勾）",
+        "F5 回归：移动与鱼群无异常"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "NPC 检测区：YuNpc 加 Area2D（只挂层不检测）",
+      "behavior": "scenes/YuNpc.tscn 新增 PandingQu(Area2D, collision_layer=2, collision_mask=0) + CollisionShape2D(CircleShape2D 半径 22)；形状随 NPC 的 scale 自动缩放。F5 回归：无报错、行为不变。玩家 mask=2 + NPC layer=2 的组合让玩家能『看见』NPC，而 NPC 不检测任何人（避免双方重复判定）。",
+      "main_concept": "collision_layer 与 collision_mask：『我是什么』与『我检测谁』",
+      "files": [
+        "scenes/YuNpc.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "选中 NPC 的 PandingQu，检查器 Layer 2 勾选、Mask 全不勾",
+        "F5 回归：鱼群生成/游动/回收无异常"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "判定接线：area_entered 比较 tixing 分吃/伤",
+      "behavior": "yu.gd 在 _ready 连接 PandingQu.area_entered：收到对方检测区后取其父节点 YuNpc，tixing > 对方 tixing 时调用 yu_npc.bei_chi()（NPC queue_free）；否则（含相等）走受伤分支（本步先只占位）。F5 可观察：撞到比自己小的鱼，鱼立即消失（被吃）；生成器随后补新鱼。yu_npc.gd 新增 bei_chi() 方法。",
+      "main_concept": "area_entered 信号与判定规则：信号参数就是对方的 Area2D",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：控制玩家去撞明显小的鱼（0.6~0.9 体型）→ 撞上即消失",
+        "F5：撞明显大的鱼（1.2~1.6）→ 暂无表现（step-04 加），但 Output 无报错",
+        "Remote 面板：被吃的 YuNpc 从 YuQun 子节点中消失，新鱼继续生成"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "受伤反馈：闪红 + 1 秒无敌",
+      "behavior": "Yu.tscn 新增 WudiDingshi(Timer, one_shot, wait_time=1.0)；yu.gd 受伤分支生效：modulate 变红、启动无敌计时；timeout 后恢复白色并解除无敌。无敌期间：不再受伤（穿过大鱼只红一次），但仍能吃小鱼。F5 完整可玩：吃小的、躲大的、撞大闪红一秒。",
+      "main_concept": "受伤状态与无敌帧：Timer 复习 + modulate 颜色示警",
+      "files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：撞大鱼瞬间变红，1 秒后恢复白色",
+        "无敌期间反复穿过同一条大鱼：只红这一次，不掉帧不报错",
+        "无敌期间仍能吃掉小鱼（无敌只挡伤害不挡吃）",
+        "完整回归：跟随移动、鱼群生成、出屏回收全部正常"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能够定位两个 PandingQu 子树并解释 Area2D/CollisionShape2D 的分工（区域在哪、形状多大）",
+      "学生能够用自己的话说出 layer 与 mask 的区别，并解释为什么玩家 mask=2、NPC mask=0 就不会重复判定",
+      "学生能够跟踪一次判定的数据流：area_entered(area) → get_parent() → tixing 比较 → bei_chi/_shoushang",
+      "学生能够在编辑器检查碰撞层配置、调整圆形半径并 F5 观察判定范围变化"
+    ],
+    "concepts": [
+      "Area2D 检测区与 CollisionShape2D 形状",
+      "collision_layer / collision_mask（层与掩码）",
+      "area_entered 信号与信号参数",
+      "体型比较规则与受伤无敌帧"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "Main/YuQun/YuNpc 的现有生命周期全部不变。本任务只给 Yu 与 YuNpc 两个蓝图各自追加 Area2D 检测子树（PandingQu → CollisionShape2D），随宿主节点创建/释放，不产生新的动态节点；Yu 另追加一个 WudiDingshi(Timer) 常驻子节点，与 TASK-002 的 Dingshi 同款生命周期模式。所有信号（area_entered、timeout）都在各自宿主 _ready 内代码连接一次，随宿主释放断开，无跨场景连接、无全局状态。",
+    "current_tree": "Main (Node2D)\n├─ Haodi (Sprite2D)\n├─ Yu (Yu.tscn 实例)\n│  └─ Sprite2D\n└─ YuQun (yu_qun.gd)\n   ├─ Dingshi (Timer, one_shot)\n   └─ YuNpc × N（运行时动态生成）\n       └─ Sprite2D",
+    "target_tree": "Main (Node2D)\n├─ Haodi (Sprite2D)\n├─ Yu (Yu.tscn 实例)\n│  ├─ Sprite2D\n│  ├─ PandingQu (Area2D, layer=1, mask=2)      ← TASK-003\n│  │  └─ CollisionShape2D (CircleShape2D r=22)\n│  └─ WudiDingshi (Timer, one_shot, 1.0s)      ← TASK-003\n└─ YuQun (yu_qun.gd)\n   ├─ Dingshi (Timer, one_shot)\n   └─ YuNpc × N（运行时动态生成）\n       ├─ Sprite2D\n       └─ PandingQu (Area2D, layer=2, mask=0)   ← TASK-003\n           └─ CollisionShape2D (CircleShape2D r=22)",
+    "ownership": [
+      "Yu / YuNpc 蓝图归 TASK-003 本任务所有（TASK-001/002 已关闭交付），但只追加子节点与成员，不动既有移动/生成逻辑",
+      "Main / YuQun / Dingshi：本任务零修改",
+      "PandingQu / WudiDingshi / CollisionShape2D：TASK-003 新建并所有"
+    ],
+    "signal_contracts": [
+      "Yu/PandingQu.area_entered(area: Area2D) → yu.gd._on_panding_qu_entered：玩家侧 _ready 代码连接一次；通过 area.get_parent() 取回 YuNpc 宿主",
+      "Yu/WudiDingshi.timeout → yu.gd._jiechu_wudi：玩家侧 _ready 代码连接一次；解除无敌并恢复颜色"
+    ],
+    "loading_policy": "无新增动态资源加载。Area2D/Timer 均为场景文件内静态子节点与 SubResource（CircleShape2D），随宿主实例化，无池化、无预加载缓存。",
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": [
+      "F5 首次进入 Main：玩家与每条 NPC 都带检测区，无报错",
+      "被吃的 NPC：bei_chi() → queue_free，其检测区随之释放，不产生幽灵判定",
+      "连续 F5 多次：信号不重复连接（连接在 _ready，实例每次新建）",
+      "受伤无敌计时随玩家实例释放，无残留状态"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0（物理判定运行无错误）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：撞比自己小的鱼 → 鱼消失（被吃），生成器继续补鱼",
+    "F5：撞比自己大的鱼 → 玩家闪红 1 秒后恢复",
+    "无敌期间穿过大鱼只伤一次，期间仍能吃小鱼",
+    "完整回归：跟随移动、鱼群生成、出屏回收无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增 Autoload、信号总线、数据资源或任何 project.godot 配置变更",
+    "引入经验/分数/血量/死亡/动画等后续任务系统",
+    "修改 yu_qun.gd（生成器）或 main.gd（输入）",
+    "改动 TASK-001 的移动逻辑（mubiao_dian / _process 的 move_toward 部分）",
+    "玩家 tixing 出现任何写入（长大属 TASK-005）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-003 v1 进入开发"
+  }
+}
