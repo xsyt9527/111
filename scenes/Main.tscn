@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dm0ffvkk7jrik" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Texture2D" uid="uid://b83bkk62ctmr2" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
 [ext_resource type="PackedScene" path="res://scenes/Yu.tscn" id="3_yu"]
-[ext_resource type="Script" path="res://scripts/yu_qun.gd" id="4_yuqun"]
+[ext_resource type="Script" uid="uid://cuhw2cc365t6" path="res://scripts/yu_qun.gd" id="4_yuqun"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -16,11 +16,10 @@ texture = ExtResource("2_haodi")
 [node name="Yu" parent="." unique_id=546248040 instance=ExtResource("3_yu")]
 position = Vector2(640, 360)
 
-[node name="YuQun" type="Node2D" parent="."]
+[node name="YuQun" type="Node2D" parent="." unique_id=71082821]
 script = ExtResource("4_yuqun")
 
-[node name="Dingshi" type="Timer" parent="YuQun"]
-wait_time = 1.0
+[node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true
 
 [editable path="Yu"]

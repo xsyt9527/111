@@ -40,8 +40,8 @@ Main (Node2D)
 ## 集成检查清单
 
 - [x] 任务包通过 validate_task.py
-- [ ] headless 导入退出码 0
-- [ ] headless --quit-after 300 退出码 0
-- [ ] check_task_scope.py 无违例
-- [ ] 学生 verification-handoff 完成
-- [ ] LEARNING_ROADMAP / TASK_INDEX / 引擎词总表更新
+- [x] headless 导入退出码 0
+- [x] headless --fixed-fps 60 --quit-after 360 退出码 0
+- [x] check_task_scope.py 无违例（11 allowed / 0 violation）
+- [x] 学生 verification-handoff 完成（2026-10-22："从两侧游入，数量稳定"）
+- [x] LEARNING_ROADMAP / TASK_INDEX / 引擎词总表（md + docx）已更新
