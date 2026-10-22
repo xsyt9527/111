@@ -8,7 +8,10 @@
     "get_viewport_rect() 视口尺寸（运行时取屏幕大小）",
     "queue_free() 与动态节点生命周期（只生不灭 = 泄漏）"
   ],
-  "concepts_explained_by_student": [],
+  "concepts_explained_by_student": [
+    "queue_free() 与动态节点生命周期（含对同屏上限联动影响的正确推理）",
+    "生成故障排查思路（Output 报错优先）"
+  ],
   "editor_operations_completed": [
     "打开 Main.tscn 检查 YuQun→Dingshi 子树与 one_shot 属性",
     "检查器把 Zuida Shuliang 改为 2 做上限实验（留痕 Main.tscn，收尾已还原 14）"
@@ -53,6 +56,22 @@
       "summary": "学生运行 F5 完成鱼群生成/游入/回收的手动验证",
       "understanding_level": "applied",
       "observed_at": "2026-10-22T00:00:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生口头回答排查顺序：先看 Output 报错、再查 YuQun 代码（方向正确，AI 补全为 Output→Timer→信号连接三步链）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-22T12:00:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生推断 queue_free 不调用的后果：会导致卡（对：内存与 CPU 泄漏），并猜测『不再生成鱼』（对：_dangqian_yu_shu 只数活着的子节点，鱼不死则数量永远到顶、生成器永久跳过）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-22T12:00:00Z"
     }
   ]
 }
