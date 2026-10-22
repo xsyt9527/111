@@ -1,22 +1,22 @@
 extends Node2D
 class_name YuNpc
-# NPC 鱼：进入场景树时随机外观，之后沿直线游动，游出屏幕自动释放
+# NPC 鱼：接收生成器注入的鱼种数据（yu_zhong），按数据随机外观，游出屏幕自动释放
 
-@export var tie_tu_shu_zu: Array[Texture2D]  # 候选贴图（检查器里拖入多种鱼）
-@export var tixing_fanwei := Vector2(0.6, 1.6)  # 体型系数随机范围：0.6 小 ~ 1.6 大
 @export var bianju := 80.0  # 屏幕外多远才算离开（像素）
 
-var tixing := 1.0  # 实际体型系数（第 3 课大小判定会读这个值）
+var yu_zhong: YuZhong  # 鱼种数据（生成器在 add_child 前注入；_ready 里读它）
+var tixing := 1.0  # 实际体型系数（大小判定读这个值）
 var sudu := 100.0  # 游速（像素/秒），由生成器写入
 var fangxiang := -1.0  # 1 向右，-1 向左，由生成器写入
 
 
 func _ready() -> void:
-	# 随机体型与贴图；Godot 4 启动时自动播种随机数，不需要 randomize()
-	tixing = randf_range(tixing_fanwei.x, tixing_fanwei.y)
+	# 体型范围来自鱼种表；没接到鱼种数据时用旧默认值兜底（过渡态）
+	var fanwei := Vector2(0.6, 1.6) if yu_zhong == null else yu_zhong.tixing_fanwei
+	tixing = randf_range(fanwei.x, fanwei.y)
 	scale = Vector2.ONE * tixing
-	if not tie_tu_shu_zu.is_empty():
-		$Sprite2D.texture = tie_tu_shu_zu.pick_random()
+	if yu_zhong != null and yu_zhong.tie_tu != null:
+		$Sprite2D.texture = yu_zhong.tie_tu  # 贴图：鱼种定什么就长什么样
 	$Sprite2D.flip_h = fangxiang < 0.0  # 贴图默认朝右，向左游时翻转
 
 
@@ -29,5 +29,5 @@ func _process(delta: float) -> void:
 
 
 func bei_chi() -> void:
-	# 被玩家吃掉的统一入口：第 5 课经验系统在这里挂钩记账
+	# 被玩家吃掉的统一入口：第 5 课经验系统在这里挂钩记账（可查 yu_zhong.fenzhi）
 	queue_free()

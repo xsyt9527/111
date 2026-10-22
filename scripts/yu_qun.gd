@@ -7,7 +7,7 @@ const YU_NPC_CHANGJING := preload("res://scenes/YuNpc.tscn")  # NPC 鱼蓝图
 @export var zuixiao_jiange := 0.6  # 两次生成之间的最短间隔（秒）
 @export var zuida_jiange := 1.8    # 两次生成之间的最长间隔（秒）
 @export var zuida_shuliang := 14   # 同屏 NPC 鱼数量上限
-@export var sudu_fanwei := Vector2(60.0, 160.0)  # 游速随机范围（像素/秒）
+@export var yu_zhong_zu: Array[YuZhong]  # 鱼种注册表：检查器拖入 .tres——加新鱼不改代码
 
 @onready var dingshi: Timer = $Dingshi  # 定时器子节点
 
@@ -36,7 +36,13 @@ func _dangqian_yu_shu() -> int:
 
 func _shengcheng_yi_tiao() -> void:
 	var xin_yu: YuNpc = YU_NPC_CHANGJING.instantiate()
-	xin_yu.sudu = randf_range(sudu_fanwei.x, sudu_fanwei.y)
+	if not yu_zhong_zu.is_empty():
+		# 抽一种鱼，把数据注入新鱼（必须在 add_child 前，_ready 要读它）
+		var zhong: YuZhong = yu_zhong_zu.pick_random()
+		xin_yu.yu_zhong = zhong
+		xin_yu.sudu = randf_range(zhong.sudu_fanwei.x, zhong.sudu_fanwei.y)
+	else:
+		xin_yu.sudu = 100.0  # 没配鱼种表的兜底，不至于生成静止的鱼
 
 	# 随机从左或右屏幕外进入；本场景无相机，视口坐标即世界坐标
 	var pingmu := get_viewport_rect().size
