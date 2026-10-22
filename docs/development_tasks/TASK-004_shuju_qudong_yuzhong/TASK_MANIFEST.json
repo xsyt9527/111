@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "d945087f536807a20abbf233234037609ad07dee",
@@ -300,10 +300,10 @@
     "改写 YuNpc 游动/回收/bei_chi 或 YuQun 间隔/上限/边缘生成逻辑"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-22T08:05:00Z",
+    "exact_user_text": "确认 TASK-004 v1 进入开发",
     "canonical_example": "确认 TASK-004 v1 进入开发"
   }
 }
