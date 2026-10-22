@@ -4,7 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://b83bkk62ctmr2" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
 [ext_resource type="PackedScene" uid="uid://begsi5v6owqua" path="res://scenes/Yu.tscn" id="3_yu"]
 [ext_resource type="Script" uid="uid://cuhw2cc365t6" path="res://scripts/yu_qun.gd" id="4_yuqun"]
-[ext_resource type="Resource" path="res://data/yuzhong/lan_yu.tres" id="5_lan"]
+[ext_resource type="Resource" uid="uid://bb38ynj8rbphg" path="res://data/yuzhong/lan_yu.tres" id="5_lan"]
+[ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="5_wp0k4"]
 [ext_resource type="Resource" path="res://data/yuzhong/hong_yu.tres" id="6_hong"]
 [ext_resource type="Resource" path="res://data/yuzhong/lv_yu.tres" id="7_lv"]
 [ext_resource type="Resource" path="res://data/yuzhong/cheng_yu.tres" id="8_cheng"]
@@ -24,7 +25,7 @@ position = Vector2(640, 360)
 
 [node name="YuQun" type="Node2D" parent="." unique_id=71082821]
 script = ExtResource("4_yuqun")
-yu_zhong_zu = Array[Resource]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("10_fen")])
+yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("10_fen")])
 
 [node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true

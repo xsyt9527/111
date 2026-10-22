@@ -9,7 +9,11 @@
     "类型化资源数组注册表 Array[YuZhong]"
   ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
+  "editor_operations_completed": [
+    "右键 Create New → Resource… 搜索到 YuZhong，检查器看到五个字段（未保存落地）",
+    "双击 data/yuzhong/zong_yu.tres 核对字段数值（dengji=3、体型 1.2~1.5、速度 55~90、分值 5）",
+    "改 lan_yu.tres 的 tixing_fanwei 成 (1.4, 1.6) 并保存，F5 观察蓝鱼整体变大后还原 (0.5, 0.8)"
+  ],
   "verification_completed": [],
   "integration_contract_understood": null,
   "student_questions": [],
@@ -31,6 +35,22 @@
       "summary": "orientation 讲解中定位了外观数据的两处硬编码：YuNpc.tscn 的 tie_tu_shu_zu 数组与 yu_npc.gd 的 tixing_fanwei",
       "understanding_level": "recognized",
       "observed_at": "2026-10-22T08:10:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生完成编辑器三连：New Resource 认出 YuZhong 模具字段、双击核对 zong_yu.tres 数值、改 lan_yu.tres 体型范围做 F5 整体变化实验后还原——自评『都很棒』",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-22T08:30:00Z"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生通过改表实验亲眼确认：改一个 .tres 数据文件（零代码改动）即可让整个鱼种外观整体变化——Resource 数据驱动的核心价值实证",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-22T08:30:00Z"
     }
   ]
 }

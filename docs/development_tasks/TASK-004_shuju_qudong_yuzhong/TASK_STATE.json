@@ -6,8 +6,8 @@
   "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-04",
-  "current_checkpoint": "godot-inspection",
-  "next_action": "四步全部实现、自动检查全绿；等待学生 godot-inspection（New Resource 看 YuZhong / 双击 .tres / 改字段实验）+ verification（F5 四条）",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "godot-inspection 三项已完成（2026-10-22）；等待学生 verification：F5 亲测三条（同种成套/判定回归/全量回归），随后收尾",
   "implementation_baseline": {
     "captured_at": "2026-10-22T07:42:39.660286Z",
     "commit": "2b551d270b3b4c07bc2a174e2d4b3b0ec95235fb",

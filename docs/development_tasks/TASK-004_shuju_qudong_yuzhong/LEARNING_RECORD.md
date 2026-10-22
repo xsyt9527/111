@@ -21,11 +21,11 @@
 - [x] 设计决策 1：**A. 检查器拖入 Array[YuZhong] 注册表**（选定推荐项，不用运行时扫描）
 - [x] 设计决策 2：**A. 游速归鱼种表管**（选定推荐项，种族速度与贴图成套）
 
-### godot-inspection（实现后）
+### godot-inspection（实现后，2026-10-22，三项全过）
 
-- [ ] 编辑器 New Resource… 看到 YuZhong 字段（不保存）
-- [ ] 双击检查 .tres 内容与字段
-- [ ] 改一个鱼种字段 F5 实验，观察后还原
+- [x] 编辑器 New Resource… 看到 YuZhong 字段（未保存落地）
+- [x] 双击检查 zong_yu.tres 内容与字段
+- [x] 改 lan_yu.tres 体型范围 F5 实验（蓝鱼整体变大），观察后还原
 
 ### verification-handoff（实现后）
 
