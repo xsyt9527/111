@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/yu_npc.gd" id="1_yu_npc"]
 [ext_resource type="Texture2D" uid="uid://cn6y4pp4rawlo" path="res://assets/sucai/kenney_fish/PNG/Default/fish_blue.png" id="2_tietu"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://byh7e6e58q6pv" path="res://assets/sucai/kenney_fish/PNG/Default/fish_orange.png" id="5_tietu"]
 [ext_resource type="Texture2D" uid="uid://dlbq7ntq5hiiy" path="res://assets/sucai/kenney_fish/PNG/Default/fish_brown.png" id="6_tietu"]
 [ext_resource type="Texture2D" uid="uid://bjpfw8p2epqd1" path="res://assets/sucai/kenney_fish/PNG/Default/fish_pink.png" id="7_tietu"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
+radius = 22.0
 
 [node name="YuNpc" type="Node2D"]
 position = Vector2(640, 360)
@@ -15,3 +17,10 @@ tie_tu_shu_zu = Array[Texture2D]([ExtResource("2_tietu"), ExtResource("3_tietu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_tietu")
+
+[node name="PandingQu" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PandingQu"]
+shape = SubResource("CircleShape2D_yuan")

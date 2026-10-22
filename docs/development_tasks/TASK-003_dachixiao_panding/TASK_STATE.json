@@ -2,15 +2,15 @@
   "task_id": "TASK-003",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "approved",
-  "learning_status": "not_started",
+  "delivery_status": "in_progress",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": null,
-  "current_checkpoint": null,
-  "next_action": "捕获实现基线后进入 orientation 检查点",
+  "current_step": "step-04",
+  "current_checkpoint": "godot-inspection",
+  "next_action": "学生检查点：检查器核对两边 PandingQu 的 Layer/Mask、调半径实验；F5 亲测吃小鱼/闪红/无敌帧并完整回归",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
+    "captured_at": "2026-10-22T03:27:52.617085Z",
+    "commit": "1b872c7a8f8a94927b5b27f854d720de7f1d9d96",
     "preexisting_changes": []
   },
   "last_verified_commit": null,
@@ -18,39 +18,62 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "Godot 4.7.2 --headless --import exit 0",
+        "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
+      ],
+      "next_action": "等待学生 godot-inspection / verification 检查点"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scenes/YuNpc.tscn"
+      ],
+      "check_results": [
+        "Godot 4.7.2 --headless --import exit 0",
+        "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
+      ],
+      "next_action": "等待学生 godot-inspection / verification 检查点"
     },
     {
       "step_id": "step-03",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "check_results": [
+        "Godot 4.7.2 --headless --import exit 0",
+        "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
+      ],
+      "next_action": "等待学生 godot-inspection / verification 检查点"
     },
     {
       "step_id": "step-04",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "automated_checks_passed",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "Godot 4.7.2 --headless --import exit 0",
+        "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
+      ],
+      "next_action": "等待学生 godot-inspection / verification 检查点"
     }
   ],
   "approval_record": {

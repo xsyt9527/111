@@ -1,7 +1,7 @@
 {
   "task_id": "TASK-003",
   "task_spec_version": 1,
-  "learning_status": "not_started",
+  "learning_status": "in_progress",
   "concepts_introduced": [
     "Area2D 检测区与 CollisionShape2D 形状",
     "collision_layer / collision_mask（层与掩码）",
@@ -15,5 +15,14 @@
   "student_questions": [],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "学生完成两个设计决策：判定由玩家侧单向检测发起（NPC 保持被动）、无敌期采用能吃不能伤规则",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-22T03:30:00Z"
+    }
+  ]
 }

@@ -26,3 +26,8 @@ func _process(delta: float) -> void:
 	var pingmu_kuan := get_viewport_rect().size.x
 	if position.x < -bianju or position.x > pingmu_kuan + bianju:
 		queue_free()  # 游出屏幕：释放节点，避免越积越多
+
+
+func bei_chi() -> void:
+	# 被玩家吃掉的统一入口：第 5 课经验系统在这里挂钩记账
+	queue_free()
