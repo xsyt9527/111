@@ -1,0 +1,309 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-004",
+  "task_spec_version": 1,
+  "slug": "shuju-qudong-yuzhong",
+  "title": "数据驱动鱼种（自定义 Resource + .tres 注册表）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "d945087f536807a20abbf233234037609ad07dee",
+  "objective": "新建自定义 Resource 类 YuZhong（贴图/等级/体型范围/游速范围/分值五种字段），为 6 种鱼各建一个 data/yuzhong/*.tres 数据文件；YuNpc 从『读检查器贴图数组』改成『读注入的鱼种资源』（贴图、体型范围、游速来源全部换成鱼种表）；YuQun 导出 Array[YuZhong] 注册表，生成时随机抽一种在 add_child 前赋给新鱼。加新鱼从『改场景文件』变成『新建 .tres 填字段 + 拖进数组』，一行代码不改。F5 可观察：同种鱼外观/体型/速度成套，改表即生效。",
+  "audit_freshness": {
+    "audited_commit": "d945087f536807a20abbf233234037609ad07dee",
+    "environment_checked_at": "2026-10-22T07:30:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源结构新增或变更",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "鱼种数据模具与 6 个鱼种数据文件（YuZhong + data/yuzhong/*.tres）",
+      "NPC 外观/体型/速度的数据来源切换（数组 → 鱼种资源）",
+      "生成器鱼种抽取与注册表（YuQun.yu_zhong_zu）"
+    ],
+    "owned_scenes": [
+      "res://scenes/YuNpc.tscn",
+      "res://scenes/Main.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/yu_zhong.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/yu_qun.gd"
+    ],
+    "owned_config_tables": [
+      "res://data/yuzhong/lan_yu.tres",
+      "res://data/yuzhong/hong_yu.tres",
+      "res://data/yuzhong/lv_yu.tres",
+      "res://data/yuzhong/cheng_yu.tres",
+      "res://data/yuzhong/zong_yu.tres",
+      "res://data/yuzhong/fen_yu.tres"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-002（YuNpc 生成注入顺序：add_child 前赋 sudu/fangxiang 的同款约定）",
+      "TASK-003（判定系统消费 YuNpc.tixing——本任务不改 tixing 的产生方式，只改其随机范围来源）"
+    ],
+    "consumed_interfaces": [
+      "YuNpc._ready 的既有注入顺序（生成器先赋值再 add_child）——本任务把 yu_zhong 加进同一序列",
+      "YuNpc.tixing / sudu / fangxiang 成员——本任务只改赋值来源，不改判定系统读取方式"
+    ],
+    "provided_interfaces": [
+      "YuZhong（Resource）：tie_tu/dengji/tixing_fanwei/sudu_fanwei/fenzhi 五字段的数据模具",
+      "YuNpc.yu_zhong: YuZhong —— NPC 实例携带的鱼种引用，TASK-005 记账时可查 fenzhi/dengji",
+      "YuZhong.fenzhi: int —— 吃掉该种鱼的分值（本课只存数据不消费，TASK-005 经验系统读取）",
+      "YuZhong.dengji: int —— 鱼种等级（TASK-005 及之后的难度/成长参考）",
+      "注册表模式 ——『代码模具 + .tres 数据 + 检查器数组』套路，第 6 课强化卡可直接复用"
+    ],
+    "emitted_signals": [],
+    "received_signals": [],
+    "shared_state": [],
+    "registered_shared_changes": [],
+    "conflict_hotspots": [
+      "scripts/yu_npc.gd —— 游动/出屏回收/bei_chi()/bei 判定相关成员一行不动，只换 _ready 里外观与体型的数据来源",
+      "scripts/yu_qun.gd —— 间隔/上限/两侧边缘生成逻辑不动，只改 _shengcheng_yi_tiao 的赋值来源（sudu 改从鱼种表抽）",
+      "scenes/Main.tscn —— 只在 YuQun 节点追加 yu_zhong_zu 数组与 6 个 .tres 的 ext_resource",
+      "scripts/yu.gd / scenes/Yu.tscn / scripts/main.gd —— 完全不碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入退出码 0",
+      "F5 回归：大吃小判定、受伤无敌、跟随移动全部无退化（NPC.tixing 仍正常产生，只是范围来自鱼种表）",
+      "F5 新增行为：同种鱼贴图/体型/速度成套出现"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/yu_npc.gd",
+    "scripts/yu_qun.gd",
+    "scenes/YuNpc.tscn",
+    "scenes/Main.tscn",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/TASK_STATE.json",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scripts/yu_zhong.gd",
+    "scripts/yu_zhong.gd.uid",
+    "data/yuzhong/lan_yu.tres",
+    "data/yuzhong/hong_yu.tres",
+    "data/yuzhong/lv_yu.tres",
+    "data/yuzhong/cheng_yu.tres",
+    "data/yuzhong/zong_yu.tres",
+    "data/yuzhong/fen_yu.tres",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-004_shuju_qudong_yuzhong/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "经验/分数记账逻辑（TASK-005 范围）——fenzhi 只存数据，没有任何代码读它",
+    "Autoload / 全局状态（TASK-005 范围）",
+    "按鱼种限制出场（难度曲线，TASK-005 之后）",
+    "运行时 DirAccess 扫描 data/yuzhong 文件夹自动注册（导出 .remap 坑，进阶话题不在本课）",
+    "project.godot 任何修改",
+    "修改 yu.gd / Yu.tscn / main.gd（判定与输入系统零改动）",
+    "改写 YuNpc 的游动/回收/bei_chi 逻辑（只换数据来源）",
+    "改写 YuQun 的间隔/上限/边缘生成逻辑（只换赋值来源）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "鱼种模具：自定义 Resource 类 YuZhong",
+      "behavior": "新建 scripts/yu_zhong.gd：extends Resource + class_name YuZhong，@export 五字段（tie_tu: Texture2D、dengji := 1、tixing_fanwei := Vector2(0.6,1.6)、sudu_fanwei := Vector2(60.0,160.0)、fenzhi := 1）。headless 导入后生成 .uid。此时无任何场景使用它，F5 行为零变化（纯新增类）。",
+      "main_concept": "自定义 Resource：代码定义数据结构（模具），实例存成文件（数据）",
+      "files": [
+        "scripts/yu_zhong.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器 FileSystem 右键 → Create New → Resource… 搜索 YuZhong 能找到（不保存、不落地文件）",
+        "检查器显示五个可填字段，与脚本 @export 一一对应"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "六行鱼种表：data/yuzhong/*.tres 数据文件",
+      "behavior": "创建 data/yuzhong/ 六个 .tres：lan_yu（蓝，等级1，体型0.5~0.8，速度60~100，分值1）、hong_yu（红，1，0.6~0.9，80~120，1）、lv_yu（绿，2，0.9~1.2，70~110，2）、cheng_yu（橙，2，1.0~1.3，90~130，3）、zong_yu（棕，3，1.2~1.5，55~90，5）、fen_yu（粉，3，1.3~1.6，100~140，5），各引用对应 fish_*.png。headless 导入通过；尚无消费者，F5 行为零变化。",
+      "main_concept": ".tres 资源文件：把填好数据的 Resource 实例保存成磁盘文件",
+      "files": [
+        "data/yuzhong/lan_yu.tres",
+        "data/yuzhong/hong_yu.tres",
+        "data/yuzhong/lv_yu.tres",
+        "data/yuzhong/cheng_yu.tres",
+        "data/yuzhong/zong_yu.tres",
+        "data/yuzhong/fen_yu.tres"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器双击任一 .tres：检查器显示已填好的五个字段与预览贴图",
+        "FileSystem 里 .tres 显示为独立数据文件（图标区别于场景/脚本）"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "NPC 换口粮：YuNpc 从数组改读鱼种资源",
+      "behavior": "yu_npc.gd：删 @export tie_tu_shu_zu 与 @export tixing_fanwei，新增 var yu_zhong: YuZhong（生成器注入）；_ready 优先读 yu_zhong（贴图、tixing 从其 tixing_fanwei 抽），yu_zhong 为空时用旧默认值兜底（过渡态不崩）。YuNpc.tscn 同步清掉 6 个贴图 ext_resource 与 tie_tu_shu_zu 属性。本步生成器还没传 yu_zhong → F5 鱼群用兜底值（无贴图、体型 0.6~1.6），判定/回收正常，无报错。",
+      "main_concept": "资源注入：生成前赋 yu_zhong，_ready 消费（与 sudu/fangxiang 同款顺序约定）",
+      "files": [
+        "scripts/yu_npc.gd",
+        "scenes/YuNpc.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：鱼群仍正常生成/游动/被吃/出屏回收（无贴图为过渡态预期）",
+        "Output 无报错（尤其没有 unknown property 类错误）"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "注册表接线：YuQun 抽鱼种 + Main 拖入鱼种表",
+      "behavior": "yu_qun.gd：删 @export sudu_fanwei，新增 @export var yu_zhong_zu: Array[YuZhong]；_shengcheng_yi_tiao 里 pick_random 抽一种，add_child 前赋 xin_yu.yu_zhong 并从该鱼种 sudu_fanwei 抽 sudu（数组为空时兜底 sudu=100）。Main.tscn 给 YuQun 拖入 6 个 .tres。F5 完整可玩：同种鱼贴图/体型/速度成套（蓝小慢、棕大慢、粉大快），吃小鱼/躲大鱼/无敌帧全部照旧。",
+      "main_concept": "类型化资源数组注册表：Array[YuZhong] + 检查器拖入——加新鱼不改代码",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scenes/Main.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：同种鱼外观成套（同贴图的鱼体型相近、速度相近）",
+        "F5：蓝/红小鱼可被吃，棕/粉大鱼撞了会闪红——判定无退化",
+        "完整回归：跟随移动、随机间隔生成、出屏回收全部正常"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能够定位当前贴图数组的两处硬编码（YuNpc.tscn 的 tie_tu_shu_zu 与 yu_npc.gd 的 @export），说出『加新鱼要改场景文件』的结构问题",
+      "学生能够用自己的话解释 Resource 模式：脚本是模具（定结构）、.tres 是数据（存实例）、检查器是填表的地方——三者怎么分工",
+      "学生能够跟踪一次数据流：.tres 字段 → YuQun.pick_random → xin_yu.yu_zhong 注入 → _ready 读出贴图/体型/速度",
+      "学生能够在编辑器检查 .tres 内容、修改一个鱼种字段并 F5 观察对应鱼种整体变化，之后还原"
+    ],
+    "concepts": [
+      "自定义 Resource（extends Resource + class_name + @export 字段）",
+      ".tres 资源文件（数据与代码分离）",
+      "资源注入顺序（add_child 前赋值，_ready 消费）",
+      "类型化资源数组注册表 Array[YuZhong]"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "不新增任何节点、不改任何生命周期：Main/Yu/YuQun/YuNpc 树形与 TASK-003 交付完全一致。变化只在数据层——NPC 外观来源从场景内数组换成外部 .tres 资源（静态 ext_resource 引用，无运行时动态加载），生成器多一个赋值来源。无新信号、无全局状态。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0（数据驱动生成无错误）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：同种鱼外观成套（同贴图 → 体型相近、速度相近）",
+    "F5：小鱼可被吃、大鱼撞了闪红——判定无退化",
+    "改任一 .tres 的 tixing_fanwei 再 F5 → 该鱼种整体变大小，还原后恢复",
+    "完整回归：跟随移动、随机间隔生成、出屏回收无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增 Autoload、信号总线、project.godot 配置变更",
+    "引入经验/分数消费逻辑（fenzhi 被任何代码读取）",
+    "运行时 DirAccess 文件夹扫描方案",
+    "修改 yu.gd / Yu.tscn / main.gd（判定与输入系统）",
+    "改写 YuNpc 游动/回收/bei_chi 或 YuQun 间隔/上限/边缘生成逻辑"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-004 v1 进入开发"
+  }
+}
