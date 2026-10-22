@@ -2,25 +2,25 @@
   "task_id": "TASK-003",
   "task_spec_version": 2,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
   "current_step": "step-04",
   "current_checkpoint": "verification-handoff",
-  "next_action": "学生已完成 4 条验证，收尾：报告/词表/路线图/状态关闭",
+  "next_action": "TASK-003 已关闭。下一课 TASK-004（数据驱动鱼种：.tres Resource 注册表）需新建任务包并停等审批",
   "implementation_baseline": {
     "captured_at": "2026-10-22T03:27:52.617085Z",
     "commit": "1b872c7a8f8a94927b5b27f854d720de7f1d9d96",
     "preexisting_changes": []
   },
-  "last_verified_commit": null,
+  "last_verified_commit": "885c0010780baf976b30254c5ebb56a524be733a",
   "integration_baseline_commit": null,
   "step_state": [
     {
       "step_id": "step-01",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scenes/Yu.tscn",
         "scripts/yu.gd"
@@ -29,13 +29,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": null
     },
     {
       "step_id": "step-02",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scenes/YuNpc.tscn"
       ],
@@ -43,13 +43,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": null
     },
     {
       "step_id": "step-03",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scripts/yu.gd",
         "scripts/yu_npc.gd"
@@ -58,13 +58,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": null
     },
     {
       "step_id": "step-04",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scenes/Yu.tscn",
         "scripts/yu.gd"
@@ -73,7 +73,7 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": null
     }
   ],
   "approval_record": {

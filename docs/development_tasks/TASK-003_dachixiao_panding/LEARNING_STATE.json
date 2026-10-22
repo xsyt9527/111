@@ -1,7 +1,7 @@
 {
   "task_id": "TASK-003",
   "task_spec_version": 2,
-  "learning_status": "in_progress",
+  "learning_status": "partially_demonstrated",
   "concepts_introduced": [
     "Area2D 检测区与 CollisionShape2D 形状",
     "collision_layer / collision_mask（层与掩码）",
