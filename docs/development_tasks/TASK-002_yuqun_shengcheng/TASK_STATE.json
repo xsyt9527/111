@@ -2,12 +2,12 @@
   "task_id": "TASK-002",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
   "current_step": "step-04",
-  "current_checkpoint": "godot-inspection",
-  "next_action": "学生检查点：打开 Main.tscn 检查 YuQun→Dingshi 子树与检查器参数，F5 观察生成/游入/回收并用 Remote 面板确认数量；另需关闭 WPS 中的 docx 后重跑引擎词表生成",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-002 已完成。下一课 TASK-003（大吃小判定：Area2D + tixing 大小比较）需先生成任务包并等待审批。",
   "implementation_baseline": {
     "captured_at": "2026-10-21T09:03:42.599557Z",
     "commit": "898f03b8807190fdc77a47412e52a8dc0631e524",
@@ -21,14 +21,14 @@
       }
     ]
   },
-  "last_verified_commit": null,
+  "last_verified_commit": "529fec7f96fec1f5daec8f9f99508e86c27d1460",
   "integration_baseline_commit": null,
   "step_state": [
     {
       "step_id": "step-01",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scenes/YuNpc.tscn",
         "scripts/yu_npc.gd",
@@ -38,13 +38,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": "完成"
     },
     {
       "step_id": "step-02",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scenes/Main.tscn",
         "scripts/yu_qun.gd",
@@ -54,13 +54,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": "完成"
     },
     {
       "step_id": "step-03",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scripts/yu_qun.gd",
         "scripts/yu_npc.gd"
@@ -69,13 +69,13 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": "完成"
     },
     {
       "step_id": "step-04",
       "implementation_status": "implemented",
       "verification_status": "automated_checks_passed",
-      "participation_status": "pending",
+      "participation_status": "completed",
       "changed_files": [
         "scripts/yu_npc.gd",
         "scripts/yu_qun.gd"
@@ -84,7 +84,7 @@
         "Godot 4.7.2 --headless --import exit 0",
         "Godot 4.7.2 --headless --fixed-fps 60 --quit-after 360 exit 0"
       ],
-      "next_action": "等待学生 godot-inspection / verification 检查点"
+      "next_action": "完成"
     }
   ],
   "approval_record": {
