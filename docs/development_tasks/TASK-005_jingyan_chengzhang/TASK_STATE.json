@@ -1,17 +1,39 @@
 {
   "task_id": "TASK-005",
   "task_spec_version": 1,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
-  "learning_status": "not_started",
+  "approval_status": "approved",
+  "delivery_status": "in_progress",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": null,
-  "current_checkpoint": null,
-  "next_action": "等待用户审批：确认 TASK-005 v1 进入开发。审批前不得捕获基线、不得写 gameplay 代码。",
+  "current_step": "step-01",
+  "current_checkpoint": "orientation",
+  "next_action": "orientation 检查点：学生定位三个挂钩点 + 确认设计决策，然后开始 step-01",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
-    "preexisting_changes": []
+    "captured_at": "2026-10-23T01:21:09.581155Z",
+    "commit": "acd093477579be68109227f7af36e2bd6ae05d77",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-005_jingyan_chengzhang/LEARNING_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:37d3c55ef2df9596b8642729e254ef761a9a3e701c0be4ea6536a9c206272c52"
+      },
+      {
+        "path": "docs/development_tasks/TASK-005_jingyan_chengzhang/TASK_MANIFEST.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:fb6ef285cc93775dd476b4166d15cc96da5db321d665fc3edaac252c1b0547f3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-005_jingyan_chengzhang/TASK_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:9625e8b30e147fba4c4f79bba9c00677073abdc39acad527f811ab394354b243"
+      }
+    ]
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
@@ -54,9 +76,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 1,
+    "approved_at": "2026-10-23T00:50:00Z",
+    "exact_user_text": "确认 TASK-005 v1 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",
