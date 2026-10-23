@@ -1,0 +1,320 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-007",
+  "task_spec_version": 1,
+  "slug": "qianghua-shengxiao",
+  "title": "强化生效与动画（buff 落地 + 磁吸双 Area2D + Tween）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "478ac76f0361ac0505491952f8d424102593b454",
+  "objective": "消费 TASK-006 预埋的 ka_yi_xuan 信号让强化卡真正生效：玩家侧新建 buff 生效系统（switch(ka.xiao_guo) 应用 ka.shu_zhi，覆盖六卡：迅捷/催肥/贪食/活力四张直改玩家属性，睿智倍率入账本供 bei_chi 乘算，磁吸建双 Area2D——ChiQu 大圈做吸附标记、ShangQu（原 PandingQu）小圈保留吃/伤判定，兑现学生第 3 课提案）；NPC 侧加被吸追踪（bei_xi 目标 + _process 朝目标游）；动画层用 Tween 进阶组合：升级平滑长大（替换瞬间跳变）、吞吃瞬间脉冲反馈、游动摆尾。F5 可观察：选磁吸后小鱼进大圈自动吸向玩家；升级/吞吃有平滑动画；全部六卡可感知生效。",
+  "audit_freshness": {
+    "audited_commit": "478ac76f0361ac0505491952f8d424102593b454",
+    "environment_checked_at": "2026-10-23T04:20:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改——本任务零触碰",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源变更——本任务零新增数据资源",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "buff 生效系统（玩家监听 ka_yi_xuan，switch 六卡）",
+      "磁吸双 Area2D（ChiQu 吸附圈 + 原 PandingQu 判定圈改名 ShangQu）",
+      "NPC 被吸追踪（bei_xi 目标状态）",
+      "经验加成倍率（账本 jing_yan_jia_cheng，bei_chi 乘算）",
+      "动画反馈（升级平滑长大、吞吃脉冲、摆尾游动）"
+    ],
+    "owned_scenes": [
+      "res://scenes/Yu.tscn（加 ChiQu 节点 + 改名 PandingQu→ShangQu）"
+    ],
+    "owned_scripts": [
+      "res://scripts/yu.gd（buff switch + ChiQu 吸附 + Tween）",
+      "res://scripts/yu_npc.gd（bei_xi 吸附追踪 + bei_chi 倍率乘算）",
+      "res://scripts/zhang_ben.gd（jing_yan_jia_cheng 倍率一处）"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-006（ka_yi_xuan 信号 + QiangHuaKa.xiao_guo/shu_zhi + yi_xuan_ka 账）",
+      "TASK-003（双 Area2D 判定结构 + 分行为须分 Area2D 原则 + 判定圈随 scale 机制）",
+      "TASK-005（WudiDingshi 无敌计时器、MEI_JI_TIXING 升级增幅）"
+    ],
+    "consumed_interfaces": [
+      "ZhangBen.ka_yi_xuan(ka) 信号 —— TASK-006 预埋接口，本课第一个消费者连接",
+      "QiangHuaKa.xiao_guo / shu_zhi —— TASK-006 只存不用的效果字段，本课消费",
+      "ZhangBen.MEI_JI_TIXING —— 催肥卡在其基础上叠加增量",
+      "YuNpc.bei_chi() / _process —— 吸附状态与倍率乘算挂进现有入口"
+    ],
+    "provided_interfaces": [
+      "Yu 的 buff 生效回调模式 —— 后续新增卡型在此 switch 加分支",
+      "ZhangBen.jing_yan_jia_cheng 倍率 —— TASK-008 结算页可展示、第 9 课可断言",
+      "磁吸双 Area2D 结构（ChiQu+ShangQu）—— 学生第 3 课提案的正式兑现"
+    ],
+    "emitted_signals": [],
+    "received_signals": [
+      "ZhangBen.ka_yi_xuan(ka) → yu.gd._on_ka_yi_xuan（玩家侧 _ready 连接一次）"
+    ],
+    "shared_state": [
+      "ZhangBen.jing_yan_jia_cheng（经验倍率，默认 1.0）—— 唯一所有者账本，玩家经 setter 方法写入",
+      "玩家 buff 状态（游速/体型增幅/判定圈系数/无敌时长系数/磁吸圈）—— 所有者玩家自己"
+    ],
+    "registered_shared_changes": [
+      "Yu.tscn 结构变更：PandingQu 更名 ShangQu（判定职责不变）+ 新增 ChiQu(Area2D, layer=1, mask=2, 大圈)——审计确认 YuNpc 侧无节点名依赖 PandingQu（yu.gd 用 @onready 引用需同步改名）"
+    ],
+    "conflict_hotspots": [
+      "yu.gd —— 加 buff switch 与 ChiQu 处理、改名 PandingQu 引用为 ShangQu、升级/吞吃换 Tween；移动与无敌逻辑结构不动",
+      "yu_npc.gd —— _process 加吸附分支（bei_xi 非空时朝目标游）、bei_chi 倍率一行；生成/回收不动",
+      "zhang_ben.gd —— 只加 jing_yan_jia_cheng 变量 + she_jing_yan_jia_cheng 方法一处；jia_jing_yan/xuan_ka/两旧信号不动",
+      "Yu.tscn —— PandingQu 改名 + ChiQu 新增；其余零碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入与运行零错误（输出筛查，TASK-006 教训）",
+      "F5 回归：六课全部行为无退化（特别注意改名 ShangQu 后吃/伤判定仍正常）",
+      "F5 新增：六卡可感知生效、磁吸可视化、动画流畅"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/zhang_ben.gd",
+    "scenes/Yu.tscn",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/TASK_STATE.json",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-007_qianghua_shengxiao/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "血量/死亡/结算（TASK-008 范围）",
+    "满级处理决策（与 TASK-005/006 P3 合并，TASK-008 或后续）",
+    "新增强化卡/卡池扩充/稀有度（本课只消费现有六卡）",
+    "账本重置（TASK-008 配套）",
+    "修改 yu_qun.gd / yu_zhong.gd / main.gd / yu_npc.tscn / project.godot / QiangHuaDanChuang.tscn / qiang_hua_dan_chuang.gd / qiang_hua_ka.gd / sheng_ji_biao.gd / jing_yan_ui.gd / data/*",
+    "jing_yan_jia_cheng 之外在账本新增玩家属性（账本不成玩家仓库）",
+    "暂停机制变更、弹窗样式重做（仅允许微调，动画属本课范围的仅升级/吞吃/摆尾三处）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "buff 生效系统：监听 ka_yi_xuan + switch 五卡",
+      "behavior": "yu.gd _ready 连接 ZhangBen.ka_yi_xuan → _on_ka_yi_xuan(ka)：switch(ka.xiao_guo) 分支应用——迅捷 yidong_sudu *= (1+shu_zhi)；催肥 mei_ji_fu_dian += shu_zhi（升级长大时叠加）；贪食 panding 系数 scale *= (1+shu_zhi)；活力 wudi_dingshi.wait_time *= (1+shu_zhi)；睿智调账本 she_jing_yan_jia_cheng(1+shu_zhi) 且账本新增 jing_yan_jia_cheng=1.0、yu_npc.bei_chi 乘算 int(fenzhi*jia_cheng)；未知 xiao_guo 走 push_warning 兜底（P3 兑现）。磁吸卡暂 push_warning(\"第 2 步实现\")。F5：选迅捷/活力/贪食立刻可感知。",
+      "main_concept": "信号消费 + switch 效果分发：预埋接口一接即活；字符串键无编译期校验故要 push_warning 兜底",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/zhang_ben.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出 error/not found 筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 选迅捷：移动明显变快；选活力：撞大鱼无敌时长变长；选贪食：判定圈视觉变大（开显示碰撞形状验证）",
+        "F5 选睿智后吃蓝鱼：经验条涨幅 >1 格（乘算生效）",
+        "远程树 ZhangBen.Jing Yan Jia Cheng 随选卡变化"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "磁吸双 Area2D：ChiQu 大圈吸附（学生提案兑现）",
+      "behavior": "Yu.tscn：PandingQu 改名 ShangQu（判定职责不变，yu.gd 引用同步）+ 新增 ChiQu(Area2D, layer=1, mask=2, CircleShape 半径≈90)；yu.gd 连 ChiQu.area_entered/exited：小鱼（tixing<玩家）进圈打吸标记 yu_npc.bei_xi = self、出圈清 bei_xi = null；yu_npc.gd _process：bei_xi 非空时朝 bei_xi.global_position 游（速度×1.2）替代直线游动，仍出屏判定。F5：选磁吸后小鱼进大圈自动拐弯游向玩家、进小圈被吃。",
+      "main_concept": "分行为须分 Area2D（学生第 3 课原则正式应用）：大圈只做吸附标记、小圈保留吃/伤判定——两个 Area2D 两个职责",
+      "files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 改名回归：吃小鱼/撞大鱼闪红照旧（ShangQu 判定无退化）",
+        "F5 选磁吸：小鱼进大圈拐弯吸向玩家，出圈恢复直线；大鱼（打不过的）不被吸",
+        "复述抽查：分行为须分 Area2D——为什么磁吸圈和判定圈不能合用一个 Area2D"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "Tween 动画一：升级平滑长大 + 吞吃脉冲",
+      "behavior": "yu.gd _on_sheng_ji 由瞬间跳变改 create_tween().tween_property(self, \"scale\", Vector2.ONE*tixing, 0.3).set_ease(Tween.EASE_OUT)（0.3 秒平滑长大，判定圈仍随终点 scale——判定用 tixing 数值即时更新不受动画影响）；bei_chi 吞吃瞬间玩家脉冲：create_tween().tween_property(self, \"scale\", Vector2.ONE*tixing*1.08, 0.08) + tween_callback 回弹（或 chain 链式两段）。F5：升级渐大不再跳变；每吃一条玩家轻弹一下。",
+      "main_concept": "Tween 进阶：create_tween/tween_property/链式 chain/set_ease——动画只改显示，逻辑数值即时到位（显示与状态分离）",
+      "files": [
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --path . --fixed-fps 60 --quit-after 360 headless 输出筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 升级：0.3 秒平滑长大（非跳变）；连续升级动画不叠加错乱",
+        "F5 吞吃：玩家轻微脉冲一下；吞吃瞬间判定仍即时正确"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "Tween 动画二：游动摆尾 + 整体调优",
+      "behavior": "yu.gd _process 里游动时 $Sprite2D.rotation = sin(Time*频率)*幅度 摆尾（静止幅度趋 0）；幅度与体型反比（大鱼摆得慢）。整体调优：脉冲/摆尾参数微调至手感自然。F5：玩家游动时尾巴轻摆，观感成'活鱼'。全量回归六课 + 本课全部功能。",
+      "main_concept": "程序化动画：sin 周期函数驱动摆动——无关键帧动画资源也可让角色有生命感",
+      "files": [
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中",
+        "check_task_scope.py check 无违例"
+      ],
+      "manual_checks": [
+        "F5：游动摆尾自然、静止不摆；全量回归（六课 + 六卡 + 磁吸 + 三动画）",
+        "综合手感自评：动画不干扰判定、不产生眩晕感"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述 Resource 三分工细节并通过（第 6 课及格线遗留：.tres=全部数值、检查器=改数值的填表入口）",
+      "学生能解释磁吸为什么必须双 Area2D（分行为须分 Area2D——自己第 3 课的原则，本课亲手应用）",
+      "学生能说出 switch(xiao_guo) 字符串分发为什么要 push_warning 兜底",
+      "学生能区分动画与状态：Tween 只改显示、tixing/scale 数值即时到位，判定不依赖动画",
+      "学生能跟踪睿智卡数据流：选卡 → 账本 jing_yan_jia_cheng → bei_chi 乘算 → 涨条加速"
+    ],
+    "concepts": [
+      "switch 效果分发与字符串键的运行时校验（push_warning）",
+      "磁吸双 Area2D（ChiQu 标记吸附 / ShangQu 判定吃伤）",
+      "Tween：create_tween/tween_property/链式/set_ease（显示与状态分离）",
+      "程序化动画：sin 周期驱动摆尾",
+      "接口消费闭环：预埋信号 connect 即活"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "Yu.tscn 内部结构变更：PandingQu 改名 ShangQu（职责不变：吃/伤判定，layer=1 mask=2）；新增 ChiQu（layer=1 mask=2，大圈，只发吸附标记不改判定）。两 Area2D 独立 CollisionShape2D——合并即退化成单圈（学生第 3 课验证过同 Area2D 多形状会合并成一个区）。动画全为运行时 Tween（无 AnimationPlayer 资源），随节点销毁自动释放。",
+    "current_tree": "root\n├─ ZhangBen (Autoload)\n└─ Main\n   ├─ Haodi / JingYanTiao / QiangHuaDanChuang / YuQun\n   └─ Yu (Yu.tscn)\n      ├─ Sprite2D\n      ├─ PandingQu (Area2D, layer=1, mask=2)\n      │  └─ CollisionShape2D (r=22)\n      └─ WudiDingshi (Timer)",
+    "target_tree": "root\n├─ ZhangBen (Autoload)  ← +jing_yan_jia_cheng +she_jing_yan_jia_cheng（TASK-007）\n└─ Main\n   ├─ Haodi / JingYanTiao / QiangHuaDanChuang / YuQun\n   └─ Yu (Yu.tscn)\n      ├─ Sprite2D  ← 摆尾 rotation（TASK-007）\n      ├─ ShangQu (Area2D, layer=1, mask=2)  ← 原 PandingQu 改名，吃/伤判定不变\n      │  └─ CollisionShape2D (r=22)\n      ├─ ChiQu (Area2D, layer=1, mask=2)  ← TASK-007 新增，吸附标记\n      │  └─ CollisionShape2D (r≈90)\n      └─ WudiDingshi (Timer)  ← wait_time 随活力卡放大",
+    "ownership": [
+      "yu.gd / yu_npc.gd / Yu.tscn / zhang_ben.gd：本任务所有（前三者前序已关闭，本课在其上扩展）",
+      "yu_qun.gd / yu_zhong.gd / main.gd / YuNpc.tscn / QiangHuaDanChuang.tscn / 弹窗脚本 / 卡数据 / project.godot：零修改"
+    ],
+    "signal_contracts": [
+      "ZhangBen.ka_yi_xuan(ka: QiangHuaKa) → yu.gd._on_ka_yi_xuan（玩家侧 _ready 连接一次；预埋信号的第一个消费者）",
+      "ChiQu.area_entered/exited → yu.gd 吸附标记处理（同节点信号，随实例销毁断开）",
+      "无新增对外信号；TASK-008 可自选连 ka_yi_xuan 做结算展示"
+    ],
+    "loading_policy": "零新增资源文件；动画为运行时 Tween 无预置资源。",
+    "state_persistence": [],
+    "animation_dependencies": [
+      "Tween 依赖节点存活：升级/吞吃 Tween 挂在玩家自身（不销毁则不中断）；摆尾为 _process 内 sin 计算（非 Tween）"
+    ],
+    "lifecycle_checks": [
+      "改名回归：ShangQu 判定吃/伤无退化（yu.gd @onready 引用同步改名）",
+      "磁吸出圈：fish 离开 ChiQu 后 bei_xi 清空、恢复直线游动（不吸一辈子）",
+      "被吸的鱼被吃：bei_chi 照常（吸标记不干扰吃）",
+      "连续快速选卡：switch 分支不互相干扰（迅捷可叠加、贪食乘法叠加）",
+      "暂停期间：Tween 自动暂停（默认 process 模式）——选卡弹窗期间动画冻结正确"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出 error/not found 筛查零命中（TASK-006 教训：不信任裸退出码）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：六卡全部可感知生效（迅捷快/催肥增幅大/贪食圈大/活力无敌长/睿智涨条快/磁吸会吸）",
+    "F5：磁吸行为正确（吸小鱼不吸大鱼、出圈放手）",
+    "F5：三动画自然（平滑长大/吞吃脉冲/摆尾）",
+    "全量回归：六课行为 + 暂停弹窗闭环无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增强化卡或修改现有卡数值（data/qianghua 零触碰）",
+    "修改弹窗/卡池/暂停机制（TASK-006 资产零触碰）",
+    "账本新增 jing_yan_jia_cheng 之外的玩家属性",
+    "修改 yu_qun.gd / yu_zhong.gd / main.gd / YuNpc.tscn / project.godot",
+    "判定逻辑变更（ShangQu 只允许改名，行为零改动）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-007 v1 进入开发"
+  }
+}
