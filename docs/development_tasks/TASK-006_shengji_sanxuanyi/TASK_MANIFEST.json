@@ -1,0 +1,340 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-006",
+  "task_spec_version": 1,
+  "slug": "shengji-sanxuanyi",
+  "title": "升级三选一（强化卡注册表 + 升级暂停 + 随机不放回抽样 + 三选一弹窗）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "26b6a84411dc2d80f7bf6e7076580fe55cd5f93a",
+  "objective": "升级时暂停游戏（get_tree().paused）弹出三选一强化卡：新建 QiangHuaKa Resource 模具与 6 张强化卡 .tres（复用第 4 课注册表模式），升级阈值从 zhang_ben.gd 常量数组数据化为 .tres（兑现 TASK-005 P3 备忘）；弹窗场景（CanvasLayer + 三张卡片按钮，process_mode=WHEN_PAUSED 保证暂停中可点击）监听 sheng_ji 信号，从注册表随机不放回抽样 3 张（duplicate → shuffle → slice）填充按钮；玩家点选后 ZhangBen.xuan_ka() 入账（已选卡列表 + ka_yi_xuan 信号，第 7 课消费生效）、恢复暂停继续游戏。F5 可观察：攒够经验升级瞬间全场冻结、弹出 3 张卡、点一张后恢复；效果本身第 7 课才生效。",
+  "audit_freshness": {
+    "audited_commit": "26b6a84411dc2d80f7bf6e7076580fe55cd5f93a",
+    "environment_checked_at": "2026-10-23T02:40:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）——本任务零触碰",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源新增或变更——本任务新增强化卡/阈值表数据资源属已审批登记",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "强化卡数据（QiangHuaKa 模具 + 6 张 .tres + 弹窗内注册表）",
+      "升级阈值数据（ShengJiBiao 模具 + .tres，zhang_ben.gd 切换读表）",
+      "三选一弹窗（暂停/抽样/展示/选择/恢复）",
+      "已选强化卡入账（ZhangBen.xuan_ka 入口 + ka_yi_xuan 信号）"
+    ],
+    "owned_scenes": [
+      "res://scenes/QiangHuaDanChuang.tscn（新建）",
+      "res://scenes/Main.tscn（实例化弹窗）"
+    ],
+    "owned_scripts": [
+      "res://scripts/qiang_hua_ka.gd（新建）",
+      "res://scripts/sheng_ji_biao.gd（新建）",
+      "res://scripts/qiang_hua_dan_chuang.gd（新建）",
+      "res://scripts/zhang_ben.gd（阈值读表 + xuan_ka 接口）"
+    ],
+    "owned_config_tables": [
+      "res://data/qianghua/*.tres × 6（新建）",
+      "res://data/shengji/sheng_ji_biao.tres（新建）"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-004（Resource 模具/注册表模式，本课复用做强化卡）",
+      "TASK-005（ZhangBen 账本 + sheng_ji 信号——弹窗的触发时机；SHENG_JI_YUZHI 常量待数据化）"
+    ],
+    "consumed_interfaces": [
+      "ZhangBen.sheng_ji(xin_deng_ji) 信号 —— TASK-005 提供的升级广播，弹窗侧连接（第三家听众：玩家/经验条/弹窗）",
+      "YuZhong 注册表模式（第 4 课） —— QiangHuaKa 沿用同套路：模具 + .tres + Array[QiangHuaKa]"
+    ],
+    "provided_interfaces": [
+      "QiangHuaKa Resource 类（ming_zi/miao_shu/xiao_guo/shu_zhi）—— 第 7 课强化生效读 xiao_guo/shu_zhi",
+      "ZhangBen.yi_xuan_ka: Array[QiangHuaKa]（已选卡账）+ ZhangBen.ka_yi_xuan(ka) 信号 —— 第 7 课连接此信号做 buff 生效",
+      "ShengJiBiao Resource 类 + data/shengji/sheng_ji_biao.tres —— 升级阈值改表即可调曲线，零代码"
+    ],
+    "emitted_signals": [
+      "ZhangBen.ka_yi_xuan(ka: QiangHuaKa) —— 账本发出（本课无人消费，第 7 课连接生效）"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji → qiang_hua_dan_chuang.gd（弹窗侧 _ready 连接一次）"
+    ],
+    "shared_state": [
+      "ZhangBen.yi_xuan_ka —— 全局游戏状态（本局已选强化卡），唯一所有者仍是账本",
+      "ZhangBen.sheng_ji_biao（阈值表引用）—— 唯一所有者仍是账本"
+    ],
+    "registered_shared_changes": [
+      "新增 data/qianghua/ 6 个 .tres 与 data/shengji/sheng_ji_biao.tres 数据资源 —— 审计确认当前无 data/qianghua、data/shengji 目录、无 ShengJiBiao/QiangHuaKa 全局类名冲突；zhang_ben.gd 的 SHENG_JI_YUZHI 常量退役为读表，数值保持 [8,20,35,55,80,110] 不变（行为零变化的数据化）"
+    ],
+    "conflict_hotspots": [
+      "scripts/zhang_ben.gd —— 只改两处：dangqian_yuzhi() 读表来源、新增 yi_xuan_ka 数组与 xuan_ka() 入口；jia_jing_yan/两旧信号/MEI_JI_TIXING 不动",
+      "scenes/Main.tscn —— 只追加 QiangHuaDanChuang 场景实例（默认隐藏）",
+      "scripts/yu.gd / jing_yan_ui.gd / yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn / project.godot —— 完全不碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入退出码 0",
+      "F5 回归：吃鱼涨条、升级长大、判定/无敌均无退化",
+      "F5 新增：升级瞬间冻结全场、弹 3 张卡、点选后恢复且账本已记录选择"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/zhang_ben.gd",
+    "scenes/Main.tscn",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/TASK_STATE.json",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scripts/qiang_hua_ka.gd",
+    "scripts/qiang_hua_ka.gd.uid",
+    "scripts/sheng_ji_biao.gd",
+    "scripts/sheng_ji_biao.gd.uid",
+    "scripts/qiang_hua_dan_chuang.gd",
+    "scripts/qiang_hua_dan_chuang.gd.uid",
+    "scenes/QiangHuaDanChuang.tscn",
+    "data/qianghua/xun_jie.tres",
+    "data/qianghua/cui_fei.tres",
+    "data/qianghua/ci_xi.tres",
+    "data/qianghua/tan_shi.tres",
+    "data/qianghua/huo_li.tres",
+    "data/qianghua/rui_zhi.tres",
+    "data/shengji/sheng_ji_biao.tres",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-006_shengji_sanxuanyi/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "强化效果生效逻辑（第 7 课范围——xiao_guo/shu_zhi 本课只存不用，任何脚本不得 switch/消费效果）",
+    "磁吸双 Area2D（学生第 3 课提案，第 7 课实现）",
+    "Tween/卡片翻转/弹窗动效（第 7 课统一调优）",
+    "血量/死亡/结算（TASK-008 范围）",
+    "修改 yu.gd / jing_yan_ui.gd / yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn / project.godot",
+    "同一张卡重复出现（不放回抽样被破坏）",
+    "暂停期间玩家/鱼群继续动（process_mode 配置错误的信号）",
+    "账本重置/重开逻辑（TASK-008 配套）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "数据层：强化卡模具 + 6 张卡 + 升级阈值数据化",
+      "behavior": "新建 scripts/qiang_hua_ka.gd（extends Resource，class_name QiangHuaKa，@export ming_zi/miao_shu: String、xiao_guo: String、shu_zhi: float）与 scripts/sheng_ji_biao.gd（@export yuzhi_zu: Array[int]）；建 data/qianghua/ 6 张卡 .tres（迅捷/催肥/磁吸/贪食/活力/睿智）与 data/shengji/sheng_ji_biao.tres（[8,20,35,55,80,110]，与现常量数值一致）；zhang_ben.gd 的 SHENG_JI_YUZHI 常量退役，改为 preload 阈值表、dangqian_yuzhi() 读表。F5 行为零变化（升级阈值等值切换），远程树可见 ZhangBen 的 Sheng Ji Biao 字段挂上表资源。",
+      "main_concept": "注册表模式复用：Resource 三分工（模具/数据/填表）第二次实战，且这次改造的是自己上节课写的常量",
+      "files": [
+        "scripts/qiang_hua_ka.gd",
+        "scripts/sheng_ji_biao.gd",
+        "data/qianghua/xun_jie.tres",
+        "data/qianghua/cui_fei.tres",
+        "data/qianghua/ci_xi.tres",
+        "data/qianghua/tan_shi.tres",
+        "data/qianghua/huo_li.tres",
+        "data/qianghua/rui_zhi.tres",
+        "data/shengji/sheng_ji_biao.tres",
+        "scripts/zhang_ben.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器双击 data/shengji/sheng_ji_biao.tres：检查器可见 Yuzhi Zu 六个值",
+        "F5 吃鱼升级阈值感受不变（8 分升级）——等值切换验证"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "弹窗骨架：场景搭建 + Main 实例化（默认隐藏）",
+      "behavior": "新建 scenes/QiangHuaDanChuang.tscn：根 CanvasLayer 挂 qiang_hua_dan_chuang.gd、process_mode 设为 3（When Paused）、visible=false；子节点 BanDi(ColorRect 半透明全屏遮罩) + BiaoTi(Label '选一张强化！') + KaPianZu(HBoxContainer) 内 Ka1/Ka2/Ka3(PanelContainer+Button 结构或 Button 直用)；注册表 @export ka_zu: Array[QiangHuaKa] 拖入 6 张卡。Main.tscn 实例化该场景。F5 行为零变化（弹窗隐藏在场但无人触发）。",
+      "main_concept": "场景复用 + process_mode：WHEN_PAUSED 让弹窗在全场冻结时独享运行权",
+      "files": [
+        "scenes/QiangHuaDanChuang.tscn",
+        "scripts/qiang_hua_dan_chuang.gd",
+        "scenes/Main.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 场景树：Main 下出现 QiangHuaDanChuang（visible=false 不可见）",
+        "编辑器点开 KaPianZu：三个按钮就位、Ka Zu 数组 6 张卡已拖入"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "升级触发：暂停 + 不放回抽样 3 张 + 显示",
+      "behavior": "qiang_hua_dan_chuang.gd _ready 连接 ZhangBen.sheng_ji；_on_sheng_ji：get_tree().paused = true（全场冻结：玩家 _process 停、鱼群 Timer 停、NPC 游动停）、ka_zu.duplicate() 后 shuffle() 取 slice(0,3)（原表不动、三卡不重复）、按钮文本填卡的 ming_zi + miao_shu、visible = true。F5：攒够经验升级瞬间全场定格、三张卡弹出。",
+      "main_concept": "get_tree().paused 全局冻结 + 随机不放回抽样（duplicate/shuffle/slice 三连）",
+      "files": [
+        "scripts/qiang_hua_dan_chuang.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 攒够经验：升级瞬间玩家/鱼群全部定格（画面静止）",
+        "弹出 3 张卡：名字描述各不相同（不放回验证）",
+        "连续升两次级：两次抽的卡组合不同（shuffle 随机性）"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "选择入账：xuan_ka 接口 + 恢复继续",
+      "behavior": "zhang_ben.gd 新增 var yi_xuan_ka: Array[QiangHuaKa] 与 func xuan_ka(ka)（入账追加 + ka_yi_xuan(ka) 信号 emit）；弹窗三按钮 pressed 各连 _on_ka_dian：调 ZhangBen.xuan_ka(对应卡)、get_tree().paused = false、visible = false。F5 完整闭环：升级冻结 → 弹 3 卡 → 点一张 → 恢复游动，远程树 ZhangBen 的 Yi Xuan Ka 列表增长。效果第 7 课才生效（选卡只记录）。",
+      "main_concept": "账本模式闭环第三轮：状态入账（唯一所有者）+ 信号预埋（ka_yi_xuan 第 7 课连接）",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/qiang_hua_dan_chuang.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0",
+        "check_task_scope.py check 无违例"
+      ],
+      "manual_checks": [
+        "F5：升级 → 弹窗 → 点卡 → 立即恢复游动（暂停解除无残留）",
+        "远程树 ZhangBen.Yi Xuan Ka：每次选择后追加一张卡资源",
+        "完整回归：移动/生成/回收/判定/无敌/涨条/长大全部无退化"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述 Resource 三分工（第 4 课遗留抽查）并指出 QiangHuaKa 与 YuZhong 的结构同构",
+      "学生能解释 get_tree().paused 为什么能一行冻结全场、弹窗为什么必须设 process_mode=WHEN_PAUSED 才能点击",
+      "学生能说出不放回抽样的三步（duplicate→shuffle→slice）及每步为什么必要（原表不动/随机性/取前 N 不重复）",
+      "学生能跟踪选择数据流：按钮按下 → ZhangBen.xuan_ka(ka) → yi_xuan_ka 追加 + ka_yi_xuan 信号（第 7 课消费）"
+    ],
+    "concepts": [
+      "get_tree().paused 全局暂停与 process_mode（PAUSABLE/WHEN_PAUSED/ALWAYS）",
+      "随机不放回抽样（duplicate → shuffle → slice）",
+      "注册表模式二次复用（QiangHuaKa 模具 + .tres + 数组）",
+      "常量数据化（SHENG_JI_YUZHI 退役 → .tres 读表，等值切换零行为变化）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "QiangHuaDanChuang.tscn 作为独立场景由 Main 静态实例化（默认 visible=false 常驻），升级信号触发时显示/隐藏复用同一实例——不动态 add_child/queue_free，避免重复连接信号。暂停用引擎级 get_tree().paused：所有默认 process_mode（PAUSABLE）节点停止 _process/_physics_process/Timer；弹窗根 CanvasLayer 设 PROCESS_MODE_WHEN_PAUSED（3），其子树（含按钮）在暂停中继续收输入——这是弹窗可点击的唯一原因。ZhangBen 为 Autoload，信号 emit 不受暂停影响（信号非帧驱动）。",
+    "current_tree": "root\n├─ ZhangBen (zhang_ben.gd, Autoload)\n└─ Main (Node2D)\n   ├─ Haodi (Sprite2D)\n   ├─ Yu (Yu.tscn)   ← 听 sheng_ji 长大\n   ├─ JingYanTiao (CanvasLayer, jing_yan_ui.gd)\n   │  ├─ JingYanTiaoBg (ProgressBar)\n   │  └─ DengJiLabel (Label)\n   └─ YuQun (yu_qun.gd)\n      ├─ yu_zhong_zu = Array[YuZhong](6 种 .tres)\n      ├─ Dingshi (Timer)\n      └─ YuNpc × N",
+    "target_tree": "root\n├─ ZhangBen (zhang_ben.gd, Autoload)   ← 阈值读表 + yi_xuan_ka + ka_yi_xuan 信号（TASK-006 改）\n└─ Main (Node2D)\n   ├─ Haodi (Sprite2D)\n   ├─ Yu (Yu.tscn)                        ← 零改动（升级照旧长大）\n   ├─ JingYanTiao (CanvasLayer, jing_yan_ui.gd) ← 零改动\n   ├─ QiangHuaDanChuang (QiangHuaDanChuang.tscn 实例, visible=false, process_mode=3) ← TASK-006\n   │  ├─ BanDi (ColorRect 全屏半透明遮罩)\n   │  ├─ BiaoTi (Label '选一张强化！')\n   │  └─ KaPianZu (HBoxContainer)\n   │     ├─ Ka1 (PanelContainer → Button + Label)   ← 运行时填卡文本\n   │     ├─ Ka2 (PanelContainer → Button + Label)\n   │     └─ Ka3 (PanelContainer → Button + Label)\n   └─ YuQun (yu_qun.gd)                   ← 零改动（暂停时 Timer 自动停）",
+    "ownership": [
+      "qiang_hua_ka.gd / sheng_ji_biao.gd / qiang_hua_dan_chuang.gd / QiangHuaDanChuang.tscn / data/qianghua / data/shengji：TASK-006 新建并所有",
+      "zhang_ben.gd：TASK-005 所有（前序已关闭），本任务两处小改（读表 + xuan_ka 接口）",
+      "Main.tscn：只追加弹窗实例一处",
+      "yu.gd / jing_yan_ui.gd / yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn / project.godot：零修改"
+    ],
+    "signal_contracts": [
+      "ZhangBen.sheng_ji(xin_deng_ji: int) → qiang_hua_dan_chuang.gd._on_sheng_ji（弹窗侧 _ready 连接一次；sheng_ji 现有三家听众：玩家长大/经验条跳级/弹窗弹出）",
+      "ZhangBen.ka_yi_xuan(ka: QiangHuaKa) —— 本课 emit 无消费者（预埋接口）；第 7 课强化生效系统连接",
+      "Ka1/Ka2/Ka3 的 pressed 信号 → _on_ka_dian（弹窗内部连接，随实例销毁自动断开）"
+    ],
+    "loading_policy": "强化卡与阈值表为静态 .tres 资源：zhang_ben.gd 用 preload 引阈值表（Autoload 无检查器实例配置，preload 编译期定死路径）；弹窗注册表 ka_zu 在 QiangHuaDanChuang.tscn 场景内拖入。无运行时动态加载。",
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": [
+      "F5 升级：全场定格（玩家/鱼群/Timer 全停）且弹窗按钮可点击——process_mode 正确的唯一证明",
+      "选卡恢复后再次升级：弹窗再弹、可重复触发（visible 开关复用，无重复连接）",
+      "连续 F5：_ready 重连按新实例计，无连接堆积",
+      "注册表少于 3 张卡时 slice 不越界（slice 自动截断）——兜底安全"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0（弹窗隐藏态不干扰运行）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：升级瞬间全场冻结、弹 3 张互不相同的卡",
+    "F5：点选一张后立即恢复游动，远程树 Yi Xuan Ka 追加",
+    "F5：两次升级两次弹窗，卡组合随机不同",
+    "完整回归：移动/生成/回收/判定/无敌/涨条/长大全部无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "任何脚本消费 xiao_guo/shu_zhi 做实际强化（第 7 课范围）",
+    "修改 yu.gd / jing_yan_ui.gd / yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / project.godot",
+    "新增 Autoload 或事件总线",
+    "已选卡列表出现在账本之外（唯一所有者被破坏）",
+    "弹窗动效/卡牌翻转（第 7 课统一）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-006 v1 进入开发"
+  }
+}
