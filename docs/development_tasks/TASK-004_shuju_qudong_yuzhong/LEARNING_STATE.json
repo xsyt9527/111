@@ -14,7 +14,11 @@
     "双击 data/yuzhong/zong_yu.tres 核对字段数值（dengji=3、体型 1.2~1.5、速度 55~90、分值 5）",
     "改 lan_yu.tres 的 tixing_fanwei 成 (1.4, 1.6) 并保存，F5 观察蓝鱼整体变大后还原 (0.5, 0.8)"
   ],
-  "verification_completed": [],
+  "verification_completed": [
+    "F5 亲测同种成套：同贴图的鱼体型/速度相近，蓝红小、棕粉大，粉明显快于棕",
+    "F5 亲测判定回归：吃掉比自己小的鱼、撞大鱼闪红 1 秒无退化",
+    "F5 亲测全量回归：跟随移动、随机间隔两侧生成、同屏上限、出屏回收正常"
+  ],
   "integration_contract_understood": null,
   "student_questions": [],
   "unresolved_concepts": [],
@@ -50,6 +54,22 @@
       "checkpoint_id": "godot-inspection",
       "summary": "学生通过改表实验亲眼确认：改一个 .tres 数据文件（零代码改动）即可让整个鱼种外观整体变化——Resource 数据驱动的核心价值实证",
       "understanding_level": "applied",
+      "observed_at": "2026-10-22T08:30:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 亲测三条全部完成并确认：同种成套、判定回归、全量回归",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T00:00:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "改表实验中学生亲眼确认『改一个 .tres、零代码、整种鱼变化』并自评『都很棒』——Resource 数据驱动核心价值已从概念转化为亲历经验",
+      "understanding_level": "explained",
       "observed_at": "2026-10-22T08:30:00Z"
     }
   ]
