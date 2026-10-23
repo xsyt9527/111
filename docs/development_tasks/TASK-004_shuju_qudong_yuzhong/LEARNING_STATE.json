@@ -1,7 +1,7 @@
 {
   "task_id": "TASK-004",
   "task_spec_version": 1,
-  "learning_status": "in_progress",
+  "learning_status": "partially_demonstrated",
   "concepts_introduced": [
     "自定义 Resource（extends Resource + class_name + @export 字段 = 数据模具）",
     ".tres 资源文件（数据与代码分离：模具/数据/填表三分工）",
