@@ -1,14 +1,77 @@
 {
   "task_id": "TASK-006",
   "task_spec_version": 1,
-  "learning_status": "in_progress",
-  "concepts_introduced": [],
+  "learning_status": "partially_demonstrated",
+  "concepts_introduced": [
+    "get_tree().paused 全局暂停与 process_mode（WHEN_PAUSED）",
+    "随机不放回抽样（duplicate → shuffle → slice）",
+    "注册表模式二次复用（QiangHuaKa 模具 + .tres + 数组）",
+    "常量数据化（SHENG_JI_YUZHI 退役 → .tres 读表）"
+  ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "F5 攒够经验：全场冻结 + 三张卡弹出（学生原话'可以选择，也有冻结'），验证 process_mode=WHEN_PAUSED 生效",
+    "改阈值表实验后当场还原（git diff 复核 [8,20,35,55,80,110] 无残留）——上节课的待巩固项本次执行到位",
+    "学生发现弹窗脚本报错 Node not found（真人测试发现自动化盲区：非致命错误被退出码掩盖），探针复现定位为 $ 路径少算 KaZhong 层，修复后亲测通过"
+  ],
+  "verification_completed": [
+    "F5 亲测冻结弹出：攒够经验全场定格 + 三张卡弹出且互不相同",
+    "F5 亲测点选恢复：点卡立即恢复游动，远程树 Yi Xuan Ka 追加所选卡",
+    "F5 亲测二次升级：再弹一次且卡组合与上次不同（shuffle 随机性）",
+    "F5 亲测全量回归：移动/生成/回收/判定/无敌/涨条/长大无退化（学生确认'都对'）"
+  ],
   "integration_contract_understood": null,
   "student_questions": [],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 讲解定位：zhang_ben.gd 的 SHENG_JI_YUZHI 常量（本课数据化对象）、sheng_ji 信号已有两家听众（yu.gd/jing_yan_ui.gd，弹窗做第三家）、第 4 课注册表三连模式将原样复用到强化卡",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T03:10:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "学生完成两个设计决策：强化卡走注册表模式（加卡零代码）、暂停用引擎级 get_tree().paused + WHEN_PAUSED（新系统自动继承暂停）——均选推荐项 1A 2A",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T03:10:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "两项复述抽查（填空引导）：抽查 2 基本过关（Main 销毁子节点跟着消失/经验没了 ✓；位置答'全局'被纠正为'场景树根 root'——全局是效果不是位置）；抽查 1 及格线（结构 ✓；.tres 只答出'分值'被纠正为'全部数值'；检查器答'鱼种'错误被纠正为'改数值的填表入口'）——三分工尚未完整掌握，第 7 课前再验",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T03:10:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-03",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生 F5 亲测：全场冻结 + 三张卡弹出 + 卡可点击（原话'可以选择，也有冻结'）；点卡暂无反应属 step-04 预期中间态，学生准确识别并描述了该状态——能区分'预期中间态'与'bug'是重要的工程判断力",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T03:40:00Z"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-03",
+      "checkpoint_id": "godot-inspection",
+      "summary": "阈值表实验后当场还原（git diff 复核 [8,20,35,55,80,110] 无残留）——连续两课不稳定的实验还原纪律本次执行到位；另学生发现 Node not found 报错，真人测试暴露自动化盲区（非致命错误被退出码 0 掩盖），协助定位为 $ 路径少算 KaZhong 层",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T03:40:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 亲测四条全部完成并确认：冻结弹出（三卡互不相同）、点选恢复（远程树 Yi Xuan Ka 追加）、二次升级卡组合不同、全量回归无退化",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T04:00:00Z"
+    }
+  ]
 }

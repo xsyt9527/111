@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="QiangHuaKa" format=3]
+
+[ext_resource type="Script" uid="uid://deo6ksu826iyg" path="res://scripts/qiang_hua_ka.gd" id="1_qhk"]
+
+[resource]
+script = ExtResource("1_qhk")
+ming_zi = "贪食"
+miao_shu = "吞噬判定圈 +15%"
+xiao_guo = "tun_shi_fanwei"
+shu_zhi = 0.15

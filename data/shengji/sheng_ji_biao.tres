@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ShengJiBiao" format=3]
+
+[ext_resource type="Script" uid="uid://dsdptwp2itegm" path="res://scripts/sheng_ji_biao.gd" id="1_sjb"]
+
+[resource]
+script = ExtResource("1_sjb")
+yuzhi_zu = Array[int]([8, 20, 35, 55, 80, 110])

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="QiangHuaKa" format=3]
+
+[ext_resource type="Script" uid="uid://deo6ksu826iyg" path="res://scripts/qiang_hua_ka.gd" id="1_qhk"]
+
+[resource]
+script = ExtResource("1_qhk")
+ming_zi = "催肥"
+miao_shu = "每级体型增幅 +0.05"
+xiao_guo = "mei_ji_tixing"
+shu_zhi = 0.05

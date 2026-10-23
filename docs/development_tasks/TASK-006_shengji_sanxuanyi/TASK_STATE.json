@@ -2,12 +2,12 @@
   "task_id": "TASK-006",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
-  "current_step": "step-01",
-  "current_checkpoint": "orientation",
-  "next_action": "orientation 检查点：两项复述抽查 + 两个设计决策，然后开始 step-01",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-006 已关闭。下一课 TASK-007（强化生效与动画：ka_yi_xuan 消费 + 磁吸双 Area2D + Tween）需新建任务包并停等审批",
   "implementation_baseline": {
     "captured_at": "2026-10-23T02:41:36.972814Z",
     "commit": "ec2897107f01a2ae55d78dfaffaca5be3fa9f034",
@@ -40,39 +40,78 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scripts/qiang_hua_ka.gd",
+        "scripts/qiang_hua_ka.gd.uid",
+        "scripts/sheng_ji_biao.gd",
+        "scripts/sheng_ji_biao.gd.uid",
+        "data/qianghua/xun_jie.tres",
+        "data/qianghua/cui_fei.tres",
+        "data/qianghua/ci_xi.tres",
+        "data/qianghua/tan_shi.tres",
+        "data/qianghua/huo_li.tres",
+        "data/qianghua/rui_zhi.tres",
+        "data/shengji/sheng_ji_biao.tres",
+        "scripts/zhang_ben.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0（两脚本 .uid 已生成）",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0（阈值读表等值切换，行为零变化）"
+      ],
+      "next_action": "已完成（数据层就位，常量退役）"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scenes/QiangHuaDanChuang.tscn",
+        "scripts/qiang_hua_dan_chuang.gd",
+        "scripts/qiang_hua_dan_chuang.gd.uid",
+        "scenes/Main.tscn"
+      ],
+      "check_results": [
+        "headless --import 退出码 0",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0（弹窗隐藏态不干扰运行）"
+      ],
+      "next_action": "已完成（骨架就位，process_mode=3，注册表 6 张卡已拖入）"
     },
     {
       "step_id": "step-03",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scripts/qiang_hua_dan_chuang.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0",
+        "学生 F5 反馈报错 → 一次性探针场景（正常启动强制升级）复现：Node not found KaPianZu/Ka1/MingCheng——脚本 $ 路径少算 VBoxContainer 层（KaZhong1），已修正为完整路径；探针 TONGGUO（3 卡互不相同 + paused=true + 零报错）后删除",
+        "教训：360 帧检查曾将输出丢弃 /dev/null，非致命 Node not found 被退出码 0 掩盖——改为输出经 grep 筛查 error/not found 复检通过"
+      ],
+      "next_action": "已修复（学生需重试 F5 确认）"
     },
     {
       "step_id": "step-04",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/qiang_hua_dan_chuang.gd"
+      ],
+      "check_results": [
+        "headless --import 0 错误",
+        "headless --fixed-fps 60 --quit-after 360 输出经 error/not found 筛查零命中",
+        "全链路探针 TONGGUO：两轮 升级→弹卡→点选→入账→解冻（yi_xuan_ka=2、deng_ji=3、paused=false）",
+        "check_task_scope.py check：20 allowed, 0 violation"
+      ],
+      "next_action": "待 verification-handoff 检查点（学生 F5 四条亲测）"
     }
   ],
   "approval_record": {
