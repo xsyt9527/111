@@ -6,3 +6,4 @@
 | TASK-002 | v1 | 鱼群生成与屏幕外回收 | approved | complete | partially_demonstrated | ready | student-01 | TASK-001 | docs/development_tasks/TASK-002_yuqun_shengcheng/ |
 | TASK-003 | v2 | 大吃小判定（Area2D 碰撞 + 体型比较） | approved | complete | partially_demonstrated | ready | student-01 | TASK-001, TASK-002 | docs/development_tasks/TASK-003_dachixiao_panding/ |
 | TASK-004 | v1 | 数据驱动鱼种（自定义 Resource + .tres 注册表） | approved | complete | partially_demonstrated | ready | student-01 | TASK-002, TASK-003 | docs/development_tasks/TASK-004_shuju_qudong_yuzhong/ |
+| TASK-005 | v1 | 经验与成长（Autoload 账本 + 记账 + 长大 + 经验条） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-004 | docs/development_tasks/TASK-005_jingyan_chengzhang/ |

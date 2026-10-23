@@ -15,6 +15,10 @@ config/description="肉鸽类大鱼吃小鱼：吃掉比你小的鱼，升级选
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
+[autoload]
+
+ZhangBen="*res://scripts/zhang_ben.gd"
+
 [display]
 
 window/size/viewport_width=1280

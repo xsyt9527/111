@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://data/yuzhong/cheng_yu.tres" id="8_cheng"]
 [ext_resource type="Resource" path="res://data/yuzhong/zong_yu.tres" id="9_zong"]
 [ext_resource type="Resource" path="res://data/yuzhong/fen_yu.tres" id="10_fen"]
+[ext_resource type="Script" path="res://scripts/jing_yan_ui.gd" id="11_jingyan"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -29,5 +30,19 @@ yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("
 
 [node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true
+
+[node name="JingYanTiao" type="CanvasLayer" parent="."]
+script = ExtResource("11_jingyan")
+
+[node name="JingYanTiaoBg" type="ProgressBar" parent="JingYanTiao"]
+offset_left = 340.0
+offset_top = 24.0
+offset_right = 940.0
+offset_bottom = 44.0
+
+[node name="DengJiLabel" type="Label" parent="JingYanTiao"]
+offset_left = 250.0
+offset_top = 18.0
+text = "Lv.1"
 
 [editable path="Yu"]

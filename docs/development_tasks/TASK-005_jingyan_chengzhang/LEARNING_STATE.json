@@ -1,14 +1,78 @@
 {
   "task_id": "TASK-005",
   "task_spec_version": 1,
-  "learning_status": "in_progress",
-  "concepts_introduced": [],
+  "learning_status": "partially_demonstrated",
+  "concepts_introduced": [
+    "Autoload 全局单例（先于一切场景就绪、切场景不销毁、按名直呼）",
+    "账本模式（唯一所有者 + 唯一记账入口 + 信号广播解耦）"
+  ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "项目设置 → Autoload 页看到 ZhangBen 注册于 res://scripts/zhang_ben.gd（启用中）",
+    "F5 → 远程场景树确认 ZhangBen 与 Main 平级（root 直下），吃鱼后检查器看到 jing_yan 增长、攒够后 deng_ji 跳变",
+    "改 SHENG_JI_YUZHI 首项 8→3，吃 3 条蓝鱼验证 deng_ji 跳 2（实验成功；还原遗漏由讲解发现并代为还原，纪律已重申）"
+  ],
+  "verification_completed": [
+    "F5 亲测涨条：蓝 +1 小格、棕 +5 大格，两种鱼增速肉眼可分辨",
+    "F5 亲测升级瞬间：玩家变大 + 条清零重计 + Lv 跳 2",
+    "F5 亲测判定圈变大：升级后原来打不过的鱼变得能吃",
+    "F5 亲测全量回归：移动/生成/回收/判定/闪红无敌无退化（学生确认'其他都对'）"
+  ],
   "integration_contract_understood": null,
-  "student_questions": [],
+  "student_questions": [
+    "godot-inspection：'我感觉不到有没有变大，可不可以加入一个升级体型变大'——主动提出的需求恰为 step-03 既定内容",
+    "verification：'CanvasLayer 不是在 main 下面吗？'——发现'账本不挂 Main 下'与'CanvasLayer 是 Main 子节点'的表面矛盾，辨析生命周期 vs 渲染两维度后解除"
+  ],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 讲解中定位三个挂钩点：yu_npc.gd 的 bei_chi() 入口、yu.gd 的 Yu.tixing（只读未写）、data/yuzhong/*.tres 的 fenzhi（存而无消费者）——本课三者会师成数据流闭环",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T01:30:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "学生完成两个设计决策：升级阈值用脚本常量数组（聚焦 Autoload 概念，数据化留待第 6 课）、账本发 sheng_ji 信号玩家自听（解耦，TASK-006 弹窗复用同一信号）——均选推荐项 1A 2A",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T01:30:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生完成编辑器三连：Autoload 页看注册、远程树确认 ZhangBen 与 Main 平级且吃鱼涨经验、改阈值 8→3 吃 3 条即升级——并主动提出『感觉不到变大，可不可以升级体型变大』，恰好点中 step-03 的内容",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T01:50:00Z"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生亲眼确认 Autoload 三特性之二：ZhangBen 在远程树与 Main 平级（挂 root，非场景子节点）、先于场景就绪可被任意脚本访问；实验后还原遗漏被指出，重申『实验参数当场还原』纪律",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T01:50:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 亲测四条全部完成并确认：涨条（蓝 +1 棕 +5 可分辨）、升级瞬间（变大/清零/Lv 跳 2）、判定圈变大（原打不过的鱼可反杀）、全量回归无退化",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T02:10:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生发现'CanvasLayer 不是在 Main 下面吗'与'账本不能挂 Main 下'的表面矛盾——把两个维度（挂在哪=生命周期、怎么画=渲染坐标）辨析清楚后解除；能从场景树结构提出概念级质疑，属高质量概念辨析",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-23T02:10:00Z"
+    }
+  ]
 }

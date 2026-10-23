@@ -29,5 +29,7 @@ func _process(delta: float) -> void:
 
 
 func bei_chi() -> void:
-	# 被玩家吃掉的统一入口：第 5 课经验系统在这里挂钩记账（可查 yu_zhong.fenzhi）
+	# 被玩家吃掉的统一入口：先记账再释放（第 3 课挖好的挂钩点在此兑现）
+	if yu_zhong != null:
+		ZhangBen.jia_jing_yan(yu_zhong.fenzhi)  # 吃兜底鱼不给经验
 	queue_free()

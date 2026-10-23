@@ -18,6 +18,7 @@ func _ready() -> void:
 	mubiao_dian = position  # 开局原地不动
 	panding_qu.area_entered.connect(_on_panding_qu_entered)
 	wudi_dingshi.timeout.connect(_jiechu_wudi)
+	ZhangBen.sheng_ji.connect(_on_sheng_ji)  # 听账本升级广播：升级就长大
 
 
 func _process(delta: float) -> void:
@@ -51,3 +52,9 @@ func _shoushang() -> void:
 func _jiechu_wudi() -> void:
 	wudi = false
 	modulate = Color.WHITE  # 恢复原色
+
+
+func _on_sheng_ji(xin_deng_ji: int) -> void:
+	# 升级长大：tixing 增大，判定圈随根节点 scale 自动变大（第 3 课验证过的机制）
+	tixing += ZhangBen.MEI_JI_TIXING
+	scale = Vector2.ONE * tixing
