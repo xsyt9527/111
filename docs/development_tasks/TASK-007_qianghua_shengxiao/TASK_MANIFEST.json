@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "478ac76f0361ac0505491952f8d424102593b454",
@@ -311,10 +311,10 @@
     "判定逻辑变更（ShangQu 只允许改名，行为零改动）"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-23T07:01:00Z",
+    "exact_user_text": "确认 TASK-007 v1 进入开发",
     "canonical_example": "确认 TASK-007 v1 进入开发"
   }
 }
