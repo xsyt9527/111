@@ -1,0 +1,322 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-005",
+  "task_spec_version": 1,
+  "slug": "jingyan-chengzhang",
+  "title": "经验与成长（Autoload 账本 + bei_chi 记账 + 玩家长大 + 经验条 UI）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "4ca0582b5d9f4832fca67b9c57d8c477ea2e5397",
+  "objective": "新建 Autoload 全局账本 ZhangBen（jing_yan/deng_ji/sheng_ji_yuzhi 常量数组 + jia_jing_yan 记账方法 + jing_yan_bian_hua/sheng_ji 两个信号），在 YuNpc.bei_chi() 入口消费 yu_zhong.fenzhi 记账；升级时账本发信号，玩家鱼连接后 tixing += 0.2 并更新 scale（判定圈随根节点缩放自动变大，能吃的鱼变多）；Main 场景加经验条 UI（CanvasLayer + ProgressBar + Label，监听账本信号刷新）。F5 可观察：吃鱼涨条、攒够升级玩家肉眼变大、原来吃不掉的鱼变得能吃。",
+  "audit_freshness": {
+    "audited_commit": "4ca0582b5d9f4832fca67b9c57d8c477ea2e5397",
+    "environment_checked_at": "2026-10-23T00:30:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改（Autoload/主场景/输入映射/插件）——本任务将注册 Autoload，属已审批登记的共享变更",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源新增或变更",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "游戏账本（经验/等级/升级阈值/记账入口/两个信号）",
+      "吃鱼经验记账（bei_chi 入口消费 fenzhi）",
+      "玩家成长（升级时 tixing 增大）",
+      "经验条 UI（等级显示 + 进度条刷新）"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/zhang_ben.gd",
+      "res://scripts/jing_yan_ui.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/yu.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-003（bei_chi() 统一入口 + Yu.tixing 接口 + 判定圈随 scale 缩放机制）",
+      "TASK-004（YuZhong.fenzhi 数据字段 + YuNpc.yu_zhong 注入）"
+    ],
+    "consumed_interfaces": [
+      "YuNpc.bei_chi() —— TASK-003 预告的记账挂钩点，本任务在其内部加一行",
+      "YuZhong.fenzhi —— TASK-004 存好未消费的数据，本任务读取",
+      "Yu.tixing —— TASK-003 埋的玩家体型接口，本任务首次写入"
+    ],
+    "provided_interfaces": [
+      "ZhangBen（Autoload 单例）—— 任意脚本直接按名访问（jia_jing_yan/jing_yan/deng_ji）",
+      "ZhangBen.jing_yan_bian_hua(jing_yan: int, yuzhi: int) 信号 —— UI 进度条刷新",
+      "ZhangBen.sheng_ji(xin_deng_ji: int) 信号 —— 玩家长大（本任务）/ TASK-006 三选一弹窗的触发时机",
+      "jia_jing_yan() 入口模式 —— TASK-008 血量/死亡记账可复用同款账本入口"
+    ],
+    "emitted_signals": [
+      "ZhangBen.jing_yan_bian_hua(jing_yan, yuzhi) —— 账本发出，jing_yan_ui 连接",
+      "ZhangBen.sheng_ji(xin_deng_ji) —— 账本发出，yu.gd 连接（TASK-006 再连一个）"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji → yu.gd._on_sheng_ji（玩家侧代码连接一次）",
+      "ZhangBen.jing_yan_bian_hua / sheng_ji → jing_yan_ui.gd（UI 侧代码连接一次）"
+    ],
+    "shared_state": [
+      "ZhangBen.jing_yan / deng_ji —— 全局游戏状态（经验与等级），全项目唯一所有者：账本"
+    ],
+    "registered_shared_changes": [
+      "project.godot [autoload] 段新增 ZhangBen=\"*res://scripts/zhang_ben.gd\" —— 本项目首个 Autoload；审计确认当前无任何 Autoload 注册、无命名冲突；行为影响：场景树根多一个常驻节点，先于所有场景 _ready 就绪"
+    ],
+    "conflict_hotspots": [
+      "scripts/yu_npc.gd —— 只在 bei_chi() 里加一行记账（判空 yu_zhong），游动/回收/注入逻辑不动",
+      "scripts/yu.gd —— 只加信号连接与 _on_sheng_ji 长大方法，判定/无敌/移动逻辑不动",
+      "scenes/Main.tscn —— 只追加 JingYanTiao(CanvasLayer) UI 子树与脚本引用",
+      "scripts/yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn —— 完全不碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入退出码 0",
+      "F5 回归：吃小鱼消失、撞大鱼闪红、鱼群生成回收均无退化",
+      "F5 新增：吃鱼经验条增长；攒够升级玩家变大、判定圈变大"
+    ]
+  },
+  "allowed_existing_files": [
+    "project.godot",
+    "scripts/yu_npc.gd",
+    "scripts/yu.gd",
+    "scenes/Main.tscn",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/TASK_STATE.json",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scripts/zhang_ben.gd",
+    "scripts/zhang_ben.gd.uid",
+    "scripts/jing_yan_ui.gd",
+    "scripts/jing_yan_ui.gd.uid",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-005_jingyan_chengzhang/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "升级三选一弹窗（TASK-006 范围）——升级暂只长大不暂停",
+    "血量/死亡/结算（TASK-008 范围）",
+    "Tween/平滑成长动画（第 7 课范围——scale 直接跳变）",
+    "升级阈值 .tres 数据化（与第 6 课强化卡数据表一起做）",
+    "暂停游戏（get_tree().paused 属 TASK-006）",
+    "修改 yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn",
+    "经验条美化与动效（第 7 课统一调优）",
+    "账本重置/重开逻辑（TASK-008 change_scene 配套）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "游戏账本：zhang_ben.gd + Autoload 注册",
+      "behavior": "新建 scripts/zhang_ben.gd：extends Node，字段 jing_yan/deng_ji/sheng_ji_yuzhi 常量数组 [8,20,35,55,80,110]，方法 jia_jing_yan(fen)（加经验、超阈值升级、发两个信号、满级封顶），信号 jing_yan_bian_hua(jing_yan,yuzhi) 与 sheng_ji(xin_deng_ji)。project.godot [autoload] 注册 ZhangBen。此时无人调用、无 UI——F5 行为零变化，但远程场景树根可见 ZhangBen 节点。",
+      "main_concept": "Autoload 全局单例：先于一切场景就绪、任意脚本按名访问的常驻节点",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "project.godot"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "编辑器 项目设置 → Autoload 页：ZhangBen 列在表中、启用状态",
+        "F5 运行 → 远程场景树：根节点列表最上方多出 ZhangBen（先于 Main）"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "记账挂钩：bei_chi() 消费 fenzhi",
+      "behavior": "yu_npc.gd 的 bei_chi() 加一行：yu_zhong 非空时调 ZhangBen.jia_jing_yan(yu_zhong.fenzhi)（兜底鱼不给经验）。F5：吃鱼行为照旧（鱼消失），账本内部在涨但无 UI 看不见——用远程场景树选中 ZhangBen 可看到 Jing Yan 数值增长。",
+      "main_concept": "全局访问 + 数据消费：Autoload 按名直呼，fenzhi 从『存』变『用』",
+      "files": [
+        "scripts/yu_npc.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 吃几条小鱼 → 远程场景树选中 ZhangBen → Jing Yan 字段在增长、Deng Ji 在升级时跳变",
+        "Output 无报错（特别是 Autoload 未注册时的 identifier not found 类错误不出现）"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "升级长大：玩家监听 sheng_ji 信号",
+      "behavior": "yu.gd _ready 连接 ZhangBen.sheng_ji → _on_sheng_ji：tixing += 0.2、scale = Vector2.ONE * tixing（判定圈随根节点缩放自动变大）。F5：吃够 8 分升级瞬间玩家肉眼变大，原来吃不掉的中等鱼（如橙鱼）变得能吃。",
+      "main_concept": "跨节点信号：账本 emit、玩家 connect——场景节点听全局单例",
+      "files": [
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：攒够经验升级 → 玩家瞬间变大（scale 从 1.0 到 1.2）",
+        "升级后撞原来吃不掉的鱼（1.0~1.2 体型）→ 现在能吃掉",
+        "无敌/闪红判定无退化（判定圈跟着变大了）"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "经验条 UI：CanvasLayer + ProgressBar",
+      "behavior": "Main.tscn 追加 JingYanTiao(CanvasLayer) → JingYanTiaoBg(ProgressBar) + DengJiLabel(Label)；新建 jing_yan_ui.gd 挂 CanvasLayer：_ready 连接 ZhangBen 两个信号，刷新进度条 value/max 与 Lv 文本。F5 完整可玩：吃鱼经验条涨、满条清零重计、Lv 数字跳、玩家长大。",
+      "main_concept": "CanvasLayer：UI 层独立于游戏世界（不随镜头/缩放），ProgressBar 进度条",
+      "files": [
+        "scenes/Main.tscn",
+        "scripts/jing_yan_ui.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0"
+      ],
+      "manual_checks": [
+        "F5：屏幕顶部出现经验条与 Lv.1 文本",
+        "吃鱼进度条按 fenzhi 增长（蓝鱼 1 格、棕鱼 5 格）",
+        "升级瞬间：满条清零、Lv 跳 +1、玩家变大——三者同步发生",
+        "完整回归：移动/生成/回收/判定/无敌全部正常"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能够定位三个已挖好的挂钩点（bei_chi 入口 / Yu.tixing / fenzhi 字段），说明本课如何让它们会师",
+      "学生能够用自己的话解释 Autoload：为什么账本必须是全局单例而不是 Main 的子节点",
+      "学生能够跟踪一次记账数据流：bei_chi() → ZhangBen.jia_jing_yan(fenzhi) → 超阈值 → sheng_ji 信号 → yu.gd 长大 + UI 刷新",
+      "学生能够在编辑器查看 Autoload 注册与远程场景树里的 ZhangBen 节点，并做阈值调参实验后还原"
+    ],
+    "concepts": [
+      "Autoload 全局单例（先于场景就绪、按名访问、跨场景存活）",
+      "账本模式（状态唯一所有者 + 入口方法 + 信号广播）",
+      "跨节点信号连接（场景节点 connect Autoload 的信号）",
+      "CanvasLayer UI 分层与 ProgressBar"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "Autoload ZhangBen 由引擎在启动时创建于场景树根、先于所有场景 _ready 就绪、切场景不销毁——账本生命周期=游戏进程。Main 追加 JingYanTiao(CanvasLayer) 常驻 UI 子树，随 Main 创建释放；其内 ProgressBar/Label 为静态子节点。信号连接全部在消费者 _ready 内代码完成一次：账本 emit 时无连接者也不报错（UI 尚未就绪的窗口期不存在——Autoload 先就绪，但反向：场景 _ready 晚于账本就绪，连接总在信号发出前完成……除了已在运行中升级的场景，无窗口期）。",
+    "current_tree": "root\n└─ Main (Node2D)\n   ├─ Haodi (Sprite2D)\n   ├─ Yu (Yu.tscn)\n   └─ YuQun (yu_qun.gd)\n      ├─ Dingshi\n      └─ YuNpc × N",
+    "target_tree": "root\n├─ ZhangBen (zhang_ben.gd, Autoload)          ← TASK-005\n└─ Main (Node2D)\n   ├─ Haodi (Sprite2D)\n   ├─ Yu (Yu.tscn)   ← _ready 连 sheng_ji，升级 tixing += 0.2\n   ├─ JingYanTiao (CanvasLayer, jing_yan_ui.gd) ← TASK-005\n   │  ├─ JingYanTiaoBg (ProgressBar)\n   │  └─ DengJiLabel (Label, \"Lv.1\")\n   └─ YuQun (yu_qun.gd)\n      ├─ Dingshi\n      └─ YuNpc × N   ← bei_chi() 记账",
+    "ownership": [
+      "zhang_ben.gd / jing_yan_ui.gd：TASK-005 新建并所有",
+      "ZhangBen 单例：全局状态唯一所有者（jing_yan/deng_ji 只有账本写）",
+      "yu_npc.gd / yu.gd / Main.tscn：本任务所有（前序已关闭），只加记账/长大/UI 三处小改",
+      "yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn：零修改"
+    ],
+    "signal_contracts": [
+      "ZhangBen.jing_yan_bian_hua(jing_yan: int, yuzhi: int) → jing_yan_ui.gd 刷新进度条（UI 侧 _ready 连接一次）",
+      "ZhangBen.sheng_ji(xin_deng_ji: int) → yu.gd._on_sheng_ji 长大（玩家侧 _ready 连接一次）；TASK-006 将再连三选一弹窗",
+      "信号由账本唯一发出；消费者各自连接、各自释放时自动断开（Autoload 不随场景销毁，连接随消费者节点销毁断开）"
+    ],
+    "loading_policy": "Autoload 经 project.godot 注册由引擎启动时加载（星号前缀=单例启用）；UI 为 Main.tscn 静态子树；无运行时动态加载。",
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": [
+      "F5 启动：远程场景树根为 [ZhangBen, Main]——ZhangBen 在前",
+      "吃兜底鱼（yu_zhong 为空，检查器清注册表场景）不记账、不崩",
+      "满级后再吃鱼：jing_yan 封顶在最后一级阈值、不再发 sheng_ji",
+      "连续 F5 多次：连接不重复（各消费者 _ready 新建实例重连）、无泄漏"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步实现后）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 退出码 0（含 Autoload 与记账运行无错误）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：吃鱼经验条增长（蓝鱼 +1、棕鱼 +5）",
+    "F5：攒够升级——玩家变大、判定圈变大、原吃不掉的鱼变得能吃",
+    "F5：升级瞬间经验条清零重计、Lv 文本 +1",
+    "完整回归：移动/生成/回收/判定/闪红无敌全部无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "新增第二个 Autoload 或事件总线（信号中心化改造）",
+    "project.godot 除 ZhangBen 外的任何修改",
+    "引入升级暂停/三选一弹窗（TASK-006）",
+    "修改 yu_qun.gd / yu_zhong.gd / main.gd / Yu.tscn / YuNpc.tscn",
+    "经验值写入出现在账本之外的任何位置（唯一所有者被破坏）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-005 v1 进入开发"
+  }
+}
