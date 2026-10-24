@@ -2,12 +2,12 @@
   "task_id": "TASK-007",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
-  "current_step": "step-01",
-  "current_checkpoint": "orientation",
-  "next_action": "orientation 检查点：两项复述抽查（Resource 三分工 / 分行为须分 Area2D）+ 两个设计决策，然后开始 step-01",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-007 交付完成待 last_verified_commit 回填：先提交实现拿哈希，回填后 state-close 提交。下一课 TASK-008（血量死亡结算：_shoushang 挂钩血量 + chong_zhi 账本重置 + 满级决策 + bei_xi 悬空清理）需新建任务包并停等审批",
   "implementation_baseline": {
     "captured_at": "2026-10-23T07:03:43.774974Z",
     "commit": "dbc45c0dc638bd5b3a4d323705fe8692aa1f9787",
@@ -40,39 +40,68 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "未开始（待审批）"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0 + 输出筛查零命中",
+        "磁吸卡占位 push_warning、未知键 push_warning 兜底就位（P3 兑现）"
+      ],
+      "next_action": "已完成（学生 F5 感知五卡通过，inspection 检查点内补验）"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "未开始（待审批）"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中（改名 ShangQu 引用同步干净）",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0 + 输出筛查零命中",
+        "磁吸卡分支从 push_warning 占位换为 chi_qu 形状放大（只放大圈不动判定圈）"
+      ],
+      "next_action": "已完成（godot-inspection 检查点通过）"
     },
     {
       "step_id": "step-03",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "未开始（待审批）"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0 + 输出筛查零命中",
+        "升级 0.3s EASE_OUT 平滑长大替换瞬间跳变（tixing 数值仍即时到位，判定不依赖动画）；吞吃链式脉冲 0.08s 弹大 + 0.12s 回弹，每段以 tixing 收尾不漂移"
+      ],
+      "next_action": "已完成（学生 F5 验证两动画通过）"
     },
     {
       "step_id": "step-04",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "未开始（待审批）"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "completed",
+      "changed_files": [
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0 + 输出筛查零命中",
+        "check_task_scope.py check：7 allowed, 0 violation",
+        "摆尾 = sin 周期驱动 Sprite2D.rotation（游动累积相位、静止回正），摆幅与体型反比"
+      ],
+      "next_action": "已完成（学生全量回归'都对'）"
     }
   ],
   "approval_record": {

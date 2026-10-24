@@ -12,6 +12,12 @@ var sheng_ji_biao := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级�
 var jing_yan := 0  # 当前经验（本级的，升级时扣掉已用部分）
 var deng_ji := 1   # 当前等级
 var yi_xuan_ka: Array[QiangHuaKa] = []  # 本局已选强化卡（效果第 7 课生效）
+var jing_yan_jia_cheng := 1.0  # 经验加成倍率（睿智卡生效；bei_chi 记账时乘算）
+
+
+func she_jing_yan_jia_cheng(bei: float) -> void:
+	# 睿智卡唯一入口：倍率的唯一所有者仍是账本（玩家不私自存倍率）
+	jing_yan_jia_cheng = bei
 
 
 func jia_jing_yan(fen: int) -> void:

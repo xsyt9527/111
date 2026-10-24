@@ -6,17 +6,26 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
 radius = 22.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_xiqu"]
+radius = 90.0
+
 [node name="Yu" type="Node2D" unique_id=1627777717]
 script = ExtResource("1_yu")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1941861653]
 texture = ExtResource("2_tietu")
 
-[node name="PandingQu" type="Area2D" parent="." unique_id=1259984689]
+[node name="ShangQu" type="Area2D" parent="." unique_id=1259984689]
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PandingQu" unique_id=1578421316]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShangQu" unique_id=1578421316]
 shape = SubResource("CircleShape2D_yuan")
+
+[node name="ChiQu" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChiQu"]
+shape = SubResource("CircleShape2D_xiqu")
 
 [node name="WudiDingshi" type="Timer" parent="." unique_id=1565807978]
 one_shot = true

@@ -1,14 +1,93 @@
 {
   "task_id": "TASK-007",
   "task_spec_version": 1,
-  "learning_status": "in_progress",
-  "concepts_introduced": [],
+  "learning_status": "partially_demonstrated",
+  "concepts_introduced": [
+    "match 效果分发与字符串键运行时校验（push_warning 兜底）",
+    "预埋信号消费闭环（ka_yi_xuan 连接即活）",
+    "经验倍率入账本（jing_yan_jia_cheng + bei_chi 乘算）",
+    "磁吸双 Area2D 分职（ChiQu 打标记 / ShangQu 管判定）——学生第 3 课原则正式应用",
+    "Tween：create_tween / tween_property / 链式两段 / set_ease（显示与状态分离）",
+    "程序化动画：sin 周期驱动摆尾（无关键帧资源）"
+  ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "F5 磁吸亲测：开显示碰撞形状看到双圈（ShangQu 小 / ChiQu 大），小鱼进大圈自动拐弯吸向玩家、贴身被吃、玩家跑远出圈恢复直线；大鱼穿圈无反应",
+    "改名回归：吃小鱼/撞大鱼闪红照旧（ShangQu 换名不换行为）",
+    "step-01 五卡感知补验：迅捷快/贪食圈大/活力无敌长/催肥升级增幅大/睿智涨条快（远程树 Jing Yan Jia Cheng=1.25）",
+    "F5 动画验证：升级 0.3s 丝滑长大、吞吃轻弹、暂停冻结时动画同冻",
+    "全量回归亲测：六课行为 + 六卡 + 磁吸 + 三动画全部通过（学生确认'都对'）；摆尾参数被邀请试调后无残留（0.12/10.0 原样）"
+  ],
+  "verification_completed": [
+    "F5 六卡生效：迅捷/催肥/贪食/活力/睿智/磁吸全部可感知（磁吸含边界：吸小鱼、大鱼免疫、出圈放手）",
+    "F5 三动画：升级平滑长大、吞吃脉冲回弹、游动摆尾静止回正",
+    "F5 改名回归：ShangQu 判定吃/伤无退化",
+    "F5 全量回归：移动/生成/回收/判定/无敌/涨条/长大/升级弹窗闭环无退化（学生确认'都对'）"
+  ],
   "integration_contract_understood": null,
-  "student_questions": [],
-  "unresolved_concepts": [],
+  "student_questions": [
+    "step-01 后主动提问：'鱼的节点下只有 1 个判定区，怎么实现吃变大、受伤不变？'——独立发现成长/贪食会同时放大受伤范围（一圈两行为共用半径的副作用），第三次自行触达'分行为须分 Area2D'原则（前两次：磁吸提案、形状合并实验）；讲解嘴圈/身体圈拆分方案后学生拍板方案 A（保持身体模型），拆分记为候选设计点留 TASK-008"
+  ],
+  "unresolved_concepts": [
+    "Resource 三分工第三次验收：检查器过关，但 .gd=模具（定字段结构）与 .tres=全部数值仍混淆——已用 ci_xi.tres 文件本体当证据纠正；第 9 课测试时再验（挂账第 4 次）"
+  ],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 定位讲解：ka_yi_xuan 信号预埋位置（zhang_ben.gd xuan_ka 内 emit）与消费位置（yu.gd _ready 连接）、xiao_guo/shu_zhi 从第 6 课'只存不用'变为本课 match 分发、磁吸双圈将改 Yu.tscn 结构（PandingQu 改名 ShangQu + 新增 ChiQu）",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T07:05:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "两个设计决策均选推荐项：1A 磁吸=NPC 自决（玩家打标记 bei_xi，小鱼自己朝玩家游）、2A 数值 buff 在玩家身上+睿智倍率入账本（bei_chi 乘算发生在记账侧）",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T07:08:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "复述抽查批改：检查器=改数值填表入口 ✓；形状合并'只能变大范围没别的用处' ✓；.gd 模具答'6种卡各种效果'混淆模具与卡池（纠正：模具只定 ming_zi/miao_shu/xiao_guo/shu_zhi 四个字段结构）；.tres 答'一个字段'再次错误（纠正：打开 ci_xi.tres 文件本体展示四行字段值全在）；双圈半径差异空白（自认'这个我不懂'，讲解：吸附大圈要早触发、判定小圈要准触发）",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T07:12:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生就'吃变大、伤不变'提问后拍板方案 A：保持身体模型（一圈管吃+伤，成长/贪食同时放大两者——类型游戏主流做法），嘴圈/身体圈拆分记为候选设计点留 TASK-008 血量上线时再决策；回答简短（'a，然后继续下一课'）但决策明确",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-23T07:30:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-02",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生 F5 亲测磁吸双圈全过（'都ok了'）：显示碰撞形状见双圈、小鱼被吸/出圈放手/大鱼免疫、改名回归吃伤照旧；并顺手补验 step-01 五卡感知——'分行为须分 Area2D'从口头原则变为亲手用过的工具",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-23T07:45:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-03",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 验证两动画通过（升级 0.3s 丝滑非跳变、吞吃轻弹回弹），回复'下一课'继续——对'显示与状态分离'（tixing 数值即时到位、动画只伺候眼睛）的验收体现在确认判定不等动画（升完那刻碰小鱼照常能吃）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-24T00:30:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "学生 F5 全量回归亲测通过（'都对'）：六卡生效、磁吸边界、三动画、六课行为、升级弹窗闭环全部无退化；被邀请试调摆尾参数后无残留（0.12/10.0 原样，纪律保持）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-24T01:00:00Z"
+    }
+  ]
 }
