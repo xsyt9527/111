@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "22a851cf373ef558b4c374a6597c9a5b3b76621e",
@@ -326,10 +326,10 @@
     "引入存档/局外解锁"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-24T06:00:00Z",
+    "exact_user_text": "确认 TASK-008 v1 进入开发",
     "canonical_example": "确认 TASK-008 v1 进入开发"
   }
 }

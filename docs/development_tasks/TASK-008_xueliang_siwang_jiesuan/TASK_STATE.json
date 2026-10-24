@@ -1,17 +1,39 @@
 {
   "task_id": "TASK-008",
   "task_spec_version": 1,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
-  "learning_status": "not_started",
+  "approval_status": "approved",
+  "delivery_status": "in_progress",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": null,
-  "current_checkpoint": null,
-  "next_action": "等待用户审批：确认 TASK-008 v1 进入开发。审批前不得捕获基线、不得写 gameplay 代码。",
+  "current_step": "step-01",
+  "current_checkpoint": "orientation",
+  "next_action": "orientation 检查点：两项复述抽查（push_warning vs error / Autoload 与场景生命周期）+ 三个设计决策，然后开始 step-01",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
-    "preexisting_changes": []
+    "captured_at": "2026-10-24T06:00:48.935558Z",
+    "commit": "9c8a055920dd5724bf46e13f38731e656bacd23c",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/LEARNING_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:49658d9b37685b57760f8d3a693a44b20970dc96c0f55bebc7cebbe722e74475"
+      },
+      {
+        "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_MANIFEST.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:466dffdd699ff829454cfec9a1fe0d5d8bd18dbf67af6d43f9b859e301967754"
+      },
+      {
+        "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:952836d9ddb7eb170d7c90f20328c017572783ab6f875651cc7cb53ecd8b397a"
+      }
+    ]
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
@@ -54,9 +76,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 1,
+    "approved_at": "2026-10-24T06:00:00Z",
+    "exact_user_text": "确认 TASK-008 v1 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",
