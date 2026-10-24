@@ -29,7 +29,8 @@
     "step-01 后主动提问：'鱼的节点下只有 1 个判定区，怎么实现吃变大、受伤不变？'——独立发现成长/贪食会同时放大受伤范围（一圈两行为共用半径的副作用），第三次自行触达'分行为须分 Area2D'原则（前两次：磁吸提案、形状合并实验）；讲解嘴圈/身体圈拆分方案后学生拍板方案 A（保持身体模型），拆分记为候选设计点留 TASK-008"
   ],
   "unresolved_concepts": [
-    "Resource 三分工第三次验收：检查器过关，但 .gd=模具（定字段结构）与 .tres=全部数值仍混淆——已用 ci_xi.tres 文件本体当证据纠正；第 9 课测试时再验（挂账第 4 次）"
+    "Resource 三分工第三次验收：检查器过关，但 .gd=模具（定字段结构）与 .tres=全部数值仍混淆——已用 ci_xi.tres 文件本体当证据纠正；第 9 课测试时再验（挂账第 4 次）",
+    "push_warning 与 error 的区别（warning 不打断执行、拼错键=静默失效+黄字线索）——课后题答'会报错'被纠正；第 9 课写断言时再验"
   ],
   "assistance_level": "full",
   "evidence": [
@@ -88,6 +89,14 @@
       "summary": "学生 F5 全量回归亲测通过（'都对'）：六卡生效、磁吸边界、三动画、六课行为、升级弹窗闭环全部无退化；被邀请试调摆尾参数后无残留（0.12/10.0 原样，纪律保持）",
       "understanding_level": "applied",
       "observed_at": "2026-10-24T01:00:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "课后两题口头作答：题 2（升级动画中小鱼撞当前圈会被吃）✓ 正确——数值比较即时、物理范围跟显示走；题 1（拼错 xiao_guo 会怎样）✗ 答'会报错'被纠正——正是兜底分支存在的意义：不崩溃、静默失效，唯一线索是 Output 面板的黄色 push_warning；error 打断执行 vs warning 只提醒不拦路的区别待第 9 课断言时再验",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-24T01:40:00Z"
     }
   ]
 }
