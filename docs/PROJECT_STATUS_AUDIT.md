@@ -111,3 +111,65 @@ audit_invalidation_triggers:
 ## 结论
 
 肉鸽的节拍器已上线：升级 → 冻结 → 三选一 → 继续。但**选了卡没感觉**——效果键躺在 .tres 里无人消费。本课把选择变成力量：一行 connect 接上预埋信号，六张卡各就各位；磁吸用学生自己在第 3 课挖出的"分行为须分 Area2D"原则实现双圈分职；再补上 Tween 动画让鱼"活"起来。选卡的爽感闭环，本课完成。
+
+---
+
+# 项目状态审计 — 深海食纪
+
+> 第八次审计（第 8 课前），生成于 2026-10-24。
+
+## 审计新鲜度
+
+```yaml
+audited_commit: 22a851c   # TASK-007 课后题补记提交，工作区干净
+environment_checked_at: 2026-10-24T01:50:00Z
+engine_executable_source: common_path   # D:\001\Godot_v4.7.2-stable_win64.exe
+engine_version_detected: 4.7.2          # 4.7.2.stable.official.ed1daf0bf（本审计实测）
+audit_invalidation_triggers:
+  - project.godot 结构性修改（Autoload/主场景/输入映射/插件）——本课零触碰（主场景仍 Main）
+  - 引擎版本变化
+  - 新增或变更共享配置、存档结构、事件总线、数据资源——本课零新增数据资源，data/ 零触碰
+  - 任何 TASK 基线 commit 变化后未重新审计受影响区域
+```
+
+## 工程状态清单
+
+| 区域 | 状态 | 来源 |
+|---|---|---|
+| 引擎与导入 | ✅ headless --import 退出码 0；360 帧运行输出筛查零命中 | 2026-10-24 复测 |
+| 脚本 scripts/ | ✅ 全部 10 脚本健康（yu.gd 含 match 六卡/磁吸/Tween/摆尾） | TASK-007 交付 |
+| 数据 data/ | ✅ 6 鱼种 + 6 强化卡 + 阈值表；xiao_guo/shu_zhi **已有消费者**（match 分发） | TASK-007 交付 |
+| UI | ✅ 经验条 + 三选一弹窗；血条 Missing（本课引入） | TASK-005/006 |
+| 游戏循环 | ✅ 选择有生效、死亡无代价——_shoushang() 是空挂钩（第 3 课挖点） | TASK-003 |
+| 测试 tests/ | **Missing**（第 9 课启用） | — |
+| 任务流程 | ✅ TASK-001~007 全关闭（007 last_verified_commit=ab0b3de） | `22a851c` |
+
+### 运行行为现状（实测基线）
+
+- F5：吃→涨→升级冻结弹卡→六卡生效（含磁吸双圈）→平滑长大/脉冲/摆尾——肉鸽循环转得动
+- 撞大鱼只闪红无敌，**无血量无死亡无结算**——风险无代价（本课补上）
+- 满级（Lv.7）后阈值停表尾**继续升级继续弹窗**（未决策边界，本课拍板）
+- `yi_xuan_ka` 只入账无任何展示（本课结算页消费）
+
+## 已知遗留（本课消费/延续）
+
+- `_shoushang()` 空挂钩（TASK-003 P3：本课接血量）
+- bei_xi 悬空引用（TASK-007 CODE_REVIEW P3-2：场景销毁自然解决，本课验证）
+- 账本重置缺失（TASK-005 P3/P3-3：本课 chong_zhi()）
+- 满级决策（TASK-005/006/007 三次 P3 合并：本课拍板）
+- 贪食放大受伤范围（学生已拍板方案 A：血量上线后作观察项，改主意=范围变更）
+- push_warning vs error 区别（第 7 课课后题纠正项：orientation 复述抽查）
+- Resource 三分工（第 4 次挂账，第 9 课写测试 .tres 时再验）
+- stash 中 TASK-004 重复备份（学生尚未确认 drop），不影响开发
+
+无行为对照工程（development_strategy=plan_driven）。
+
+## 推荐的接下来三个有界任务（按依赖和学习价值排序）
+
+1. **TASK-008 血量、死亡与结算**（本审计选定）：血量+血条（信号驱动 UI 二次复用）+ 满级封顶 + 结算页（yi_xuan_ka 见天日）+ chong_zhi 重开闭环（change_scene_to_file 场景生命周期）。
+2. **TASK-009 无头自动测试**：chong_zhi 归零/满级封顶/xiao_guo 全键校验（遍历卡池零 push_warning）/经验计算/大小判定断言。
+3. **TASK-010 Android 导出与 TapTap**：Export Template、签名 APK、真机验证、开发者后台提审。
+
+## 结论
+
+七课建成了一台"只会赢不会输"的机器：选择有爽感、死亡无代价。肉鸽的最后一块拼图是**代价**——血量让大鱼真正可怕，死亡让选择真正有重量，重开让每局成为独立的故事。本课同时是生命周期的毕业考：场景销毁重建 vs Autoload 常驻，重置的两条路各走一遍。P3 三条备忘（挂钩/悬空/重置）与三次满级挂账在本课集中清账。

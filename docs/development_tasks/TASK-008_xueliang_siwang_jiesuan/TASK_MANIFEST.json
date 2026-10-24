@@ -1,0 +1,335 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-008",
+  "task_spec_version": 1,
+  "slug": "xueliang-siwang-jiesuan",
+  "title": "血量、死亡与结算（血条 + 满级封顶 + 结算页 + 一键重开）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "22a851cf373ef558b4c374a6597c9a5b3b76621e",
+  "objective": "肉鸽补上最后一环——有代价的死亡：玩家血量 3 点（第 3 课 _shoushang() 挂钩点兑现），血条 UI 听玩家信号刷新（信号驱动 UI 模式二次复用）；血尽切结算场景（change_scene_to_file 场景切换——场景销毁重建 vs Autoload 常驻的生命周期大考，bei_xi 悬空引用随场景销毁自然解决=CODE_REVIEW P3-2 兑现）；结算页展示本局等级与 build（yi_xuan_ka 卡名列表——第 6 课预埋数据见天日）；账本 chong_zhi() 重置（P3-3 兑现）+ 一键重开闭环；满级封顶决策落地（TASK-005/006/007 三次 P3 合并拍板）。F5 可观察：撞大鱼三次血尽 → 结算页显示 Lv 与已选卡 → 点重开一切归零重新开局。",
+  "audit_freshness": {
+    "audited_commit": "22a851cf373ef558b4c374a6597c9a5b3b76621e",
+    "environment_checked_at": "2026-10-24T01:50:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改——本任务零触碰",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源变更——本任务零新增数据资源",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "玩家血量系统（xue_liang + 受伤扣血 + 死亡判定）",
+      "血条 UI（听玩家信号，信号驱动 UI 二次复用）",
+      "满级封顶（账本侧边界处理）",
+      "结算场景（等级 + build 展示 + 重开按钮）",
+      "账本重置 chong_zhi()（局内状态归零唯一入口）",
+      "死亡-重开闭环（change_scene_to_file 双向切换）"
+    ],
+    "owned_scenes": [
+      "res://scenes/XueLiangTiao.tscn（新建：血条 UI）",
+      "res://scenes/JieSuan.tscn（新建：结算页，场景切换目标）"
+    ],
+    "owned_scripts": [
+      "res://scripts/xue_liang_ui.gd（新建）",
+      "res://scripts/jie_suan.gd（新建）",
+      "res://scripts/yu.gd（血量 + 死亡 + 信号）",
+      "res://scripts/zhang_ben.gd（满级封顶 + chong_zhi）"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-003（_shoushang() 受伤统一入口挂钩点 + 无敌机制）",
+      "TASK-005（账本模式 + 信号驱动 UI：JingYanTiao 同款照抄）",
+      "TASK-006（yi_xuan_ka 已选卡数据——结算页展示）",
+      "TASK-007（bei_xi 吸附标记——场景销毁自然清理，P3-2 兑现）"
+    ],
+    "consumed_interfaces": [
+      "yu.gd _shoushang() —— 第 3 课挖好的血量挂钩点，本课接入扣血",
+      "ZhangBen.yi_xuan_ka / deng_ji —— 结算页读取展示",
+      "信号驱动 UI 模式（账本信号→经验条）——血条照抄（玩家信号→血条）"
+    ],
+    "provided_interfaces": [
+      "ZhangBen.chong_zhi() —— 局内状态重置唯一入口（第 9 课测试可断言）",
+      "死亡-重开闭环 —— 第 9 课测试的完整用例素材",
+      "结算页 build 展示 —— 后续加死因/时长统计的挂载点"
+    ],
+    "emitted_signals": [
+      "Yu.xue_liang_bian_hua(dangqian: int, zuigao: int) —— 血条 UI 刷新（玩家是血量唯一所有者，设计决策 1A）"
+    ],
+    "received_signals": [
+      "yu.gd xue_liang_bian_hua → xue_liang_ui.gd（血条刷新）",
+      "结算页按钮 pressed → chong_zhi + change_scene_to_file（重开闭环）"
+    ],
+    "shared_state": [
+      "ZhangBen 局内状态（jing_yan/deng_ji/yi_xuan_ka/jing_yan_jia_cheng）—— chong_zhi() 统一归零",
+      "玩家血量 —— 所有者玩家自己（账本不成玩家仓库，沿第 7 课决策 2A 原则）；场景重载自动归位无需手动清"
+    ],
+    "registered_shared_changes": [
+      "zhang_ben.gd jia_jing_yan() 满级封顶分支（deng_ji 达表尾后经验停涨、不再升级弹窗）——行为变更已审批登记",
+      "scenes/Main.tscn 新增 XueLiangTiao 实例节点"
+    ],
+    "conflict_hotspots": [
+      "yu.gd —— _shoushang() 加扣血与死亡判定；移动/判定/buff/动画结构不动",
+      "zhang_ben.gd —— jia_jing_yan() 加封顶分支 + 新增 chong_zi()；既有信号与入口零语义变化",
+      "JieSuan.tscn 为独立场景（不实例化进 Main）——project.godot 主场景仍 Main.tscn 零触碰"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入与运行零错误（输出筛查）",
+      "F5 回归：七课全部行为无退化（特别：满级封顶后经验条停满、不再弹窗）",
+      "F5 新增：三撞血尽→结算→重开→一切归零完整闭环"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/yu.gd",
+    "scripts/zhang_ben.gd",
+    "scenes/Main.tscn",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_STATE.json",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scripts/xue_liang_ui.gd",
+    "scripts/xue_liang_ui.gd.uid",
+    "scripts/jie_suan.gd",
+    "scripts/jie_suan.gd.uid",
+    "scenes/XueLiangTiao.tscn",
+    "scenes/JieSuan.tscn",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "修改 yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / jing_yan_ui.gd / qiang_hua_dan_chuang.gd / QiangHuaDanChuang.tscn / Yu.tscn / YuNpc.tscn / project.godot / data/*",
+    "血量之外的玩家新属性（连击/护盾等——迭代内容）",
+    "嘴/身判定圈拆分（贪食副作用——学生已拍板方案 A，血量上线后仅作观察项；改主意=范围变更升 v2）",
+    "死因统计/游戏时长/最高等级记录等结算扩展（后续迭代）",
+    "局外永久解锁/元进度（明确不做：纯局内肉鸽）",
+    "第 9 课的测试代码（tests/ 目录本课不建）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "血量系统 + 血条 UI",
+      "behavior": "yu.gd：+`zuida_xue := 3`（@export）/`xue_liang` + `signal xue_liang_bian_hua(dangqian, zuigao)`；`_shoushang()` 扣血并广播（闪红无敌照旧）；血尽暂占位 `push_warning`（死亡 step-03 接）。新建 XueLiangTiao.tscn（CanvasLayer + ProgressBar 红色填充，照抄 JingYanTiao 模式）+ xue_liang_ui.gd（听玩家信号刷新，玩家经 group 或 @onready 父链获取——用 Main 实例化后 `get_tree().get_first_node_in_group('wan_jia')` 或直接 Yu 引用注入，实现时定）；Main.tscn 实例化。F5：撞大鱼三次血条 3→2→1→0（血尽只黄字警告不死——预期中间态）。",
+      "main_concept": "信号驱动 UI 二次复用：第 5 课'账本信号→经验条'同款照抄成'玩家信号→血条'；血量所有者=玩家（账本不成玩家仓库）",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/xue_liang_ui.gd",
+        "scenes/XueLiangTiao.tscn",
+        "scenes/Main.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出 error/not found 筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 撞大鱼：血条 3→2→1→0 逐格掉（闪红无敌照旧，无敌期内不重复掉）",
+        "血尽只出黄色 push_warning 不死——识别预期中间态",
+        "远程树 Yu 节点 Xue Liang 可见实时值"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "满级封顶（三次 P3 合并决策落地）",
+      "behavior": "zhang_ben.gd `jia_jing_yan()`：deng_ji 已达表尾（Lv.7）后经验停在阈值满格、不再升级不再发 sheng_ji（弹窗自然不再弹）。设计决策 2 拍板项。F5（探针或攒经验）：升到满级后经验条停满、不弹窗；低级升级照旧。",
+      "main_concept": "数据表边界处理：阈值表有尽头，读表方必须处理'表外等级'——封顶是设计决策不是默认行为",
+      "files": [
+        "scripts/zhang_ben.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 探针验证：直接灌经验到满级——条停满、无弹窗、deng_ji 停在 7",
+        "回归：1→2 级正常升级弹窗不受影响"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "死亡切换 + 结算场景",
+      "behavior": "新建 JieSuan.tscn（CanvasLayer 根：标题'本局终了' + 等级 Label 读 ZhangBen.deng_ji + 已选强化 VBoxContainer 动态填 yi_xuan_ka 卡名 + '再来一次' Button）+ jie_suan.gd。yu.gd 血尽分支：push_warning 换成 `get_tree().change_scene_to_file(\"res://scenes/JieSuan.tscn\")`——场景销毁重建：Main 全树（含玩家 buff/bei_xi 标记/鱼群）就地释放，Autoload 账本常驻（P3-2 随场景销毁自然兑现）。F5：三撞血尽 → 结算页显示等级与已选卡。",
+      "main_concept": "change_scene_to_file 场景切换生命周期：场景全树销毁重建（玩家 buff/吸附标记自动清）vs Autoload 常驻（账本数据不灭）——重置的两条路",
+      "files": [
+        "scenes/JieSuan.tscn",
+        "scripts/jie_suan.gd",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 三撞血尽：切到结算页，等级与已选卡名正确显示",
+        "选过磁吸/迅捷等卡再死：结算页 build 列表与实际选卡一致"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "账本重置 + 一键重开闭环 + 全量回归",
+      "behavior": "zhang_ben.gd +`chong_zhi()`：jing_yan=0 / deng_ji=1 / yi_xuan_ka 清空 / jing_yan_jia_cheng=1.0（局内状态归零唯一入口，P3-3 兑现）。jie_suan.gd 按钮：`ZhangBen.chong_zhi()` → `change_scene_to_file(\"res://scenes/Main.tscn\")`。F5 完整闭环：重开后经验条 Lv.1 归零、血条满、无已选卡、玩家 buff 全无（场景重建自动归位）——一分田园一分不加。全量回归七课 + 本课全部功能。",
+      "main_concept": "重开的两半：场景侧靠销毁重建（玩家/鱼群/UI 全新），账本侧靠 chong_zhi（常驻者必须手动归零）——谁常驻谁负责自己的复位",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/jie_suan.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中",
+        "check_task_scope.py check 无违例"
+      ],
+      "manual_checks": [
+        "F5 死亡→结算→重开：账本四项（经验/等级/选卡/倍率）全归零、血条满、玩家无 buff",
+        "F5 重开后再玩一局：升级弹窗/选卡生效/磁吸一切照常（第二次局无残留 bug）",
+        "全量回归：七课行为 + 本课闭环（学生确认）",
+        "贪食观察项：血量疼了之后感受贪食放大受伤范围的代价——保持方案 A 或提出范围变更"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述 push_warning 与 error 的区别（课后题刚纠正：拼错键=静默失效+黄字，不崩溃）——第 9 课前再验",
+      "学生能解释 change_scene_to_file 做了什么：旧场景全树销毁、新场景重建、Autoload 全程不动",
+      "学生能回答'重开后哪些状态自动归位、哪些必须 chong_zhi'（场景侧 vs 账本侧）",
+      "学生能说出满级封顶为什么是设计决策（数据表有尽头，读表方必须处理表外）",
+      "学生能跟踪死亡数据流：撞大鱼 → _shoushang 扣血 → 信号刷血条 → 血尽 → 切结算 → 读账本展示 build"
+    ],
+    "concepts": [
+      "change_scene_to_file 场景切换与节点生命周期（销毁重建 vs 常驻）",
+      "信号驱动 UI 二次复用（玩家信号→血条，照抄账本信号→经验条）",
+      "账本重置 chong_zhi()（局内状态归零唯一入口）",
+      "数据表边界处理（满级封顶）",
+      "死亡流程编排（P3-1/2/3 三条备忘集中兑现）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "新增两个独立场景：XueLiangTiao（实例化进 Main 常驻显示）与 JieSuan（不进 Main——change_scene_to_file 的切换目标，运行时才加载）。死亡 = Main 全树销毁（玩家 buff/bei_xi 标记/鱼群/弹窗全部释放，P3-2 悬空引用随销毁自然解决）+ JieSuan 加载；重开 = JieSuan 销毁 + Main 重建 + 账本 chong_zhi（Autoload 是唯一跨场景存活者，必须手动归零）。project.godot 主场景仍 Main.tscn 零触碰。",
+    "current_tree": "root\n├─ ZhangBen (Autoload)  ← +满级封顶 +chong_zhi（TASK-008）\n└─ Main\n   ├─ Haodi / Yu / JingYanTiao / QiangHuaDanChuang / YuQun\n   └─ (Yu 内：Sprite2D / ShangQu / ChiQu / WudiDingshi)",
+    "target_tree": "root\n├─ ZhangBen (Autoload)  ← +满级封顶 +chong_zhi（TASK-008）\n├─ [运行中] Main                        ← +XueLiangTiao 实例（TASK-008）\n│  ├─ Haodi / Yu(+血量+死亡) / JingYanTiao / QiangHuaDanChuang / YuQun\n│  └─ XueLiangTiao (实例, CanvasLayer)  ← TASK-008：血条\n│     └─ XueLiangTiaoBg (ProgressBar 红填充)\n└─ [死亡后替换为] JieSuan (CanvasLayer 根, 独立场景)\n   ├─ BanDi (ColorRect 全屏)\n   ├─ BiaoTi (Label \"本局终了\")\n   ├─ DengJi (Label \"Lv.X\")\n   ├─ KaLieBiao (VBoxContainer 动态填已选卡名)\n   └─ ChongKai (Button \"再来一次\")",
+    "ownership": [
+      "yu.gd / zhang_ben.gd / Main.tscn：本任务所有（前序已关闭，本课在其上扩展）",
+      "XueLiangTiao / JieSuan（新场景新脚本）：本任务新建",
+      "yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / jing_yan_ui.gd / 弹窗 / Yu.tscn / project.godot / data/：零修改"
+    ],
+    "signal_contracts": [
+      "Yu.xue_liang_bian_hua(dangqian: int, zuigao: int) → xue_liang_ui.gd 刷新血条（新信号，玩家是所有者）",
+      "ChongKai.pressed → jie_suan.gd：chong_zhi + change_scene_to_file（闭环终点）",
+      "既有 sheng_ji / ka_yi_xuan / jing_yan_bian_hua 信号零改动（满级封顶只是不再 emit sheng_ji 的表尾情形）"
+    ],
+    "loading_policy": "零新增资源文件（.tscn 为文本场景）；JieSuan 不进 Main 常驻——场景切换时按需加载。",
+    "state_persistence": [
+      "局内状态全在内存（账本 + 玩家），无存档——重开即清零（肉鸽单局设计）"
+    ],
+    "animation_dependencies": [
+      "死亡切换发生时若有 Tween 在播：随场景销毁自动终止（Tween 挂节点，节点亡则动画亡）——无需手动处理"
+    ],
+    "lifecycle_checks": [
+      "死亡瞬间：bei_xi 标记的鱼随场景销毁，无悬空访问（P3-2 兑现验证点）",
+      "重开后：玩家 buff/摆尾相位/磁吸圈形状全为新实例默认值（场景重建自动归位）",
+      "重开后：账本四项必须 chong_zhi 归零（Autoload 不随场景重建——手动复位唯一入口）",
+      "满级封顶后：sheng_ji 不再 emit，弹窗/长大/跳级三家听众全部静默——无半死不活状态"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步）",
+    "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出 error/not found 筛查零命中（每步）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：三撞血尽 → 结算页（等级 + build 卡名）→ 重开 → 全归零",
+    "F5：满级封顶（条停满不弹窗）+ 低级升级照旧",
+    "F5：第二次局完整可玩（升级/选卡/磁吸/死亡闭环无残留）",
+    "全量回归：七课行为无退化"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "嘴/身判定圈拆分（贪食副作用——观察项变实施=范围变更升 v2）",
+    "死因/时长/最高纪录等结算扩展",
+    "血量数值/伤害规则改动超出 zuida_xue 扣 1 模式",
+    "修改零触碰清单内文件（yu_npc.gd / main.gd / 弹窗 / data/* 等）",
+    "引入存档/局外解锁"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-008 v1 进入开发"
+  }
+}
