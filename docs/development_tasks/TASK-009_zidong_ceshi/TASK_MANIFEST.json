@@ -1,0 +1,319 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-009",
+  "task_spec_version": 1,
+  "slug": "zidong-ceshi",
+  "title": "无头自动测试（tests/ 首建：运行器 + 账本/边界/数据/判定四域 + 跑批入口）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "c3f5fed776bf6c9aaa98cdae013f7e1d90d4fbf2",
+  "objective": "把'我跑探针 + 学生真人 F5'的手工验证固化成可重复资产：tests/ 目录首建，四域测试（账本纯逻辑 / 边界封顶与重置 / 数据全键校验 / 判定集成）+ SceneTree 运行器模式（assert_eq 失败计数 + quit 退出码——CI 门禁语义）+ 一键跑批入口。产品代码零修改——本课只加测试不改游戏。三笔学习账清账：Resource 三分工第 5 验（学生亲手建坏卡夹具 huai_ka.tres）、push_warning vs error 再验（orientation 复述）、TASK-008 两条探针（封顶/重开）转正为正式测试。完成后：一条命令跑全部测试、失败退出码非零、坏数据当场现形。",
+  "audit_freshness": {
+    "audited_commit": "c3f5fed776bf6c9aaa98cdae013f7e1d90d4fbf2",
+    "environment_checked_at": "2026-10-26T02:32:12Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改——本课零触碰（tests/ 不注册 Autoload、不改主场景）",
+      "引擎版本变化",
+      "共享配置、存档结构、事件总线、数据资源变更——本课 data/ 零触碰，新增仅 tests/ 下夹具",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "测试运行器模式（SceneTree 脚本 + assert_eq 失败计数 + quit 退出码）",
+      "账本纯逻辑测试（记账/升级/倍率/阈值读表）",
+      "边界测试（满级封顶 + chong_zhi 归零——探针转正）",
+      "数据全键校验（xiao_guo 六键白名单 + 鱼种字段完整性 + 坏卡夹具红测）",
+      "卡片抽样测试（三选一不放回）",
+      "判定集成测试（嘴圈吃/伤区掉血/同体型/贪食只放大嘴圈）",
+      "跑批入口（一条命令跑全部，失败非零退出）"
+    ],
+    "owned_scenes": [
+      "res://tests/ce_panding_chang_jing.tscn（新建：集成测试启动场景）"
+    ],
+    "owned_scripts": [
+      "res://tests/ce_zhang_ben.gd（新建）",
+      "res://tests/ce_bian_jie.gd（新建）",
+      "res://tests/ce_shu_ju.gd（新建）",
+      "res://tests/ce_panding.gd（新建）"
+    ],
+    "owned_config_tables": [
+      "res://tests/huai_ka.tres（新建：学生亲手建的坏卡夹具——Resource 三分工第 5 验）"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-005（账本模式——jia_jing_yan/dangqian_yuzhi 被测）",
+      "TASK-006（强化卡注册表 + 不放回抽样——被测）",
+      "TASK-007（match 六卡分发——全键校验的键清单来源）",
+      "TASK-008（满级封顶 + chong_zhi + 嘴身拆分——探针转正的原始脚本）"
+    ],
+    "consumed_interfaces": [
+      "zhang_ben.gd 全部公共方法（jia_jing_yan/xuan_ka/chong_zhi/dangqian_yuzhi/she_jing_yan_jia_cheng）——独立实例化，不依赖 Autoload",
+      "QiangHuaKa / YuZhong .tres 字段（ming_zi/miao_shu/xiao_guo/shu_zhi；tixing/fenzhi/贴图）——数据校验遍历读取",
+      "yu.gd 判定回调（_on_zui_qu_entered/_on_shang_qu_entered）+ YuNpc 场景——集成测试实例化",
+      "qiang_hua_dan_chuang.gd 抽样方法——卡片抽样测试调用（只调用不修改）"
+    ],
+    "provided_interfaces": [
+      "tests/ 四域测试 + pao_pi.bat 跑批入口——第 10 课导出前回归门禁",
+      "运行器模式模板（assert_eq + quit code）——后续任何新功能的测试照抄",
+      "全键校验测试——以后加第 7 张卡时自动守护数据完整性"
+    ],
+    "emitted_signals": [],
+    "received_signals": [],
+    "shared_state": [
+      "测试独立性纪律：每个测试自带复位（新实例或 chong_zhi），不依赖执行顺序、不依赖前一个测试的残留"
+    ],
+    "registered_shared_changes": [
+      "零共享变更——产品代码（scripts/ scenes/ data/ project.godot）零修改，本任务只新增 tests/ 文件"
+    ],
+    "conflict_hotspots": [
+      "zhang_ben.gd 以 load().new() 独立实例化——与 Autoload 单例并存但互不干扰（测试不改单例状态）",
+      "集成测试起 Main 实例（探针模式转正）——测试内自建自清，不污染 .godot 导入缓存",
+      "huai_ka.tres 放 tests/ 不放 data/——坏数据永不入卡池"
+    ],
+    "required_integration_checks": [
+      "Godot 4.7 headless 导入零错误（输出筛查）",
+      "tests/ 四域测试各自退出码 0、pao_pi.bat 全绿退出码 0",
+      "F5 回归：八课全部行为无退化（产品零改动，理论上不可能退化——仍要跑）",
+      "红测验证：huai_ka.tres 被全键校验抓到 FAIL（校验器自己也要被测）"
+    ]
+  },
+  "allowed_existing_files": [
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "Godot引擎词总表.docx",
+    "docs/development_tasks/TASK-009_zidong_ceshi/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-009_zidong_ceshi/TASK_STATE.json",
+    "docs/development_tasks/TASK-009_zidong_ceshi/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-009_zidong_ceshi/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-009_zidong_ceshi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-009_zidong_ceshi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-009_zidong_ceshi/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "tests/ce_zhang_ben.gd",
+    "tests/ce_zhang_ben.gd.uid",
+    "tests/ce_bian_jie.gd",
+    "tests/ce_bian_jie.gd.uid",
+    "tests/ce_shu_ju.gd",
+    "tests/ce_shu_ju.gd.uid",
+    "tests/ce_panding.gd",
+    "tests/ce_panding.gd.uid",
+    "tests/ce_panding_chang_jing.tscn",
+    "tests/huai_ka.tres",
+    "tests/pao_pi.bat",
+    "docs/development_tasks/TASK-009_zidong_ceshi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-009_zidong_ceshi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-009_zidong_ceshi/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "修改 scripts/** / scenes/** / data/** / project.godot（产品代码零改动——为可测性改产品=范围变更升 v2）",
+    "GUT/gdUnit 等测试插件（无插件纪律——运行器手写，几十行够用）",
+    "CI 平台配置（GitHub Actions 等——本地跑批即可，上线后另议）",
+    "测试间共享可变全局状态（每个测试自带复位，不依赖执行顺序）",
+    "把 huai_ka.tres 或任何测试夹具放进 data/（坏数据永不入卡池）",
+    "游戏行为/数值改动（本课只加测试，改游戏=另一任务）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "测试基建 + 账本纯逻辑测试",
+      "behavior": "新建 tests/ce_zhang_ben.gd（extends SceneTree）：_initialize() 入口 + assert_eq(actual, expected, label) 失败计数助手（**禁用裸 assert()**——失败会停在 quit() 前挂死进程）+ passed/failed 计数 + quit(1 if failed > 0 else 0)。测试对象 zhang_ben.gd 以 load('res://scripts/zhang_ben.gd').new() 独立实例化（纯逻辑不需要 Autoload 单例）。用例：记账累加（jia_jing_yan 3+5 → jing_yan=8）、跨级升级扣减（灌 20 → Lv.3 余 12）、倍率入账（she_jing_yan_jia_cheng(1.5) 后 jia_jing_yan(4) → +6）、阈值读表（dangqian_yuzhi 各级取值）。运行：godot --headless --path . --script res://tests/ce_zhang_ben.gd，断言退出码 0 + 'Results: N passed, 0 failed'。",
+      "main_concept": "SceneTree 运行器模式：--script 启动自定义主循环；失败自己数、退出码自己给——push_error 不会自动变成非零退出码",
+      "files": [
+        "tests/ce_zhang_ben.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --script res://tests/ce_zhang_ben.gd 退出码 0 + 输出筛查零命中 + Results 全 passed"
+      ],
+      "manual_checks": [
+        "学生故意改坏一个断言（如期望值 8 改 9）→ 退出码变 1、FAIL 行现形 → 还原（体验红→绿）"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "边界测试：满级封顶 + chong_zhi 归零（探针转正）",
+      "behavior": "新建 tests/ce_bian_jie.gd（同运行器模式）：①满级封顶——灌 400 经验到 Lv.7 经验钉 110/110，再灌 500 等级不动、sheng_ji 广播恰 6 次（TASK-008 step-02 一次性探针转正）；②chong_zhi 归零——弄脏四项（经验/等级/选卡×2/倍率）→ chong_zhi() → 四项全归位（step-04 重开闭环探针的账本半边转正）。全程独立 zhang_ben 实例，无 Main 无 Autoload。信号计数用字典引用（lambda 捕获是值拷贝——TASK-008 探针教训入表）。",
+      "main_concept": "探针→测试的转正路径：一次性验证脚本与常驻回归资产只差三件事——计数、退出码、可重复",
+      "files": [
+        "tests/ce_bian_jie.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --script res://tests/ce_bian_jie.gd 退出码 0 + Results 全 passed"
+      ],
+      "manual_checks": [
+        "学生阅读两个测试并说出各自守护哪条历史决策（封顶=设计决策 2A；chong_zhi=谁常驻谁复位）"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "数据全键校验 + 坏卡夹具 + 卡片抽样",
+      "behavior": "新建 tests/ce_shu_ju.gd：①xiao_guo 全键校验——DirAccess 遍历 data/qianghua/*.tres，逐张断言 xiao_guo ∈ yu.gd match 六键白名单、ming_zi/miao_shu 非空、shu_zhi 为数（TASK-007 P3-4 兑现：拼错键从'人眼查'变'跑批查'）；②鱼种表校验——data/yuzhong/*.tres 逐张 tixing>0、fenzhi>0、贴图路径有效；③红测——tests/huai_ka.tres 坏卡（xiao_guo 故意拼错，**学生亲手在编辑器建**：New Resource → QiangHuaKa → 填字段）被校验器抓到 FAIL（校验器自己也要被测——能放行坏数据 的校验器等于没有）；④卡片抽样——实例化 QiangHuaDanChuang 场景调其抽样方法，断言每次 3 张、互不重复、全部来自卡池 6 张（不放回）。运行器同模式。",
+      "main_concept": "数据校验测试 + 测试夹具（fixture）：.tres 手工建的坏卡是'已知坏数据'——校验器必须抓住它，否则校验器自己不合格（红测思想）",
+      "files": [
+        "tests/ce_shu_ju.gd",
+        "tests/huai_ka.tres"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --script res://tests/ce_shu_ju.gd 退出码 0 + Results 全 passed（含红测 FAIL-as-PASS 断言）"
+      ],
+      "manual_checks": [
+        "学生亲手建 huai_ka.tres（编辑器 New Resource → QiangHuaKa → xiao_guo 填错键）——Resource 三分工第 5 验：.gd 模具/.tres 数据/检查器填表入口三者当场复述",
+        "学生把 huai_ka.tres 的 xiao_guo 改成正确键 → 红测变绿 → 再改回坏键（体验校验器双方向）"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "判定集成测试 + 跑批入口 + 全量回归",
+      "behavior": "新建 tests/ce_panding.gd + tests/ce_panding_chang_jing.tscn（探针模式转正：--script 不加载 Autoload，集成测试走临时场景启动）——起 Main 实例后：①小鱼进嘴圈被吃（is_queued_for_deletion）②大鱼进伤区掉血 3→2 ③大鱼进嘴圈无事 ④同体型进伤区也伤（沿用规则）⑤选贪食后嘴圈 1.15 / 身圈 1.0（v2 拆分守护）。脚本末尾 get_tree().quit(退出码)。新建 tests/pao_pi.bat 跑批入口：import 一次 → 依序跑四域 → 各记 PASS/FAIL → 任一失败总体退出码 1。全量回归：跑批全绿 + F5 八课行为无退化 + 360 帧零命中。",
+      "main_concept": "--script 与场景模式各管一域：纯逻辑走 SceneTree 运行器（快、无场景开销），要 Autoload/场景树的集成测试走测试场景——探针两种模式的正式化",
+      "files": [
+        "tests/ce_panding.gd",
+        "tests/ce_panding_chang_jing.tscn",
+        "tests/pao_pi.bat"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出筛查零命中",
+        "tests/pao_pi.bat 全绿退出码 0（四域测试 + 汇总）"
+      ],
+      "manual_checks": [
+        "学生跑 pao_pi.bat 亲眼见全绿；故意改坏 huai_ka.tres 之外任一断言再跑一次见红（还原）",
+        "F5 全量回归八课行为 + 本课四域测试守护的行为",
+        "学生复述：裸 assert() 为什么挂死 / 退出码对门禁的意义 / 测试独立性"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "result_interpretation",
+        "test_execution"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述 Resource 三分工：.gd=模具定字段、.tres=全部数值、检查器=填表入口（第 5 验，亲手建夹具当场清账）",
+      "学生能复述 push_warning 与 error 的区别（报黄不报红、不崩溃、效果不生效——第 7 课纠正项再验）",
+      "学生能解释为什么裸 assert() 挂死而 assert_eq 计数器不会（assert 失败停在 quit() 前，进程永不退）",
+      "学生能说出退出码为什么是 CI 门禁的语言（门禁只认数字，不读人眼）",
+      "学生能解释测试独立性：每个测试自带复位，不依赖顺序、不依赖残留",
+      "学生能说出红测的价值：校验器必须被已知坏数据验证，否则形同虚设"
+    ],
+    "concepts": [
+      "SceneTree 测试运行器（--script 自定义主循环）",
+      "assert_eq 失败计数 + quit(code)（退出码语义）",
+      "AAA 三段式（Arrange 准备 / Act 执行 / Assert 断言）",
+      "测试夹具（fixture）与红测（校验器自己也要被测）",
+      "--script vs 场景模式（Autoload 边界——两种探针手艺的正式化）",
+      "DirAccess 遍历资源目录做数据校验",
+      "测试独立性（自带复位，不依赖执行顺序）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "零架构变更：产品侧（Main/JieSuan/Yu 及全部脚本数据）不动。新增测试资产全在 tests/ 下——三个纯逻辑运行器（--script 模式，不碰场景树）+ 一个集成测试场景（ce_panding_chang_jing.tscn，运行时手动实例化 Main，探针模式转正）+ 坏卡夹具（数据文件，永不入 data/ 卡池）+ 跑批 bat。project.godot 主场景、Autoload 注册零触碰。tests/ 目录结构详见 DEVELOPMENT_PROMPT。",
+    "current_tree": null,
+    "target_tree": null,
+    "loading_policy": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步）",
+    "tests/ 各运行器退出码 0 + Results 全 passed（实现后每步）",
+    "tests/pao_pi.bat 总体退出码 0（step-04 起）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：八课全量回归零退化（产品零改动，仍要亲眼跑）",
+    "红→绿体验：学生故意改坏断言/夹具见 FAIL，还原见 PASS",
+    "学生亲手建 huai_ka.tres 并复述 Resource 三分工（第 5 验清账）",
+    "跑批入口全绿亲眼确认"
+  ],
+  "comparison_analysis": {
+    "available": true,
+    "scope": "reference_skill",
+    "read_only": true,
+    "behavior_spec": "godot-gdscript-headless-testing 技能（.agents/skills/，只读复习资料）：SceneTree 运行器 + assert_eq 失败计数 + quit(1 if failed>0 else 0)；裸 assert() 挂死陷阱；--script 前 --import；await 需 process_frame；CI 门禁读退出码",
+    "observed_contracts": [
+      "运行器自数成败并 quit(code)——不依赖 assert/push_error 自动改变退出码",
+      "失败计数助手记录后继续跑——单个断言失败不中断整批",
+      "--script 模式不加载 Autoload——需 Autoload 的测试走场景模式（本项目探针经验与技能模式互补）"
+    ],
+    "deliberate_differences": [
+      "技能以纯函数示例为主；本项目账本是带信号与状态的真实对象——独立实例化后被测（更接近真实使用）",
+      "技能 CI 部分不落地（无插件无 CI 平台纪律）——本地 pao_pi.bat 承担门禁语义"
+    ],
+    "unknowns": []
+  },
+  "scope_change_triggers": [
+    "为可测性修改产品代码（加测试钩子/改方法签名——升 v2 议）",
+    "引入 GUT/gdUnit 等测试插件",
+    "测试夹具入 data/ 卡池",
+    "CI 平台配置",
+    "游戏行为/数值任何改动"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-009 v1 进入开发"
+  }
+}

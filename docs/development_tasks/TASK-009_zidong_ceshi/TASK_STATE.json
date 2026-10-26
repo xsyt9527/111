@@ -1,0 +1,66 @@
+{
+  "task_id": "TASK-009",
+  "task_spec_version": 1,
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "current_step": "step-01",
+  "current_checkpoint": "orientation",
+  "next_action": "审批门：等学生回复「确认 TASK-009 v1 进入开发」→ 捕获实现基线 → orientation（复述抽查：Resource 三分工第 5 验 / push_warning vs error 再验 / 裸 assert 挂死原理）→ step-01 测试基建",
+  "implementation_baseline": {
+    "captured_at": null,
+    "commit": null,
+    "preexisting_changes": []
+  },
+  "last_verified_commit": null,
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "pending",
+      "verification_status": "pending",
+      "participation_status": "pending",
+      "changed_files": [],
+      "check_results": [],
+      "next_action": "待审批"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "pending",
+      "verification_status": "pending",
+      "participation_status": "pending",
+      "changed_files": [],
+      "check_results": [],
+      "next_action": "待审批"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "pending",
+      "verification_status": "pending",
+      "participation_status": "pending",
+      "changed_files": [],
+      "check_results": [],
+      "next_action": "待审批"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "pending",
+      "verification_status": "pending",
+      "participation_status": "pending",
+      "changed_files": [],
+      "check_results": [],
+      "next_action": "待审批"
+    }
+  ],
+  "approval_record": {
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null
+  },
+  "capability_decisions": {
+    "superpowers": "unavailable",
+    "godot_skill": "available",
+    "code_review": "not_needed"
+  }
+}
