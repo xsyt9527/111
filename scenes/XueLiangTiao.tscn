@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c1lkgnbr6yuy5"]
+
+[ext_resource type="Script" uid="uid://cjykxemp3ta1o" path="res://scripts/xue_liang_ui.gd" id="1_xueliang"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8fr74"]
+bg_color = Color(1, 0.21960784, 0.12941177, 1)
+
+[node name="XueLiangTiao" type="CanvasLayer" unique_id=7346777]
+script = ExtResource("1_xueliang")
+
+[node name="XueLiangTiaoBg" type="ProgressBar" parent="." unique_id=505828193]
+offset_left = 340.0
+offset_top = 56.0
+offset_right = 640.0
+offset_bottom = 76.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_8fr74")

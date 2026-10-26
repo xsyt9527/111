@@ -22,6 +22,12 @@ func she_jing_yan_jia_cheng(bei: float) -> void:
 
 func jia_jing_yan(fen: int) -> void:
 	# 唯一记账入口：吃鱼经验都从这进账
+	# 满级封顶（设计决策 2A）：已达表尾等级（Lv.7）后经验钉在满格，不升级不发 sheng_ji
+	# ——数据表有尽头，读表方必须处理表外等级；封顶是设计决策不是默认行为
+	if deng_ji > sheng_ji_biao.yuzhi_zu.size():
+		jing_yan = dangqian_yuzhi()  # 钉在满格（表尾阈值）
+		jing_yan_bian_hua.emit(jing_yan, dangqian_yuzhi())  # 只刷条，不广播升级
+		return
 	jing_yan += fen
 	var yuzhi := dangqian_yuzhi()
 	if jing_yan >= yuzhi:
@@ -37,6 +43,15 @@ func dangqian_yuzhi() -> int:
 	if deng_ji > yuzhi_zu.size():
 		return yuzhi_zu[-1]
 	return yuzhi_zu[deng_ji - 1]
+
+
+func chong_zhi() -> void:
+	# 局内状态归零唯一入口（重开时用）：账本是 Autoload 常驻——谁常驻谁负责自己的复位
+	# 场景侧（玩家 buff/血量/鱼群）随 Main 销毁重建自动全新，只有这里需要手动清
+	jing_yan = 0
+	deng_ji = 1
+	yi_xuan_ka.clear()
+	jing_yan_jia_cheng = 1.0
 
 
 func xuan_ka(ka: QiangHuaKa) -> void:

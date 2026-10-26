@@ -3,6 +3,9 @@ class_name Yu
 # 玩家鱼：移动规则 + 大吃小判定都在这里
 
 @export var yidong_sudu := 300.0  # 移动速度，像素/秒
+@export var zuida_xue := 3  # 血量上限（撞大鱼掉 1；改这里=改难度）
+
+signal xue_liang_bian_hua(dangqian: int, zuigao: int)  # 血量变动：血条刷新（玩家是血量的唯一所有者）
 
 const TINGZHI_JULI := 5.0  # 到达判定距离（像素）：离目标点这么近就算到了
 var mubiao_dian: Vector2  # 游动目标点（世界坐标），由 Main 写入
@@ -11,14 +14,19 @@ var tixing := 1.0  # 玩家体型系数（第 5 课成长会增大它，能吃�
 var wudi := false  # 受伤后的短暂无敌标记
 var mei_ji_fu_dian := 0.0  # 催肥：每级体型额外增幅（叠在 MEI_JI_TIXING 上）
 var bai_shi_jian := 0.0  # 摆尾相位时钟：游动时累积，驱动 sin 摆动
+var xue_liang := 0  # 当前血量（_ready 里置满）
 
-@onready var shang_qu: Area2D = $ShangQu  # 判定区（原 PandingQu）：吃/伤都归它管
+@onready var zui_qu: Area2D = $ZuiQu  # 嘴圈（吃）：比我小的进了就被吃——收益的唯一入口
+@onready var shang_qu: Area2D = $ShangQu  # 伤区（伤）：比我大的进了才掉血——代价的唯一入口
 @onready var chi_qu: Area2D = $ChiQu  # 吸附区（磁吸）：只打标记，判定不归它管——分行为须分 Area2D
 @onready var wudi_dingshi: Timer = $WudiDingshi  # 无敌计时器
 
 
 func _ready() -> void:
 	mubiao_dian = position  # 开局原地不动
+	xue_liang = zuida_xue  # 开局满血
+	add_to_group("wan_jia")  # 血条经 group 找到玩家，不依赖节点路径
+	zui_qu.area_entered.connect(_on_zui_qu_entered)
 	shang_qu.area_entered.connect(_on_shang_qu_entered)
 	chi_qu.area_entered.connect(_on_chi_qu_entered)
 	chi_qu.area_exited.connect(_on_chi_qu_exited)
@@ -41,16 +49,23 @@ func _process(delta: float) -> void:
 	$Sprite2D.rotation = sin(bai_shi_jian * 10.0) * 0.12 / tixing  # 摆幅与体型反比：大鱼摆得稳重
 
 
+func _on_zui_qu_entered(qu: Area2D) -> void:
+	# 闯进嘴圈：只管吃（收益的唯一入口）。比我大的进嘴圈直接无视——掉血归伤区管
+	var yu_npc := qu.get_parent() as YuNpc
+	if yu_npc == null:
+		return
+	if tixing > yu_npc.tixing:
+		yu_npc.bei_chi()  # 我比它大：吃（无敌期照样能吃——吃与伤分家后互不阻塞）
+		_tun_chi_maichong()  # 吞吃反馈：玩家轻弹一下
+
+
 func _on_shang_qu_entered(qu: Area2D) -> void:
-	# 闯进判定区的是 NPC 的 Area2D；它的父节点才是 YuNpc 本体
+	# 闯进伤区：只管掉血（代价的唯一入口）。吃逻辑已移嘴圈；无敌期内跳过，不重复伤
 	var yu_npc := qu.get_parent() as YuNpc
 	if yu_npc == null:
 		return  # 不是鱼群（将来可能有别的区域闯进来），直接忽略
-	if tixing > yu_npc.tixing:
-		yu_npc.bei_chi()  # 我比它大：吃（无敌期照样能吃）
-		_tun_chi_maichong()  # 吞吃反馈：玩家轻弹一下
-	elif not wudi:
-		_shoushang()  # 它比我大：受伤（无敌期内跳过，不重复伤）
+	if yu_npc.tixing >= tixing and not wudi:
+		_shoushang()  # 它不比我小：受伤（含同体型——沿用拆分前规则）
 
 
 func _on_chi_qu_entered(qu: Area2D) -> void:
@@ -68,10 +83,20 @@ func _on_chi_qu_exited(qu: Area2D) -> void:
 
 
 func _shoushang() -> void:
-	# 受伤统一入口：第 8 课血量/死亡系统在这里挂钩
+	# 受伤统一入口：第 3 课挖好的挂钩点——闪红 + 无敌 + 扣血（TASK-008）
 	wudi = true
 	modulate = Color(1.0, 0.4, 0.4)  # 闪红示警
 	wudi_dingshi.start()
+	xue_liang -= 1
+	xue_liang_bian_hua.emit(xue_liang, zuida_xue)
+	if xue_liang <= 0:
+		_si_wang()
+
+
+func _si_wang() -> void:
+	# 血尽：切结算页。change_scene_to_file 整场景销毁重建——
+	# Main 全树（玩家 buff/bei_xi 标记/鱼群/弹窗）就地释放，账本（Autoload）常驻带走数据
+	get_tree().change_scene_to_file("res://scenes/JieSuan.tscn")
 
 
 func _jiechu_wudi() -> void:
@@ -102,8 +127,8 @@ func _on_ka_yi_xuan(ka: QiangHuaKa) -> void:
 			yidong_sudu *= 1.0 + ka.shu_zhi
 		"mei_ji_tixing":  # 催肥：每级体型增幅叠加
 			mei_ji_fu_dian += ka.shu_zhi
-		"tun_shi_fanwei":  # 贪食：判定圈形状放大（随根 scale 再乘）
-			$PandingQu/CollisionShape2D.scale *= Vector2.ONE * (1.0 + ka.shu_zhi)
+		"tun_shi_fanwei":  # 贪食：嘴圈形状放大（随根 scale 再乘）——身圈不动，只放大收益不放大代价
+			$ZuiQu/CollisionShape2D.scale *= Vector2.ONE * (1.0 + ka.shu_zhi)
 		"wudi_shi_chang":  # 活力：无敌计时器时长乘 (1+shu_zhi)
 			wudi_dingshi.wait_time *= 1.0 + ka.shu_zhi
 		"jing_yan_jia_cheng":  # 睿智：倍率入账本（bei_chi 乘算）

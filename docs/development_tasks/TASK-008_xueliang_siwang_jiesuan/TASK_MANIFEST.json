@@ -2,7 +2,7 @@
   "manifest_schema_version": 2,
   "generated_by_skill_version": "2.0.0",
   "task_id": "TASK-008",
-  "task_spec_version": 1,
+  "task_spec_version": 2,
   "slug": "xueliang-siwang-jiesuan",
   "title": "血量、死亡与结算（血条 + 满级封顶 + 结算页 + 一键重开）",
   "engine_version": "4.7",
@@ -11,10 +11,10 @@
   "execution_mode": "teaching",
   "approval_status": "approved",
   "delivery_status": "approved",
-  "learning_status": "not_started",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
   "baseline_commit": "22a851cf373ef558b4c374a6597c9a5b3b76621e",
-  "objective": "肉鸽补上最后一环——有代价的死亡：玩家血量 3 点（第 3 课 _shoushang() 挂钩点兑现），血条 UI 听玩家信号刷新（信号驱动 UI 模式二次复用）；血尽切结算场景（change_scene_to_file 场景切换——场景销毁重建 vs Autoload 常驻的生命周期大考，bei_xi 悬空引用随场景销毁自然解决=CODE_REVIEW P3-2 兑现）；结算页展示本局等级与 build（yi_xuan_ka 卡名列表——第 6 课预埋数据见天日）；账本 chong_zhi() 重置（P3-3 兑现）+ 一键重开闭环；满级封顶决策落地（TASK-005/006/007 三次 P3 合并拍板）。F5 可观察：撞大鱼三次血尽 → 结算页显示 Lv 与已选卡 → 点重开一切归零重新开局。",
+  "objective": "肉鸽补上最后一环——有代价的死亡：玩家血量 3 点（第 3 课 _shoushang() 挂钩点兑现），血条 UI 听玩家信号刷新（信号驱动 UI 模式二次复用）；血尽切结算场景（change_scene_to_file 场景切换——场景销毁重建 vs Autoload 常驻的生命周期大考，bei_xi 悬空引用随场景销毁自然解决=CODE_REVIEW P3-2 兑现）；结算页展示本局等级与 build（yi_xuan_ka 卡名列表——第 6 课预埋数据见天日）；账本 chong_zhi() 重置（P3-3 兑现）+ 一键重开闭环；满级封顶决策落地（TASK-005/006/007 三次 P3 合并拍板）。F5 可观察：撞大鱼三次血尽 → 结算页显示 Lv 与已选卡 → 点重开一切归零重新开局。【v2 变更：step-01~04 全部实现验证完毕后，贪食观察项表态触发范围变更——学生选择实施嘴身判定圈拆分（+step-05）：贪食只放大嘴圈（吃），身圈（伤）大小不变，消除'强化连代价一起放大'的副作用】",
   "audit_freshness": {
     "audited_commit": "22a851cf373ef558b4c374a6597c9a5b3b76621e",
     "environment_checked_at": "2026-10-24T01:50:00Z",
@@ -35,16 +35,18 @@
       "满级封顶（账本侧边界处理）",
       "结算场景（等级 + build 展示 + 重开按钮）",
       "账本重置 chong_zhi()（局内状态归零唯一入口）",
-      "死亡-重开闭环（change_scene_to_file 双向切换）"
+      "死亡-重开闭环（change_scene_to_file 双向切换）",
+      "嘴身判定圈拆分（v2：ZuiQu 专职吃 / ShangQu 专职伤）"
     ],
     "owned_scenes": [
       "res://scenes/XueLiangTiao.tscn（新建：血条 UI）",
-      "res://scenes/JieSuan.tscn（新建：结算页，场景切换目标）"
+      "res://scenes/JieSuan.tscn（新建：结算页，场景切换目标）",
+      "res://scenes/Yu.tscn（v2：+ZuiQu 嘴圈节点）"
     ],
     "owned_scripts": [
       "res://scripts/xue_liang_ui.gd（新建）",
       "res://scripts/jie_suan.gd（新建）",
-      "res://scripts/yu.gd（血量 + 死亡 + 信号）",
+      "res://scripts/yu.gd（血量 + 死亡 + 信号 + v2 判定入口拆分）",
       "res://scripts/zhang_ben.gd（满级封顶 + chong_zhi）"
     ],
     "owned_config_tables": []
@@ -79,12 +81,14 @@
     ],
     "registered_shared_changes": [
       "zhang_ben.gd jia_jing_yan() 满级封顶分支（deng_ji 达表尾后经验停涨、不再升级弹窗）——行为变更已审批登记",
-      "scenes/Main.tscn 新增 XueLiangTiao 实例节点"
+      "scenes/Main.tscn 新增 XueLiangTiao 实例节点",
+      "scenes/Yu.tscn 新增 ZuiQu 嘴圈节点 + yu.gd 判定入口一拆为二 + 贪食分支改指向 ZuiQu（v2）"
     ],
     "conflict_hotspots": [
-      "yu.gd —— _shoushang() 加扣血与死亡判定；移动/判定/buff/动画结构不动",
-      "zhang_ben.gd —— jia_jing_yan() 加封顶分支 + 新增 chong_zi()；既有信号与入口零语义变化",
-      "JieSuan.tscn 为独立场景（不实例化进 Main）——project.godot 主场景仍 Main.tscn 零触碰"
+      "yu.gd —— _shoushang() 加扣血与死亡判定；移动/判定/buff/动画结构不动；v2 判定入口拆分动 _on_shang_qu_entered（拆成吃/伤两个回调）",
+      "zhang_ben.gd —— jia_jing_yan() 加封顶分支 + 新增 chong_zhi()；既有信号与入口零语义变化",
+      "JieSuan.tscn 为独立场景（不实例化进 Main）——project.godot 主场景仍 Main.tscn 零触碰",
+      "Yu.tscn 新增 ZuiQu（v2）——只加节点不动既有 ShangQu/ChiQu 结构，避免第 7 课改名漏改类事故重演"
     ],
     "required_integration_checks": [
       "Godot 4.7 headless 导入与运行零错误（输出筛查）",
@@ -96,6 +100,7 @@
     "scripts/yu.gd",
     "scripts/zhang_ben.gd",
     "scenes/Main.tscn",
+    "scenes/Yu.tscn",
     "docs/引擎词总表.md",
     "LEARNING_ROADMAP.md",
     "docs/TASK_INDEX.md",
@@ -121,9 +126,9 @@
     "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/CODE_REVIEW.md"
   ],
   "forbidden_systems": [
-    "修改 yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / jing_yan_ui.gd / qiang_hua_dan_chuang.gd / QiangHuaDanChuang.tscn / Yu.tscn / YuNpc.tscn / project.godot / data/*",
+    "修改 yu_npc.gd / yu_qun.gd / yu_zhong.gd / main.gd / jing_yan_ui.gd / qiang_hua_dan_chuang.gd / QiangHuaDanChuang.tscn / YuNpc.tscn / project.godot / data/*",
     "血量之外的玩家新属性（连击/护盾等——迭代内容）",
-    "嘴/身判定圈拆分（贪食副作用——学生已拍板方案 A，血量上线后仅作观察项；改主意=范围变更升 v2）",
+    "嘴圈位置偏移/挂鱼头前方等非同心改造（v2 只做同心拆分：ZuiQu 与 ShangQu 同圆心同半径起步）",
     "死因统计/游戏时长/最高等级记录等结算扩展（后续迭代）",
     "局外永久解锁/元进度（明确不做：纯局内肉鸽）",
     "第 9 课的测试代码（tests/ 目录本课不建）"
@@ -206,6 +211,24 @@
         "全量回归：七课行为 + 本课闭环（学生确认）",
         "贪食观察项：血量疼了之后感受贪食放大受伤范围的代价——保持方案 A 或提出范围变更"
       ]
+    },
+    {
+      "step_id": "step-05",
+      "title": "嘴身判定圈拆分（v2：贪食观察项落地）",
+      "behavior": "Yu.tscn 新增第三个 Area2D：ZuiQu（嘴圈，collision_mask=2，CircleShape2D r=22 同 ShangQu 起步 + CollisionShape2D）——专职吃；ShangQu 名字语义归位（伤区）专职受伤；ChiQu 磁吸不动。yu.gd：_on_shang_qu_entered 拆成两个回调——新 _on_zui_qu_entered（tixing > npc.tixing → bei_chi() + _tun_chi_maichong()，无敌期照样吃）/ _on_shang_qu_entered（只留受伤分支：非玩家区域忽略、not wudi → _shoushang()，吃逻辑移除）；贪食分支 $ShangQu/CollisionShape2D 改 $ZuiQu/CollisionShape2D。F5：选贪食只放大嘴圈——吃得更远、挨打范围不变；大鱼进身圈照常掉血。",
+      "main_concept": "分行为须分 Area2D 第三次递进：第 7 课按行为分（磁吸打标记/判定做裁决），本步按结果分（吃=收益/伤=代价）——一个圈管两种相反结果，强化就无法只放大收益不放大代价",
+      "files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "\"$GODOT_BIN\" --headless --path . --fixed-fps 60 --quit-after 360 输出 error/not found 筛查零命中"
+      ],
+      "manual_checks": [
+        "F5 选贪食：嘴圈放大（吃更远）、身圈不变（挨打范围原样）——远程树或探针验证 shape scale",
+        "回归：吃鱼/受伤/磁吸/死亡闭环/重开闭环全照旧；贪食卡零报错（$ 路径指向新嘴圈）"
+      ]
     }
   ],
   "participation_checkpoints": [
@@ -272,7 +295,7 @@
     "entry_scene": "res://scenes/Main.tscn",
     "lifecycle_rationale": "新增两个独立场景：XueLiangTiao（实例化进 Main 常驻显示）与 JieSuan（不进 Main——change_scene_to_file 的切换目标，运行时才加载）。死亡 = Main 全树销毁（玩家 buff/bei_xi 标记/鱼群/弹窗全部释放，P3-2 悬空引用随销毁自然解决）+ JieSuan 加载；重开 = JieSuan 销毁 + Main 重建 + 账本 chong_zhi（Autoload 是唯一跨场景存活者，必须手动归零）。project.godot 主场景仍 Main.tscn 零触碰。",
     "current_tree": "root\n├─ ZhangBen (Autoload)  ← +满级封顶 +chong_zhi（TASK-008）\n└─ Main\n   ├─ Haodi / Yu / JingYanTiao / QiangHuaDanChuang / YuQun\n   └─ (Yu 内：Sprite2D / ShangQu / ChiQu / WudiDingshi)",
-    "target_tree": "root\n├─ ZhangBen (Autoload)  ← +满级封顶 +chong_zhi（TASK-008）\n├─ [运行中] Main                        ← +XueLiangTiao 实例（TASK-008）\n│  ├─ Haodi / Yu(+血量+死亡) / JingYanTiao / QiangHuaDanChuang / YuQun\n│  └─ XueLiangTiao (实例, CanvasLayer)  ← TASK-008：血条\n│     └─ XueLiangTiaoBg (ProgressBar 红填充)\n└─ [死亡后替换为] JieSuan (CanvasLayer 根, 独立场景)\n   ├─ BanDi (ColorRect 全屏)\n   ├─ BiaoTi (Label \"本局终了\")\n   ├─ DengJi (Label \"Lv.X\")\n   ├─ KaLieBiao (VBoxContainer 动态填已选卡名)\n   └─ ChongKai (Button \"再来一次\")",
+    "target_tree": "root\n├─ ZhangBen (Autoload)  ← +满级封顶 +chong_zhi（TASK-008）\n├─ [运行中] Main                        ← +XueLiangTiao 实例（TASK-008）\n│  ├─ Haodi / Yu(+血量+死亡) / JingYanTiao / QiangHuaDanChuang / YuQun\n│  │  └─ (Yu 内：Sprite2D / ZuiQu(嘴圈,吃) / ShangQu(伤区,伤) / ChiQu(吸附) / WudiDingshi ← v2 拆分)\n│  └─ XueLiangTiao (实例, CanvasLayer)  ← TASK-008：血条\n│     └─ XueLiangTiaoBg (ProgressBar 红填充)\n└─ [死亡后替换为] JieSuan (CanvasLayer 根, 独立场景)\n   ├─ BanDi (ColorRect 全屏)\n   ├─ BiaoTi (Label \"本局终了\")\n   ├─ DengJi (Label \"Lv.X\")\n   ├─ KaLieBiao (VBoxContainer 动态填已选卡名)\n   └─ ChongKai (Button \"再来一次\")",
     "ownership": [
       "yu.gd / zhang_ben.gd / Main.tscn：本任务所有（前序已关闭，本课在其上扩展）",
       "XueLiangTiao / JieSuan（新场景新脚本）：本任务新建",
@@ -307,6 +330,7 @@
     "F5：三撞血尽 → 结算页（等级 + build 卡名）→ 重开 → 全归零",
     "F5：满级封顶（条停满不弹窗）+ 低级升级照旧",
     "F5：第二次局完整可玩（升级/选卡/磁吸/死亡闭环无残留）",
+    "F5：贪食只放大嘴圈（吃更远）、身圈不变（挨打范围原样）（v2）",
     "全量回归：七课行为无退化"
   ],
   "comparison_analysis": {
@@ -319,7 +343,7 @@
     "unknowns": []
   },
   "scope_change_triggers": [
-    "嘴/身判定圈拆分（贪食副作用——观察项变实施=范围变更升 v2）",
+    "嘴圈位置偏移/非同心改造（超出 v2 同心拆分范围）",
     "死因/时长/最高纪录等结算扩展",
     "血量数值/伤害规则改动超出 zuida_xue 扣 1 模式",
     "修改零触碰清单内文件（yu_npc.gd / main.gd / 弹窗 / data/* 等）",
@@ -327,9 +351,9 @@
   ],
   "approval": {
     "approved": true,
-    "approved_version": 1,
-    "approved_at": "2026-10-24T06:00:00Z",
-    "exact_user_text": "确认 TASK-008 v1 进入开发",
-    "canonical_example": "确认 TASK-008 v1 进入开发"
+    "approved_version": 2,
+    "approved_at": "2026-10-26T01:40:33Z",
+    "exact_user_text": "确认 TASK-008 v2 进入开发",
+    "canonical_example": "确认 TASK-008 v2 进入开发"
   }
 }

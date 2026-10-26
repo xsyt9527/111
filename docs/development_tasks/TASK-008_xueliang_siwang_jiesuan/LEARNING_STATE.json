@@ -1,14 +1,89 @@
 {
   "task_id": "TASK-008",
-  "task_spec_version": 1,
-  "learning_status": "in_progress",
-  "concepts_introduced": [],
+  "task_spec_version": 2,
+  "learning_status": "partially_demonstrated",
+  "concepts_introduced": [
+    "数据表边界处理（step-02）：阈值表有尽头，读表方必须处理表外等级——dangqian_yuzhi() 只兜了显示层，记账入口 jia_jing_yan() 不封顶会无限升级；封顶是设计决策不是默认行为",
+    "change_scene_to_file 场景切换（step-03）：销毁 current_scene 全树重建新场景（玩家 buff/bei_xi 标记/鱼群/弹窗就地释放=代码评审 P3-2 兑现），Autoload 全程不动（账本数据常驻）；帧末生效，碰撞回调内调用安全",
+    "重开的两半（step-04）：场景侧靠销毁重建（玩家/血量/buff/鱼群自动全新），账本侧靠 chong_zhi()（Autoload 常驻必须手动归零）——谁常驻谁负责自己的复位（P3-3 兑现）"
+  ],
   "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "editor_operations_completed": [
+    "ProgressBar 主题覆盖换装：Theme Overrides → Styles → fill → New StyleBoxFlat（红色填充 + Content Margins 归零）——XueLiangTiao.tscn 中 StyleBoxFlat_8fr74 为学生亲手配置"
+  ],
+  "verification_completed": [
+    "step-01 真人测试：贪食卡修复后重测不再报错；远程树（Remote）展开 Main→Yu 查看 Xue Liang 实时值"
+  ],
   "integration_contract_understood": null,
-  "student_questions": [],
+  "student_questions": [
+    "orientation 决策 2 时主动提出：'可不可以按关卡来设置等级上限，然后专门制作一个无等级上限的关卡'——关卡制+无尽模式的产品思路；已答复记入后续迭代候选（封顶值读阈值表=未来每关换表即得不同上限），本课按 A 落地"
+  ],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 定位讲解：_shoushang() 第 3 课空挂钩（本课接扣血）、yi_xuan_ka 只入账无展示（结算页消费）、信号驱动 UI 模式将从'账本→经验条'照抄成'玩家→血条'、change_scene_to_file 将首次引入场景切换",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-24T06:05:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "三个设计决策：1A 血量在玩家身上+信号广播、3A change_scene_to_file 整场景重载+账本 chong_zhi（均推荐项）；决策 2 学生未直选而是提出'按关卡设上限+无上限关卡'——记后续迭代候选后本课按 A（封顶 Lv.7，上限读阈值表为关卡制留门）落地",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-24T06:10:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "复述抽查两项全过：push_warning vs error（'报黄色，效果不生效'——昨日纠正完全吸收）；场景生命周期（'Main 底下清除，账本保留'、'buff 跟玩家一起消失不用手动清'——本课核心口诀'谁常驻谁负责复位'的前置理解到位）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-24T06:15:00Z"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "血条换装：学生按 Styles 讲解自行给 XueLiangTiaoBg 配 fill StyleBoxFlat 红填充（含 Content Margins 归零），并重测贪食卡不再报错（修复验证）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-24T08:30:00Z"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "远程树（Remote）查看运行中 Yu 节点 Script Variables 的 Xue Liang 实时值——本地/远程树分工第二次实操（第 5 课看 ZhangBen 经验后）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-24T08:30:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-05",
+      "checkpoint_id": "orientation",
+      "summary": "v2 orientation 复述两题全过：同心双圈大鱼同入只掉 1 次血（'只有一个是接收受伤的'——掉血入口唯一性）；贪食后大鱼咬人距离'不变，一样近'（身圈未被放大）。分行为须分 Area2D 第三次递进（按结果分）理解到位",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-26T02:00:00Z"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "贪食观察项表态（任务包指定）：学生先问'Yu 不是已经分 2 个区了？'——讲解现有双圈是按行为分（磁吸打标记/判定做裁决），拆分是按结果分（吃=收益/伤=代价）后理解了差别；确认闭环/第二局/全量回归三项全过后，主动选择实施拆分（非默认接受方案 A）→ 升 v2 加 step-05",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-26T00:00:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "F5 完整闭环验收通过：死亡→结算页数字正确→重开归零；第二局完整可玩无残留；全量回归七课行为无退化（学生回复'前3个ok'）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-26T00:00:00Z"
+    }
+  ]
 }

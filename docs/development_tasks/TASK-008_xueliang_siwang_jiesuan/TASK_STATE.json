@@ -1,37 +1,100 @@
 {
   "task_id": "TASK-008",
-  "task_spec_version": 1,
+  "task_spec_version": 2,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
-  "current_step": "step-01",
-  "current_checkpoint": "orientation",
-  "next_action": "orientation 检查点：两项复述抽查（push_warning vs error / Autoload 与场景生命周期）+ 三个设计决策，然后开始 step-01",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
+  "current_step": "step-05",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-008（v1+v2）交付完成待 last_verified_commit 回填：先提交实现拿哈希，回填后 state-close 提交。下一课 TASK-009（自动测试：经验计算/大小判定/卡片抽样无头跑批 + 挂账断言——chong_zhi 归零/满级封顶/xiao_guo 全键校验/Resource 三分工第 5 验）需新建任务包并停等审批",
   "implementation_baseline": {
-    "captured_at": "2026-10-24T06:00:48.935558Z",
-    "commit": "9c8a055920dd5724bf46e13f38731e656bacd23c",
+    "captured_at": "2026-10-26T01:41:28.315635Z",
+    "commit": "ad1e9415c2a4b7aa3f4e5077561e4583a330dff8",
     "preexisting_changes": [
       {
         "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/LEARNING_STATE.json",
         "status": [
           "unstaged"
         ],
-        "fingerprint": "sha256:49658d9b37685b57760f8d3a693a44b20970dc96c0f55bebc7cebbe722e74475"
+        "fingerprint": "sha256:3cadd8296c8cd30b499fc63544a42cbb64f6ec49a3b09067ecd06476f7cb8a52"
       },
       {
         "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_MANIFEST.json",
         "status": [
           "unstaged"
         ],
-        "fingerprint": "sha256:466dffdd699ff829454cfec9a1fe0d5d8bd18dbf67af6d43f9b859e301967754"
+        "fingerprint": "sha256:aa744d90388442435fd3bff0347378eb431a25c9af0189a2b2b9bc9dc78fbdc5"
       },
       {
         "path": "docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/TASK_STATE.json",
         "status": [
           "unstaged"
         ],
-        "fingerprint": "sha256:952836d9ddb7eb170d7c90f20328c017572783ab6f875651cc7cb53ecd8b397a"
+        "fingerprint": "sha256:409ed41f5bc792888546c1038368e593808b3588f98cfdbd1f20ad0b3c58ab28"
+      },
+      {
+        "path": "scenes/JieSuan.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:de99ecb4a831cc83889f79d5853d1b2229788861b4d6dd12aed7ab04bc3160d1"
+      },
+      {
+        "path": "scenes/Main.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c1655a4a8b9bf7a3bacb607fbc2e825f8d247a03ba26466e04ac39b906d8670e"
+      },
+      {
+        "path": "scenes/XueLiangTiao.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a2e8c75a47d18eb4a89c71f43f1b79cea91493bf669c45fc71dfd955d42a6d4f"
+      },
+      {
+        "path": "scripts/jie_suan.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b8b457582d78ca4ae8559f535c728186d7ca3f1fa86e4cde698b90734d72ffa"
+      },
+      {
+        "path": "scripts/jie_suan.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8af868bcb34701a0d07418688ecc20ac5cdb1b1d98bb72cc672d180a16170863"
+      },
+      {
+        "path": "scripts/xue_liang_ui.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c99cfe49a44d01d6900b7b15a4959af158b6939f761763601662e6f1f03645f1"
+      },
+      {
+        "path": "scripts/xue_liang_ui.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e0a5ac9b09533396683c59aa3286aa784f18f7c6556de9b1e73cfa832743f679"
+      },
+      {
+        "path": "scripts/yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a1e5bb3a4ef8167fe7627e5f1e6eea24e5f2d2f6a3c754bb02d916b3a7a246ae"
+      },
+      {
+        "path": "scripts/zhang_ben.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3304089b63bd96b370d2da35cb8bcd4cc3e49f934052fd78b0f25188dcbb196d"
       }
     ]
   },
@@ -40,45 +103,100 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "scripts/yu.gd",
+        "scripts/xue_liang_ui.gd",
+        "scripts/xue_liang_ui.gd.uid",
+        "scenes/XueLiangTiao.tscn",
+        "scenes/Main.tscn"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中（xue_liang_ui.gd.uid 已生成）",
+        "headless --fixed-fps 60 --quit-after 360 退出码 0 + 输出筛查零命中",
+        "血尽占位 push_warning 就位（死亡流程 step-03 接线）；血条经 wan_jia group 找玩家（Yu._ready 先于 XueLiangTiao._ready，树序保证）",
+        "学生真人测试发现贪食卡 Node not found：第 7 课改名 PandingQu→ShangQu 时漏改 match 内贪食分支 $ 路径（自动检查不点卡的盲区）——已修复为 $ShangQu，一次性探针直调选贪食 TONGGUO（判定圈 1.0→1.15 零报错）后删除"
+      ],
+      "next_action": "检查点已过：贪食卡重测通过、血条 Styles 换装（学生亲手）、远程树 Xue Liang 查看"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "scripts/zhang_ben.gd"
+      ],
+      "check_results": [
+        "jia_jing_yan() 表头加封顶分支：deng_ji > yuzhi_zu.size()（即 Lv.7）→ 经验钉 dangqian_yuzhi() 满格、只发 jing_yan_bian_hua 不发 sheng_ji（弹窗/长大/血条三家听众自动静默）",
+        "headless --import 退出码 0 + 输出筛查零命中；--fixed-fps 60 --quit-after 360 零命中（注：首次执行因引擎路径笔误未真跑——bash No such file 假阴性，已用 AGENTS.md 认证路径 D:/001/ 重跑确认）",
+        "一次性探针（ceshi.tscn 真起 Main + Autoload，用完已删）：灌 400 经验 → Lv.7 经验 110/110；再灌 500 → 等级不动、经验钉满格、sheng_ji 恰好广播 6 次（Lv.2~7）→ TONGGUO",
+        "探针过程教训两条：load() 返回 Variant 不能用 := 推断（改显式类型注解）；探针场景须带 --quit-after 保险（脚本解析错误时场景不会自退，曾残留进程已 taskkill）"
+      ],
+      "next_action": "检查点已过：学生以'下一课'直通（封顶分支表头早退，低级原逻辑零改动；探针已验证 Lv.7 钉死）"
     },
     {
       "step_id": "step-03",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "scripts/yu.gd",
+        "scripts/jie_suan.gd",
+        "scripts/jie_suan.gd.uid",
+        "scenes/JieSuan.tscn"
+      ],
+      "check_results": [
+        "yu.gd _si_wang() 占位 push_warning 换成 change_scene_to_file('res://scenes/JieSuan.tscn')——帧末生效，碰撞回调内调用安全",
+        "新建 JieSuan.tscn（CanvasLayer 根：BanDi/BiaoTi/DengJi/KaLieBiao/ChongKai）+ jie_suan.gd（_ready 读账本：等级标签 + 动态填卡名，空卡列表有占位文案；ChongKai 按钮暂不接线，step-04 接）",
+        "headless --import 退出码 0 零命中（jie_suan.gd.uid 已生成）；--fixed-fps 60 --quit-after 360 退出码 0 零命中",
+        "一次性探针（ceshi.tscn 真起 Main，用完已删）：current_scene 指给 Main 后直调 _shoushang 三次 → 切到 JieSuan、等级标签 Lv.2、卡列表 1 张'磁吸'、账本 deng_ji=2/yi_xuan_ka=1 常驻不灭 → TONGGUO"
+      ],
+      "next_action": "检查点已过：学生 F5 三撞血尽亲见结算页（等级+卡名）、按钮不响应=预期中间态、回归正常"
     },
     {
       "step_id": "step-04",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/jie_suan.gd"
+      ],
+      "check_results": [
+        "zhang_ben.gd +chong_zhi()：账本四项归零唯一入口（经验/等级/选卡/倍率）——谁常驻谁负责自己的复位（P3-3 兑现）",
+        "jie_suan.gd ChongKai 接线：pressed → chong_zhi() + change_scene_to_file 回 Main；接线放 _ready 首行（空卡分支带 return，放尾部会被跳过——实现中自查发现）",
+        "headless --import 退出码 0 零命中；--fixed-fps 60 --quit-after 360 退出码 0 零命中",
+        "check_task_scope.py check：12 allowed / 0 violation（PYTHONUTF8=1 必需——GBK 读中文路径炸 reader 线程）",
+        "一次性探针（用完已删）：Lv.2+两卡脏数据 → 三撞死亡 → 模拟点「再来一次」→ 重开 Main、账本四项 0/1/0张/1.0、新玩家 3/3 血·体型 1.0·游速 300·确为新实例 → TONGGUO"
+      ],
+      "next_action": "验证三项通过（闭环/第二局/回归）；贪食观察项表态=选择拆分 → 升 v2（见 step-05）"
+    },
+    {
+      "step_id": "step-05",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "scenes/Yu.tscn",
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        "Yu.tscn +ZuiQu（Area2D, mask=2, CircleShape2D_zui r=22 同心）——只加节点，ShangQu/ChiQu 结构零触碰（防第 7 课改名漏改类事故）",
+        "yu.gd：判定入口一拆为二——_on_zui_qu_entered 只吃（无敌期照样吃，吃与伤分家后互不阻塞）/ _on_shang_qu_entered 只伤（含同体型，沿用拆分前规则）；贪食分支 $ShangQu→$ZuiQu（第 7 课漏改前科，本次探针重点盯）",
+        "v2 基线捕获 ad1e941 + 12 个 v1 既有改动路径入指纹；范围检查 5 allowed / 8 pre-existing / 0 violation",
+        "headless --import 退出码 0 零命中；--fixed-fps 60 --quit-after 360 退出码 0 零命中",
+        "一次性探针（用完已删）四项全过：①贪食后嘴圈 1.15 身圈 1.0 ②小鱼进嘴圈被吃 ③大鱼进伤区血 3→2 ④大鱼进嘴圈无事 → TONGGUO；探针自身又踩 load():= 推断坑（step-02 同款，--quit-after 保险兜住进程）"
+      ],
+      "next_action": "godot-inspection 检查点：学生 F5 验收贪食拆分 + 回归全部功能"
     }
   ],
   "approval_record": {
-    "approved_version": 1,
-    "approved_at": "2026-10-24T06:00:00Z",
-    "exact_user_text": "确认 TASK-008 v1 进入开发"
+    "approved_version": 2,
+    "approved_at": "2026-10-26T01:40:33Z",
+    "exact_user_text": "确认 TASK-008 v2 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",

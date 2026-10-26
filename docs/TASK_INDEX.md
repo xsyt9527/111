@@ -9,3 +9,4 @@
 | TASK-005 | v1 | 经验与成长（Autoload 账本 + 记账 + 长大 + 经验条） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-004 | docs/development_tasks/TASK-005_jingyan_chengzhang/ |
 | TASK-006 | v1 | 升级三选一（强化卡注册表 + 暂停 + 不放回抽样 + 弹窗） | approved | complete | partially_demonstrated | ready | student-01 | TASK-004, TASK-005 | docs/development_tasks/TASK-006_shengji_sanxuanyi/ |
 | TASK-007 | v1 | 强化生效与动画（match 六卡 + 磁吸双 Area2D + Tween + 摆尾） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-005, TASK-006 | docs/development_tasks/TASK-007_qianghua_shengxiao/ |
+| TASK-008 | v2 | 血量死亡结算（血条 + 满级封顶 + 结算重开闭环 + 嘴身拆分） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-005, TASK-006, TASK-007 | docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/ |
