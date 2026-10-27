@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "b12747dbae89db985582e92b79f67efe73ce059c",
@@ -327,10 +327,10 @@
     "三选一/经验退役时机提前（TASK-014）"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-27T11:46:53Z",
+    "exact_user_text": "确认 TASK-011 v1 进入开发",
     "canonical_example": "确认 TASK-011 v1 进入开发"
   }
 }
