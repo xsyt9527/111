@@ -1,14 +1,103 @@
 {
   "task_id": "TASK-009",
   "task_spec_version": 1,
-  "learning_status": "not_started",
-  "concepts_introduced": [],
-  "concepts_explained_by_student": [],
-  "editor_operations_completed": [],
-  "verification_completed": [],
+  "learning_status": "partially_demonstrated",
+  "concepts_introduced": [
+    "SceneTree 测试运行器（step-01）：extends SceneTree + _initialize() 借引擎跑代码不加载游戏场景；--script 模式不加载 Autoload → 被测对象 load().new() 独立实例化，每个用例从干净状态开始（测试独立性的意外来源）",
+    "assert_eq 记账员（step-01）：失败只 failed += 1 并打印标签+期望+实际，脚本继续跑到收卷 quit(1 if failed > 0 else 0)——失败被记账而非爆炸；裸 assert() 失败当场中断脚本、quit 永不执行、进程永挂（挂死陷阱）",
+    "退出码即门禁语言（step-01 埋点，step-04 落地）：0=全绿 非 0=有红，bat/CI 只看这一个数字不读日志",
+    "不入树 Node 的资源卫生（step-01）：new() 出来不入场景树的实例没人替你收尾（不是场景孩子、切场景带不走）——谁创建谁负责 free()，否则退出时报 resources still in use + Leaked instance",
+    "测试探针转正的隐性知识显式化（step-02）：jia_jing_yan() 内是 if 不是 while，单次调用最多升一级——喂经验必须分次（while + 轮次保险防死循环）；探针灌法只活在脑子里，测试写下来才永远说清楚",
+    "信号计数器模式（step-02）：被测对象的信号连到测试脚本自己的接收器只数次数（升级恰 6 次 / 刷条恰 1 次用前后差值断言）；浮点断言用 ×10 取整避开浮点直比",
+    "测试独立性（step-02，学习目标 5）：每个用例自带干净实例（load().new()），不接上一用例的脏状态、不依赖执行顺序——谁先谁后结果都一样",
+    "数据校验器双规矩（step-03）：①xiao_guo ∈ 六键白名单（与 yu.gd match 分支一一对应——键是字符串无编译期校验，拼错静默失效最难查）②shu_zhi > 0（强化卡数值为正）——学生坏卡键合法数值为负，单条白名单抓不住，双规矩由此而来",
+    "红测（step-03，学习目标 6）：校验器自己也要被测——拿已知坏数据喂它，必须报红抓到；抓不到说明校验器才是坏的。守门的人也要被查岗",
+    "DirAccess 数据遍历（step-03）：跑批遍历 data/ 目录逐个 .tres 校验——将来加第 7 张卡/新鱼种自动被守护，不用改测试",
+    "instantiate() 不入树（step-03）：PackedScene.instantiate() 只建节点不进树，_ready 不跑（不碰 Autoload/不触发信号接线），导出属性已就位——读场景数据的测试姿势；不入树仍须手动 free()",
+    "假绿与双保险门禁（step-03 事故）：assert_eq 内部类型错误（bool==int）报 SCRIPT ERROR 后断言不计入、脚本继续跑 → 0 failed + 退出码 0 的假绿——门禁 = 退出码 + 输出筛查 SCRIPT ERROR，缺一不可",
+    "场景模式 vs --script 模式（step-04）：--script 不加载 Autoload；集成测试（要 ZhangBen/要真 area_entered 物理帧）改起真场景 res://tests/xxx.tscn 作主场景——Autoload 全就位、物理世界真转",
+    "判定集成测试时序手艺（step-04）：sudu 先于 add_child 清零（_ready 不重置）；位置设屏内远处（防越界 queue_free）；tixing 在 add_child 后写（_ready 随机值当场被覆盖）；传送重叠后 await physics_frame ×2 等 area_entered",
+    "门禁三重把关（step-04）：①退出码非 0 ②输出含 ERROR（SCRIPT ERROR 假绿型）③缺 Results 收卷行（场景空跑型）——每一条都对应本课亲手抓到过的假绿",
+    "门禁自己也要红测（step-04）：故意弄坏断言跑 pao_pi.bat 必须退出码 1 + FAIL 现形——守门的人也被查岗，红测哲学对 bat 自身成立"
+  ],
+  "concepts_explained_by_student": [
+    "测试独立性（学习目标 5 达成，两轮补测后过）：'为了制作一个对照，减少检查错误的可能'（对照组直觉对）→ 引导单独跑用例 2 场景 → '不会变，因为 new 调用一个全新的'（核心到位；精确化：new() 不是新代码而是新实例——同一 .gd 模具浇出全新成品，字段回初始值，与 Resource 三分工呼应）",
+    "红测价值（学习目标 6 达成，一轮补讲后过）：'用坏数据测是为了更加确定代码的正确，而不是检验器错误判断'——补上最后一块：红测证明校验器这双眼睛真的睁着（能抓坏），防它自己坏了还一路开绿灯；假绿灯比红灯更危险",
+    "负面效果设计追问（step-03 检查点）：主动提出'专门写 1.0 - shu_zhi 分支？还是让卡可正可负？'——已答：乘法公式 1.0+x 天生兼容负数零代码改动，要动的是校验器（为正→值域 -1<x<1，下限 -1 防速度变负/冻住）；记 v2 议题（允许诅咒卡的设计变更）",
+    "退出码门禁语言（学习目标 4 达成，一轮补讲后过）：'他可能报给我们错误的东西，所以需要给他一个门——过了我们也能知道，不过也能知道'（二值信号直觉对，且'可能报错误的东西'意外命中假绿主题）→ 补精确化：机器不读红字只认数字（0/非 0）；光有退出码不够，假绿三种脸都要防，故 pao_pi.bat 三重把关"
+  ],
+  "editor_operations_completed": [
+    "step-03 坏卡亲手建（Resource 三分工第 5 验达成）：学生自发在编辑器自建 huai_ka.tres（ming_zi=坏卡/miao_shu=减速/xiao_guo=yidong_sudu/shu_zhi=-0.1）并连进真卡池实验——超前于教学且位置错放 data/（已挪 tests/、产品文件还原），但模具/数值/检查器入口三件套全部亲手走过一遍；选键合法+数值为负的坏法还逼出校验器第二条规矩"
+  ],
+  "verification_completed": [
+    "step-01 学生亲手跑测试：自己开 cmd 执行 --script 命令，亲见 Results: 9 passed, 0 failed + 退出码 0；F5 确认游戏零影响（回复 ok）",
+    "step-03 学生亲手跑数据校验：亲见 27 passed + 双红测命中（回复 ok）",
+    "step-04 学生亲手跑 pao_pi.bat：五步依序全绿见「可以交付」；红绿体验完成（改 3→4 弄红、复原后复绿）；F5 全量回归确认产品零变化（回复 ok）"
+  ],
   "integration_contract_understood": null,
-  "student_questions": [],
-  "unresolved_concepts": [],
+  "student_questions": [
+    "orientation 追问：'assert_eq 的 _eq 是什么？'——equal 缩写，断言相等；已答（自写记账员辅助函数，非引擎自带）"
+  ],
+  "unresolved_concepts": [
+    "push_warning vs error 复述半对（黄红正确、'报红游戏无法运行'错误）——已补课（两者都不停游戏，危险在安静失败），step-03 红测落地再验"
+  ],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "project_navigation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "orientation 定位讲解：探针一次性 vs 测试常驻资产（本课核心动机）、tests/ 目录四域规划、SceneTree 运行器三件套（_initialize 入口 / assert_eq 记账员 / quit 退出码）、--script 不加载 Autoload 反成测试独立性福利（load().new() 独立实例）",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-26T06:05:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "Resource 三分工复述（第 5 验前置）：首答跑题（'修改完了'），补课（模具/成品/填表笔类比 + 坏卡为何是最佳考题）后再测通过——'脚本定字段，文件存数值，检查器方便修改'；step-03 亲手建 huai_ka.tres 终极验证",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-26T06:19:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "裸 assert 挂死原理（学习目标 3 前置）：首答'不理解'，补课（断言当场中断脚本 → quit 永不执行 → 进程永挂，联动第 8 课僵尸进程实例）后复述通过——'一个停止，一个记录后继续'；主动追问 assert_eq 含义（equal 缩写，自写记账员）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-26T06:19:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "第 8 课课后题收卷：题 1 半对（'不需要改码'正确——封顶读表长度；'8 级'错，差一——起步 Lv.1，8 道阈值封顶 Lv.9）；题 2 方向反（'跟着场景消失'说的是现行方案，常驻的毛病是 Main 不销毁、游戏在结算页底下继续跑 + 复位全手动），均补课讲解",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-26T06:19:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生通读 tests/ce_zhang_ben.gd（重点 extends SceneTree / 四用例 / quit 退出码）、亲手跑测试命令见全绿、F5 确认产品零影响，回复 ok 通过",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-26T06:40:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-03",
+      "checkpoint_id": "godot-inspection",
+      "summary": "学生亲手跑 ce_shu_ju.gd 亲见 27 passed + 双红测命中；两个高质量追问（负面效果如何实现→设计变更 v2 议题 + 乘法公式天生兼容负数；校验器在哪个脚本→tests 侧非游戏侧——拆开'游戏世界'与'测试世界'）；红测复述通过（学习目标 6 达成）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-26T07:45:00Z"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "终验四件全过：学生亲手跑 pao_pi.bat 见五步全绿 + 「可以交付」；红绿体验亲手走完（ce_zhang_ben 用例 1 喂 3→4 门禁红、复原复绿）；F5 全量回归完整一局确认产品零变化；退出码复述通过（学习目标 4 达成）。六项目标全部清账（目标 2 push_warning 仍记 partially——half-right 后经补课未单拷，遗留观察项）",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-26T08:30:00Z"
+    }
+  ]
 }

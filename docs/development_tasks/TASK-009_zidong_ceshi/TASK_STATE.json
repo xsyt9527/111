@@ -1,38 +1,119 @@
 {
   "task_id": "TASK-009",
   "task_spec_version": 1,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
-  "learning_status": "not_started",
-  "handoff_status": "not_started",
-  "current_step": "step-01",
-  "current_checkpoint": "orientation",
-  "next_action": "审批门：等学生回复「确认 TASK-009 v1 进入开发」→ 捕获实现基线 → orientation（复述抽查：Resource 三分工第 5 验 / push_warning vs error 再验 / 裸 assert 挂死原理）→ step-01 测试基建",
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "partially_demonstrated",
+  "handoff_status": "ready",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "交付完成待回填 last_verified_commit：提交实现 → 回填全 40 位哈希 → state-close 提交。第 10 课（安卓导出与 TapTap）待任务包生成与审批；pao_pi.bat 回归门禁此后每次交付前必跑",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
-    "preexisting_changes": []
+    "captured_at": "2026-10-26T03:11:37.696747Z",
+    "commit": "4e36d455c5b1eada8702a1e67eaa79b8ad30024d",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-009_zidong_ceshi/LEARNING_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:843dcd9f06d1ee41b6ee22a9dfb60c5a526b50fa8a262cf275405c6772d7f9e4"
+      },
+      {
+        "path": "docs/development_tasks/TASK-009_zidong_ceshi/TASK_MANIFEST.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4ad430890e0e1411985ff6e56554d5aeec877d0f6c10a2c86cf4c75d37a7213b"
+      },
+      {
+        "path": "docs/development_tasks/TASK-009_zidong_ceshi/TASK_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:67885da0bfa74fee4f0ccbfd2fe8dcbf1775922a0a61fa77c0dc008cd7bc9b9e"
+      }
+    ]
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_zhang_ben.gd.uid"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中（ce_zhang_ben.gd.uid 已生成）",
+        "--script tests/ce_zhang_ben.gd --quit-after 360：Results: 9 passed, 0 failed，退出码 0，输出零 ERROR/零 FAIL",
+        "资源卫生攻关：退出时报 '4 resources still in use' → --verbose 定位为不入树实例攥着脚本引用（谁创建谁负责 free——'谁常驻谁负责复位'的资源版）→ 四用例实例各补 free() → 重跑零 ERROR 零 Leaked，此纪律将写入运行器模板",
+        "sed 插 free() 时插进两条断言中间（自纠错：访问已释放对象），已修正位置——机械改码须复查"
+      ],
+      "next_action": "检查点已过：学生回复 ok（看文件 + 亲手跑命令 + F5 零影响确认）"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "tests/ce_bian_jie.gd",
+        "tests/ce_bian_jie.gd.uid"
+      ],
+      "check_results": [
+        "headless --import 退出码 0 + 输出筛查零命中（ce_bian_jie.gd.uid 已生成）",
+        "--script tests/ce_bian_jie.gd --quit-after 360：Results: 11 passed, 0 failed，退出码 0，零 ERROR/零 FAIL/零 Leaked",
+        "分次喂经验（while deng_ji < 7 每轮 60 + 100 轮保险）：jia_jing_yan() 内是 if 不是 while，单次最多升一级——第 8 课探针的隐性知识显式化",
+        "封顶四断言：等级钉 7 / 经验钉 110 满格 / sheng_ji 恰 6 次不再发 / jing_yan_bian_hua 仍刷条恰 1 次（前后差值断言）",
+        "chong_zhi 四项归零断言；浮点倍率用 ×10 取整断言（int(1.0*10)==10）避开浮点直比；脏状态预检先确认 Lv.2 再复位"
+      ],
+      "next_action": "检查点已过：学生回复 ok + 测试独立性复述两轮补测后过（单独跑用例 2 结果不变，因为 new() 全新实例）"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "tests/ce_shu_ju.gd",
+        "tests/ce_shu_ju.gd.uid",
+        "tests/huai_ka.tres"
+      ],
+      "check_results": [
+        "学生超前实验处置：学生自建 data/qianghua/huai_ka.tres（键 yidong_sudu 合法、shu_zhi=-0.1 负数）并加入 QiangHuaDanChuang.ka_zu 真卡池 + 编辑器重存四个产品文件 + 清空 sheng_ji_biao.tres 的 yuzhi_zu 行——坏卡挪至 tests/huai_ka.tres（手艺保留：其内容恰是红测要的坏卡），四个产品文件备份至 /tmp/task009_beifen/ 后还原 HEAD（阈值表 [8,20,35,55,80,110] 在位；sheng_ji_biao.gd 默认值恰与表相同故游戏当时未崩）",
+        "坏卡键与迅捷卡同为 yidong_sudu → 白名单单条规矩抓不住它 → 校验器立两条规矩：①xiao_guo ∈ 六键白名单（与 yu.gd match 分支一一对应）②shu_zhi > 0",
+        "headless --import 退出码 0 零命中（ce_shu_ju.gd.uid 已生成）",
+        "--script tests/ce_shu_ju.gd：Results: 27 passed, 0 failed，退出码 0，双红测命中（坏卡→数值应为正数；拼错键卡→未知效果键）",
+        "假绿事故与修复：assert_eq(bool, 1) 在 Godot 4 触发 SCRIPT ERROR Invalid operands——断言内部报错既不记 passed 也不记 failed，脚本继续跑出 0 failed + 退出码 0；输出筛查 grep 当场抓住 → 改 1 if cond else 0 → 重跑 27 全过——教训：门禁=退出码+输出筛查 SCRIPT ERROR 缺一不可",
+        "DirAccess 遍历 data/qianghua + data/yuzhong（各恰好 6 个 .tres，坏卡混进 data/ 数量断言即红）；QiangHuaDanChuang.tscn 用 instantiate() 不入树读导出 ka_zu（_ready 不跑不碰 Autoload）；抽样复刻三步（复制→洗牌→取前3）跑 200 轮：每轮恰 3 张互不重复 + 每张卡都露过面"
+      ],
+      "next_action": "检查点已过：学生亲手跑 27 全过 + 两个追问（负面效果怎么做→设计变更 v2 议题；校验器在哪→tests/ce_shu_ju.gd 的 jiao_yan_ka）+ 红测复述通过（学习目标 6 达成）"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "confirmed",
+      "changed_files": [
+        "tests/ce_panding.gd",
+        "tests/ce_panding.gd.uid",
+        "tests/ce_panding_chang_jing.tscn",
+        "tests/pao_pi.bat"
+      ],
+      "check_results": [
+        "场景模式集成测试（--script 不加载 Autoload 而 bei_chi 记账/玩家 _ready 连信号都要 ZhangBen → 起真场景跑真物理帧）：ce_panding_chang_jing.tscn 根挂 ce_panding.gd，运行 res://tests/... 作为主场景",
+        "五域断言全过：小鱼进嘴圈被吃（is_instance_valid 假）/大鱼进嘴圈无事+伤区掉血+无敌期不重复伤/同体型掉血但不被吃（吃严格 >、伤 ≥）+贪食走真实信号链（ZhangBen.xuan_ka→ka_yi_xuan→match）只放大嘴圈 ×1.15、伤区纹丝不动",
+        "测试鱼手艺：sudu 先于 add_child 清零（_ready 不重置它）+ 位置先设屏内远处（防越界 queue_free）+ tixing 在 add_child 后写（_ready 的随机值当场被覆盖）+ 传送进玩家嘴里等 2 物理帧等 area_entered",
+        "--import 零命中；场景模式跑：Results: 10 passed, 0 failed，退出码 0，零 ERROR/零 Leaked",
+        "两轮自纠错：①协程坑（_zao_yu 内 await 后 return 拿到的是协程状态非鱼——改为同步函数）；②is_equal_approx 是全局函数不是 float 方法（Parse Error 致场景空跑、退出码仍 0——又一型假绿）；③is_instance_valid 返回 bool 直塞 assert_eq(…,1) 再踩 bool==int（8 passed 假绿，本课同坑两次——SCRIPT ERROR 筛查必要性的活教材）",
+        "pao_pi.bat 三重把关：任一步退出码非 0 → 红；输出含 ERROR（含 SCRIPT ERROR 假绿型）→ 红；测试步缺 Results 收卷行（场景空跑型）→ 红；全绿输出可交付字样 + 退出码 0",
+        "门禁红测：故意把用例 1 改成 2+4 期望 5 → 跑批退出码 1 + FAIL 行现形 + '禁止交付' → 还原后复跑全绿——守门的人也被查了岗（红测哲学套用到 bat 自身）"
+      ],
+      "next_action": "检查点已过：学生亲手跑 pao_pi.bat 见全绿 + 红绿体验（弄红→复原）+ F5 全量回归 + 退出码复述通过（学习目标 4 达成）"
     },
     {
       "step_id": "step-03",
@@ -54,9 +135,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 1,
+    "approved_at": "2026-10-26T03:03:00Z",
+    "exact_user_text": "确认 TASK-009 v1 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",

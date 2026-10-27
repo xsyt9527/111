@@ -10,3 +10,4 @@
 | TASK-006 | v1 | 升级三选一（强化卡注册表 + 暂停 + 不放回抽样 + 弹窗） | approved | complete | partially_demonstrated | ready | student-01 | TASK-004, TASK-005 | docs/development_tasks/TASK-006_shengji_sanxuanyi/ |
 | TASK-007 | v1 | 强化生效与动画（match 六卡 + 磁吸双 Area2D + Tween + 摆尾） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-005, TASK-006 | docs/development_tasks/TASK-007_qianghua_shengxiao/ |
 | TASK-008 | v2 | 血量死亡结算（血条 + 满级封顶 + 结算重开闭环 + 嘴身拆分） | approved | complete | partially_demonstrated | ready | student-01 | TASK-003, TASK-005, TASK-006, TASK-007 | docs/development_tasks/TASK-008_xueliang_siwang_jiesuan/ |
+| TASK-009 | v1 | 无头自动测试（四域测试 + 坏卡红测 + 跑批门禁，产品零修改） | approved | complete | partially_demonstrated | ready | student-01 | TASK-005, TASK-006, TASK-007, TASK-008 | docs/development_tasks/TASK-009_zidong_ceshi/ |

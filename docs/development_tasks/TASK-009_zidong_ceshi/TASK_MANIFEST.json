@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "c3f5fed776bf6c9aaa98cdae013f7e1d90d4fbf2",
@@ -310,10 +310,10 @@
     "游戏行为/数值任何改动"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-26T03:03:00Z",
+    "exact_user_text": "确认 TASK-009 v1 进入开发",
     "canonical_example": "确认 TASK-009 v1 进入开发"
   }
 }
