@@ -10,34 +10,41 @@ set GODOT=D:\001\Godot_v4.7.2-stable_win64.exe
 set XIANG_MU=D:\新游戏001
 set RI_ZHI=%TEMP%\pao_pi.log
 
-echo === [1/5] 导入 --import ===
+echo === [1/6] 导入 --import ===
 "%GODOT%" --headless --path "%XIANG_MU%" --import > "%RI_ZHI%" 2>&1
 if %errorlevel% neq 0 goto shibai
 findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai
 type "%RI_ZHI%"
 
-echo === [2/5] 账本纯逻辑 ce_zhang_ben ===
+echo === [2/6] 账本纯逻辑 ce_zhang_ben ===
 "%GODOT%" --headless --path "%XIANG_MU%" --script tests/ce_zhang_ben.gd --quit-after 360 > "%RI_ZHI%" 2>&1
 if %errorlevel% neq 0 goto shibai
 findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai
 findstr /c:"Results:" "%RI_ZHI%" >nul || goto shibai
 type "%RI_ZHI%"
 
-echo === [3/5] 边界 ce_bian_jie ===
+echo === [3/6] 边界 ce_bian_jie ===
 "%GODOT%" --headless --path "%XIANG_MU%" --script tests/ce_bian_jie.gd --quit-after 360 > "%RI_ZHI%" 2>&1
 if %errorlevel% neq 0 goto shibai
 findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai
 findstr /c:"Results:" "%RI_ZHI%" >nul || goto shibai
 type "%RI_ZHI%"
 
-echo === [4/5] 数据校验 ce_shu_ju ===
+echo === [4/6] 数据校验 ce_shu_ju ===
 "%GODOT%" --headless --path "%XIANG_MU%" --script tests/ce_shu_ju.gd --quit-after 360 > "%RI_ZHI%" 2>&1
 if %errorlevel% neq 0 goto shibai
 findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai
 findstr /c:"Results:" "%RI_ZHI%" >nul || goto shibai
 type "%RI_ZHI%"
 
-echo === [5/5] 判定集成 ce_panding（场景模式）===
+echo === [5/6] 摇杆纯逻辑 ce_yao_gan ===
+"%GODOT%" --headless --path "%XIANG_MU%" --script tests/ce_yao_gan.gd --quit-after 360 > "%RI_ZHI%" 2>&1
+if %errorlevel% neq 0 goto shibai
+findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai
+findstr /c:"Results:" "%RI_ZHI%" >nul || goto shibai
+type "%RI_ZHI%"
+
+echo === [6/6] 判定集成 ce_panding（场景模式）===
 "%GODOT%" --headless --path "%XIANG_MU%" res://tests/ce_panding_chang_jing.tscn --quit-after 360 > "%RI_ZHI%" 2>&1
 if %errorlevel% neq 0 goto shibai
 findstr /i /c:"ERROR" "%RI_ZHI%" >nul && goto shibai

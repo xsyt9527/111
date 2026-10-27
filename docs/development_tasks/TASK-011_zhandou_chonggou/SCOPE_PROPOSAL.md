@@ -31,3 +31,9 @@
 - 新增：`scenes/YaoGan.tscn`、`scripts/yao_gan.gd`（+ .uid）、`tests/ce_yao_gan.gd`（+ .uid）+ 三份报告
 - 修改：`scripts/main.gd`、`scripts/yu.gd`、`scripts/yu_npc.gd`（如需）、`scenes/Main.tscn`、`scenes/Yu.tscn`（如需）、`tests/ce_panding.gd`、`tests/pao_pi.bat`
 - 本任务特色：**第一次正式的玩法重构**——退役两条链路（点击移动、血条），门禁必须同步保持全绿
+
+## 执行中范围变更（2026-10-27）
+
+- 执行 step-03 时发现：删除 `xue_liang`/`zuida_xue`/`xue_liang_bian_hua` 后，已下线的 `scripts/xue_liang_ui.gd`（强类型引用这些成员）会成为无法解析的死代码。仅从 Main 移除实例不够，必须**连同血条场景与脚本一起删除**才算真正退役。
+- 变更：`allowed_existing_files` 增加 `scenes/XueLiangTiao.tscn`、`scripts/xue_liang_ui.gd`、`scripts/xue_liang_ui.gd.uid`（删除，不新增功能）。
+- 性质：属于已批准目标「独立血条 → 体型即血量」的必要收尾，不扩大玩法范围，不影响其他白名单。

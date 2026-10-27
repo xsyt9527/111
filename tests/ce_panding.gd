@@ -4,13 +4,15 @@ extends Node2D
 # 玩家 _ready 要连 ZhangBen 信号——所以走场景模式：起本场景 = 真引擎循环 + Autoload 全就位，
 # Area2D 的 area_entered 由真物理帧触发（不是手动调函数）。
 # 运行：Godot --headless --path . res://tests/ce_panding_chang_jing.tscn --quit-after 360
-# 纪律：禁用裸 assert()；玩家不吃到死（血 3 只扣 2，避免触发切结算页）
+# 纪律：禁用裸 assert()；死亡用例放最后并立即收卷（切结算页会拆掉测试场景）
 
 var passed := 0  # 通过计数（收卷用）
 var failed := 0  # 失败计数（退出码的依据）
 
 
 func _ready() -> void:
+	# 先抓住 SceneTree 引用：死亡用例会触发切场景，本节点被摘出树后 get_tree() 会是 null
+	var shu := get_tree()
 	# ---- 搭台：玩家进树（先设位置再进——_ready 会拿 position 当游动目标点）----
 	var yu: Yu = load("res://scenes/Yu.tscn").instantiate()
 	yu.position = Vector2(400, 400)
@@ -30,23 +32,23 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	assert_eq(1 if is_instance_valid(da) else 0, 1, "大鱼进嘴圈应无事（嘴圈只吃小的）")
-	assert_eq(yu.xue_liang, 2, "大鱼进伤区应掉 1 血（3→2）")
+	assert_eq(1 if is_equal_approx(yu.tixing, 0.85) else 0, 1, "大鱼进伤区应掉体型（1.00 → 0.85）")
 	assert_eq(1 if yu.wudi else 0, 1, "受伤后应进入无敌期")
 	await get_tree().physics_frame
 	await get_tree().physics_frame  # 大鱼还压在身上
-	assert_eq(yu.xue_liang, 2, "无敌期内大鱼压着也不重复掉血")
+	assert_eq(1 if is_equal_approx(yu.tixing, 0.85) else 0, 1, "无敌期内大鱼压着也不重复掉体型")
 	da.position = Vector2(400, 650)  # 大鱼撤走，给用例 3 腾地方
 	await get_tree().physics_frame
 
-	# ---- 用例 3：同体型 → 掉血但不被吃（吃是严格大于，伤是大于等于）----
+	# ---- 用例 3：中间带 → 不吃也不掉体型（TASK-011 ×1.1 门槛）----
 	await yu.wudi_dingshi.timeout  # 等无敌期真正结束（等信号，不等猜的秒数）
 	assert_eq(1 if not yu.wudi else 0, 1, "无敌计时器到点应解除无敌")
-	var tong: YuNpc = _zao_yu(1.0)  # 与玩家同体型
+	var tong: YuNpc = _zao_yu(0.9)  # 玩家 0.85：0.9 既不够被吃（需 ≥0.935），也不够吃我（需 ≥1.1）
 	tong.position = yu.position
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	assert_eq(yu.xue_liang, 1, "同体型进伤区应掉血（≥ 判定，2→1）")
-	assert_eq(1 if is_instance_valid(tong) else 0, 1, "同体型不应被吃（嘴圈是严格 > 判定）")
+	assert_eq(1 if is_equal_approx(yu.tixing, 0.85) else 0, 1, "中间带：不掉体型")
+	assert_eq(1 if is_instance_valid(tong) else 0, 1, "中间带：不被吃")
 
 	# ---- 用例 4：贪食只放大嘴圈（走真实信号链：ZhangBen.xuan_ka → 信号 → match）----
 	var tan_shi: QiangHuaKa = load("res://data/qianghua/tan_shi.tres")
@@ -56,9 +58,26 @@ func _ready() -> void:
 	assert_eq(1 if is_equal_approx(zui_xing_zhuang.scale.x, 1.15) else 0, 1, "贪食后嘴圈形状应 ×1.15")
 	assert_eq(1 if is_equal_approx(shang_xing_zhuang.scale.x, 1.0) else 0, 1, "贪食后伤区形状应纹丝不动（1.0）")
 
+	# ---- 用例 5：门槛边界 → 1.09 倍仍落在中间带（不吃也不伤）----
+	yu.tixing = 1.0  # 复位，便于对照 ×1.1
+	var bian: YuNpc = _zao_yu(1.09)
+	bian.position = yu.position
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_eq(1 if is_equal_approx(yu.tixing, 1.0) else 0, 1, "1.09 倍在中间带：不受伤")
+	assert_eq(1 if is_instance_valid(bian) else 0, 1, "1.09 倍在中间带：不被吃")
+	bian.position = Vector2(400, 650)
+	await get_tree().physics_frame
+
+	# ---- 用例 6：体型跌破 0.5 → 死亡（放最后：切场景会拆掉本测试）----
+	yu.wudi = false  # 清无敌，确保受伤入口真的执行
+	yu.tixing = 0.55  # 0.55 × 0.85 = 0.4675 < 0.5
+	yu._shoushang()  # 直接走受伤入口：比把大鱼传送进嘴更可控
+	assert_eq(1 if yu.tixing < Yu.TI_XING_SI_WANG else 0, 1, "0.55 受伤一次应跌破死亡线 0.5")
+
 	# ---- 收卷：退出码是唯一门禁语言 ----
 	print("Results: %d passed, %d failed" % [passed, failed])
-	get_tree().quit(1 if failed > 0 else 0)
+	shu.quit(1 if failed > 0 else 0)
 
 
 func _zao_yu(tixing_zhi: float) -> YuNpc:

@@ -13,7 +13,7 @@
 [ext_resource type="Resource" path="res://data/yuzhong/fen_yu.tres" id="10_fen"]
 [ext_resource type="Script" path="res://scripts/jing_yan_ui.gd" id="11_jingyan"]
 [ext_resource type="PackedScene" path="res://scenes/QiangHuaDanChuang.tscn" id="12_danchuang"]
-[ext_resource type="PackedScene" path="res://scenes/XueLiangTiao.tscn" id="13_xuetiao"]
+[ext_resource type="PackedScene" path="res://scenes/YaoGan.tscn" id="14_yaogan"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -47,7 +47,19 @@ offset_left = 250.0
 offset_top = 18.0
 text = "Lv.1"
 
-[node name="XueLiangTiao" parent="." instance=ExtResource("13_xuetiao")]
+[node name="TiXingUI" type="CanvasLayer" parent="."]
+
+[node name="TiXingLabel" type="Label" parent="TiXingUI"]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 224.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 28
+text = "体型 1.00"
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="YaoGan" parent="UI" instance=ExtResource("14_yaogan")]
 
 [node name="QiangHuaDanChuang" parent="." instance=ExtResource("12_danchuang")]
 

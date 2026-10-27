@@ -2,12 +2,12 @@
   "task_id": "TASK-011",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "in_progress",
-  "learning_status": "in_progress",
-  "handoff_status": "not_started",
-  "current_step": "step-01",
-  "current_checkpoint": "orientation",
-  "next_action": "审批已登记、实现基线已捕获；下一步 orientation 复述抽查（push_warning vs error + 现有移动链路 + 现有血条链路），通过后开始 step-01",
+  "delivery_status": "implemented",
+  "learning_status": "demonstrated",
+  "handoff_status": "pending",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "学生验证全部通过；下一步出三份报告、填写 INTEGRATION_HANDOFF、更新词总表与路线图，然后提交并回填 last_verified_commit",
   "implementation_baseline": {
     "captured_at": "2026-10-27T11:46:53Z",
     "commit": "3607f45ab6544995d11ebe3d24b6ba82ffa03dc0",
@@ -18,39 +18,83 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "complete",
+      "changed_files": [
+        "scenes/YaoGan.tscn",
+        "scripts/yao_gan.gd",
+        "scripts/yao_gan.gd.uid",
+        "scripts/main.gd",
+        "scripts/yu.gd",
+        "scenes/Main.tscn"
+      ],
+      "check_results": [
+        "headless --import：YaoGan 全局类注册成功",
+        "tests/pao_pi.bat：五步全绿（9+11+27+10，0 失败）",
+        "主场景无头运行 120 帧：无 error / not found"
+      ],
+      "next_action": "待学生 F5 验证：左摇杆拖动可转向、松手减速、大鱼转向变慢"
     },
     {
       "step_id": "step-02",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "complete",
+      "changed_files": [
+        "scripts/yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        "首次红：伤区条件方向写反（对方 ×1.1 > 我），同体型 1.0 被误判受伤；改为「对方 ≥ 我 ×1.1」后转绿",
+        "tests/pao_pi.bat：五步全绿（10 条判定断言）"
+      ],
+      "next_action": "已并入 step-04 统一验证"
     },
     {
       "step_id": "step-03",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "complete",
+      "changed_files": [
+        "scripts/yu.gd",
+        "scripts/main.gd",
+        "scenes/Main.tscn",
+        "tests/ce_panding.gd",
+        "scenes/XueLiangTiao.tscn",
+        "scripts/xue_liang_ui.gd",
+        "scripts/xue_liang_ui.gd.uid",
+        "docs/development_tasks/TASK-011_zhandou_chonggou/SCOPE_PROPOSAL.md",
+        "docs/development_tasks/TASK-011_zhandou_chonggou/TASK_MANIFEST.json"
+      ],
+      "check_results": [
+        "体型即血量：受伤 tixing ×0.85，跌破 0.5 死亡；zuida_xue/xue_liang/xue_liang_bian_hua 已删除",
+        "血条场景与脚本一并删除（范围变更已记入 SCOPE_PROPOSAL）",
+        "tests/pao_pi.bat：五步全绿"
+      ],
+      "next_action": "已并入 step-04 统一验证"
     },
     {
       "step_id": "step-04",
-      "implementation_status": "pending",
-      "verification_status": "pending",
-      "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "complete",
+      "changed_files": [
+        "tests/ce_yao_gan.gd",
+        "tests/ce_yao_gan.gd.uid",
+        "tests/ce_panding.gd",
+        "tests/pao_pi.bat",
+        "scripts/main.gd"
+      ],
+      "check_results": [
+        "ce_yao_gan：8 条断言（限幅/归一化/死区/松手/多点触控）",
+        "ce_panding：13 条断言（吃/伤/中间带/1.09 边界/死亡）",
+        "六步门禁全绿：9+11+27+8+13 = 68 条，0 失败",
+        "主场景无头 180 帧：无 error / not found",
+        "学生 F5：摇杆/WASD 均可用，体型 1.00→0.85、死亡切结算、血条消失均确认",
+        "学生编辑器检查：UI/YaoGan 与 TiXingUI/TiXingLabel 存在、XueLiangTiao 已消失、zhuanxiang_ji_su=4、jia_su_du=900"
+      ],
+      "next_action": "完成（WASD 调试键为学生验收时追加，仅 debug 构建生效）"
     }
   ],
   "approval_record": {

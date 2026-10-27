@@ -1,16 +1,68 @@
 {
   "task_id": "TASK-011",
   "task_spec_version": 1,
-  "learning_status": "in_progress",
-  "concepts_introduced": [],
-  "concepts_explained_by_student": [],
+  "learning_status": "demonstrated",
+  "concepts_introduced": [
+    "输入层与运动层分离：摇杆只给方向，鱼自己算转速与速度",
+    "朝向角 dang_qian_jiao：点可瞬改，朝向只能按步长拧",
+    "转向速率与体型成反比：zhuanxiang_ji_su / tixing",
+    "吞噬门槛带：≥1.1 整吞 / 1/1.1~1.1 中间带 / 被吃",
+    "体型即血量：体积、吞噬资格、生命值三合一",
+    "退役三层：字段、信号、场景与脚本一起删"
+  ],
+  "concepts_explained_by_student": [
+    "push_warning 与 error 都不停机，但 error 会中止当前函数；安静失败必须靠门禁查文本",
+    "三个 Area2D 各自负责吃/伤/吸，分开才能独立调参",
+    "血量四条链路：zuida_xue / xue_liang / xue_liang_bian_hua / XueLiangTiao",
+    "大鱼转向慢 = 转向速率 ÷ 体型",
+    "体型能当血量，因为体型变化玩家一眼看得见"
+  ],
   "editor_operations_completed": [],
   "verification_completed": [],
-  "integration_contract_understood": null,
+  "integration_contract_understood": true,
   "student_questions": [],
-  "unresolved_concepts": [
-    "push_warning vs error（第 9 课遗留观察项，本课 orientation 开场清账）"
-  ],
+  "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "复述 push_warning/error（通过）、三区分工（方向正确）、血条四项（全对）；点 vs 方向以讲解收尾",
+      "understanding_level": "recognized",
+      "observed_at": "2026-10-27"
+    },
+    {
+      "evidence_type": "editor_operation",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "打开 Main.tscn 确认 UI/YaoGan、TiXingUI/TiXingLabel 存在，XueLiangTiao 已消失",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-27"
+    },
+    {
+      "evidence_type": "configuration_inspection",
+      "step_id": "step-01",
+      "checkpoint_id": "godot-inspection",
+      "summary": "在 Yu 检查器确认 zhuanxiang_ji_su=4、jia_su_du=900",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-27"
+    },
+    {
+      "evidence_type": "test_execution",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "六步门禁全绿：9+11+27+8+13 = 68 条断言，0 失败",
+      "understanding_level": "applied",
+      "observed_at": "2026-10-27"
+    },
+    {
+      "evidence_type": "result_interpretation",
+      "step_id": "step-04",
+      "checkpoint_id": "verification-handoff",
+      "summary": "F5：摇杆/WASD 转向、体型 1.00→0.85、死亡切结算、血条消失；评价「还好」",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-27"
+    }
+  ]
 }
