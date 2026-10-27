@@ -1,0 +1,309 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-010",
+  "task_spec_version": 1,
+  "slug": "anzhuo-daochu",
+  "title": "安卓导出与 TapTap 准备（工具链安装 + debug/release APK + 真机验证）",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "5d7f8325627fbe2a34f041cf0ca472c78ed1357c",
+  "objective": "把'只能在编辑器里 F5'变成'手机上能装、能玩'：本课装齐安卓工具链（导出模板 / JDK 17 / Android SDK + adb，全程国内镜像优先），配置 Android 导出预设，先导出 debug APK 打通链路，再生成 release keystore 导出签名 APK，最后 adb 装进真机试玩并跑 pao_pi.bat 回归。TapTap 开发者账号尚未注册——本课只产出《提审材料清单》，注册、实名认证、软著与正式提审另立任务。承接第 9 课：'导出成功'的检查同样是产物而不是退出码（APK 真在、体积合理、解包有 AndroidManifest.xml 与 classes.dex）。",
+  "audit_freshness": {
+    "audited_commit": "5d7f8325627fbe2a34f041cf0ca472c78ed1357c",
+    "environment_checked_at": "2026-10-27T02:00:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改——本课仅可能补横屏方向与应用图标/名称，不改主场景与 Autoload",
+      "引擎版本变化（导出模板必须与 4.7.2 严格对应）",
+      "Android SDK 组件版本变化（build-tools/platforms 大版本变化需重建导出预设）",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "安卓工具链（导出模板 / JDK 17 / Android SDK / adb）安装与自查门禁",
+      "Godot Android 导出预设（包名 / 图标 / 权限 / ABI / 方向）",
+      "debug APK 导出与产物校验",
+      "release keystore 生成与 release APK 签名导出",
+      "真机安装与试玩验收",
+      "TapTap 提审材料清单（只列清单，不办账号）"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "tools/jian_cha_android.bat（新建：工具链自查门禁）"
+    ],
+    "owned_config_tables": [
+      "export_presets.cfg（新建：导出预设，不含任何密钥）"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-001~TASK-008（全部玩法与数据——被导出打包的对象）",
+      "TASK-009（pao_pi.bat 回归门禁——导出前后各跑一次）"
+    ],
+    "consumed_interfaces": [
+      "project.godot（应用名/主场景/分辨率/渲染器——导出预设读取）",
+      "res://scenes/Main.tscn（run/main_scene——APK 启动入口）",
+      "tests/pao_pi.bat（回归门禁——导出前必须全绿）"
+    ],
+    "provided_interfaces": [
+      "build/shenhaishi-debug.apk 与 build/shenhaishi-release.apk（不入库，构建产物）",
+      "tools/jian_cha_android.bat（工具链自查：四项缺任一即退出码 1，供以后换机复用）",
+      "《TapTap 提审材料清单》——下一任务的输入"
+    ],
+    "emitted_signals": [],
+    "received_signals": [],
+    "shared_state": [
+      "Android 导出预设与 keystore 口令属于项目级配置：口令只存本地安全位置，仓库只留使用说明"
+    ],
+    "registered_shared_changes": [
+      "project.godot：可能新增 display/window/handheld/orientation 与应用图标路径（不改玩法与数据结构）",
+      ".gitignore：补 *.jks 与 android/本地密钥目录"
+    ],
+    "conflict_hotspots": [
+      "导出模板版本必须与引擎 4.7.2 严格对应——版本不符时导出会报 No export template found",
+      "keystore 一旦丢失，已上架应用将永远无法覆盖更新——备份纪律优先于一切",
+      "Android SDK 路径含空格或中文时 Godot 可能找不到——安装到纯英文路径"
+    ],
+    "required_integration_checks": [
+      "tools/jian_cha_android.bat 退出码 0（四项全 ✓）",
+      "debug APK 导出成功且产物校验通过（存在 + 体积 + 解包内容）",
+      "release APK apksigner verify 通过",
+      "tests/pao_pi.bat 导出前全绿（第 9 课门禁）",
+      "真机 adb install 成功并试玩四项"
+    ]
+  },
+  "allowed_existing_files": [
+    "docs/引擎词总表.md",
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    ".gitignore",
+    "project.godot",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/TASK_STATE.json",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "tools/jian_cha_android.bat",
+    "export_presets.cfg",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-010_anzhuo_daochu/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "keystore 文件（*.keystore / *.jks）或其口令提交进仓库",
+    "游戏玩法、数值、数据表、美术资源的任何改动（本课只打包不改包里的东西）",
+    "引入插件或第三方 SDK（广告/统计/支付）",
+    "TapTap 注册、实名认证、软著申请与正式提审（另立任务，本课只出材料清单）",
+    "从非官方或不可信来源下载工具链（只走官方站或可信国内镜像）",
+    "修改 .agents/skills/**（只读）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "工具链安装 + 自查门禁",
+      "behavior": "按顺序装齐四件：①Godot 4.7.2 对应的 Android 导出模板（下载 .tpz 后放入 %APPDATA%\\Godot\\export_templates\\4.7.2.stable\\，或编辑器 编辑器→管理导出模板 安装）②JDK 17（JAVA_HOME）③Android SDK command-line tools（sdkmanager 装 platform-tools / build-tools / platforms;android-35，ANDROID_HOME）④adb 可用。全部装到纯英文路径。然后新建 tools/jian_cha_android.bat：逐项检查 java -version、sdkmanager、adb version、导出模板目录内 android_debug.apk 与 android_release.apk 是否存在，每项打印 ✓/✗，任一 ✗ 退出码 1。",
+      "main_concept": "装环境也要'收卷行'：判断装没装好，检查的是产物（模板文件在、命令能跑），不是安装器的退出码",
+      "files": [
+        "tools/jian_cha_android.bat"
+      ],
+      "automated_checks": [
+        "tools/jian_cha_android.bat 退出码 0，四项全部 ✓",
+        "java -version 输出 17.x；adb version 正常返回；导出模板目录列出 android_debug.apk / android_release.apk"
+      ],
+      "manual_checks": [
+        "学生亲手跑自查 bat 见四项 ✓；故意改名模板目录再跑一次见 ✗ + 退出码 1，改回（体验门禁红绿）"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "Android 导出预设 + debug APK",
+      "behavior": "编辑器 项目→导出→添加 Android 预设：包名 com.shenhaishi.youxi（拼音）、应用名 深海食纪、图标、屏幕方向 landscape、ABI 仅 arm64-v8a、权限保持最小（无需网络则零权限）。必要时在 project.godot 补 display/window/handheld/orientation。命令行导出 debug：\"%GODOT%\" --headless --path . --export-debug \"Android\" build/shenhaishi-debug.apk。校验产物：文件存在、体积 > 20 MB、解包含 AndroidManifest.xml / classes.dex / lib/arm64-v8a/libgodot_android.so。",
+      "main_concept": "导出预设=打包清单：包名、图标、权限、架构四项一次定死；debug 包用引擎自动生成的调试签名，能装能调不能上架",
+      "files": [
+        "export_presets.cfg",
+        "project.godot"
+      ],
+      "automated_checks": [
+        "Godot --headless --export-debug 退出码 0",
+        "build/shenhaishi-debug.apk 存在且体积 > 20 MB",
+        "APK 解包内容含 AndroidManifest.xml / classes.dex / lib/arm64-v8a/libgodot_android.so"
+      ],
+      "manual_checks": [
+        "学生在编辑器 项目→导出 页逐项核对包名/图标/权限/ABI 四项并复述各自作用",
+        "学生把包名故意改成大写非法值试一次，看导出报错信息（还原）"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "release keystore + 签名 APK",
+      "behavior": "用 keytool -genkeypair 生成 release keystore（RSA 2048、有效期 25 年以上、别名 shenhaishi），口令与文件存到仓库外的本地安全位置，并在 .gitignore 补 *.jks 与本地密钥目录。导出 release：--export-release \"Android\" build/shenhaishi-release.apk。用 apksigner verify --print-certs 验证签名指纹与 keystore 一致。写一页《keystore 使用说明》进 IMPLEMENTATION_REPORT（不写口令）。",
+      "main_concept": "keystore=应用身份证：release 包必须用同一把私钥签名才能覆盖更新——丢了就永远回不去",
+      "files": [
+        "export_presets.cfg"
+      ],
+      "automated_checks": [
+        "keytool 生成 keystore 成功且未出现在 git status 中",
+        "Godot --headless --export-release 退出码 0 且 APK 存在",
+        "apksigner verify --print-certs 通过，证书指纹与 keystore 一致"
+      ],
+      "manual_checks": [
+        "学生复述 keystore 丢失的后果，并说出备份放在哪里（仓库外）",
+        "学生用 apksigner 亲手验证一次签名"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "真机安装 + 回归 + 提审材料清单",
+      "behavior": "adb devices 确认设备在线 → adb install -r build/shenhaishi-release.apk → 真机试玩四项：触摸跟随、升级三选一弹窗（暂停/点选恢复）、死亡结算与重开、帧率不卡顿。导出前跑一次 tests/pao_pi.bat 全绿。整理《TapTap 提审材料清单》：开发者账号注册与实名、软著/著作权材料、隐私政策、应用图标与截图规格、版本说明——只列清单与获取途径，不办账号。",
+      "main_concept": "真机是最后一双眼睛：headless 证明逻辑对，真机证明手感、触摸与性能对——两者不能互相替代",
+      "files": [
+        "docs/development_tasks/TASK-010_anzhuo_daochu/VERIFICATION_REPORT.md"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 退出码 0（导出前后各一次）",
+        "adb devices 列出设备；adb install 返回 Success"
+      ],
+      "manual_checks": [
+        "真机试玩四项全过并截图留证",
+        "学生口述提审材料清单五项及各自去哪办"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能说出 debug 与 release 构建的区别（调试签名 vs 正式签名、是否可调试、能否上架）",
+      "学生能解释 keystore 是什么，以及丢失后为什么永远无法覆盖更新",
+      "学生能复述导出预设四项必填（包名/图标/权限/架构）各自的作用",
+      "学生能说出 TapTap 提审需要的材料（账号实名、软著、隐私政策、图标截图）",
+      "学生能解释'导出成功'为什么检查产物而不是退出码（承接第 9 课假绿三张脸）",
+      "学生能复述 push_warning 与 error 的区别（第 9 课遗留观察项清账：都不停游戏、报黄不报红、危险在安静失败）"
+    ],
+    "concepts": [
+      "Godot Android 导出模板（export templates）与引擎版本严格对应",
+      "export_presets.cfg 导出预设（包名/图标/权限/ABI/方向）",
+      "APK 与 AAB 的区别，TapTap 用 APK",
+      "minSdk / targetSdk / ABI（arm64-v8a）",
+      "debug 签名 vs release keystore 签名（apksigner verify）",
+      "adb 设备管理与 adb install",
+      "命令行导出（--export-debug / --export-release）",
+      "构建产物的检查纪律（存在/体积/解包内容——第 9 课门禁思想迁移）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "零架构变更：场景树、脚本、数据全部不动。新增的只有打包配置（export_presets.cfg）、工具链自查脚本（tools/）与仓库外的构建产物/密钥。project.godot 最多补横屏方向与图标路径，不改主场景、不改 Autoload、不改输入映射。",
+    "current_tree": null,
+    "target_tree": null,
+    "loading_policy": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "tools/jian_cha_android.bat 退出码 0（JDK/SDK/adb/导出模板四项全 ✓）",
+    "Godot --headless --export-debug 退出码 0 且 build/*.apk 产物校验通过",
+    "Godot --headless --export-release 退出码 0 且 apksigner verify 通过",
+    "tests/pao_pi.bat 退出码 0（导出前后各一次）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "真机 adb install 成功并在桌面看到应用图标",
+    "真机试玩四项：触摸跟随 / 升级三选一 / 死亡结算重开 / 帧率",
+    "学生在编辑器 Android 导出预设页逐项核对包名/图标/权限/架构",
+    "学生复述 keystore 丢失后果与备份位置"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "无可用对照技能——本课以 Godot 官方 Android 导出文档与实机产物为准",
+      "沿用第 9 课门禁思想：判断成功看产物（APK 在、体积对、解包内容齐），不看命令退出码"
+    ],
+    "unknowns": [
+      "Godot 4.7.2 安卓导出模板的官方下载地址与国内镜像可用性",
+      "目标真机的 Android 版本与 ABI（需 adb 现场确认）",
+      "TapTap 开发者账号的注册与实名认证耗时（另立任务评估）"
+    ]
+  },
+  "scope_change_triggers": [
+    "为导出修改游戏玩法、数值、数据表或美术资源（升 v2 议）",
+    "引入插件或第三方 SDK（广告/统计/支付）",
+    "TapTap 注册、实名认证、软著申请与正式提审（另立任务）",
+    "把 keystore 或其口令提交进仓库",
+    "改用 AAB 或其他分发格式（TapTap 用 APK，确需改另议）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-010 v1 进入开发"
+  }
+}
