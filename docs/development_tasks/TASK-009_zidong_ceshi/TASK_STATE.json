@@ -7,7 +7,7 @@
   "handoff_status": "ready",
   "current_step": "step-04",
   "current_checkpoint": "verification-handoff",
-  "next_action": "交付完成待回填 last_verified_commit：提交实现 → 回填全 40 位哈希 → state-close 提交。第 10 课（安卓导出与 TapTap）待任务包生成与审批；pao_pi.bat 回归门禁此后每次交付前必跑",
+  "next_action": "交付已关闭。第 10 课（安卓导出与 TapTap）待任务包生成与审批；pao_pi.bat 回归门禁此后每次交付前必跑；开场先清 push_warning vs error 复述遗留观察项",
   "implementation_baseline": {
     "captured_at": "2026-10-26T03:11:37.696747Z",
     "commit": "4e36d455c5b1eada8702a1e67eaa79b8ad30024d",
@@ -35,7 +35,7 @@
       }
     ]
   },
-  "last_verified_commit": null,
+  "last_verified_commit": "9979abca3dadb8f2d2cefa319a6527c257d2178b",
   "integration_baseline_commit": null,
   "step_state": [
     {
