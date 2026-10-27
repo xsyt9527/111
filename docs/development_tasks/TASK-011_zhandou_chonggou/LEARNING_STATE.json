@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-011",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "push_warning vs error（第 9 课遗留观察项，本课 orientation 开场清账）"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

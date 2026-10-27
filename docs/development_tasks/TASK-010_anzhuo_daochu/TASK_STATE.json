@@ -7,7 +7,7 @@
   "handoff_status": "not_started",
   "current_step": "step-01",
   "current_checkpoint": "orientation",
-  "next_action": "等待审批：回复「确认 TASK-010 v1 进入开发」后登记审批并捕获实现基线",
+  "next_action": "暂缓（2026-10-27 项目转入按策划案重构，拒绝先导出固化旧玩法）：TASK-011 零期战斗核心完成后立即恢复本任务——零期手感必须真机验证。审批文本待恢复时再确认",
   "implementation_baseline": {
     "captured_at": null,
     "commit": null,

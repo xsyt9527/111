@@ -1,0 +1,336 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-011",
+  "task_spec_version": 1,
+  "slug": "zhandou-chonggou",
+  "title": "零期 A：摇杆移动 + 吞噬门槛 ×1.1 + 体型即血量",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "awaiting",
+  "delivery_status": "proposed",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "b12747dbae89db985582e92b79f67efe73ce059c",
+  "objective": "按《大鱼吃小鱼-游戏策划案》v0.1 重构的第一刀（零期 A）：把'点哪游哪'换成虚拟摇杆，把'严格大于就能吃'换成体型 ≥ 对方 ×1.1 才能整吞，把独立血条换成'体型即血量'（受伤掉体型、体型跌破阈值即死亡）。经验/升级/三选一暂时保留（TASK-014 再换成'吃谁得谁'），避免一次改动太大导致测试全断。完成后可在 PC 上用鼠标模拟触摸体验零期手感，随后立刻恢复 TASK-010 导出到真机验证。",
+  "audit_freshness": {
+    "audited_commit": "b12747dbae89db985582e92b79f67efe73ce059c",
+    "environment_checked_at": "2026-10-27T03:30:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改——本课零触碰（摇杆不注册 Autoload、不改输入映射）",
+      "引擎版本变化",
+      "数据表结构变化——本课 data/ 零触碰",
+      "基线 commit 变化后未重新审计受影响区域"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "虚拟摇杆输入（触摸/鼠标模拟，方向归一化与限幅）",
+      "玩家转向模型（转向速率随体型下降）",
+      "吞噬门槛带（≥1.1 整吞，0.9~1.1 只能咬的过渡带）",
+      "体型即血量（受伤掉体型、体型跌破阈值死亡）",
+      "体型显示（替代血条）"
+    ],
+    "owned_scenes": [
+      "res://scenes/YaoGan.tscn（新建：左下角虚拟摇杆）"
+    ],
+    "owned_scripts": [
+      "res://scripts/yao_gan.gd（新建）",
+      "res://tests/ce_yao_gan.gd（新建）"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-001（玩家移动与输入——被替换）",
+      "TASK-003（大吃小判定——门槛被替换）",
+      "TASK-005（经验成长——本课暂留，只改体型增值路径）",
+      "TASK-007（buff 生效——磁吸/催肥等依赖体型的卡需兼容）",
+      "TASK-008（血量死亡结算——血条退役，死亡改判体型）",
+      "TASK-009（tests/ 门禁——本课必须同步改断言并保持全绿）"
+    ],
+    "consumed_interfaces": [
+      "yu.gd 的 zui_qu/shang_qu 信号回调——判定逻辑改写",
+      "YuNpc.tixing——门槛比较与受损对象",
+      "ZhangBen.sheng_ji——升级仍涨体型（TASK-014 前保留）",
+      "tests/pao_pi.bat——回归门禁"
+    ],
+    "provided_interfaces": [
+      "yao_gan.gd 的 fang_xiang: Vector2（归一化方向，零向量=松手）",
+      "TUN_CHI_BEI_LV 常量（吞噬门槛，后续调参唯一入口）",
+      "TI_XING_SI_WANG 常量（死亡阈值）",
+      "体型显示节点（后续饥饿/控制条 UI 的锚点）"
+    ],
+    "emitted_signals": [
+      "yao_gan 可对外发 fang_xiang_bian_hua(fang_xiang: Vector2)，也可由 Main 每帧读取——本课采用读取式，不加信号"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji（升级涨体型，保留）",
+      "ZhangBen.ka_yi_xuan（三选一卡生效，保留但需与新体型模型兼容）"
+    ],
+    "shared_state": [
+      "体型 tixing 成为玩家唯一生命值来源：受伤减、升级加、死亡看它——血条数值退出"
+    ],
+    "registered_shared_changes": [
+      "删除 mubiao_dian 链路（Main→Yu）",
+      "血条 XueLiangTiao 从 Main 移除（文件保留不删）",
+      "xue_liang / zuida_xue / xue_liang_bian_hua 退役"
+    ],
+    "conflict_hotspots": [
+      "催肥卡 mei_ji_fu_dian 与受伤掉体型叠加：升级加体型、受伤乘 0.85，顺序必须写清",
+      "磁吸卡依赖玩家位置——摇杆移动后 bei_xi 追踪仍按 global_position，无需改",
+      "tests/ce_panding.gd 旧断言（tixing > 对方、掉血 3→2）必须同步改成新规则"
+    ],
+    "required_integration_checks": [
+      "headless 导入零错误",
+      "tests/pao_pi.bat 全绿（含新增 ce_yao_gan）",
+      "F5 回归：摇杆移动/吞噬/受伤变小/死亡结算/升级涨体型/三选一仍可用",
+      "鼠标模拟触摸下摇杆可用（emulate_touch_from_mouse 已开启）"
+    ]
+  },
+  "allowed_existing_files": [
+    "docs/引擎词总表.md",
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "docs/TASK_INDEX.md",
+    "docs/PROJECT_STATUS_AUDIT.md",
+    "docs/CHONG_GOU_LU_XIAN.md",
+    "scripts/main.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scenes/Main.tscn",
+    "scenes/Yu.tscn",
+    "tests/ce_panding.gd",
+    "tests/pao_pi.bat",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/TASK_STATE.json",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/INTEGRATION_HANDOFF.md"
+  ],
+  "allowed_new_files": [
+    "scenes/YaoGan.tscn",
+    "scripts/yao_gan.gd",
+    "scripts/yao_gan.gd.uid",
+    "tests/ce_yao_gan.gd",
+    "tests/ce_yao_gan.gd.uid",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-011_zhandou_chonggou/CODE_REVIEW.md"
+  ],
+  "forbidden_systems": [
+    "咬击部位系统与控制条（TASK-012）",
+    "饥饿条与消化槽（TASK-013）",
+    "NPC 行为状态机、互吃、索敌（TASK-015）",
+    "能力系统与三选一退役（TASK-014）",
+    "地图九宫格、人类战、局外形态（TASK-016~018）",
+    "修改 data/ 任何 .tres 字段结构",
+    "删除 tests/ 既有测试文件（可改断言，不许删）",
+    "修改 .agents/skills/**（只读）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "虚拟摇杆 + 转向模型",
+      "behavior": "新建 scenes/YaoGan.tscn（CanvasLayer：底板圆 + 摇杆头）与 scripts/yao_gan.gd：触摸按下/拖动时摇杆头偏移（限制在半径内），输出归一化方向 fang_xiang: Vector2，松手归零。Main 挂载摇杆并把方向写给玩家。Yu 改造：删除 mubiao_dian / TINGZHI_JULI 链路，新增 dang_qian_jiao（当前朝向）与 zhuanxiang_sudu（弧度/秒，随体型下降：基准 4.0 / tixing），每帧朝摇杆方向转向并沿朝向前进（yidong_sudu × delta）。无输入时减速停下。Sprite2D.flip_h 按朝向。",
+      "main_concept": "输入层与运动层分离：摇杆只产出'方向'，玩家自己决定'转多快、游多快'——这正是策划案'大鱼肉笨重'的实现位",
+      "files": [
+        "scenes/YaoGan.tscn",
+        "scripts/yao_gan.gd",
+        "scripts/main.gd",
+        "scripts/yu.gd",
+        "scenes/Main.tscn"
+      ],
+      "automated_checks": [
+        "\"$GODOT_BIN\" --headless --path . --import 退出码 0",
+        "F5 零脚本错误（输出筛查）"
+      ],
+      "manual_checks": [
+        "鼠标按住左下角摇杆拖动：鱼朝对应方向游动，松手减速停止",
+        "升级变大后转向明显变慢（大鱼笨重感）"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "吞噬门槛 ×1.1",
+      "behavior": "在 yu.gd 顶部定义 const TUN_CHI_BEI_LV := 1.1。嘴圈判定改为：tixing >= yu_npc.tixing * TUN_CHI_BEI_LV 才整吞；否则只造成'顶撞'（轻微反馈，不吞）。伤区判定同步改为：yu_npc.tixing * TUN_CHI_BEI_LV > tixing 才受伤（即对方明显比我大）。0.9~1.1 的中间带本课表现为'吃不掉也伤不到'，留给 TASK-012 的咬击。数值集中一处，后续调参只改常量。",
+      "main_concept": "门槛带：从'严格大于'到'明显大于'，中间带是咬击玩法的空间——判定规则一改，玩法空间就出来了",
+      "files": [
+        "scripts/yu.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 更新门槛断言后退出码 0"
+      ],
+      "manual_checks": [
+        "F5：体型接近的鱼（同体型）吃不掉也不会被它伤；明显小的能吃；明显大的会伤"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "体型即血量 + 体型显示 + 死亡判定",
+      "behavior": "yu.gd：删除 xue_liang / zuida_xue / xue_liang_bian_hua 与血条广播；_shoushang() 改为 tixing *= 0.85（常量 SHANG_HAI_BEI_LV），播放缩小 tween，仍保留无敌帧；tixing < TI_XING_SI_WANG（0.5）时 _si_wang() 切结算。Main.tscn 移除 XueLiangTiao 实例，新增体型显示（Label '体型 x.xx' 或进度条，值来自玩家）。JieSuan.tscn 若读血量则同步改读体型。升级仍通过 ZhangBen.sheng_ji 涨体型。",
+      "main_concept": "双重表达：体型既是碰撞体积、吞噬资格，也是血量——受伤直接可视化，不需要另一根血条",
+      "files": [
+        "scripts/yu.gd",
+        "scenes/Main.tscn",
+        "scenes/Yu.tscn"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 断言受伤后 tixing ×0.85、低于阈值触发结算",
+        "tests/pao_pi.bat 全绿"
+      ],
+      "manual_checks": [
+        "F5：撞大一次鱼变小一圈，连续撞到死亡；血条已消失，体型数字/条正确",
+        "升级时体型变大，三选一仍然弹出且生效（本课暂留）"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "测试更新与全量回归",
+      "behavior": "新增 tests/ce_yao_gan.gd（extends SceneTree）：摇杆方向归一化（斜向输入长度=1）、超半径限幅、零输入归零——只测纯算法，不依赖场景。改 tests/ce_panding.gd：门槛 ×1.1、受伤掉体型、死亡阈值、0.9~1.1 中间带无事。pao_pi.bat 增加 ce_yao_gan 一步（保持三重把关）。F5 全量回归：移动/吞噬/受伤/死亡/升级/三选一/结算重开。",
+      "main_concept": "重构期测试是安全网：改产品必同步改断言，门禁保持全绿——不许'先红后补'",
+      "files": [
+        "tests/ce_yao_gan.gd",
+        "tests/ce_panding.gd",
+        "tests/pao_pi.bat"
+      ],
+      "automated_checks": [
+        "tests/ce_yao_gan.gd 退出码 0 + Results 全 passed",
+        "tests/pao_pi.bat 全绿退出码 0（五步变六步）",
+        "check_task_scope.py check 无违例"
+      ],
+      "manual_checks": [
+        "学生亲手跑 pao_pi.bat 见全绿；故意改坏一条断言见红再复原",
+        "F5 完整一局：摇杆游动→吃小鱼变大→撞大鱼变小→死亡结算→重开"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述摇杆输入如何变成移动：摇杆出口径归一化方向 → 玩家按转向速率转朝向 → 沿朝向前进（速度 × delta）",
+      "学生能解释为什么大鱼转向慢（策划案 8.4：体型越大越笨重，被围猎风险）",
+      "学生能说出 ×1.1 门槛与'严格大于'的差别，以及中间带为什么留给咬击",
+      "学生能解释体型为什么可以当血量（体型同时是体积、吞噬资格与生命值）",
+      "学生能指出血条退役涉及哪些文件与哪些信号",
+      "学生能复述 push_warning 与 error 的区别（第 9 课遗留观察项清账）"
+    ],
+    "concepts": [
+      "虚拟摇杆（底板/摇杆头、限幅、归一化方向）",
+      "输入层与运动层分离",
+      "转向速率与朝向角（大鱼笨重）",
+      "吞噬门槛带（≥1.1 整吞 / 0.9~1.1 咬 / <0.9 被吃）",
+      "体型即血量（双重表达）",
+      "退役一条链路：mubiao_dian 从 Main 到 Yu 的完整删除",
+      "重构期测试同步（改产品必改断言）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "场景树结构不变：Main 下新增 YaoGan（CanvasLayer，UI 层），移除 XueLiangTiao 实例（文件保留）。玩家与 NPC 场景结构不动，只改脚本逻辑与 Main.tscn 的挂载项。Autoload、主场景、输入映射零改动。",
+    "current_tree": null,
+    "target_tree": null,
+    "loading_policy": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0（生成时）",
+    "\"$GODOT_BIN\" --headless --path . --import 退出码 0（每步）",
+    "tests/ce_yao_gan.gd 退出码 0 + Results 全 passed",
+    "tests/ce_panding.gd 更新后退出码 0 + Results 全 passed",
+    "tests/pao_pi.bat 全绿退出码 0（六步）",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：摇杆拖动游动、松手减速停止",
+    "F5：吞噬门槛三档（明显小/接近/明显大）表现正确",
+    "F5：受伤变小、体型归零死亡、结算重开",
+    "F5：升级涨体型与三选一仍可用（本课暂留）",
+    "学生亲手跑 pao_pi.bat 全绿并完成一次红绿体验"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "无可用对照技能——本课依据策划案第八章（战斗/数值）与零期里程碑",
+      "沿用第 9 课门禁：重构期间 pao_pi.bat 只许加不许废"
+    ],
+    "unknowns": [
+      "摇杆手感（半径/死区/跟随方式）需真机验证",
+      "受伤掉体型幅度 ×0.85 与死亡阈值 0.5 为建议值，待零期调参",
+      "0.9~1.1 中间带在本课'无事发生'是否可接受（TASK-012 咬击补上）"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要同时做咬击或控制条（升 v2 或并入 TASK-012）",
+    "需要修改 data/ 字段结构（TASK-014 能力系统的前置）",
+    "需要动 NPC 行为状态机（TASK-015）",
+    "需要改地图或相机（TASK-016）",
+    "三选一/经验退役时机提前（TASK-014）"
+  ],
+  "approval": {
+    "approved": false,
+    "approved_version": null,
+    "approved_at": null,
+    "exact_user_text": null,
+    "canonical_example": "确认 TASK-011 v1 进入开发"
+  }
+}
