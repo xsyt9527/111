@@ -2,19 +2,19 @@
   "task_id": "TASK-011",
   "task_spec_version": 1,
   "approval_status": "approved",
-  "delivery_status": "implemented",
+  "delivery_status": "complete",
   "learning_status": "demonstrated",
-  "handoff_status": "pending",
+  "handoff_status": "ready",
   "current_step": "step-04",
   "current_checkpoint": "verification-handoff",
-  "next_action": "学生验证全部通过；下一步出三份报告、填写 INTEGRATION_HANDOFF、更新词总表与路线图，然后提交并回填 last_verified_commit",
+  "next_action": "已交付（实现提交 b65d7e5a04c3061dca2c9421de6a231f37b08027）；下一课恢复 TASK-010 安卓导出",
   "implementation_baseline": {
     "captured_at": "2026-10-27T11:46:53Z",
     "commit": "3607f45ab6544995d11ebe3d24b6ba82ffa03dc0",
     "preexisting_changes": []
   },
-  "last_verified_commit": null,
-  "integration_baseline_commit": null,
+  "last_verified_commit": "b65d7e5a04c3061dca2c9421de6a231f37b08027",
+  "integration_baseline_commit": "b65d7e5a04c3061dca2c9421de6a231f37b08027",
   "step_state": [
     {
       "step_id": "step-01",
