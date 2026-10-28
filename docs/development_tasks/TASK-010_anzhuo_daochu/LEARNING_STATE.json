@@ -2,13 +2,53 @@
   "task_id": "TASK-010",
   "task_spec_version": 1,
   "learning_status": "in_progress",
-  "concepts_introduced": [],
-  "concepts_explained_by_student": [],
+  "concepts_introduced": [
+    "导出成功查产物不查退出码（三件套：存在/体积/解包关键件）",
+    "debug 与 release 构建的区别（调试符号/优化/签名）",
+    "keystore 签名身份与丢失后果"
+  ],
+  "concepts_explained_by_student": [
+    "导出成功查产物不查退出码",
+    "keystore 是应用的身份证，丢了系统认为是新的人"
+  ],
   "editor_operations_completed": [],
   "verification_completed": [],
   "integration_contract_understood": null,
   "student_questions": [],
   "unresolved_concepts": [],
   "assistance_level": "full",
-  "evidence": []
+  "evidence": [
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "问 1 导出成功为什么查产物不查退出码：学生答「退出码 0 只能证明代码没错，apk 导出要看有没有导出来文件」——通过；补讲安静失败与三件套（存在/体积/解包 AndroidManifest.xml + classes.dex）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-28T01:20:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "问 2 debug 与 release 区别：学生答「一个可以方便改代码，一个上锁了」——方向对，补讲调试符号/优化/签名三点（Android 所有 APK 都要签名，debug 用调试密钥）",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-28T01:20:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "问 3 keystore：学生答「身份证，身份证没了系统以为你是新的人」——类比优秀，通过；补讲签名一致才允许覆盖更新",
+      "understanding_level": "explained",
+      "observed_at": "2026-10-28T01:20:00Z"
+    },
+    {
+      "evidence_type": "concept_explanation",
+      "step_id": "step-01",
+      "checkpoint_id": "orientation",
+      "summary": "问 4 真机回归覆盖：学生答旧循环「触摸，吃鱼，升级，3选1，死亡，受伤」——已纠正为 TASK-011 后新玩法（摇杆转向/松手减速/×1.1 门槛/体型即血量/结算重开）",
+      "understanding_level": "introduced",
+      "observed_at": "2026-10-28T01:20:00Z"
+    }
+  ]
 }
