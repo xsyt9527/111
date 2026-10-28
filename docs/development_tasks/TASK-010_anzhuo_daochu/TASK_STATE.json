@@ -1,13 +1,13 @@
 {
   "task_id": "TASK-010",
   "task_spec_version": 1,
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
-  "learning_status": "not_started",
+  "approval_status": "approved",
+  "delivery_status": "in_progress",
+  "learning_status": "in_progress",
   "handoff_status": "not_started",
   "current_step": "step-01",
   "current_checkpoint": "orientation",
-  "next_action": "暂缓（2026-10-27 项目转入按策划案重构，拒绝先导出固化旧玩法）：TASK-011 零期战斗核心完成后立即恢复本任务——零期手感必须真机验证。审批文本待恢复时再确认",
+  "next_action": "审批已登记（2026-10-28T01:11:33Z）；下一步捕获实现基线，然后 orientation 复述抽查（debug vs release / 导出成功看产物），通过后进入 step-01 工具链安装",
   "implementation_baseline": {
     "captured_at": null,
     "commit": null,
@@ -54,9 +54,9 @@
     }
   ],
   "approval_record": {
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null
+    "approved_version": 1,
+    "approved_at": "2026-10-28T01:11:33Z",
+    "exact_user_text": "确认 TASK-010 v1 进入开发"
   },
   "capability_decisions": {
     "superpowers": "unavailable",

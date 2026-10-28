@@ -9,8 +9,8 @@
   "development_strategy": "plan_driven",
   "participation_mode": "guided_co_development",
   "execution_mode": "teaching",
-  "approval_status": "awaiting",
-  "delivery_status": "proposed",
+  "approval_status": "approved",
+  "delivery_status": "approved",
   "learning_status": "not_started",
   "handoff_status": "not_started",
   "baseline_commit": "5d7f8325627fbe2a34f041cf0ca472c78ed1357c",
@@ -300,10 +300,10 @@
     "改用 AAB 或其他分发格式（TapTap 用 APK，确需改另议）"
   ],
   "approval": {
-    "approved": false,
-    "approved_version": null,
-    "approved_at": null,
-    "exact_user_text": null,
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-28T01:11:33Z",
+    "exact_user_text": "确认 TASK-010 v1 进入开发",
     "canonical_example": "确认 TASK-010 v1 进入开发"
   }
 }
