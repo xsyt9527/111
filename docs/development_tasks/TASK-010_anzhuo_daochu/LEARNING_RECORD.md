@@ -28,7 +28,20 @@
 
 ### godot-inspection（step-02 后）
 
-- 待进行
+- 待学生核对（见检查清单）：导出预设四项——包名 / 图标 / 权限 / 架构
+
+## step-02 实现证据（2026-10-28）
+
+- 编辑器设置（`%APPDATA%\Godot\editor_settings-4.7.tres`）补全两键：`export/android/java_sdk_path = "D:/Android/jdk-17.0.20.1+1"`、`export/android/android_sdk_path = "D:/Android/sdk"`（原 android_sdk_path 指向不存在的默认位置）。
+- `project.godot`：`[display]` 段显式加 `window/handheld/orientation="landscape"`——横屏是导出预设四项之外的第 0 项，写在项目设置里，APK manifest 的 `screenOrientation` 由它决定。
+- 新建 `export_presets.cfg`（预设名 "Android"）：包名 `com.shenhaishiji.game`、显示名 深海食纪、versionCode 1 / versionName 0.1.0、仅 arm64-v8a、全部权限开关显式关死、immersive mode 开、图标走项目 icon.svg 兜底（美术零改动）。
+- **安静失败实录**：第一次 `--export-debug` 退出码 0，但输出有 `ERROR: 目标文件夹不存在或无法访问："build"`——没有任何 APK 落盘。orientation 问 1（「退出码 0 只证明命令跑完」）当场兑现。建 `build/` 目录后重导成功。
+- 产物三件套核查（命令行即可，不用装机）：
+  1. 文件在：`build/shenhaishiji-debug.apk`，29,837,894 字节 ≈ 28.4 MB（mobile 渲染器 + arm64 调试模板，体积合理）；
+  2. 解包 `unzip -l`：`AndroidManifest.xml`（8KB）+ `classes.dex`（5.7MB）+ `lib/arm64-v8a/libgodot_android.so`（76MB 解压态）都在；
+  3. `aapt dump badging / permissions / xmltree` 复核：包名、label、版本号、单架构、横屏（`screenOrientation=0x0`）、minSdk 24 / targetSdk 36，**权限清单为空**（连 INTERNET 都没申请——最小权限达成，审核端最省心）。
+- 签名：apksigner 自动用 `keytool` 生成的调试密钥签名成功（`Signed`，附 `.idsig` 文件）。
+- 动工前后 pao_pi.bat 六步全绿（68 断言）——export_presets.cfg 是打包配置，不进游戏运行时。
 
 ## step-01 实现证据（2026-10-28）
 

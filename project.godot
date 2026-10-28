@@ -24,6 +24,7 @@ ZhangBen="*res://scripts/zhang_ben.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+window/handheld/orientation="landscape"
 
 [input_devices]
 
