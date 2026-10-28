@@ -9,9 +9,17 @@
   "current_checkpoint": "orientation",
   "next_action": "审批已登记（2026-10-28T01:11:33Z）；下一步捕获实现基线，然后 orientation 复述抽查（debug vs release / 导出成功看产物），通过后进入 step-01 工具链安装",
   "implementation_baseline": {
-    "captured_at": null,
-    "commit": null,
-    "preexisting_changes": []
+    "captured_at": "2026-10-28T01:14:23.565758Z",
+    "commit": "8f642cdc74c92a2a0773bff86924f4abadb74390",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-010_anzhuo_daochu/TASK_STATE.json",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:12cd8ff9f90f561d26c4c3e21739f0eb624fe45898d2bfd76ac7d6efd5880e76"
+      }
+    ]
   },
   "last_verified_commit": null,
   "integration_baseline_commit": null,
