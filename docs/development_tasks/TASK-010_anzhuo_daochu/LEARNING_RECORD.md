@@ -30,6 +30,23 @@
 
 - 待进行
 
+## step-01 实现证据（2026-10-28）
+
+- 环境盘点确认四件全缺（JDK / Android SDK / adb / 导出模板），按任务包顺序补齐：
+  1. **导出模板 4.7.2.stable**：GitHub 直连被墙（exit 7），改走 `gh-proxy.com` 代理下载 1.28 GB `.tpz`，解包安装到 `%APPDATA%\Godot\export_templates\4.7.2.stable\`，`version.txt` 核对 `4.7.2.stable`。
+  2. **JDK 17**：清华 Adoptium 镜像 Temurin `17.0.20.1+1` zip 版，解压到 `D:\Android\jdk-17.0.20.1+1`（纯英文路径）。
+  3. **Android SDK**：腾讯镜像下 cmdline-tools，`sdkmanager --licenses` 全收后装 `platform-tools`、`build-tools;34.0.0`、`platforms;android-34`。
+  4. **adb 37.0.1** 随 platform-tools 落位；`apksigner 0.9`、`zipalign`、`keytool`（JDK 自带）逐个点验。
+- 新建 `tools/jian_cha_android.bat` 自查门禁：六件套逐项核对（存在性 + 版本号 + 可执行），缺任一退出码 1。实测：全绿退出码 0；负向自证（故意指错 JDK 路径）第 1 步即红退出码 1——门禁红绿双向确认。
+- 门禁门禁本身也是产品：写它时踩了两个 bat 经典坑（见下「教学现场」）。
+- 环境变量持久化：`JAVA_HOME`、`ANDROID_HOME`、用户 PATH 追加三目录。
+
+### 教学现场：bat 的两个经典坑（2026-10-28）
+
+1. **bat 调用另一个 bat 不加 `call`** → 控制权链式转移，外层脚本在被调 bat 结束时直接散场。症状：跑到第 3 步（sdkmanager）就没有下文、退出码还是 0。修法：`call "....bat"`。
+2. **cmd 对多字节 `rem` 行的解析错位**：连续的中文 rem 行（chcp 65001 前后都可能）会让 cmd 把下一行从字节中间切开执行，报 `'全在' is not recognized` 一类碎片命令。用最小复现实验钉死规律：中文 rem 紧跟中文 rem 会踩中（ce_b 红），前面垫 ASCII 行则安全（ce_c 绿）；`echo` 中文行无论怎么排都安全（pao_pi.bat 六步头部实证）。工程决策：**bat 的 rem 一律 ASCII，中文只放 echo 输出**。
+3. 附带发现：Write 工具产出 LF 行尾，bat 必须 CRLF（`sed -i 's/$/\r/'` 归一化），否则 cmd 按错行切割整份脚本。
+
 ### verification-handoff（收尾前）
 
 - 待进行

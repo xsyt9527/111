@@ -5,9 +5,9 @@
   "delivery_status": "in_progress",
   "learning_status": "in_progress",
   "handoff_status": "not_started",
-  "current_step": "step-01",
+  "current_step": "step-02",
   "current_checkpoint": "orientation",
-  "next_action": "审批已登记（2026-10-28T01:11:33Z）；下一步捕获实现基线，然后 orientation 复述抽查（debug vs release / 导出成功看产物），通过后进入 step-01 工具链安装",
+  "next_action": "step-01 工具链已就绪（门禁全绿+红向自证）；进入 step-02：编辑器配置 Android SDK/JDK 路径 + 导出预设四项 + --export-debug 出包并查产物三件套",
   "implementation_baseline": {
     "captured_at": "2026-10-28T01:14:23.565758Z",
     "commit": "8f642cdc74c92a2a0773bff86924f4abadb74390",
@@ -26,12 +26,20 @@
   "step_state": [
     {
       "step_id": "step-01",
-      "implementation_status": "pending",
-      "verification_status": "pending",
+      "implementation_status": "complete",
+      "verification_status": "complete",
       "participation_status": "pending",
-      "changed_files": [],
-      "check_results": [],
-      "next_action": "待审批"
+      "changed_files": [
+        "tools/jian_cha_android.bat"
+      ],
+      "check_results": [
+        "动工前 pao_pi.bat 六步全绿（68 断言），动工后再跑仍全绿（项目零改动）",
+        "工具链六件套装齐：JDK 17.0.20.1（D:\\Android\\jdk-17.0.20.1+1）/ adb 37.0.1 / sdkmanager / build-tools 34.0.0（apksigner 0.9+zipalign）/ platforms android-34 / 导出模板 4.7.2.stable（android_debug.apk+android_release.apk）",
+        "tools/jian_cha_android.bat：六步全绿退出码 0；负向自证（指错 JDK 路径）退出码 1——门禁红绿双向确认",
+        "镜像路线：模板经 gh-proxy.com（GitHub 直连被墙）、JDK 清华 Adoptium、cmdline-tools 腾讯镜像、SDK 组件 dl.google.com 直连",
+        "环境变量持久化：JAVA_HOME / ANDROID_HOME / PATH（jdk bin、platform-tools、build-tools）"
+      ],
+      "next_action": "学生真机回归统一在 step-04 参与（step-01 为机器侧工具链，无学生手动检查点）"
     },
     {
       "step_id": "step-02",
