@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="YuZhong" load_steps=3 format=3]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
-[ext_resource type="Texture2D" uid="uid://byh7e6e58q6pv" path="res://assets/sucai/kenney_fish/PNG/Default/fish_orange.png" id="2_tie_tu"]
+[ext_resource type="Texture2D" uid="uid://nx3ly804bb5s" path="res://assets/sucai/shenhai_yu/shi_zi_yu.png" id="2_tie_tu"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
@@ -9,4 +9,3 @@ dengji = 2
 fenzhi = 3
 sudu_fanwei = Vector2(90, 130)
 tie_tu = ExtResource("2_tie_tu")
-tixing_fanwei = Vector2(1, 1.3)

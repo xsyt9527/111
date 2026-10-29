@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bowawgrtd5p8v"]
 
 [ext_resource type="Script" uid="uid://dm0ffvkk7jrik" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Texture2D" uid="uid://b83bkk62ctmr2" path="res://assets/sucai/kenney_fish/PNG/Default/background_terrain.png" id="2_haodi"]
+[ext_resource type="Texture2D" uid="uid://daq5ma45vhqj7" path="res://assets/sucai/shenhai_beijing/beijing_3x3.webp" id="2_haodi"]
 [ext_resource type="PackedScene" uid="uid://begsi5v6owqua" path="res://scenes/Yu.tscn" id="3_yu"]
 [ext_resource type="Script" uid="uid://cuhw2cc365t6" path="res://scripts/yu_qun.gd" id="4_yuqun"]
 [ext_resource type="Resource" uid="uid://bb38ynj8rbphg" path="res://data/yuzhong/lan_yu.tres" id="5_lan"]
@@ -10,25 +10,41 @@
 [ext_resource type="Resource" path="res://data/yuzhong/lv_yu.tres" id="7_lv"]
 [ext_resource type="Resource" path="res://data/yuzhong/cheng_yu.tres" id="8_cheng"]
 [ext_resource type="Resource" path="res://data/yuzhong/zong_yu.tres" id="9_zong"]
-[ext_resource type="Resource" path="res://data/yuzhong/fen_yu.tres" id="10_fen"]
 [ext_resource type="Script" path="res://scripts/jing_yan_ui.gd" id="11_jingyan"]
 [ext_resource type="PackedScene" path="res://scenes/QiangHuaDanChuang.tscn" id="12_danchuang"]
 [ext_resource type="PackedScene" path="res://scenes/YaoGan.tscn" id="14_yaogan"]
+[ext_resource type="Resource" path="res://data/yuzhong/qi_yu.tres" id="15_qi"]
+[ext_resource type="Resource" path="res://data/yuzhong/jian_yu.tres" id="16_jian"]
+[ext_resource type="Resource" path="res://data/yuzhong/ju_kou_yu.tres" id="17_ju"]
+[ext_resource type="Script" path="res://scripts/zhi_wu_qun.gd" id="18_zhiwuqun"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
 
 [node name="Haodi" type="Sprite2D" parent="." unique_id=1956245500]
-position = Vector2(640, 360)
-scale = Vector2(20, 11.25)
+z_index = -10
+position = Vector2(2064, 1152)
 texture = ExtResource("2_haodi")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(2064, 1152)
+limit_left = 0
+limit_top = 0
+limit_right = 4128
+limit_bottom = 2304
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="ZhiWuQun" type="Node2D" parent="."]
+script = ExtResource("18_zhiwuqun")
+
 [node name="Yu" parent="." unique_id=546248040 instance=ExtResource("3_yu")]
-position = Vector2(640, 360)
+position = Vector2(2064, 1152)
 
 [node name="YuQun" type="Node2D" parent="." unique_id=71082821]
 script = ExtResource("4_yuqun")
-yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("10_fen")])
+yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("15_qi"), ExtResource("16_jian"), ExtResource("17_ju")])
 
 [node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true
@@ -45,7 +61,7 @@ offset_bottom = 44.0
 [node name="DengJiLabel" type="Label" parent="JingYanTiao"]
 offset_left = 250.0
 offset_top = 18.0
-text = "Lv.1"
+text = "Lv.0"
 
 [node name="TiXingUI" type="CanvasLayer" parent="."]
 
@@ -55,7 +71,41 @@ offset_top = 20.0
 offset_right = 224.0
 offset_bottom = 56.0
 theme_override_font_sizes/font_size = 28
-text = "体型 1.00"
+text = "体型 1.0/1.0"
+
+[node name="JiEUI" type="CanvasLayer" parent="."]
+
+[node name="JiELabel" type="Label" parent="JiEUI"]
+offset_left = 24.0
+offset_top = 60.0
+offset_right = 220.0
+offset_bottom = 86.0
+theme_override_colors/font_color = Color(0.75, 0.93, 1, 0.95)
+theme_override_font_sizes/font_size = 20
+text = "饥饿 100/100"
+
+[node name="JiETiao" type="ProgressBar" parent="JiEUI"]
+offset_left = 24.0
+offset_top = 88.0
+offset_right = 324.0
+offset_bottom = 104.0
+show_percentage = false
+value = 100.0
+
+[node name="DiTuUI" type="CanvasLayer" parent="."]
+
+[node name="DiTuMing" type="Label" parent="DiTuUI"]
+offset_left = 900.0
+offset_top = 52.0
+offset_right = 1256.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.92, 0.97, 1, 0.95)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.65)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 20
+text = "正中 · 核心海山交汇大殿"
+horizontal_alignment = 2
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -1,9 +1,8 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" uid="uid://c6mmomruw6pm" path="res://scripts/qiang_hua_dan_chuang.gd" id="1_danchuang"]
 [ext_resource type="Script" uid="uid://deo6ksu826iyg" path="res://scripts/qiang_hua_ka.gd" id="2_qianghuaka"]
 [ext_resource type="Resource" path="res://data/qianghua/xun_jie.tres" id="3_xun"]
-[ext_resource type="Resource" path="res://data/qianghua/cui_fei.tres" id="4_cui"]
 [ext_resource type="Resource" path="res://data/qianghua/ci_xi.tres" id="5_ci"]
 [ext_resource type="Resource" path="res://data/qianghua/tan_shi.tres" id="6_tan"]
 [ext_resource type="Resource" path="res://data/qianghua/huo_li.tres" id="7_huo"]
@@ -12,7 +11,7 @@
 [node name="QiangHuaDanChuang" type="CanvasLayer"]
 process_mode = 3
 script = ExtResource("1_danchuang")
-ka_zu = Array[ExtResource("2_qianghuaka")]([ExtResource("3_xun"), ExtResource("4_cui"), ExtResource("5_ci"), ExtResource("6_tan"), ExtResource("7_huo"), ExtResource("8_rui")])
+ka_zu = Array[ExtResource("2_qianghuaka")]([ExtResource("3_xun"), ExtResource("5_ci"), ExtResource("6_tan"), ExtResource("7_huo"), ExtResource("8_rui")])
 
 [node name="BanDi" type="ColorRect" parent="."]
 offset_left = 0.0

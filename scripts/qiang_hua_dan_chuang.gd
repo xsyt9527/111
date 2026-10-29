@@ -2,7 +2,7 @@ extends CanvasLayer
 # 三选一弹窗：听账本升级信号 → 冻结全场 → 抽 3 张卡 → 点选入账 → 恢复
 # 根节点 process_mode=When Paused：全场暂停时唯我独醒（否则按钮点不动）
 
-@export var ka_zu: Array[QiangHuaKa] = []  # 卡池注册表（场景里拖入 6 张 .tres，加卡零代码）
+@export var ka_zu: Array[QiangHuaKa] = []  # 卡池注册表（场景里拖入 5 张 .tres，加卡零代码）
 
 var dang_qian_san_zhang: Array[QiangHuaKa] = []  # 本次抽出的 3 张（按钮回调按序号对应）
 
@@ -28,7 +28,7 @@ func _ready() -> void:
 func _on_sheng_ji(_xin_deng_ji: int) -> void:
 	# 升级了：冻结全场 → 不放回抽 3 张 → 填按钮 → 现身
 	get_tree().paused = true  # 引擎级暂停：玩家/鱼群/Timer 全停，唯 process_mode 非 Pausable 者独醒
-	var dai_chou := ka_zu.duplicate()  # ① 复制：原注册表不动（卡池永远是 6 张）
+	var dai_chou := ka_zu.duplicate()  # ① 复制：原注册表不动（卡池永远是 5 张）
 	dai_chou.shuffle()                 # ② 洗牌：随机性来源
 	dang_qian_san_zhang = dai_chou.slice(0, 3)  # ③ 取前 3：不放回，天然无重复
 	for i in dang_qian_san_zhang.size():

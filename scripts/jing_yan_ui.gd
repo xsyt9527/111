@@ -20,6 +20,7 @@ func _on_jing_yan_bian_hua(jing_yan: int, yuzhi: int) -> void:
 
 func _on_sheng_ji(xin_deng_ji: int) -> void:
 	# 升级：等级数字跳变（经验条清零由下一次 jing_yan_bian_hua 顺带完成）
+	# 等级只升不降——受伤扣的是当前体型（血量），等级上限不动
 	dengji_label.text = "Lv.%d" % xin_deng_ji
 
 

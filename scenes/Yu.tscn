@@ -1,22 +1,23 @@
 [gd_scene format=3 uid="uid://begsi5v6owqua"]
 
 [ext_resource type="Script" uid="uid://jfusrqxlruww" path="res://scripts/yu.gd" id="1_yu"]
-[ext_resource type="Texture2D" uid="uid://cn6y4pp4rawlo" path="res://assets/sucai/kenney_fish/PNG/Default/fish_blue.png" id="2_tietu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/deng_long_yu_4zhen.tres" id="2_donghua"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
-radius = 22.0
+radius = 55.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_zui"]
-radius = 22.0
+radius = 55.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xiqu"]
-radius = 90.0
+radius = 225.0
 
 [node name="Yu" type="Node2D" unique_id=1627777717]
 script = ExtResource("1_yu")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1941861653]
-texture = ExtResource("2_tietu")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1941861653]
+sprite_frames = ExtResource("2_donghua")
+autoplay = "you"
 
 [node name="ZuiQu" type="Area2D" parent="."]
 collision_mask = 2
@@ -35,6 +36,12 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ChiQu"]
 shape = SubResource("CircleShape2D_xiqu")
+
+[node name="RouQu" type="Area2D" parent="."]
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RouQu"]
+shape = SubResource("CircleShape2D_yuan")
 
 [node name="WudiDingshi" type="Timer" parent="." unique_id=1565807978]
 one_shot = true

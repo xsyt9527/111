@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_sjb")
-yuzhi_zu = Array[int]([8, 20, 35, 55, 80, 110])
+ji_chu = 10.0
+zeng_zhang = 1.2

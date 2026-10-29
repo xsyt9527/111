@@ -30,6 +30,12 @@ window/handheld/orientation="landscape"
 
 pointing/emulate_touch_from_mouse=true
 
+[layer_names]
+
+2d_physics/layer_1="yu"
+2d_physics/layer_2="yu_npc"
+2d_physics/layer_3="rou_kuai"
+
 [rendering]
 
 renderer/rendering_method="mobile"

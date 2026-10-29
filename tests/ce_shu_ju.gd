@@ -1,20 +1,19 @@
 extends SceneTree
 # 数据全键校验测试（第 9 课 step-03：白名单 + 坏卡红测 + 鱼种表 + 抽样性质）
-# 用例 1 卡池六张全过校验（DirAccess 遍历——将来加第 7 张卡自动被守护，拼错键当场现形）
+# 用例 1 卡池五张全过校验（DirAccess 遍历——将来加第 6 张卡自动被守护，拼错键当场现形）
 # 用例 2 红测×2：学生亲手建的坏卡（数值为负）+ 代码内拼错键卡，校验器必须都抓到
 #        ——校验器自己也要被测：抓不到已知坏数据，说明校验器才是坏的
-# 用例 3 鱼种表字段校验（贴图/等级/分值/两个随机范围的合法性）
-# 用例 4 抽样性质：弹窗卡池注册 6 张互不重复 + 复刻"复制→洗牌→取前3"跑 200 轮验不放回
+# 用例 3 鱼种表字段校验（贴图/等级/分值/游速范围合法性）
+# 用例 4 抽样性质：弹窗卡池注册 5 张互不重复 + 复刻"复制→洗牌→取前3"跑 200 轮验不放回
 # 纪律：禁用裸 assert()；不入树实例用完 free()（资源卫生）
 
 const BAI_MING_DAN := [
 	"yidong_sudu",       # 迅捷
-	"mei_ji_tixing",      # 催肥
 	"tun_shi_fanwei",    # 贪食
 	"wudi_shi_chang",     # 活力
 	"jing_yan_jia_cheng", # 睿智
 	"ci_xi_fanwei",       # 磁吸
-]  # 六键白名单：与 yu.gd match 分支一一对应——键是字符串无编译期校验，拼错静默失效最难查
+]  # 五键白名单：与 yu.gd match 分支一一对应——催肥已退役（data/qianghua_tuiyi）
 
 var passed := 0  # 通过计数（收卷用）
 var failed := 0  # 失败计数（退出码的依据）
@@ -30,7 +29,7 @@ func _initialize() -> void:
 		ka_shu += 1
 		var ka: Resource = load("res://data/qianghua/" + wen_jian)
 		assert_guo("卡池: " + ka.ming_zi, jiao_yan_ka(ka))
-	assert_eq(ka_shu, 6, "卡池应恰好 6 张（坏卡夹具若混进 data/ 数量会变 7）")
+	assert_eq(ka_shu, 5, "卡池应恰好 5 张（催肥退役后；坏卡夹具若混进 data/ 数量会变 6）")
 
 	# ---- 用例 2：红测——已知坏数据必须被校验器抓到 ----
 	var huai: Resource = load("res://tests/huai_ka.tres")  # 学生亲手建的坏卡（键合法、数值为负）
@@ -64,17 +63,17 @@ func _initialize() -> void:
 		yu_shu += 1
 		var yu_zhong: Resource = load("res://data/yuzhong/" + wen_jian)
 		assert_guo("鱼种: " + wen_jian, jiao_yan_yu_zhong(yu_zhong))
-	assert_eq(yu_shu, 6, "鱼种表应恰好 6 行")
+	assert_eq(yu_shu, 9, "鱼种表应恰好 9 行（美术首装后：6 旧种换皮 + 旗鱼/剑鱼/巨口鱼 3 新种）")
 
 	# ---- 用例 4：抽样性质（三选一不放回）----
 	var chuang: CanvasLayer = load("res://scenes/QiangHuaDanChuang.tscn").instantiate()
 	# instantiate() 只建节点不进树：_ready 不跑（就不会碰 Autoload），导出属性 ka_zu 已就位
-	assert_eq(chuang.ka_zu.size(), 6, "弹窗卡池应注册 6 张")
+	assert_eq(chuang.ka_zu.size(), 5, "弹窗卡池应注册 5 张")
 	var ming_ji := {}  # 卡名集合（查重）
 	for ka in chuang.ka_zu:
 		ming_ji[ka.ming_zi] = true
 		assert_guo("弹窗卡池: " + ka.ming_zi, jiao_yan_ka(ka))
-	assert_eq(ming_ji.size(), 6, "卡池 6 张应互不重复（按卡名查重）")
+	assert_eq(ming_ji.size(), 5, "卡池 5 张应互不重复（按卡名查重）")
 	# 弹窗三步（复制→洗牌→取前3）在 _on_sheng_ji 里要 Autoload+节点接线，--script 模式测不了接线，
 	# 这里复刻三步验算法性质：每轮恰 3 张互不重复；200 轮每张卡都该露过面
 	var wei_gui := 0
@@ -92,7 +91,7 @@ func _initialize() -> void:
 		if ben_lun_ming.size() != 3:
 			wei_gui += 1
 	assert_eq(wei_gui, 0, "200 轮抽样每轮应恰 3 张且互不重复")
-	assert_eq(chu_xian.size(), 6, "200 轮后每张卡都该出现过（随机性覆盖）")
+	assert_eq(chu_xian.size(), 5, "200 轮后每张卡都该出现过（随机性覆盖）")
 	chuang.free()  # instantiate 出来不入树——谁创建谁负责 free
 
 	# ---- 收卷：退出码是唯一门禁语言 ----
@@ -113,14 +112,12 @@ func jiao_yan_yu_zhong(yu_zhong: Resource) -> String:
 	# 鱼种校验器：返回空串=通过；返回文字=问题
 	if yu_zhong.tie_tu == null:
 		return "缺贴图"
-	if yu_zhong.dengji < 1:
-		return "等级应 ≥1"
+	if yu_zhong.dengji < 1 or yu_zhong.dengji > 10:
+		return "等级应在 1~10"
 	if yu_zhong.fenzhi < 1:
 		return "分值应 ≥1"
 	if yu_zhong.sudu_fanwei.x <= 0.0 or yu_zhong.sudu_fanwei.y < yu_zhong.sudu_fanwei.x:
 		return "游速范围非法（x 应 >0 且 y ≥ x）"
-	if yu_zhong.tixing_fanwei.x <= 0.0 or yu_zhong.tixing_fanwei.y < yu_zhong.tixing_fanwei.x:
-		return "体型范围非法（x 应 >0 且 y ≥ x）"
 	return ""
 
 

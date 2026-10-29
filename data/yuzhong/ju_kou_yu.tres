@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="YuZhong" load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
+[ext_resource type="Texture2D" uid="uid://dr03y6ghov06t" path="res://assets/sucai/shenhai_yu/ju_kou_yu.png" id="2_tie_tu"]
+
+[resource]
+script = ExtResource("1_yu_zhong")
+dengji = 4
+fenzhi = 5
+sudu_fanwei = Vector2(70, 110)
+tie_tu = ExtResource("2_tie_tu")

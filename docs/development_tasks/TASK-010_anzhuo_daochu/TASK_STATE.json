@@ -7,7 +7,7 @@
   "handoff_status": "not_started",
   "current_step": "step-03",
   "current_checkpoint": "godot-inspection",
-  "next_action": "step-02 debug 包已出且产物三件套全过；待学生编辑器核对导出预设四项（godot-inspection 检查点），通过后进 step-03 keystore + release 出包",
+  "next_action": "2026-10-28 美术首装 + 3×3 大地图 + 受伤掉肉 + 体型绑定等级 + 高清重导出（贴图 100px/等级上限 8/海草珊瑚可食/转向加强）已改背景/鱼/装饰/植物/鱼肉/等级；旧 debug APK 不含新美术与新等级；恢复本课时先重跑导出，再让学生核对导出预设四项（godot-inspection 检查点），通过后进 step-03 keystore + release 出包",
   "implementation_baseline": {
     "captured_at": "2026-10-28T01:14:23.565758Z",
     "commit": "8f642cdc74c92a2a0773bff86924f4abadb74390",

@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/rou_kuai.gd" id="1_rou_kuai"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rou"]
+radius = 14.0
+
+[node name="RouKuai" type="Area2D"]
+collision_layer = 4
+collision_mask = 0
+z_index = -1
+script = ExtResource("1_rou_kuai")
+
+[node name="HongGuang" type="Sprite2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_rou")
+
+[node name="KeChiDingshi" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
