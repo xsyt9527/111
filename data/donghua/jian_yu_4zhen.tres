@@ -1,0 +1,39 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/jian_yu_4zhen.png" id="1_tiao"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0"]
+atlas = ExtResource("1_tiao")
+region = Rect2(0, 0, 270, 188)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1"]
+atlas = ExtResource("1_tiao")
+region = Rect2(270, 0, 270, 188)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2"]
+atlas = ExtResource("1_tiao")
+region = Rect2(540, 0, 270, 188)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3"]
+atlas = ExtResource("1_tiao")
+region = Rect2(810, 0, 270, 188)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3")
+}],
+"loop": 1,
+"name": &"you",
+"speed": 8.0
+}]

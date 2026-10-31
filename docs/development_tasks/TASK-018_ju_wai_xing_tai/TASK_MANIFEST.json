@@ -1,0 +1,423 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-018",
+  "task_spec_version": 1,
+  "slug": "ju-wai-xing-tai",
+  "title": "局外形态解锁：三形态 + 胜利解锁 + 启动选择页",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+  "objective": "按策划案 8.3/9 实现局外成长的最小闭环：灯笼鱼/电鳐/旗鱼三个形态，不同初始等级、速度、嘴巴、转向与初始主动能力；累计胜利次数 0/1/2 解锁下一个形态，进度写入 user:// JSON 永久保存；启动进入形态选择页，结算页可保留形态再来一次或回选择页换形态。",
+  "audit_freshness": {
+    "audited_commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+    "environment_checked_at": "2026-10-30T00:00:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "project.godot 结构性修改：新增 CunDang Autoload、主场景改为 XingTaiXuanZe.tscn",
+      "新增 user:// 存档 schema v1：字段或版本变化必须重新审计加载/回退逻辑",
+      "JieSuan.tscn 新增按钮与解锁提示，结算流程变化",
+      "ZhangBen 新增形态字段与开局装配入口",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "局外形态数据（XingTai Resource + 3 个形态表）",
+      "局外存档与解锁推导（CunDang Autoload，JSON schema v1）",
+      "开局形态装配（ZhangBen.kai_ju_xing_tai + Yu.ying_yong_xing_tai）",
+      "启动形态选择页（XingTaiXuanZe.tscn）",
+      "结算页换形态/解锁提示"
+    ],
+    "owned_scenes": [
+      "res://scenes/XingTaiXuanZe.tscn（新建）",
+      "res://scenes/JieSuan.tscn（修改）"
+    ],
+    "owned_scripts": [
+      "res://scripts/xing_tai.gd（新建）",
+      "res://scripts/cun_dang.gd（新建）",
+      "res://scripts/xing_tai_xuan_ze.gd（新建）",
+      "res://scripts/zhang_ben.gd（修改）",
+      "res://scripts/yu.gd（修改）",
+      "res://scripts/main.gd（修改）",
+      "res://scripts/jie_suan.gd（修改）",
+      "res://tests/ce_jie_suo.gd（新建）"
+    ],
+    "owned_config_tables": [
+      "data/xingtai/deng_long_yu.tres",
+      "data/xingtai/dian_yao.tres",
+      "data/xingtai/qi_yu.tres",
+      "data/donghua/dian_yao_1zhen.tres",
+      "data/donghua/qi_yu_1zhen.tres"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-005（ZhangBen Autoload 账本）",
+      "TASK-008（死亡 → JieSuan 结算闭环）",
+      "TASK-014（NengLi 能力系统与初始主动）",
+      "TASK-017（机器船胜利 → ding_jie_suan(SHENG_LI)）"
+    ],
+    "consumed_interfaces": [
+      "ZhangBen.deng_ji / dang_qian_ti_xing / ti_xing_shang_xian()",
+      "ZhangBen.xuan_neng_li() / yi_xuan_neng_li",
+      "ZhangBen.ju_jie_shu 信号（胜利瞬间）",
+      "ZhangBen.chong_zhi() / 新增 chong_zhi_bao_liu_xing_tai()",
+      "Yu.yidong_sudu / zui_ba / zhuanxiang_ji_su / $AnimatedSprite2D",
+      "JieSuan.tscn 的 ChongKai 按钮与 NengLiLieBiao"
+    ],
+    "provided_interfaces": [
+      "XingTai Resource（bian_hao / dong_hua / kai_ju_deng_ji / yi_dong_su_du / zui_ba / zhuan_xiang_ji_su / kai_ju_neng_li / jie_suo_sheng_li_ci_shu）",
+      "CunDang.sheng_li_ci_shu / dang_qian_bian_hao / shi_fou_jie_suo() / ke_xuan_xing_tai() / xuan_ze() / qu_xin_jie_suo()",
+      "ZhangBen.dang_qian_xing_tai / kai_ju_xing_tai() / chong_zhi_bao_liu_xing_tai()",
+      "Yu.ying_yong_xing_tai()"
+    ],
+    "emitted_signals": [
+      "CunDang 不新增信号；通过 ZhangBen.ju_jie_shu 接收胜利，通过方法返回值给 UI"
+    ],
+    "received_signals": [
+      "ZhangBen.ju_jie_shu(jie_guo: int) → CunDang._on_ju_jie_shu()",
+      "JieSuan $ChongKai.pressed → _on_chong_kai_pressed()",
+      "JieSuan $HuanXingTai.pressed → _on_huan_xing_tai_pressed()"
+    ],
+    "shared_state": [
+      "CunDang 是局外进度的唯一所有者；ZhangBen 只持有本局形态引用",
+      "存档 user://shenhaishiji_jin_du.json 是跨启动唯一真源；加载失败只回退默认，不覆盖原文件",
+      "shang_ci_xin_jie_suo 是瞬时提示，不写存档；JieSuan 消费一次"
+    ],
+    "registered_shared_changes": [
+      "project.godot：新增 CunDang Autoload（排在 ZhangBen 之后）",
+      "project.godot：run/main_scene 改为 res://scenes/XingTaiXuanZe.tscn",
+      "新增 user://shenhaishiji_jin_du.json schema v1（ban_ben / sheng_li_ci_shu / dang_qian_xing_tai）",
+      "JieSuan.tscn：新增 HuanXingTai 按钮与 JieSuoTiShi 解锁提示",
+      "Main.gd：_ready 首帧补设 camera.zoom，避免电鳐 Lv.1 镜头跳变",
+      "YuNpc：_process / _shi_jiao_fan_wei 增加离树保护，修复死亡切场景时旧节点读视口报错",
+      "清理 TASK-014 遗留：删除 scenes/QiangHuaDanChuang.tscn（已退役脚本/资源引用，导致 --import 报 ERROR）"
+    ],
+    "conflict_hotspots": [
+      "ZhangBen.chong_zhi 被大量测试当作纯复位入口：不得在 chong_zhi 内自动应用形态，必须另走 kai_ju_xing_tai",
+      "Yu._ready 在 Main 子节点先于 Main._ready 执行：形态必须在切 Main 前写入 ZhangBen",
+      "初始主动调用 xuan_neng_li 会发信号并进历史：用 xing_tai_yi_ying_yong 保证一局只应用一次",
+      "死亡不走 ju_jie_shu：CunDang 不会误记胜利；JieSuan 无条件消费提示",
+      "直接 F6 跑 Main 会跳过选择页：使用默认灯笼鱼，属于调试路径"
+    ],
+    "required_integration_checks": [
+      "headless --import 零错误",
+      "tests/pao_pi.bat 八步全绿（含新增 ce_jie_suo）",
+      "Main / XingTaiXuanZe / JieSuan 三个场景无头冒烟无 ERROR",
+      "F5：选择页锁定状态、三形态数值/外观/初始能力、胜利解锁、重启保持、坏档回退、再来一次/换形态",
+      "check_task_scope.py check 无违例"
+    ]
+  },
+  "allowed_existing_files": [
+    "scenes/QiangHuaDanChuang.tscn",
+    "project.godot",
+    "scripts/zhang_ben.gd",
+    "scripts/yu.gd",
+    "scripts/main.gd",
+    "scripts/yu_npc.gd",
+    "scripts/jie_suan.gd",
+    "scenes/JieSuan.tscn",
+    "tests/ce_zhang_ben.gd",
+    "tests/ce_bian_jie.gd",
+    "tests/ce_shu_ju.gd",
+    "tests/ce_panding.gd",
+    "tests/pao_pi.bat",
+    "docs/TASK_INDEX.md",
+    "LEARNING_ROADMAP.md",
+    "docs/CHONG_GOU_LU_XIAN.md",
+    "docs/引擎词总表.md",
+    "Godot引擎词总表.docx",
+    ".godot/**",
+    "docs/development_tasks/TASK-018_ju_wai_xing_tai/**"
+  ],
+  "allowed_new_files": [
+    "scripts/xing_tai.gd",
+    "scripts/xing_tai.gd.uid",
+    "scripts/cun_dang.gd",
+    "scripts/cun_dang.gd.uid",
+    "scripts/xing_tai_xuan_ze.gd",
+    "scripts/xing_tai_xuan_ze.gd.uid",
+    "scenes/XingTaiXuanZe.tscn",
+    "data/xingtai/deng_long_yu.tres",
+    "data/xingtai/dian_yao.tres",
+    "data/xingtai/qi_yu.tres",
+    "data/donghua/dian_yao_1zhen.tres",
+    "data/donghua/qi_yu_1zhen.tres",
+    "tests/ce_jie_suo.gd",
+    "tests/ce_jie_suo.gd.uid",
+    "tests/huai_xing_tai.tres",
+    "docs/development_tasks/TASK-018_ju_wai_xing_tai/**"
+  ],
+  "forbidden_systems": [
+    "第 4 个形态、形态升级/皮肤、局外货币",
+    "难度两档、音效、安卓导出（TASK-010）",
+    "地图逐格封锁（TASK-016）",
+    "能力扩展（剑鱼长矛/桶眼鱼隐身）",
+    "修改 .agents/skills/**（只读）",
+    "删除 tests/ 既有测试文件（可改断言，不许删）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "形态数据层",
+      "behavior": "新增 XingTai Resource、3 个形态 .tres、2 个单帧 SpriteFrames；ce_shu_ju 增加形态校验器、形态池断言、坏形态红测、主场景与 CunDang Autoload 断言。",
+      "main_concept": "数据与代码分离：形态差异全部进 .tres，代码只读字段；静态形态用单帧 SpriteFrames 满足 \"you\" 动画契约",
+      "files": [
+        "scripts/xing_tai.gd",
+        "data/xingtai/deng_long_yu.tres",
+        "data/xingtai/dian_yao.tres",
+        "data/xingtai/qi_yu.tres",
+        "data/donghua/dian_yao_1zhen.tres",
+        "data/donghua/qi_yu_1zhen.tres",
+        "tests/ce_shu_ju.gd",
+        "tests/huai_xing_tai.tres"
+      ],
+      "automated_checks": [
+        "headless --import 退出码 0",
+        "tests/ce_shu_ju.gd 退出码 0 且 Results 全 passed"
+      ],
+      "manual_checks": [
+        "编辑器检查器打开 3 个形态 .tres，确认字段类型与引用正确"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "局外存档与解锁推导",
+      "behavior": "新增 CunDang Autoload：JSON 读写、版本/损坏/未知 id 回退、累计胜利解锁、当前形态选择、调试解锁/清空；新增 ce_jie_suo 纯逻辑测试；pao_pi.bat 扩为八步。",
+      "main_concept": "局内账本与局外存档职责分离：CunDang 跨启动持久化，ZhangBen 只管一局；加载失败只回退、不覆盖用户存档",
+      "files": [
+        "scripts/cun_dang.gd",
+        "tests/ce_jie_suo.gd",
+        "tests/pao_pi.bat"
+      ],
+      "automated_checks": [
+        "tests/ce_jie_suo.gd 退出码 0 且 Results 全 passed",
+        "tests/pao_pi.bat 八步全绿"
+      ],
+      "manual_checks": [
+        "查看 user:// 存档 JSON 字段与版本号"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "账本与玩家形态接入",
+      "behavior": "ZhangBen 增加形态字段、kai_ju_xing_tai、chong_zhi_bao_liu_xing_tai、chong_zhi 清形态；Yu 增加 ying_yong_xing_tai 并在 _ready 读取；Main 首帧补 camera.zoom；同步 ce_zhang_ben 与 ce_bian_jie。",
+      "main_concept": "开局装配顺序：先写账本再切场景，子节点 _ready 才能一次看到正确的等级、体型、外观与初始能力",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/main.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_zhang_ben.gd 退出码 0",
+        "tests/ce_bian_jie.gd 退出码 0"
+      ],
+      "manual_checks": [
+        "F6 直接跑 Main 仍是默认灯笼鱼，不报错"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "选择页、结算页与入口",
+      "behavior": "新增 XingTaiXuanZe 场景与脚本（动态卡片、锁定状态、调试按钮）；JieSuan 增加换形态按钮与解锁提示；project.godot 注册 CunDang 与主场景；ce_panding 增加形态应用、选择页、结算页、胜利解锁用例。",
+      "main_concept": "入口与结算闭环：启动选择 → Main → 胜利存档 → 结算显示解锁 → 再来一次/换形态",
+      "files": [
+        "scenes/XingTaiXuanZe.tscn",
+        "scripts/xing_tai_xuan_ze.gd",
+        "scenes/JieSuan.tscn",
+        "scripts/jie_suan.gd",
+        "project.godot",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 退出码 0",
+        "XingTaiXuanZe / JieSuan 场景无头冒烟无 ERROR"
+      ],
+      "manual_checks": [
+        "F5：启动选择页、锁定卡、三形态开局、结算按钮"
+      ]
+    },
+    {
+      "step_id": "step-05",
+      "title": "全量验证、文档与清理",
+      "behavior": "八步门禁全绿；Main 900 帧、选择页 120 帧、结算页 60 帧无头冒烟；更新 TASK_INDEX、LEARNING_ROADMAP、CHONG_GOU_LU_XIAN、引擎词总表并重生成 docx；F5 手测；清理临时文件；回填任务包报告。",
+      "main_concept": "交付门禁：断言、ERROR 筛查、场景冒烟、范围检查、文档同步五件事一起收",
+      "files": [
+        "docs/TASK_INDEX.md",
+        "LEARNING_ROADMAP.md",
+        "docs/CHONG_GOU_LU_XIAN.md",
+        "docs/引擎词总表.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "check_task_scope.py check 无违例",
+        "validate_task.py 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 全流程手测",
+        "红测：形态负速度必须被 ce_shu_ju 抓住，复原复绿"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "configuration_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "学生能复述局外存档与局内账本的分工：CunDang 跨启动、ZhangBen 只管一局",
+      "学生能解释为什么形态必须在切 Main 之前应用，而不是在 Main._ready 里改等级",
+      "学生能说出胜利解锁的时序：ju_jie_shu → CunDang 写档 → JieSuan 只读提示",
+      "学生能解释 JSON 损坏时为什么只回退默认、不覆盖原文件",
+      "学生能指出选择页、结算页、Main 三个入口各自负责什么"
+    ],
+    "concepts": [
+      "自定义 Resource 引用 SpriteFrames / NengLi",
+      "Autoload 顺序与生命周期",
+      "FileAccess + JSON 存档与版本回退",
+      "瞬时提示与持久进度的分离",
+      "SceneTree 场景切换与子节点 _ready 顺序",
+      "动态 Control 卡片（PanelContainer / StyleBoxFlat / TextureRect / Button.disabled）"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "configuration_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/XingTaiXuanZe.tscn",
+    "lifecycle_rationale": "主场景从 Main 改为 XingTaiXuanZe：启动先读局外存档并选形态，选定后 chong_zhi + kai_ju_xing_tai 再切 Main。CunDang 作为第二个 Autoload 排在 ZhangBen 后，负责跨启动存档与胜利监听；ZhangBen 仍只负责一局内状态。JieSuan 保留为结算终点，新增换形态入口。",
+    "current_tree": "Autoload: ZhangBen -> run/main_scene: Main.tscn (Node2D) -> Yu/YuQun/UI/JieSuan via change_scene_to_file",
+    "target_tree": "Autoload: ZhangBen -> CunDang -> run/main_scene: XingTaiXuanZe.tscn (CanvasLayer) -> Main.tscn (Node2D) -> JieSuan.tscn (CanvasLayer) -> XingTaiXuanZe.tscn",
+    "loading_policy": "普通 change_scene_to_file 同步切换；形态资源用显式 preload 注册表，不运行时列目录；存档在 CunDang._ready 读取一次，之后只由选择/胜利/调试写入。",
+    "ownership": [
+      "CunDang 拥有局外进度与当前形态 id",
+      "ZhangBen 拥有本局形态引用与开局装配结果",
+      "Yu 拥有形态数值/外观的应用结果",
+      "XingTaiXuanZe 拥有选择页卡片与调试按钮",
+      "JieSuan 拥有解锁提示展示与两个结算出口"
+    ],
+    "signal_contracts": [
+      "ZhangBen.ju_jie_shu(jie_guo) → CunDang._on_ju_jie_shu：胜利时 ji_lu_sheng_li 并保存",
+      "XingTaiXuanZe 卡片按钮 pressed → 选择页 _on_ka_pian_an_niu：xuan_ze + kai_ju_xing_tai + 切 Main",
+      "JieSuan $ChongKai.pressed → chong_zhi_bao_liu_xing_tai + 切 Main",
+      "JieSuan $HuanXingTai.pressed → chong_zhi + 切 XingTaiXuanZe"
+    ],
+    "state_persistence": [
+      "user://shenhaishiji_jin_du.json：ban_ben=1、sheng_li_ci_shu、dang_qian_xing_tai",
+      "shang_ci_xin_jie_suo 只存在内存，不写存档",
+      "加载失败（缺失/损坏/版本不符/未知 id/未解锁）回退默认且不覆盖文件"
+    ],
+    "animation_dependencies": [
+      "所有形态 dong_hua 必须是含 \"you\" 动画的 SpriteFrames",
+      "灯笼鱼复用 4 帧 deng_long_yu_4zhen.tres；电鳐/旗鱼各用单帧资源",
+      "Yu.$AnimatedSprite2D.play(\"you\") 与场景 autoplay 均依赖该动画名"
+    ],
+    "lifecycle_checks": [
+      "CunDang 排在 ZhangBen 之后，_ready 能连到 ju_jie_shu",
+      "选择页先 chong_zhi 再 kai_ju_xing_tai，然后切 Main",
+      "Yu._ready 在 scale 计算前应用形态外观与数值",
+      "死亡不走 ju_jie_shu，不写存档；JieSuan 无条件消费解锁提示",
+      "直接 F6 跑 Main 跳过选择页，使用默认灯笼鱼且不报错"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0",
+    "headless --import 退出码 0（每步）",
+    "tests/ce_jie_suo.gd 退出码 0 + Results 全 passed",
+    "tests/ce_shu_ju.gd 退出码 0 + Results 全 passed",
+    "tests/ce_zhang_ben.gd 退出码 0 + Results 全 passed",
+    "tests/ce_bian_jie.gd 退出码 0 + Results 全 passed",
+    "tests/ce_panding.gd 退出码 0 + Results 全 passed",
+    "tests/pao_pi.bat 八步全绿退出码 0",
+    "check_task_scope.py check 无违例（实现完成后）"
+  ],
+  "required_manual_checks": [
+    "F5：启动进入形态选择页，0 胜时灯笼鱼可选、电鳐/旗鱼锁定",
+    "F5：三形态开局数值/外观/初始能力正确",
+    "F5：胜利后结算显示解锁提示，重启游戏进度保持",
+    "F5：结算「再来一次」保留形态，「换形态」回选择页",
+    "F5：坏 JSON 存档启动回退默认且 Output 无 ERROR",
+    "学生亲手跑 pao_pi.bat 全绿并完成一次红绿体验"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "无可用对照技能；依据策划案 8.3/9 与用户拍板的三形态/胜利解锁/启动选择页",
+      "局外只做形态解锁，不做货币、等级、皮肤或技能树",
+      "存档用 JSON 而非 ConfigFile，避免损坏文件在 Output 打 ERROR 污染门禁"
+    ],
+    "unknowns": [
+      "三形态的数值手感需 F5 试玩确认（电鳐 Lv.1 是否过强、旗鱼 0.85 嘴巴是否过弱）",
+      "启动强制选择页是否影响快速重开体验；结算已提供「再来一次」缓解",
+      "单帧电鳐/旗鱼在游动时没有摆尾动画，首版接受"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要第 4 个形态或形态升级/皮肤（新任务）",
+    "需要局外货币、难度选择或永久强化（新任务）",
+    "需要把存档改为 ConfigFile/二进制或加密（重新审计 schema）",
+    "需要修改 NengLi 数值或新增能力（TASK-014 后续）",
+    "需要修改项目主场景/Android 导出配置（TASK-010）"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-10-30T07:21:09Z",
+    "exact_user_text": "确认 TASK-018 v1 进入开发",
+    "canonical_example": "确认 TASK-018 v1 进入开发"
+  }
+}

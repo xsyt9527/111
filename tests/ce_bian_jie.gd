@@ -30,20 +30,41 @@ func _initialize() -> void:
 
 	# ---- 用例 2：chong_zhi 归零（独立实例——不接着用例 1 的脏状态）----
 	var zb2: Node = load("res://scripts/zhang_ben.gd").new()
+	var fang_dian: NengLi = load("res://data/nengli/fang_dian_ma_bi.tres")
+	var du_ji: NengLi = load("res://data/nengli/du_ji_hu_ti.tres")
+	var dian_yao: XingTai = load("res://data/xingtai/dian_yao.tres")
 	zb2.jia_jing_yan(10)  # 弄脏 1：经验恰好用光 + 等级 Lv.1
 	zb2.shou_shang()  # 弄脏 2：血量扣掉 1 点
-	zb2.she_jing_yan_jia_cheng(2.0)  # 弄脏 3：倍率
-	zb2.xuan_ka(load("res://data/qianghua/ci_xi.tres"))  # 弄脏 4：入账一张卡
-	zb2.ji_e = 30.0  # 弄脏 5：饥饿
+	zb2.xuan_neng_li(fang_dian)  # 弄脏 3：主动一
+	zb2.xuan_neng_li(load("res://data/nengli/ji_su_tu_jin.tres"))  # 弄脏 3b：主动二（多槽）
+	zb2.xuan_neng_li(du_ji)  # 弄脏 4：被动
+	zb2.ji_chi_yu(du_ji)  # 弄脏 5：食谱
+	zb2.ji_e = 30.0  # 弄脏 6：饥饿
+	zb2.dian_ma = 70.0  # 弄脏 7：电麻条
+	zb2.du_yun = 40.0  # 弄脏 8：毒晕条
+	zb2.yun_xuan_ji_shi = 1.5  # 弄脏 9：失控计时
+	zb2.kai_ju_xing_tai(dian_yao)  # 弄脏 10：形态引用与应用标记
 	assert_eq(zb2.deng_ji, 1, "脏状态预检：应已升到 Lv.1（10 恰达阈值 10）")
+	assert_eq(1 if not zb2.zhu_dong_zu.is_empty() else 0, 1, "脏状态预检：应已装备主动")
+	assert_eq(zb2.zhu_dong_zu.size(), 2, "脏状态预检：多槽应已装 2 个主动")
+	assert_eq(zb2.dang_qian_bei_dong_ceng(&"du_ji_hu_ti"), 1, "脏状态预检：被动应 1 层")
+	assert_eq(1 if zb2.dang_qian_xing_tai != null else 0, 1, "脏状态预检：应已装形态")
 	zb2.chong_zhi()
 	assert_eq(zb2.jing_yan, 0, "复位后经验归零")
 	assert_eq(zb2.deng_ji, 0, "复位后等级归开局 Lv.0")
 	assert_float(zb2.dang_qian_ti_xing, 1.0, "复位后当前体型归基础 1.0")
-	assert_eq(int(zb2.jing_yan_jia_cheng * 10.0), 10, "复位后倍率归 1.0（×10 取整断言避开浮点比较）")
-	assert_eq(zb2.yi_xuan_ka.size(), 0, "复位后已选卡清空")
+	assert_eq(1 if zb2.zhu_dong_zu.is_empty() else 0, 1, "复位后主动组清空（含多槽）")
+	assert_eq(zb2.bei_dong_ceng.size(), 0, "复位后被动层数清空")
+	assert_eq(zb2.yi_xuan_neng_li.size(), 0, "复位后获得历史清空")
+	assert_eq(zb2.chi_yu_ji_lu.size(), 0, "复位后食谱清空")
+	assert_eq(1 if zb2.zui_duo_bian_hao == &"" else 0, 1, "复位后最常吃 id 清空")
 	assert_float(zb2.ji_e, 100.0, "复位后饥饿回满 100")
 	assert_eq(1 if zb2.sheng_cun_zhong else 0, 1, "复位后饥饿时钟重新走")
+	assert_float(zb2.dian_ma, 0.0, "复位后电麻条归零")
+	assert_float(zb2.du_yun, 0.0, "复位后毒晕条归零")
+	assert_float(zb2.yun_xuan_ji_shi, 0.0, "复位后失控计时归零")
+	assert_eq(1 if zb2.dang_qian_xing_tai == null else 0, 1, "复位后形态引用清空")
+	assert_eq(1 if not zb2.xing_tai_yi_ying_yong else 0, 1, "复位后形态应用标记清空")
 	zb2.free()
 
 	# ---- 收卷：退出码是唯一门禁语言 ----

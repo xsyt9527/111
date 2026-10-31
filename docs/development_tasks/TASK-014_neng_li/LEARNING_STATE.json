@@ -1,0 +1,41 @@
+{
+  "task_id": "TASK-014",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "数据驱动能力：NengLi extends Resource，能力是数据不是类",
+    "一份定义两处消费：玩家读 shu_zhi，NPC 读 npc_shu_zhi / npc_jian_ge",
+    "唯一主动槽 + 被动叠层：zhu_dong_neng_li 与 bei_dong_ceng",
+    "食谱计数：消化完成才记，平局保留先到者，最常吃 id 驱动 50% 强制候选",
+    "注入 RNG + Fisher-Yates：测试可复现，不依赖全局随机",
+    "暂停弹窗：process_mode=WHEN_PAUSED + layer=100 + 0 候选解冻",
+    "切换主动清瞬时状态：极速/冲撞/潜伏不跨能力残留",
+    "潜伏只改索敌：不改碰撞与咬击；咬中/受伤/到期破隐",
+    "鸭子类型兼容：shou_dao_yao_ji 的来源/部位参数有默认值",
+    "运行时引用安全：is_instance_valid 先于 is Yu / 属性读取",
+    "旧卡五层退役：脚本、场景、数据、账本、测试断言一起删"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": false,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "为什么能力数值放 .tres 而不是写死在 match",
+    "玩家 100 / NPC 55 的分叉字段与设计原因",
+    "主动槽与被动层数两个容器的区别",
+    "注入 RNG 与 Array.shuffle 的测试差异",
+    "弹窗暂停/解冻路径",
+    "切主动清状态的具体失败场景",
+    "潜伏的三种破隐时机",
+    "freed instance 错误的成因与单测盲区",
+    "旧卡退役的五层"
+  ],
+  "assistance_level": "full",
+  "pending_checks": [
+    "用户 F5 手测：三选一、技能按钮、5 个玩家能力、4 种 NPC 能力、旧卡消失、结算能力列表",
+    "用户运行 tests\\pao_pi.bat 见七步全绿 382",
+    "用户按需调整 data/nengli/*.tres 数值"
+  ],
+  "evidence": []
+}

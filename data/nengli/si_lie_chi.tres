@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"si_lie_chi"
+ming_zi = "撕裂齿"
+miao_shu = "咬中鱼会撕下肉块掉在地上；叠层撕得更狠，顺手就能把肉捡回来。"
+lai_yuan = "通用能力池"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 0.0
+ban_jing = 0.0
+shu_zhi = 2.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.5
+zui_da_dang = 3

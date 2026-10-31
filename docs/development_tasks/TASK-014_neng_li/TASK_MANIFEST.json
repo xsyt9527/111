@@ -1,0 +1,339 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-014",
+  "task_spec_version": 1,
+  "slug": "neng-li",
+  "title": "能力系统：吃谁得谁 + 升级三选一 + 技能按钮",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "implementation",
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "baseline_commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+  "objective": "把旧 5 张 buff 卡整体退役，换成与鱼种绑定的能力系统：同一种鱼的能力只用一份 NengLi 数据定义，玩家升级三选一获得、NPC 按自己的节奏消费；主动能力占唯一技能槽，右下角按钮显示名称与冷却；被动能力可叠层。首版落地放电麻痹、毒棘护体、极速突进、蛮力冲撞、潜伏突袭 5 个能力，并让对应 NPC（电鳐/蓑鲉/旗鱼/金枪鱼/巨口鱼）真正使用它们。",
+  "audit_freshness": {
+    "audited_commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+    "environment_checked_at": "2026-10-30T00:00:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "engine version changes",
+      "data/nengli or data/yuzhong schema changes",
+      "battle damage formula changes in ZhanDou",
+      "control-bar semantics change in ZhangBen/YuNpc"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "能力数据模型（NengLi Resource + 5 个 .tres）",
+      "鱼种 → 能力映射（YuZhong.neng_li）",
+      "账本能力槽与食谱计数（ZhangBen）",
+      "升级三选一算法（NengLiChou）",
+      "能力选择弹窗（NengLiDanChuang）",
+      "右下技能按钮与被动列表（NengLiUI）",
+      "玩家 5 个能力效果（Yu）",
+      "NPC 侧 5 种能力消费（4 主动 + 1 被动反毒）与潜伏感知（YuNpc）"
+    ],
+    "owned_scenes": [
+      "res://scenes/NengLiDanChuang.tscn（新建）",
+      "res://scenes/Main.tscn（挂 NengLiUI + 新弹窗）"
+    ],
+    "owned_scripts": [
+      "res://scripts/neng_li.gd（新建）",
+      "res://scripts/neng_li_chou.gd（新建）",
+      "res://scripts/neng_li_dan_chuang.gd（新建）",
+      "res://scripts/neng_li_ui.gd（新建）",
+      "res://scripts/zhang_ben.gd",
+      "res://scripts/yu.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/yu_zhong.gd",
+      "res://scripts/jie_suan.gd"
+    ],
+    "owned_config_tables": [
+      "res://data/nengli/fang_dian_ma_bi.tres",
+      "res://data/nengli/du_ji_hu_ti.tres",
+      "res://data/nengli/ji_su_tu_jin.tres",
+      "res://data/nengli/man_li_chong_zhuang.tres",
+      "res://data/nengli/qian_fu_tu_xi.tres",
+      "res://data/yuzhong/*.tres"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-012（控制条/咬击/部位——能力复用其入口）",
+      "TASK-013（消化槽——食谱只在消化完成计数）",
+      "TASK-015（NPC 状态机——能力插入普通鱼分支）",
+      "TASK-017（Boss/机器船——鸭子类型契约保持兼容）",
+      "TASK-009（测试门禁——必须保持全绿）"
+    ],
+    "consumed_interfaces": [
+      "YuNpc.jia_dian_ma(float) / jia_du_yun(float)",
+      "YuNpc.shou_dao_yao_ji(伤害, 来源, 部位)",
+      "YuNpc.bei_chi(给奖励, 吃它的嘴)",
+      "ZhangBen.jia_jing_yan / chi_yu_hui_ji_e / shou_shang",
+      "YuNpc 的 yu_npc 组、Yu 的 player 组",
+      "ZhanDou.yao_ji_shang_hai(体型, 嘴巴系数)"
+    ],
+    "provided_interfaces": [
+      "NengLi Resource（bian_hao / lei_xing / leng_que / chi_xu / ban_jing / shu_zhi / npc_shu_zhi / fu_shu_zhi / npc_jian_ge / ceng_jia）",
+      "ZhangBen.zhu_dong_neng_li / bei_dong_ceng / yi_xuan_neng_li / chi_yu_ji_lu / zui_duo_bian_hao",
+      "ZhangBen.xuan_neng_li(NengLi) / dang_qian_bei_dong_ceng(StringName) / ji_chi_yu(NengLi)",
+      "ZhangBen.neng_li_zhuang_bei(NengLi, int)",
+      "NengLiChou.ke_xuan_chi / shi_fou_qiang_zhi / chou_san_zhang",
+      "Yu.shi_fang_zhu_dong() -> bool / zhu_dong_leng_que / yin_shen",
+      "NengLiUI 右下技能按钮与被动 Label"
+    ],
+    "emitted_signals": [
+      "ZhangBen.neng_li_zhuang_bei(neng_li: NengLi, ceng: int)"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji → NengLiDanChuang 开三选一",
+      "ZhangBen.neng_li_zhuang_bei → Yu 清旧主动状态、NengLiUI 刷新"
+    ],
+    "shared_state": [
+      "ZhangBen 是能力槽、被动层数、获得历史、食谱计数的唯一所有者",
+      "Yu 只保存施放中的瞬时状态（冷却/极速/冲撞/潜伏）",
+      "YuNpc 只读 yu_zhong.neng_li，不写能力账本"
+    ],
+    "registered_shared_changes": [
+      "旧卡 QiangHuaKa / QiangHuaDanChuang / data/qianghua 整体退役",
+      "YuZhong.dian_ma / du_xing 字段删除，改由 NengLi 提供",
+      "Yu._chi_diao / YuNpc.bei_chi 不再乘经验加成",
+      "JieSuan 改显示主动能力与被动层数"
+    ],
+    "conflict_hotspots": [
+      "放电主值 100 一次满条，NPC 电鳐必须走 npc_shu_zhi=55 才能保留旧节奏",
+      "冲撞/突进期间必须屏蔽嘴圈整吞与自动咬",
+      "切换主动必须清掉极速/冲撞/潜伏中间状态并把冷却归零",
+      "潜伏只影响索敌，不影响咬击与碰撞；咬中/受伤/到期三种破隐",
+      "弹窗暂停必须成对，0 候选也要解冻"
+    ],
+    "required_integration_checks": [
+      "headless --import 零 ERROR",
+      "tests/pao_pi.bat 七步全绿",
+      "Main 无头运行 900 帧无 ERROR",
+      "F5：三选一、技能按钮、5 个玩家能力、4 种 NPC 能力、旧卡消失、结算能力列表"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/zhang_ben.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/yu_zhong.gd",
+    "scripts/jie_suan.gd",
+    "scenes/Main.tscn",
+    "scenes/JieSuan.tscn",
+    "data/yuzhong/cheng_yu.tres",
+    "data/yuzhong/fen_yu.tres",
+    "data/yuzhong/hong_yu.tres",
+    "data/yuzhong/jian_yu.tres",
+    "data/yuzhong/ju_kou_yu.tres",
+    "data/yuzhong/lan_yu.tres",
+    "data/yuzhong/lv_yu.tres",
+    "data/yuzhong/qi_yu.tres",
+    "data/yuzhong/zong_yu.tres",
+    "tests/ce_zhang_ben.gd",
+    "tests/ce_bian_jie.gd",
+    "tests/ce_shu_ju.gd",
+    "tests/ce_panding.gd",
+    "tests/pao_pi.bat",
+    "docs/TASK_INDEX.md",
+    "docs/CHONG_GOU_LU_XIAN.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md"
+  ],
+  "allowed_new_files": [
+    "scripts/neng_li.gd",
+    "scripts/neng_li.gd.uid",
+    "scripts/neng_li_chou.gd",
+    "scripts/neng_li_chou.gd.uid",
+    "scripts/neng_li_dan_chuang.gd",
+    "scripts/neng_li_dan_chuang.gd.uid",
+    "scripts/neng_li_ui.gd",
+    "scripts/neng_li_ui.gd.uid",
+    "scenes/NengLiDanChuang.tscn",
+    "data/nengli/fang_dian_ma_bi.tres",
+    "data/nengli/du_ji_hu_ti.tres",
+    "data/nengli/ji_su_tu_jin.tres",
+    "data/nengli/man_li_chong_zhuang.tres",
+    "data/nengli/qian_fu_tu_xi.tres",
+    "tests/huai_neng_li.tres",
+    "docs/development_tasks/TASK-014_neng_li/TASK_MANIFEST.json",
+    "docs/development_tasks/TASK-014_neng_li/TASK_STATE.json",
+    "docs/development_tasks/TASK-014_neng_li/SCOPE_PROPOSAL.md",
+    "docs/development_tasks/TASK-014_neng_li/DEVELOPMENT_PROMPT.md",
+    "docs/development_tasks/TASK-014_neng_li/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-014_neng_li/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-014_neng_li/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-014_neng_li/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-014_neng_li/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-014_neng_li/LEARNING_STATE.json"
+  ],
+  "forbidden_systems": [
+    "长矛穿刺（剑鱼）与拟态隐身（桶眼鱼）",
+    "技能升级/技能图标/局外解锁",
+    "TASK-016 地图逐格封锁",
+    "音效与难度两档",
+    "修改 tests/ 既有文件以外的测试框架",
+    "修改 .agents/skills/**（只读）"
+  ],
+  "retired_files": [
+    "scripts/qiang_hua_ka.gd",
+    "scripts/qiang_hua_ka.gd.uid",
+    "scripts/qiang_hua_dan_chuang.gd",
+    "scripts/qiang_hua_dan_chuang.gd.uid",
+    "scenes/QiangHuaDanChuang.tscn",
+    "data/qianghua/xun_jie.tres",
+    "data/qianghua/tan_shi.tres",
+    "data/qianghua/huo_li.tres",
+    "data/qianghua/rui_zhi.tres",
+    "data/qianghua/ci_xi.tres",
+    "data/qianghua_tuiyi/cui_fei.tres",
+    "tests/huai_ka.tres"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "能力数据层",
+      "behavior": "新增 NengLi Resource 与 5 个 .tres；YuZhong 增加 neng_li 字段；5 个鱼种挂能力，4 个鱼种保持 null；删除 YuZhong.dian_ma / du_xing。",
+      "files": [
+        "scripts/neng_li.gd",
+        "data/nengli/*.tres",
+        "scripts/yu_zhong.gd",
+        "data/yuzhong/*.tres"
+      ],
+      "automated_checks": [
+        "ce_shu_ju 能力池 5 个、id 唯一、数值合法",
+        "ce_shu_ju 鱼种映射与 null 映射正确"
+      ],
+      "manual_checks": [
+        "编辑器检查 5 个 .tres 的 bian_hao / 类型 / 数值"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "账本、三选一与弹窗",
+      "behavior": "ZhangBen 增加能力槽、被动层数、获得历史、食谱计数与广播；NengLiChou 用注入 RNG 实现排除当前主动、50% 强制最常吃、Fisher-Yates 抽 3；NengLiDanChuang 暂停弹窗、连续升级排队、0 候选解冻；JieSuan 显示能力。",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/neng_li_chou.gd",
+        "scripts/neng_li_dan_chuang.gd",
+        "scenes/NengLiDanChuang.tscn",
+        "scenes/Main.tscn",
+        "scripts/jie_suan.gd",
+        "scripts/yu.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd",
+        "tests/ce_shu_ju.gd"
+      ],
+      "automated_checks": [
+        "ce_zhang_ben：主动替换/被动叠层/广播/食谱平局/复位",
+        "ce_shu_ju：200 轮抽样无重复、强制项必在、50% 命中率 40%~60%",
+        "ce_bian_jie：复位后能力容器全空"
+      ],
+      "manual_checks": [
+        "F5：升级弹 3 个能力，连续升级继续弹"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "玩家 5 个能力与技能按钮",
+      "behavior": "Yu 实现放电、毒棘、极速、冲撞、潜伏；shou_dao_yao_ji 增加来源参数；NengLiUI 右下按钮显示名称/冷却/就绪，被动列表显示层数；切换主动清状态。",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/neng_li_ui.gd",
+        "scenes/Main.tscn",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 6p~6t：5 个玩家能力的关键状态/数值/入口",
+        "技能按钮不参与测试树暂停，避免污染"
+      ],
+      "manual_checks": [
+        "F5：按钮出现、施放、冷却条、变得可再按"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "NPC 能力与潜伏感知",
+      "behavior": "电鳐/蓑鲉改读 NengLi；旗鱼突进、金枪鱼冲撞、巨口鱼潜伏；所有 NPC 索敌与首领追击跳过潜伏玩家；冲撞/突进/潜伏被失控打断。",
+      "files": [
+        "scripts/yu_npc.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 6u：4 种 NPC 能力与首领不追潜伏玩家",
+        "Main 无头运行无 freed-instance ERROR"
+      ],
+      "manual_checks": [
+        "F5：观察电鳐/蓑鲉/旗鱼/金枪鱼/巨口鱼行为"
+      ]
+    },
+    {
+      "step_id": "step-05",
+      "title": "旧卡退役与测试同步",
+      "behavior": "删除旧卡脚本/场景/数据/夹具、账本旧链、玩家旧 match、结算旧读取；全部旧卡断言替换为能力断言。",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/jie_suan.gd",
+        "scripts/yu_npc.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd",
+        "tests/ce_shu_ju.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "全仓 grep 无旧卡符号残留",
+        "ce_shu_ju 坏能力红测命中",
+        "七步门禁全绿"
+      ],
+      "manual_checks": [
+        "F5：旧卡弹窗不再出现，结算页显示能力"
+      ]
+    },
+    {
+      "step_id": "step-06",
+      "title": "清理、文档与交付",
+      "behavior": "清理临时日志/调试输出；更新 TASK_INDEX、重构路线、学习路线、引擎词总表；重跑 docx；复跑七步门禁与 Main 冒烟。",
+      "files": [
+        "docs/TASK_INDEX.md",
+        "docs/CHONG_GOU_LU_XIAN.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 七步全绿，Results 总数 382",
+        "Main 无头 900 帧无 ERROR",
+        "docx 生成脚本退出码 0"
+      ],
+      "manual_checks": [
+        "F5 全量回归与手感确认"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "test_baseline": {
+    "gate": "tests/pao_pi.bat",
+    "steps": 7,
+    "total_assertions": 382,
+    "breakdown": [102, 21, 47, 8, 11, 193],
+    "main_headless_frames": 900
+  }
+}

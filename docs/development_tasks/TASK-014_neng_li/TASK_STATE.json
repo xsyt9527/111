@@ -1,0 +1,176 @@
+{
+  "task_id": "TASK-014",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "current_step": "step-06",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "代码与自动化验证已完成；待用户 F5 手测确认 5 个能力、技能按钮、NPC 行为与手感，并按需调 data/nengli 数值",
+  "implementation_baseline": {
+    "captured_at": "2026-10-30T00:00:00Z",
+    "commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+    "preexisting_changes": [
+      "工作区含 TASK-012/013/015/017 与 2026-10-30 插课的未提交改动",
+      "TASK-014 以工作区为基线，不 commit / 不 push"
+    ]
+  },
+  "last_verified_commit": null,
+  "last_verified_worktree_at": "2026-10-30T00:00:00Z",
+  "integration_baseline_commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/neng_li.gd",
+        "scripts/neng_li.gd.uid",
+        "data/nengli/fang_dian_ma_bi.tres",
+        "data/nengli/du_ji_hu_ti.tres",
+        "data/nengli/ji_su_tu_jin.tres",
+        "data/nengli/man_li_chong_zhuang.tres",
+        "data/nengli/qian_fu_tu_xi.tres",
+        "scripts/yu_zhong.gd",
+        "data/yuzhong/cheng_yu.tres",
+        "data/yuzhong/fen_yu.tres",
+        "data/yuzhong/hong_yu.tres",
+        "data/yuzhong/jian_yu.tres",
+        "data/yuzhong/ju_kou_yu.tres",
+        "data/yuzhong/lan_yu.tres",
+        "data/yuzhong/lv_yu.tres",
+        "data/yuzhong/qi_yu.tres",
+        "data/yuzhong/zong_yu.tres"
+      ],
+      "check_results": [
+        "ce_shu_ju：能力池恰好 5 个、bian_hao 唯一、数值校验通过",
+        "ce_shu_ju：5 个鱼种挂能力、4 个鱼种为 null，映射正确",
+        "YuZhong.dian_ma / du_xing 已删除，无代码引用"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/neng_li_chou.gd",
+        "scripts/neng_li_chou.gd.uid",
+        "scripts/neng_li_dan_chuang.gd",
+        "scripts/neng_li_dan_chuang.gd.uid",
+        "scenes/NengLiDanChuang.tscn",
+        "scenes/Main.tscn",
+        "scripts/jie_suan.gd",
+        "scripts/yu.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd",
+        "tests/ce_shu_ju.gd"
+      ],
+      "check_results": [
+        "ce_zhang_ben：主动替换、被动叠层、neng_li_zhuang_bei 广播、食谱平局、chong_zhi 复位全过",
+        "ce_shu_ju：200 轮抽样每轮 3 张且不重复；强制项必在；50% 命中率落在 40%~60%",
+        "ce_bian_jie：复位后主动/层数/历史/食谱全空",
+        "NengLiDanChuang 场景注册 5 个能力资源"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/yu.gd",
+        "scripts/neng_li_ui.gd",
+        "scripts/neng_li_ui.gd.uid",
+        "scripts/zhang_ben.gd",
+        "scenes/Main.tscn",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        "ce_panding 6p：放电半径 90、半径内满条失控 2 秒、半径外无影响、冷却 6 秒、冷却中再按无效",
+        "ce_panding 6q：毒棘 1 层 45 / 2 层 60；咬入口与接触入口都反毒",
+        "ce_panding 6r：极速 2.0 倍持续 0.8 秒、冷却 8 秒、施放中再按无效",
+        "ce_panding 6s：冲撞伤害 ×2、不整吞、同一目标只结算一次、施放中嘴圈吞被屏蔽",
+        "ce_panding 6t：潜伏隐身、下一口 ×2、咬中/受伤/到期破隐"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/yu_npc.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        "ce_panding 6u：旗鱼 200px 启动突进、金枪鱼 150px 启动冲撞、巨口鱼潜伏下一口 ×2、首领不追潜伏玩家",
+        "Main 无头 900 帧：无 SCRIPT ERROR / freed instance 报错",
+        "全仓 is_instance_valid 守卫补齐 6 处"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-05",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/jie_suan.gd",
+        "scripts/yu_npc.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd",
+        "tests/ce_shu_ju.gd",
+        "tests/ce_panding.gd",
+        "tests/huai_neng_li.tres"
+      ],
+      "check_results": [
+        "旧卡脚本/场景/5 张卡/催肥卡/坏卡夹具全部删除",
+        "grep 无 QiangHuaKa、qiang_hua、ka_yi_xuan、yi_xuan_ka、jing_yan_jia_cheng 等旧符号",
+        "坏能力红测：负 shu_zhi 与空 bian_hao 都被校验器抓到",
+        "七步门禁全绿，断言 382 条"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-06",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "docs/TASK_INDEX.md",
+        "docs/CHONG_GOU_LU_XIAN.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx",
+        "tests/pao_pi.bat"
+      ],
+      "check_results": [
+        "tests/pao_pi.bat：七步全绿 382（102/21/47/8/11/193）",
+        "Main 无头 900 帧无 ERROR",
+        "docx 生成脚本成功",
+        "临时日志与调试输出清理完毕"
+      ],
+      "next_action": "待用户 F5 手测"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-10-30T00:00:00Z",
+    "approval_summary": "用户批准 TASK-014 能力系统计划（能力获取/技能按钮/首版 5 能力）",
+    "plan_file": "C:\\Users\\苏\\.claude\\plans\\nifty-launching-breeze.md"
+  },
+  "capability_decisions": {
+    "superpowers": "unavailable",
+    "godot_skill": "available",
+    "code_review": "completed"
+  }
+}

@@ -16,7 +16,13 @@ var _shou_zhi := -1  # 正在操作的手指编号（多点触控时不串手）
 
 func _ready() -> void:
 	var ping_mu := get_viewport_rect().size
-	zhong_xin = Vector2(180.0, ping_mu.y - 180.0)  # 固定左下角
+	# 摇杆侧边可在主界面设置里切换（左手/右手习惯）；按路径找 CunDang：
+	# --script 模式不注册 Autoload，编译期零依赖（ce_panding 老规矩）
+	var cd := get_node_or_null("/root/CunDang")
+	if cd != null and String(cd.get("yao_gan_ce")) == "you":
+		zhong_xin = Vector2(ping_mu.x - 180.0, ping_mu.y - 180.0)  # 右下角
+	else:
+		zhong_xin = Vector2(180.0, ping_mu.y - 180.0)  # 左下角（默认）
 	queue_redraw()
 
 

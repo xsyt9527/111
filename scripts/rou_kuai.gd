@@ -2,14 +2,14 @@ extends KeChiWu
 class_name RouKuai
 # 鱼肉块：鱼受伤时掉落的可进食物，漂浮一段时间后消失
 # 策划案 8.1「受伤掉肉」+ 8.4「鱼肉」：伤害=掉肉量，任何鱼都能吃
-# 美术：assets/sucai/shenhai_rou/rou_kuai_01~04.png（由 图片/鱼肉.png 四连图切出）
-
+# 美术：assets/sucai/shenhai_rou/rou_kuai_01~05.png（01=3 视图侧视，02~05=四帧姿态）
 const TIE_TU_ZU: Array[Texture2D] = [
 	preload("res://assets/sucai/shenhai_rou/rou_kuai_01.png"),
 	preload("res://assets/sucai/shenhai_rou/rou_kuai_02.png"),
 	preload("res://assets/sucai/shenhai_rou/rou_kuai_03.png"),
 	preload("res://assets/sucai/shenhai_rou/rou_kuai_04.png"),
-]  # 四种外观随机抽，避免一地鱼肉长得一模一样
+	preload("res://assets/sucai/shenhai_rou/rou_kuai_05.png"),
+]  # 五种外观随机抽，避免一地鱼肉长得一模一样
 const KE_CHI_YAN_CHI := 0.4  # 掉落后 0.4 秒才可被吃：防止掉落者原地瞬间吃回
 const SHOU_MING := 12.0  # 存活 12 秒，最后 1 秒淡出
 

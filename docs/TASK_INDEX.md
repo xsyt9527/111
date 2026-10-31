@@ -13,3 +13,5 @@
 | TASK-009 | v1 | 无头自动测试（四域测试 + 坏卡红测 + 跑批门禁，产品零修改） | approved | complete | partially_demonstrated | ready | student-01 | TASK-005, TASK-006, TASK-007, TASK-008 | docs/development_tasks/TASK-009_zidong_ceshi/ |
 | TASK-010 | v1 | 安卓导出与 TapTap（工具链 + APK + 签名 + 真机） | awaiting | proposed | not_started | not_started | student-01 | TASK-009 | docs/development_tasks/TASK-010_anzhuo_daochu/ |
 | TASK-011 | v1 | 零期 A：摇杆 + ×1.1 吞噬门槛 + 体型即血量 | approved | complete | demonstrated | ready | student-01 | TASK-003, TASK-005, TASK-008, TASK-009 | docs/development_tasks/TASK-011_zhandou_chonggou/ |
+| TASK-014 | v1 | 能力系统：吃谁得谁 + 升级三选一 + 技能按钮 | approved | complete | not_started | ready | student-01 | TASK-012, TASK-013, TASK-015, TASK-017 | docs/development_tasks/TASK-014_neng_li/ |
+| TASK-018 | v1 | 局外形态解锁：三形态 + 胜利解锁 + 启动选择页 | approved | review | not_started | pending | student-01 | TASK-005, TASK-008, TASK-014, TASK-017 | docs/development_tasks/TASK-018_ju_wai_xing_tai/ |

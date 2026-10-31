@@ -10,11 +10,13 @@ const HAI_CAO_TIE_TU: Array[Texture2D] = [
 	preload("res://assets/sucai/shenhai_zhuangshi/haicao_01.png"),
 	preload("res://assets/sucai/shenhai_zhuangshi/haicao_02.png"),
 	preload("res://assets/sucai/shenhai_zhuangshi/haicao_03.png"),
-]
+]  # 01=3 视图侧视，02/03=正面/背面：同屏海草不再像复制粘贴（素材包无海草四帧）
 const SHAN_HU_TIE_TU: Array[Texture2D] = [
 	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_01.png"),
 	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_02.png"),
 	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_03.png"),
+	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_04.png"),
+	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_05.png"),
 ]
 
 const HAI_CAO_JING_YAN := 1  # 海草：到处都是，收益低（等同一块鱼肉）

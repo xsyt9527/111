@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="XingTai" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/xing_tai.gd" id="1_xing_tai"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/qi_yu_4zhen.tres" id="2_dong_hua"]
+[ext_resource type="Resource" path="res://data/nengli/ji_su_tu_jin.tres" id="3_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/qi_yu.png" id="4_tie_tu"]
+
+[resource]
+script = ExtResource("1_xing_tai")
+bian_hao = &"qi_yu"
+ming_zi = "旗鱼"
+miao_shu = "高速刺客：游得最快、转向最灵，嘴巴小一圈，自带极速突进。"
+dong_hua = ExtResource("2_dong_hua")
+tie_tu = ExtResource("4_tie_tu")
+kai_ju_deng_ji = 0
+yi_dong_su_du = 360.0
+zui_ba = 0.85
+zhuan_xiang_ji_su = 7.5
+kai_ju_neng_li = ExtResource("3_neng_li")
+jie_suo_sheng_li_ci_shu = 2

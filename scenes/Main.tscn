@@ -11,12 +11,16 @@
 [ext_resource type="Resource" path="res://data/yuzhong/cheng_yu.tres" id="8_cheng"]
 [ext_resource type="Resource" path="res://data/yuzhong/zong_yu.tres" id="9_zong"]
 [ext_resource type="Script" path="res://scripts/jing_yan_ui.gd" id="11_jingyan"]
-[ext_resource type="PackedScene" path="res://scenes/QiangHuaDanChuang.tscn" id="12_danchuang"]
+[ext_resource type="PackedScene" path="res://scenes/NengLiDanChuang.tscn" id="12_danchuang"]
 [ext_resource type="PackedScene" path="res://scenes/YaoGan.tscn" id="14_yaogan"]
 [ext_resource type="Resource" path="res://data/yuzhong/qi_yu.tres" id="15_qi"]
 [ext_resource type="Resource" path="res://data/yuzhong/jian_yu.tres" id="16_jian"]
 [ext_resource type="Resource" path="res://data/yuzhong/ju_kou_yu.tres" id="17_ju"]
+[ext_resource type="Resource" path="res://data/yuzhong/ye_deng_long_yu.tres" id="20_yedeng"]
+[ext_resource type="Resource" path="res://data/yuzhong/an_ying_jian_yu.tres" id="21_anying"]
 [ext_resource type="Script" path="res://scripts/zhi_wu_qun.gd" id="18_zhiwuqun"]
+[ext_resource type="Script" path="res://scripts/neng_li_ui.gd" id="19_nengliui"]
+[ext_resource type="PackedScene" path="res://scenes/SheZhi.tscn" id="20_shezhi"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -44,7 +48,7 @@ position = Vector2(2064, 1152)
 
 [node name="YuQun" type="Node2D" parent="." unique_id=71082821]
 script = ExtResource("4_yuqun")
-yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("15_qi"), ExtResource("16_jian"), ExtResource("17_ju")])
+yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("15_qi"), ExtResource("16_jian"), ExtResource("17_ju"), ExtResource("20_yedeng"), ExtResource("21_anying")])
 
 [node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true
@@ -92,6 +96,49 @@ offset_bottom = 104.0
 show_percentage = false
 value = 100.0
 
+[node name="XiaoHuaUI" type="CanvasLayer" parent="."]
+
+[node name="XiaoHuaLabel" type="Label" parent="XiaoHuaUI"]
+offset_left = 24.0
+offset_top = 108.0
+offset_right = 260.0
+offset_bottom = 130.0
+theme_override_colors/font_color = Color(0.75, 0.93, 1, 0.95)
+theme_override_font_sizes/font_size = 16
+text = "消化 —"
+
+[node name="XiaoHuaTiao" type="ProgressBar" parent="XiaoHuaUI"]
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 324.0
+offset_bottom = 146.0
+show_percentage = false
+
+[node name="KongZhiUI" type="CanvasLayer" parent="."]
+
+[node name="KongZhiLabel" type="Label" parent="KongZhiUI"]
+offset_left = 24.0
+offset_top = 150.0
+offset_right = 320.0
+offset_bottom = 172.0
+theme_override_colors/font_color = Color(0.75, 0.93, 1, 0.95)
+theme_override_font_sizes/font_size = 16
+text = "电麻 0  毒晕 0"
+
+[node name="DianMaTiao" type="ProgressBar" parent="KongZhiUI"]
+offset_left = 24.0
+offset_top = 174.0
+offset_right = 324.0
+offset_bottom = 188.0
+show_percentage = false
+
+[node name="DuYunTiao" type="ProgressBar" parent="KongZhiUI"]
+offset_left = 24.0
+offset_top = 192.0
+offset_right = 324.0
+offset_bottom = 206.0
+show_percentage = false
+
 [node name="DiTuUI" type="CanvasLayer" parent="."]
 
 [node name="DiTuMing" type="Label" parent="DiTuUI"]
@@ -107,10 +154,80 @@ theme_override_font_sizes/font_size = 20
 text = "正中 · 核心海山交汇大殿"
 horizontal_alignment = 2
 
+[node name="ShiJianUI" type="CanvasLayer" parent="."]
+
+[node name="ShiJianLabel" type="Label" parent="ShiJianUI"]
+offset_left = 960.0
+offset_top = 12.0
+offset_right = 1256.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.92, 0.97, 1, 0.95)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.65)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 26
+text = "剩余 10:00"
+horizontal_alignment = 2
+
+[node name="BossUI" type="CanvasLayer" parent="."]
+
+[node name="BossLabel" type="Label" parent="BossUI"]
+visible = false
+offset_left = 940.0
+offset_top = 96.0
+offset_right = 1256.0
+offset_bottom = 118.0
+theme_override_colors/font_color = Color(1, 0.82, 0.62, 0.96)
+theme_override_font_sizes/font_size = 18
+text = "机器船"
+horizontal_alignment = 2
+
+[node name="BossTiao" type="ProgressBar" parent="BossUI"]
+visible = false
+offset_left = 940.0
+offset_top = 122.0
+offset_right = 1256.0
+offset_bottom = 138.0
+max_value = 90.0
+value = 90.0
+show_percentage = false
+
+[node name="XiaoXiUI" type="CanvasLayer" parent="."]
+
+[node name="XiaoXiLabel" type="Label" parent="XiaoXiUI"]
+visible = false
+offset_left = 290.0
+offset_top = 300.0
+offset_right = 990.0
+offset_bottom = 370.0
+theme_override_colors/font_color = Color(1, 0.95, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="YaoGan" parent="UI" instance=ExtResource("14_yaogan")]
 
-[node name="QiangHuaDanChuang" parent="." instance=ExtResource("12_danchuang")]
+[node name="NengLiUI" type="CanvasLayer" parent="."]
+process_mode = 1
+script = ExtResource("19_nengliui")
+
+[node name="BeiDongLabel" type="Label" parent="NengLiUI"]
+offset_left = 900.0
+offset_top = 280.0
+offset_right = 1250.0
+offset_bottom = 356.0
+theme_override_colors/font_color = Color(0.76, 1, 0.82, 0.95)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="NengLiDanChuang" parent="." instance=ExtResource("12_danchuang")]
+
+[node name="SheZhi" parent="." instance=ExtResource("20_shezhi")]
 
 [editable path="Yu"]

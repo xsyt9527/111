@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="XingTai" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/xing_tai.gd" id="1_xing_tai"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/deng_long_yu_4zhen.tres" id="2_dong_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/deng_long_yu.png" id="3_tie_tu"]
+
+[resource]
+script = ExtResource("1_xing_tai")
+bian_hao = &"huai_xing_tai"
+ming_zi = "坏形态"
+miao_shu = "红测夹具：速度非法为负，校验器必须抓到。"
+dong_hua = ExtResource("2_dong_hua")
+tie_tu = ExtResource("3_tie_tu")
+kai_ju_deng_ji = 0
+yi_dong_su_du = -1.0
+zui_ba = 1.0
+zhuan_xiang_ji_su = 7.0
+jie_suo_sheng_li_ci_shu = 0

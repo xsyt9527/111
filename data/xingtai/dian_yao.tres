@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="XingTai" load_steps=5 format=3 uid="uid://cqrgcvcx3duwn"]
+
+[ext_resource type="Script" uid="uid://cfncsgxj33ra4" path="res://scripts/xing_tai.gd" id="1_xing_tai"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/dian_yao_4zhen.tres" id="2_dong_hua"]
+[ext_resource type="Resource" path="res://data/nengli/fang_dian_ma_bi.tres" id="3_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/dian_yao.png" id="4_tie_tu"]
+
+[resource]
+script = ExtResource("1_xing_tai")
+bian_hao = &"dian_yao"
+ming_zi = "电鳐"
+miao_shu = "厚实开局：Lv.1 体型更大、游得更慢，自带放电麻痹。"
+dong_hua = ExtResource("2_dong_hua")
+tie_tu = ExtResource("4_tie_tu")
+kai_ju_deng_ji = 1
+yi_dong_su_du = 260.0
+zhuan_xiang_ji_su = 6.0
+kai_ju_neng_li = ExtResource("3_neng_li")
+jie_suo_sheng_li_ci_shu = 1

@@ -1,16 +1,26 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/yu_npc.gd" id="1_yu_npc"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
 radius = 55.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tui"]
+radius = 110.0
 
 [node name="YuNpc" type="Node2D"]
 position = Vector2(640, 360)
 script = ExtResource("1_yu_npc")
 
-[node name="HongGuang" type="Sprite2D" parent="."]
+[node name="HongGuang" type="AnimatedSprite2D" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="ZuiDian" type="Node2D" parent="."]
+position = Vector2(62, 0)
+
+[node name="ZhiMingDian" type="Node2D" parent="."]
+position = Vector2(35, -34)
 
 [node name="PandingQu" type="Area2D" parent="."]
 collision_layer = 2
@@ -24,3 +34,11 @@ collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RouQu"]
 shape = SubResource("CircleShape2D_yuan")
+
+[node name="BossPengZhuangQu" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossPengZhuangQu"]
+shape = SubResource("CircleShape2D_tui")

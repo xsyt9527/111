@@ -12,6 +12,9 @@ radius = 55.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_xiqu"]
 radius = 225.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_yao"]
+radius = 85.0
+
 [node name="Yu" type="Node2D" unique_id=1627777717]
 script = ExtResource("1_yu")
 
@@ -30,6 +33,12 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ShangQu" unique_id=1578421316]
 shape = SubResource("CircleShape2D_yuan")
+
+[node name="YaoQu" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YaoQu"]
+shape = SubResource("CircleShape2D_yao")
 
 [node name="ChiQu" type="Area2D" parent="."]
 collision_mask = 2

@@ -4,4 +4,4 @@ class_name ShengJiBiao
 # 固定数组表在高等级必然要用完；换成两个参数，等级再高也算得出来
 
 @export var ji_chu := 10.0  # Lv.0 → Lv.1 所需经验
-@export var zeng_zhang := 1.2  # 每级阈值倍率：10、12、14、17……
+@export var zeng_zhang := 1.2  # 每级阈值倍率：10、12、15、18……（向上取整）

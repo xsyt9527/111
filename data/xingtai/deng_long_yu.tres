@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="XingTai" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/xing_tai.gd" id="1_xing_tai"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/deng_long_yu_4zhen.tres" id="2_dong_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/deng_long_yu.png" id="3_tie_tu"]
+
+[resource]
+script = ExtResource("1_xing_tai")
+bian_hao = &"deng_long_yu"
+ming_zi = "灯笼鱼"
+miao_shu = "均衡起点：没有初始能力，靠吃与升级摸索自己的路线。"
+dong_hua = ExtResource("2_dong_hua")
+tie_tu = ExtResource("3_tie_tu")
+kai_ju_deng_ji = 0
+yi_dong_su_du = 300.0
+zui_ba = 1.0
+zhuan_xiang_ji_su = 7.0
+jie_suo_sheng_li_ci_shu = 0

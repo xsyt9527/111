@@ -1,0 +1,1683 @@
+{
+  "task_id": "TASK-018",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "review",
+  "learning_status": "not_started",
+  "handoff_status": "pending",
+  "current_step": "step-05",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "自动化已收口：八步门禁 540 断言全绿、三场景无头冒烟无 ERROR、负速度红测已复原复绿、Boss 死亡切场景的 YuNpc 离树报错已修复并有回归测试。等待用户执行 F5 手测（选择页锁定/三形态开局/胜利解锁/重启保持/坏档回退/再来一次/换形态/碰 Boss 死亡）与学习验收；随后复跑 validate_task.py 与 check_task_scope.py check 并回填最终状态。不 commit / 不 push。",
+  "implementation_baseline": {
+    "captured_at": "2026-10-30T07:23:18.288633Z",
+    "commit": "a194b5b60d484de5cf7149c2c4ab5b56c12a4763",
+    "preexisting_changes": [
+      {
+        "path": "Godot引擎词总表.docx",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:470f428ced6499e81a9d230775ce195c012289d913153665b94334ee2ee99179"
+      },
+      {
+        "path": "LEARNING_ROADMAP.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b78bb3dc1b9324ec11a064229877252bf3576e0c4333257538eeb8c4deb3a82f"
+      },
+      {
+        "path": "assets/sucai/ji_qi_chuan/ji_qi_chuan.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1b460edf8273adb87949facc9e7c69f0362e87c86f68c56ce309a1ec1a346d22"
+      },
+      {
+        "path": "assets/sucai/ji_qi_chuan/ji_qi_chuan.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7fbd700bd199556b6241c5f15743d82aac9b07eb6cb4a92b3812e3488f71168f"
+      },
+      {
+        "path": "assets/sucai/ji_qi_chuan/ji_qi_chuan_zhuai.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9c4dd5e349c213040b2dd3673db3dea0a1ae99a82d93679ff15e24fa9f03369a"
+      },
+      {
+        "path": "assets/sucai/ji_qi_chuan/ji_qi_chuan_zhuai.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:71233025634d3bad49a62f7dcce4e3000179325b056090697b21fb4630014730"
+      },
+      {
+        "path": "data/donghua/deng_long_yu_4zhen.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:49353f790a02998208a3546e148391e0332c9448ccf5dcbb3b4a9d778321fe2f"
+      },
+      {
+        "path": "data/nengli/du_ji_hu_ti.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d9e3f9fe437062ee07b6c2ed004fb790ffb3fb626d056d6b1a285ec4e3a19675"
+      },
+      {
+        "path": "data/nengli/fang_dian_ma_bi.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a79118e86885d78972f7c79a05b690591aa71cf3f247f54781a7122dc5c88135"
+      },
+      {
+        "path": "data/nengli/ji_su_tu_jin.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7937de9ce88a85d3f0fae4c3a21c9283cfc6791c0760cd977874845cee69a0b5"
+      },
+      {
+        "path": "data/nengli/man_li_chong_zhuang.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d133b98e50c2a475d2e745aaee68cfa742d4f6c053276034730ebb5e4aa1b535"
+      },
+      {
+        "path": "data/nengli/qian_fu_tu_xi.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:32814c8fa8a88098bbf1b8512fc3d50e9eede6f6c99aa2eb54b1179a368adfe2"
+      },
+      {
+        "path": "data/qianghua/ci_xi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:55855cf8ccb07b1a2d01a38352123b2b1348732bd28dea2f7ce4744d3f248e30"
+      },
+      {
+        "path": "data/qianghua/huo_li.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e8c72dd900c0dec8ffe5424d79a8c626e8c85ad9377a0667a7610607a266500e"
+      },
+      {
+        "path": "data/qianghua/rui_zhi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7f6633dc32777839bcc714a2a0e6d1b4fc40b1e1dc8a779bf49e72f7799bc3df"
+      },
+      {
+        "path": "data/qianghua/tan_shi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4c9e800387e6f18fa36191595ac47ebfd5fdd223bb4289a11bdfa0db85637402"
+      },
+      {
+        "path": "data/qianghua/xun_jie.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:ed16d156605a2ebe13d2d62943b693c1a9e675d1849a704258897a203bf7301c"
+      },
+      {
+        "path": "data/qianghua_tuiyi/cui_fei.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2d139b470073c0d98ffc6aa0176d3171d20e24e0b9aa320ebec0c492ce188747"
+      },
+      {
+        "path": "data/yuzhong/cheng_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:5f9d3f4105a409db8d8881fad9e55d2dcf74370702031d178a9865b637192ecd"
+      },
+      {
+        "path": "data/yuzhong/fen_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:34dc93f3ec99c82b660e7f84506db74aee4cc0c7f1ee22572f7cec21ba0345c5"
+      },
+      {
+        "path": "data/yuzhong/hong_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:1de9459a960cd62f0fbcb6dbea457f9e022449a6c9d8dcb3cc12e01d0bedfcc0"
+      },
+      {
+        "path": "data/yuzhong/jian_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e4700d4906917f01b8d176173180305f3f0e2a4575dc69b245e21d4d6f70d13d"
+      },
+      {
+        "path": "data/yuzhong/ju_kou_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:cb82bdea424c12ff9cde30707ca61e67116fafc73984a6995286e8f9bde7802f"
+      },
+      {
+        "path": "data/yuzhong/lan_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:13e8ee1a507d37dd7f75477cc818bafd2887af82365bd3a9e399397eebe3c91d"
+      },
+      {
+        "path": "data/yuzhong/lv_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b360750aceb6f656b46a5475eadc6998e9fe41e62167fb72df2f5532bb11fc6c"
+      },
+      {
+        "path": "data/yuzhong/qi_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:63a546e0620e1dee61bb5fac34a45cc66e06c3a6670a8ca340e0700c1e003c9b"
+      },
+      {
+        "path": "data/yuzhong/zong_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8cde7ab1fd9b789ed1c460b3033f99f20a14691e83c9947f92a071b5a6121213"
+      },
+      {
+        "path": "docs/CHONG_GOU_LU_XIAN.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a5c213197a80b63794269cb98aa86f54886f62a12cdec38a9f8d2a20e423b9d6"
+      },
+      {
+        "path": "docs/TASK_INDEX.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:61c7c753646f1a80c4f0f4d30a182a13c892a09169927952010d9e02688123af"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/CODE_REVIEW.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f83e631265aafe8e7b584b4f2d533064e42a9f0768a454170a88febc36db1871"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5ff145f1b772d3b9e1118722028fb2aa31eb87e2f2303ebfe2eb09dcb3d55fbe"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/IMPLEMENTATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:68da1e978597abb9008fff358f9705d9624242a24d9b8fc8c4e6f88803f2221a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1ed9ed1977c59aa8784623c6a0be6e81fd1d62dad3f15d0c1011d08cf7a1c6bf"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:89c6e3283401d018a5a19a2edef9988a45bcdb7ed4877b4eebe875c0b8d3454d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:52a423fde222bdb402a3eec1f942d27bd663b4b6867cf972a9442d1fa6dddbe0"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cc481b05493dc571878462313ed43dad938d3569843f01d9b529726e00d7ef95"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dd5ce4e88f95766af212a16c506981fae0783a330bb35375855db4b1a0423cd5"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:204cb11b28f2d43a25f74bfe4317dcb7359be65fed55620725867514e446302f"
+      },
+      {
+        "path": "docs/development_tasks/TASK-014_neng_li/VERIFICATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c27478e28d6786a4145611bf064db5b1192beb0aabbe1b23c7ef33c7f2253f77"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/CODE_REVIEW.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9b7327c4aeb1ec0fb2188e0a98d4d9a359664f31d9c715a12b81419488b45053"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f3d4383d66fa2594288f6b3a2a600278e509c0b2ba08819e292ad3a9b6b2805d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/IMPLEMENTATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:963fccd7d8a83000884bf2ff63d8e60f54030f48d9a92e15035f608fbffda3e9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4676c068890cf179f5b3843c392cdd52f8e319833dd1da41f6140c202e236466"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fd5c02a69ab44aff6c6fd735b3b54a3a987b33778cafea0e82e627bbc5ad8f63"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9ef1c3e266e673500c2ed0b18f688e6572a512b2a7365ed30f2cec4011c6ff72"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d2659a1fa212649a31701adf5c6ebcc59b5efbf01f7ce0f239d6ab821e419d9a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:74a2b6997c2b12c47d0fd920352f39a388e6ee64bbc80c73c553e655d249727e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:033ddcbed339cf582759984ae4b322e5e101c504984202897abc5f378442c0de"
+      },
+      {
+        "path": "docs/development_tasks/TASK-018_ju_wai_xing_tai/VERIFICATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:742fdbcf40f2123a1b4d67cbf9ed1f8fab1b0f50976dc9abb4df744368fb46ec"
+      },
+      {
+        "path": "docs/引擎词总表.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2677b1e196dc6f4ce5b4c13a19b0b16f2ccb647bc3c64c5c3a240fe204af1b8a"
+      },
+      {
+        "path": "docs/美术资源首装记录.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4cd02f0e9fbe2384a8f376034b6d5b07713b7df774f64de7eeede4424c4628f0"
+      },
+      {
+        "path": "scenes/JiQiChuan.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b1d417f4670f273a8c33763202a72a33d65bfbee300a790d8133ad3aae7ef2fe"
+      },
+      {
+        "path": "scenes/JieSuan.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2f61988529eeae1a62aecafcfbd9917982f47863d0d92eb7db47224f9e689c13"
+      },
+      {
+        "path": "scenes/Main.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:0c7757aaebace7c2421553cc07b8a466849d1c82e5fd0746dcf1078898283ad7"
+      },
+      {
+        "path": "scenes/NengLiDanChuang.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d4a93d635f3a934c59d205e2ba6ec4f647dfaeb53d6a8f47d49a42d6771d161a"
+      },
+      {
+        "path": "scenes/QiangHuaDanChuang.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c51f6189dadcffa30559639446721ea7af36dd2598bbc7550d3d68094e5336ea"
+      },
+      {
+        "path": "scenes/Yu.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4681537a2c99295ec6ac42ef14a583fc4742892835ea2d56ccce3dac819f4b54"
+      },
+      {
+        "path": "scenes/YuNpc.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e5c712304f21e9042f9de99ba3ed5f3c91ca00c4fd6fe85a44bdced92fe30da3"
+      },
+      {
+        "path": "scripts/ji_qi_chuan.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:53a99785ed2ee8cdc103ebd3de07a771ad488eac83b81d959728d87bd3a72b22"
+      },
+      {
+        "path": "scripts/ji_qi_chuan.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c553edec36343fd5c7a2fe89b9c3389f11c0608a9d98093a116d1295df4e0f9c"
+      },
+      {
+        "path": "scripts/jie_suan.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3a74613ab8996df33c7d1ff5b66a756bd10fbc1a0b218b0f44657c2eb30147b1"
+      },
+      {
+        "path": "scripts/ke_chi_wu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:efbc8c66c4155b5149ce192a395a6836233d098f3aab04318dd7e1d445ba93e7"
+      },
+      {
+        "path": "scripts/main.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f62fde794f45622c2f8ae5208dea1dac81c66c5c7099d35df433c4896f92c25b"
+      },
+      {
+        "path": "scripts/neng_li.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c22debe81193f62359cc6e9b6a9c64a653c1d026324167fd22bb00b90c23e384"
+      },
+      {
+        "path": "scripts/neng_li.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:86983f7f1f362c104bf36008f27b67819aabb6ac51cdac715428c29f700ec1bc"
+      },
+      {
+        "path": "scripts/neng_li_chou.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:22223f251117e26be67cf271e441acec7fe77802a5a1c2a06428af0a83cc7a8d"
+      },
+      {
+        "path": "scripts/neng_li_chou.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:df5b1b1b261d071498a6128638d0c898045d0677d4877f6ff07e6cfeceb30205"
+      },
+      {
+        "path": "scripts/neng_li_dan_chuang.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fed91b70de637b8431512e4181dae0da20e704326ce62d9007c802f961bc2c4b"
+      },
+      {
+        "path": "scripts/neng_li_dan_chuang.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b67e4522339c14f84d0f27c0ea3e63e79d970d3f99345fbcce122f971cd33886"
+      },
+      {
+        "path": "scripts/neng_li_ui.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:505f51a8dd09457287c7dcd70e80100127a97b742d3f3eb3bf94fd1965a57187"
+      },
+      {
+        "path": "scripts/neng_li_ui.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b89e53602c375458d30689676836bd1027052cbeea17d47eabed79279a0dc6fd"
+      },
+      {
+        "path": "scripts/qiang_hua_dan_chuang.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7c7c03e9f924c01f44d43bf1864a806a4419478eb577201d16b55549a8f041da"
+      },
+      {
+        "path": "scripts/qiang_hua_dan_chuang.gd.uid",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:aa472b8bdf23c223e7c87de4f7d2ac73cd94d4004790c4ddcd516bc1ee1673d4"
+      },
+      {
+        "path": "scripts/qiang_hua_ka.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4c5a62f0d76ae3bb04b3eab93d5b2d1a1d52631756351473b55cf8e039f6cf78"
+      },
+      {
+        "path": "scripts/qiang_hua_ka.gd.uid",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:6e940aa76b4b86050b042849d283af357c939f2e22df9d8bdcbcc347ec89789d"
+      },
+      {
+        "path": "scripts/sheng_ji_biao.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f2619eb34d8fdbddca9aae54bcda6591a2f9d41f91be2a99b23d8eb54296b832"
+      },
+      {
+        "path": "scripts/yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:aeca879643fd62a03e659a2dc412a4830747a4c6bf755b575b200b46ecfd08b5"
+      },
+      {
+        "path": "scripts/yu_npc.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:92ed0dc44687d9ccfdee9f3493c39e2087bc2d37f669bb5a728728e35f1cafbe"
+      },
+      {
+        "path": "scripts/yu_qun.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8853e5c718b52e9e6e84e83657ad225773ca80d055dd05676584dc2d1ad64c4a"
+      },
+      {
+        "path": "scripts/yu_zhong.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:30ec756cb955d1eea6a851e8753bd3e8d7503a72369058bdd4be05484dd39a1b"
+      },
+      {
+        "path": "scripts/zhan_dou.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:316844e093e6a0d1c9ab23af33b810fc0c33f498f7c910487d94ccf0c0142b9e"
+      },
+      {
+        "path": "scripts/zhan_dou.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:efdc7a9bf85758a8556fa8df7ce016d3846ef999451bf8a0e6b6c3cc4a01a0e0"
+      },
+      {
+        "path": "scripts/zhang_ben.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:cf31ec455f3b88bce187e5fe4d0b10389bc22837ef29b286352acf729d7a3c16"
+      },
+      {
+        "path": "tests/ce_bian_jie.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f1ade19ac2f9cc35354f0593a30a2d5e846d201b9272c040692c8ec30e1b46d3"
+      },
+      {
+        "path": "tests/ce_panding.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:22bbf220603936a476742760522579eb83218f4d38c12de2de2443075fb5b585"
+      },
+      {
+        "path": "tests/ce_shu_ju.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:acebf316615b474e9d59707c35f5672d4080b1bfe5ccd93d925b434621528b55"
+      },
+      {
+        "path": "tests/ce_zhan_dou.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a75a2f551ed172cf52bffc7cf8419225db0eb0d2da5111740fa5bf741dc69bda"
+      },
+      {
+        "path": "tests/ce_zhan_dou.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a35aa7b679528ae5b3f2ef180d293b8af9524b4a2bea7688696b412398cf7324"
+      },
+      {
+        "path": "tests/ce_zhang_ben.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f1cee5443c2c81bdc956b9c1a9665692106c80671d534bc116de4ef225bc8006"
+      },
+      {
+        "path": "tests/huai_ka.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8598207f9eb5859bae77f039d0e872c02e88f6ab16d1b50ba76626249e1d7749"
+      },
+      {
+        "path": "tests/huai_neng_li.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:39c4f04cc6754cfba0a86c21bde1777daf8a2939f6aaacb1b9fea645311a072c"
+      },
+      {
+        "path": "tests/pao_pi.bat",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c188c1db15f6c1584f4e1aeb84a22bc6094601cbdf0d08c6c119b56bbc300392"
+      },
+      {
+        "path": "图片/.gdignore",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:70995c7ee4de8aad071998e8741a46fa9158deaadb3e267204de93c73fb94ef3"
+      },
+      {
+        "path": "图片/3视图.zip",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:43e7a2663fe1736044f9b1939c0e688421d6f108f8b1bfdba5cde3b1d0306fe4"
+      },
+      {
+        "path": "图片/61d18c1950d7d488348f9d541849b398.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f78158b77ce567b1b181f9f2bf4a371233acb4d875f9ba8d8b65002b9e394fcd"
+      },
+      {
+        "path": "图片/8c6fece5847a666824c5b44cd7912cfa.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1efbb1fb9d5eb749f6143f720e055190fef47532752352d1f782c8ac6ee99723"
+      },
+      {
+        "path": "图片/Code_Generated_Image.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0081011e03e7728d4c02b3aafda26322a4d703026e2bb02ee06f3ab13f7f8e5b"
+      },
+      {
+        "path": "图片/f73b61aed1ff38317a596daebcac3e64.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4b4e72168942cbbf2887f4d8f9b0972ad1686fa049b8b065a3a8e5ba3111ae12"
+      },
+      {
+        "path": "图片/jie_3shitu/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e143fa12ad80c026959cc8739c1228cf3436ef8edca7e145738a6c9386e80672"
+      },
+      {
+        "path": "图片/jie_3shitu/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f00b2bee267c8404f1b03ef7e5b339e3ca2e013bd1c7e7284ec2318cd957661a"
+      },
+      {
+        "path": "图片/jie_3shitu/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:23d43926392795d62dd4ae79f42617cd09551185dcc0f15285eda6fa37763441"
+      },
+      {
+        "path": "图片/jie_3shitu/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d99ee8756590f484b2a892b9024077c8571ce5816e0d9b00d982a7e834c3b738"
+      },
+      {
+        "path": "图片/jie_3shitu/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:124df42bef7911ba86c11d4579700c598fe49cedf13b1c77befd138ebec56fb7"
+      },
+      {
+        "path": "图片/jie_3shitu/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4f308ef1115dc69798d2e52701714dc6362dc4c865e68315dda184b99f5fb102"
+      },
+      {
+        "path": "图片/jie_3shitu/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1ebc2c22b06c4a6f3373c3e45f1c7a49a0c40845667672bbb2aaa3052d2a9323"
+      },
+      {
+        "path": "图片/jie_3shitu/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a3e06278b73cd456a36edd989cebdaea9966ce7722ffd82773cf14fcc43871a4"
+      },
+      {
+        "path": "图片/jie_3shitu/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6bd6b9d28fecfcc8b2633d5c0cd4cd693c022fc7bfd360ab17e84a0623324e91"
+      },
+      {
+        "path": "图片/jie_3shitu/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:82091e257f7169cd80f5d1920268468a47cb1167a365675c42aed9d26d7764b4"
+      },
+      {
+        "path": "图片/jie_3shitu/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:25df5d5d595c33d7327e3f5406bd1c0ad781b0553754d71bf4bb06b09040cce4"
+      },
+      {
+        "path": "图片/jie_3shitu/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e1f09c1d824837862ebe5484dbf63eb19787717b26123e112c12a60dc6db3bb4"
+      },
+      {
+        "path": "图片/jie_3shitu/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1b3006fbc45823e76099b7db5b7d143c785a0a5b690de194d2238a84d156faf1"
+      },
+      {
+        "path": "图片/jie_3shitu/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bdba7967125c94e23a275f553f9044c003d145b39a7ff6e995c1ae2fd316c96f"
+      },
+      {
+        "path": "图片/jie_3shitu/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3c237b4d385708ccb6971648a801ee6fba8a4fa67e018baaa41418a4bae414eb"
+      },
+      {
+        "path": "图片/jie_3shitu/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:166f9c6189a63a6469ca1b3f656b2b855b703585d206cf928f254881f49986e5"
+      },
+      {
+        "path": "图片/jie_3shitu/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8b5e346b54ce1fa549f16027c0eb2370bddb52e3392e02f45e7e418eac87385e"
+      },
+      {
+        "path": "图片/jie_3shitu/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ab6b197b1527f3b387f3f0458756d8ab3bb06ef817cbca205c2f7462dc207bcc"
+      },
+      {
+        "path": "图片/jie_3shitu/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cb808c21573fc9d1d9d26cb41416c9b4a88429dbab802bc38e0b1e50a15121f0"
+      },
+      {
+        "path": "图片/jie_3shitu/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:01113ce96baebb15e10e676bd6331a7653384c25e99780a42a8950f13732887c"
+      },
+      {
+        "path": "图片/jie_3shitu/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9936e060d38fbe4a58de80e1fe6117afcb88acb21e06acad82907b642d80d30d"
+      },
+      {
+        "path": "图片/jie_3shitu/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0ee7a5900832e22396de4ce0a3fb434cdd6c51b17a40d703e671db7721464b2b"
+      },
+      {
+        "path": "图片/jie_3shitu/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c3c5431d63a5bc5b15d3bc04a43dcfe93c9932ee3f22dd02df7e4b0db79aaf83"
+      },
+      {
+        "path": "图片/jie_3shitu/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7c09800efc4c9f66bb7b2620e533125bd27d7a8768f555793d97fbc856f4bc43"
+      },
+      {
+        "path": "图片/jie_3shitu/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f70089d3f318ba3d37cb5cc4a4e73556f7dcd6cff7a2679fa024e2d22b70f10a"
+      },
+      {
+        "path": "图片/jie_3shitu/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:288de8690a566fd76de0640265225c0feca6b12ebc63b045a445351a292ae100"
+      },
+      {
+        "path": "图片/jie_3shitu/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e9c8ccddf37c44674bfa7aad4b06ff9abc46d05c4b4088edc2e88344cf6a5381"
+      },
+      {
+        "path": "图片/jie_3shitu/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0b33b1ad907bf9f05b3c36c6e76db2836f02d0fd9efdcc2355f362c8172e177f"
+      },
+      {
+        "path": "图片/jie_3shitu/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:895dfc156639fa6554685118a734a3e1518fd64db03f51478a19f6c25fffcc1d"
+      },
+      {
+        "path": "图片/jie_3shitu/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e7f2caa580ae2213131ef866fb4a372173e7575003e93afe386ebd168bafdbe7"
+      },
+      {
+        "path": "图片/jie_3shitu/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a0eba32c01990856900dd52ded03b6fccdd30368fbee94ddacb792d2c62e23c3"
+      },
+      {
+        "path": "图片/jie_3shitu/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:25b75895317d0307acb9c624d50f756629a64cd96dfd90601dfc5b2f3d3d9979"
+      },
+      {
+        "path": "图片/jie_3shitu/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:37026750893bbebb18efa1fb2690043b32fc9eb86acece02bd703d294f27c22f"
+      },
+      {
+        "path": "图片/jie_3shitu/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ca2d49b4bda2589497d302ef14f110269ee867e094166dcebfc14c6557a373c3"
+      },
+      {
+        "path": "图片/jie_3shitu/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dd735216df50f8739132db2a4db8a7649c9c9bed2a60412f3c2bc3f14bb5222c"
+      },
+      {
+        "path": "图片/jie_3shitu/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2ce14806036460ff82e6095be3c045a64da8241ca1bd752561163d8c43baf88e"
+      },
+      {
+        "path": "图片/jie_3shitu/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_01_侧面游动_side.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ded96145e0cdee3af8f1cd50d6530ee3218cb9009aa0a5b59cf3a4a67e191e7e"
+      },
+      {
+        "path": "图片/jie_3shitu/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_02_正面游动_front.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:39bc8b88f49c5f2a5632a0146dbdcc4ffcddd3405932f24f16e61f363bff6037"
+      },
+      {
+        "path": "图片/jie_3shitu/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_03_背面游动_back.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7458efebcd91ba6aea03cdd8fd6ca7b7882b8b088dff1e88ca9086b0037adbdc"
+      },
+      {
+        "path": "图片/jie_3shitu/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_3views_sheet_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1534223383af2e7fe2694406e0ec798151e3c8f71c91e19a2e3256af7a6a876b"
+      },
+      {
+        "path": "图片/jie_3shitu/61d18c1950d7d488348f9d541849b398.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f78158b77ce567b1b181f9f2bf4a371233acb4d875f9ba8d8b65002b9e394fcd"
+      },
+      {
+        "path": "图片/jie_3shitu/8c6fece5847a666824c5b44cd7912cfa.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1efbb1fb9d5eb749f6143f720e055190fef47532752352d1f782c8ac6ee99723"
+      },
+      {
+        "path": "图片/jie_beijing/00_暮色带3x3九宫格无缝拼接总图_4128x2304.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:594f0600774b95a2bb3ecebcc12545ecb49c6c49e738e9c95e887deaf3bfa56d"
+      },
+      {
+        "path": "图片/jie_beijing/01_左上_西北沉船锚链悬崖与微光溶洞顶_top_left_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ea99657209fcd4089f673061afcd74639005856899f7bb30ab685d685ff1ddd5"
+      },
+      {
+        "path": "图片/jie_beijing/02_中上_暮色带微光珊瑚悬崖_top_center_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b6aacfedd086f2975f0e56aadfa72b3ab29594f615fa036caf90072090d8d9cd"
+      },
+      {
+        "path": "图片/jie_beijing/03_右上_东北浮空遗迹钟楼与荧光藤蔓崖_top_right_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:03a5f2f8eb4818f68f9149e818aa662988d2dc8ef9c59ea49637a00607dabf9e"
+      },
+      {
+        "path": "图片/jie_beijing/04_左中_西侧古沉船与荧光溶洞_mid_left_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:117c9cd9a2c98467f68cd4023b9f47229c971d7fe4c50cfbf6746a17b66ceac0"
+      },
+      {
+        "path": "图片/jie_beijing/05_正中_暮色带核心海山交汇大殿_center_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2cf21b06811446df36c8e342dbeeebae8d1389ce9279288db73b03da35f4ffa6"
+      },
+      {
+        "path": "图片/jie_beijing/06_右中_东侧远古遗迹与荧光森林_mid_right_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:feaf80b2867fe34ad4154a8fe9d1f9db2f41dc308209d1e82baeee746b204ac3"
+      },
+      {
+        "path": "图片/jie_beijing/07_左下_西南沉船宝库深渊与紫晶矿脉_bottom_left_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c41502be4d89e28cb18b23063aa50c2211b21419e946a55fff5236fb860ec88b"
+      },
+      {
+        "path": "图片/jie_beijing/08_中下_暮色带幽光晶洞深谷_bottom_center_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1084cd0443ec363eea761a68ea269e1dc60c002d62d803ab43974d47241326cf"
+      },
+      {
+        "path": "图片/jie_beijing/09_右下_东南远古祭坛地宫与发光蘑菇晶窟_bottom_right_16x9.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4599729d3139239baa0642333cb080aa87ebae05d09e6867a232bd5b4855f205"
+      },
+      {
+        "path": "图片/jie_youdong/00_10种鱼4帧游动总表_master_10x4_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:94935e4a40b2eaeea07ea94a7a7137956829bb2865ed7ae3e82cc951ee9c830d"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/01_最多的鱼_灯笼鱼_lanternfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ea3178ea2ec2b44fa5d99448706b6eb4180f24edf8d4e7868655c8d74278d0a2"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/02_最多的鱼_钻光鱼_bristlemouth_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:066803570a360bbcad692910bedabfad3820ea3ec86916bef6f3acba16d548a1"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/03_最强的鱼_大眼金枪鱼_bigeye_tuna_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:08174b948c18ad56d0c86f0730e6f3550a27d16ec610aa87279024ee395e8b85"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/04_最强的鱼_巨口鱼_viperfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b7cd2c7bd2e600e9ba7349a1f6651fc3a2a57a4dd2367e5451b327d7c5f3abea"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/05_最快的鱼_旗鱼_sailfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c5beec5bd77ee88225b5cceac3cea2d3387756c686b43e431e27d318a592e747"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/06_最快的鱼_剑鱼_swordfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6a45c47e03dce28b39d35483d75626698a8820008484d034e92d98e5cbe7123e"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/07_最大的鱼_鲸鲨_whale_shark_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6546f3d2bfd758ff692024e8dc42e1909c96cb3d19a629fa3a1ccb5260c77af7"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7084accf53ff95a6aa62495fe33438e0d97807d7747fc0a309bfa8bc9501903f"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/09_放电的鱼_电鳐_electric_ray_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:33e9d1cdd590c73e4f0885e88633684e320953461b5dba3ca1edc248606443c4"
+      },
+      {
+        "path": "图片/jie_youdong/00_全部10条横向序列帧合集/10_隐藏的鱼_桶眼鱼_barreleye_fish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7b59ca633963e2d0841009d1ea936e85b3a688bef8beaf47bac312322001f545"
+      },
+      {
+        "path": "图片/jie_youdong/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ea3178ea2ec2b44fa5d99448706b6eb4180f24edf8d4e7868655c8d74278d0a2"
+      },
+      {
+        "path": "图片/jie_youdong/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0160c55209e8e5dc5822d56f91d9b1f97c0e14acc13d84ea2fb17ad42f0c71c7"
+      },
+      {
+        "path": "图片/jie_youdong/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ef3a09916fe3bf97649cf44025be4b78323997e0a281f3f0ecb8fe5ae1945d6e"
+      },
+      {
+        "path": "图片/jie_youdong/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:aa198f29968e5fd693730ef03204f197f28594091219992c8929448621e12e31"
+      },
+      {
+        "path": "图片/jie_youdong/01_最多的鱼_灯笼鱼_lanternfish/01_最多的鱼_灯笼鱼_lanternfish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:130aa580088da3a3b7b12c7dfebbbbeea3c84205ef383b73061aa6feb7a4e067"
+      },
+      {
+        "path": "图片/jie_youdong/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:066803570a360bbcad692910bedabfad3820ea3ec86916bef6f3acba16d548a1"
+      },
+      {
+        "path": "图片/jie_youdong/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9337034fc4161510d0d44acb8db49b928e73fcd4df8fac2e901216c472ac32be"
+      },
+      {
+        "path": "图片/jie_youdong/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:84a8d55d99280cc3c4d143cad80af7d8d40d8c05c5225eda62e0a707b269a1d0"
+      },
+      {
+        "path": "图片/jie_youdong/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ccf04f02e26777b44075cfb745e1267607b66d600bc5ed1451af0dc807ce1468"
+      },
+      {
+        "path": "图片/jie_youdong/02_最多的鱼_钻光鱼_bristlemouth/02_最多的鱼_钻光鱼_bristlemouth_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:65a3cd85a6a4816b18406c968a028d8ec45a499b2d917146fba54dc87b8672de"
+      },
+      {
+        "path": "图片/jie_youdong/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:08174b948c18ad56d0c86f0730e6f3550a27d16ec610aa87279024ee395e8b85"
+      },
+      {
+        "path": "图片/jie_youdong/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f327801ad61a25dab8c1b93958753108f2ab947689fdf9dc77adfaddb4c5dae8"
+      },
+      {
+        "path": "图片/jie_youdong/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1039344726d22badd734d4fc3bb36c8bdc96509575dff5d52523c22f20bce538"
+      },
+      {
+        "path": "图片/jie_youdong/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:26c17ab3fadcc04324eb2159872ef02ea49e14e54862ad97b9b38847f5a2cb9f"
+      },
+      {
+        "path": "图片/jie_youdong/03_最强的鱼_大眼金枪鱼_bigeye_tuna/03_最强的鱼_大眼金枪鱼_bigeye_tuna_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1039344726d22badd734d4fc3bb36c8bdc96509575dff5d52523c22f20bce538"
+      },
+      {
+        "path": "图片/jie_youdong/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b7cd2c7bd2e600e9ba7349a1f6651fc3a2a57a4dd2367e5451b327d7c5f3abea"
+      },
+      {
+        "path": "图片/jie_youdong/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:03913efb0dead6151e6c92bed1b365323d6dbc1ead18f0605dbb7cc421428374"
+      },
+      {
+        "path": "图片/jie_youdong/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1cfeaff25060dbb6baead40c633e5df86767a7223727fc25210b0f435eab1207"
+      },
+      {
+        "path": "图片/jie_youdong/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:48316a428f57da962c6de49afbdc83a8b1f9cad1b5f46ae2909b0214baaa686f"
+      },
+      {
+        "path": "图片/jie_youdong/04_最强的鱼_巨口鱼_viperfish/04_最强的鱼_巨口鱼_viperfish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8e8bc6987f67a1e1548d2795154cf09ef70e92ecf7f0ccf49b9f45f881ea5143"
+      },
+      {
+        "path": "图片/jie_youdong/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c5beec5bd77ee88225b5cceac3cea2d3387756c686b43e431e27d318a592e747"
+      },
+      {
+        "path": "图片/jie_youdong/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ea4879dd7dfa89f337cdb091c2d74a25d463e58ba7fa3022d79569711ecea485"
+      },
+      {
+        "path": "图片/jie_youdong/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a6de0e810308e8e3d613dcf0e62bb05f978b65c6baf866067f3f12c43c870264"
+      },
+      {
+        "path": "图片/jie_youdong/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1ba2b0320ea6ef82bcbb8386b056492672e6f0471d5146c5d62183f20024d1cf"
+      },
+      {
+        "path": "图片/jie_youdong/05_最快的鱼_旗鱼_sailfish/05_最快的鱼_旗鱼_sailfish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7042ab31c5fe8e4e4dfaa7b14c7df19d2a4954efaae22120e5316fc171166619"
+      },
+      {
+        "path": "图片/jie_youdong/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6a45c47e03dce28b39d35483d75626698a8820008484d034e92d98e5cbe7123e"
+      },
+      {
+        "path": "图片/jie_youdong/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5d6f2f34572f576562bb1b731ec2738cf6f173c8be8a38e3d67e722c2abb9bf2"
+      },
+      {
+        "path": "图片/jie_youdong/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:860ebc02aabaf75e01a0604016cabb49bde8aa7fc889bf89eae0e07321318a22"
+      },
+      {
+        "path": "图片/jie_youdong/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1df6fc13787ef533fe3879a3b8732a9078985cc2481e12d489627596aa6578c9"
+      },
+      {
+        "path": "图片/jie_youdong/06_最快的鱼_剑鱼_swordfish/06_最快的鱼_剑鱼_swordfish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:520654fc0cf88e530ad6d0d82d4fb78d7e909f32587189fcee93302d18cc053a"
+      },
+      {
+        "path": "图片/jie_youdong/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6546f3d2bfd758ff692024e8dc42e1909c96cb3d19a629fa3a1ccb5260c77af7"
+      },
+      {
+        "path": "图片/jie_youdong/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8e9850c9fcad464714935abc273aad5c29f43b8785f9dd030bfd3d00e54ea1b1"
+      },
+      {
+        "path": "图片/jie_youdong/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f7db2e2ef9b7a2f83b3909a3e35600942f6d9bbdc3627155a9c777e7cb714f00"
+      },
+      {
+        "path": "图片/jie_youdong/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:daaa02880e012876e0947dffa614b9e9e7c8629d372ae9dd800edfc4b3b2342b"
+      },
+      {
+        "path": "图片/jie_youdong/07_最大的鱼_鲸鲨_whale_shark/07_最大的鱼_鲸鲨_whale_shark_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3fd3439b594bba6f839b9d6ad5b5dc1f679ccc88611f1b6bbd10488fa24bf044"
+      },
+      {
+        "path": "图片/jie_youdong/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7084accf53ff95a6aa62495fe33438e0d97807d7747fc0a309bfa8bc9501903f"
+      },
+      {
+        "path": "图片/jie_youdong/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2838826c7e43245042bd049aa4f363ff8c9456bd67a76184792b287cf1cf3a2f"
+      },
+      {
+        "path": "图片/jie_youdong/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:25d43c517fba1c4c283d78efb59630d615cba20246ccfbfb4a0fa481bd765e65"
+      },
+      {
+        "path": "图片/jie_youdong/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:70d20518a623075b9283a17996561a422d85c0a29f8f2cadd12fc0cfc5b9138e"
+      },
+      {
+        "path": "图片/jie_youdong/08_有毒的鱼_蓑鲉_狮子鱼_lionfish/08_有毒的鱼_蓑鲉_狮子鱼_lionfish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a56bcaa278e830c5a2756c8bcd1d1fdf6356d9cf9e8a1123cc303d386e070298"
+      },
+      {
+        "path": "图片/jie_youdong/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:33e9d1cdd590c73e4f0885e88633684e320953461b5dba3ca1edc248606443c4"
+      },
+      {
+        "path": "图片/jie_youdong/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b836e11407e97953010097e7f719200f878228d5aa07caf33928756fb131f1c"
+      },
+      {
+        "path": "图片/jie_youdong/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:723b4d4ea3995b2f5de67df2a3fab189690e5f99cb8b9befea554d435bcb389a"
+      },
+      {
+        "path": "图片/jie_youdong/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:997af33c654a9749bf1781b7ac724d58ffa87b6cf07a4d2447008e53e10f679b"
+      },
+      {
+        "path": "图片/jie_youdong/09_放电的鱼_电鳐_electric_ray/09_放电的鱼_电鳐_electric_ray_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fe0940a0574119885b6e2d33c3a321f9ac87162010d8871f4e7350dc7be76625"
+      },
+      {
+        "path": "图片/jie_youdong/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_4frame_strip_transparent.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7b59ca633963e2d0841009d1ea936e85b3a688bef8beaf47bac312322001f545"
+      },
+      {
+        "path": "图片/jie_youdong/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_frame_01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f8154c88dcffa9f3af14cd0d03465199ec24254de88c87c2283470a596a3a5e9"
+      },
+      {
+        "path": "图片/jie_youdong/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_frame_02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1d6ee8a9ec63dbf2857818e66dc2cae918fe8a8bb450b4f887d081c384e84093"
+      },
+      {
+        "path": "图片/jie_youdong/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_frame_03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a33e7ebef70e7a59f6ec0ec6c05d6abd76d6efb0aa0a44974e1816c2e7e3540e"
+      },
+      {
+        "path": "图片/jie_youdong/10_隐藏的鱼_桶眼鱼_barreleye_fish/10_隐藏的鱼_桶眼鱼_barreleye_fish_frame_04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dd5067d5dcaeb51924e87edbc0e1abdace740c0667794baa91aca209232f3a7f"
+      },
+      {
+        "path": "图片/人类/065a4b33ce8812dc1fed0297efebf95a.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f47898a9bddefa6d39303049979e021d67bf308c769b4a7e68f4beff8553a87c"
+      },
+      {
+        "path": "图片/人类/43f870cb02df986568f3daa3afcad4e4.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f074905117f8c4485dccbbc554514f190672f9a42f1afe0897b392e57abd840b"
+      },
+      {
+        "path": "图片/人类/6f0b77b03c28e489dbb6ddbe0189ca8c.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:aef7f2cc9d7b0008a7723a08e47b1fd617cf1b01c69270f2ebd1238e16621967"
+      },
+      {
+        "path": "图片/人类/da398fa9ff55a689e72c071da0a4e945.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3475c5d2d3712fae09d90bc71c3413f6441925ee11bb84d7392effb9c2cb26ee"
+      },
+      {
+        "path": "图片/海草.zip",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:53d3bbf54ec6e16301b1c88a249d4ffca1472df76e9ffbc6ac5e59e749a79b19"
+      },
+      {
+        "path": "图片/游动4帧图.zip",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a06a8622a1945db5930648f89dc7191599d8fd86f35c332af047c31e35d070d4"
+      },
+      {
+        "path": "图片/珊瑚.zip",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4273ec46ef5954ba56e7c6d599a47b63ac51f46f31f54105df321725949a41de"
+      },
+      {
+        "path": "图片/背景.zip",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d74ee98c1dd5f9c0b3010b9e62b1d4e6961ad38d450a86dc36789a140625a578"
+      },
+      {
+        "path": "图片/鱼肉.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bd8e9c8c97ba04ca9d71492fcc34044ac89e7e1fe6ed9e674085990d44e56614"
+      }
+    ]
+  },
+  "last_verified_commit": null,
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/xing_tai.gd",
+        "scripts/xing_tai.gd.uid",
+        "data/xingtai/deng_long_yu.tres",
+        "data/xingtai/dian_yao.tres",
+        "data/xingtai/qi_yu.tres",
+        "data/donghua/dian_yao_1zhen.tres",
+        "data/donghua/qi_yu_1zhen.tres",
+        "tests/huai_xing_tai.tres",
+        "tests/ce_shu_ju.gd"
+      ],
+      "check_results": [
+        "ce_shu_ju：83 passed, 0 failed；3 形态字段/唯一 id/阈值 0·1·2/动画 you/初始能力映射/数值全部通过",
+        "ce_shu_ju：坏形态红测 ×5 全部命中（负速度/空 id/缺动画/初始被动）",
+        "ce_shu_ju：run/main_scene = XingTaiXuanZe.tscn、autoload/CunDang = *res://scripts/cun_dang.gd"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/cun_dang.gd",
+        "scripts/cun_dang.gd.uid",
+        "tests/ce_jie_suo.gd",
+        "tests/ce_jie_suo.gd.uid",
+        "tests/pao_pi.bat"
+      ],
+      "check_results": [
+        "ce_jie_suo：58 passed, 0 failed；默认/首胜/第二胜/第三胜、提示只消费一次、选择/未解锁选择、调试解锁/清空全部通过",
+        "ce_jie_suo：坏 JSON/非 Dictionary/版本不符/负胜场/浮点胜场/字符串胜场/未知形态/未解锁形态/非字符串当前形态全部回退默认且不覆盖原文件",
+        "pao_pi.bat：扩为八步，ce_jie_suo 为第 7 步"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/main.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_bian_jie.gd"
+      ],
+      "check_results": [
+        "ce_zhang_ben：131 passed, 0 failed；电鳐 Lv.1/体型 2.0/初始放电/历史 1 条、幂等、保留形态重开、纯复位清形态、开局不触发升级",
+        "ce_bian_jie：24 passed, 0 failed；脏形态后 chong_zhi 恢复默认并解除幂等锁",
+        "Main 无头 900 帧退出码 0，输出无 ERROR"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "scenes/XingTaiXuanZe.tscn",
+        "scripts/xing_tai_xuan_ze.gd",
+        "scripts/xing_tai_xuan_ze.gd.uid",
+        "scenes/JieSuan.tscn",
+        "scripts/jie_suan.gd",
+        "project.godot",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        "ce_panding：225 passed, 0 failed；形态数值/单帧动画、第二个 Yu 的 _ready 自动应用、选择页 0 胜 2 锁与 2 胜 0 锁、胜利写档、结算提示消费、YuNpc 离树 _process 回归、死亡用例最后",
+        "XingTaiXuanZe 无头 120 帧退出码 0，输出无 ERROR",
+        "JieSuan 无头 60 帧退出码 0，输出无 ERROR"
+      ],
+      "next_action": "无"
+    },
+    {
+      "step_id": "step-05",
+      "implementation_status": "complete",
+      "verification_status": "complete",
+      "participation_status": "pending",
+      "changed_files": [
+        "docs/TASK_INDEX.md",
+        "LEARNING_ROADMAP.md",
+        "docs/CHONG_GOU_LU_XIAN.md",
+        "docs/引擎词总表.md",
+        "Godot引擎词总表.docx",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/IMPLEMENTATION_REPORT.md",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/VERIFICATION_REPORT.md",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/CODE_REVIEW.md",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/INTEGRATION_HANDOFF.md",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/LEARNING_RECORD.md",
+        "docs/development_tasks/TASK-018_ju_wai_xing_tai/TASK_STATE.json",
+        "scenes/QiangHuaDanChuang.tscn（删除，TASK-014 遗留清理）",
+        "scripts/yu_npc.gd（离树 _process / 视口读取保护）"
+      ],
+      "check_results": [
+        "八步门禁：131/24/83/8/11/58/225 = 540 断言全绿，无 ERROR",
+        "Main 900 帧 / XingTaiXuanZe 120 帧 / JieSuan 60 帧冒烟退出码 0、无 ERROR",
+        "负速度红测：改负后 ce_shu_ju 81 passed 2 failed 退出码 1，恢复后 83 passed 0 failed",
+        "TASK-014 遗留清理：删除 scenes/QiangHuaDanChuang.tscn 并清理 .godot/editor 后，--import 0 ERROR，八步门禁复跑全绿（Boss 回归后 540 断言），Main / 选择页冒烟 0 ERROR",
+        "Boss 报错修复：死亡切场景时旧 YuNpc 离树后仍被 _process 一帧，get_viewport_rect/get_camera_2d 报错；加离树 guard 后 ce_panding 225 断言全绿、无 ERROR",
+        "文档与 docx 已同步；validate_task.py = VALID；check_task_scope.py check = 40 allowed / 196 unchanged pre-existing / 0 violation；docx 170 章节 / 144 表格"
+      ],
+      "next_action": "等待用户 F5 手测与学习验收；随后复跑 validate_task.py 与 check_task_scope.py check；不 commit / 不 push"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-10-30T07:21:09Z",
+    "exact_user_text": "确认 TASK-018 v1 进入开发"
+  },
+  "capability_decisions": {
+    "superpowers": "unavailable",
+    "godot_skill": "available",
+    "code_review": "not_needed"
+  }
+}

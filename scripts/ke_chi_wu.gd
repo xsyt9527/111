@@ -11,6 +11,7 @@ const HONG_GUANG_BEICHENG := 1.55   # 红光层比本体大 55%：贴图外露�
 var ke_chi := false  # 是否能被吃：子类自己决定何时翻真/翻假
 var jing_yan := 1    # 吃到的经验（玩家独享；NPC 只清场不加经验）
 var ji_e := 8.0      # 吃到的饥饿（玩家独享；植物/鱼肉在生成时覆写）
+var ti_xing_liang := 0.0  # 吃到的体型量：鱼肉按伤害折算，植物为 0（策划案 8.6.2：只有鱼/肉回体型）
 
 var _hong_guang: Sprite2D = null  # 红光层（子场景可选）：没有就跳过，不影响可食物契约
 var _wan_jia: Node2D = null       # 玩家（靠 player 组找）：没有玩家（测试场景）就不亮

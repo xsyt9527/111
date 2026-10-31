@@ -12,12 +12,14 @@ config_version=5
 
 config/name="深海食纪"
 config/description="肉鸽类大鱼吃小鱼：吃掉比你小的鱼，升级选强化，长成深海霸主。"
-run/main_scene="res://scenes/Main.tscn"
+run/main_scene="res://scenes/ZhuJieMian.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
 [autoload]
 
 ZhangBen="*res://scripts/zhang_ben.gd"
+CunDang="*res://scripts/cun_dang.gd"
+YinXiang="*res://scripts/yin_xiang.gd"
 
 [display]
 

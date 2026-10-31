@@ -1,0 +1,127 @@
+[gd_scene load_steps=30 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li_dan_chuang.gd" id="1_danchuang"]
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="2_nengli"]
+[ext_resource type="Resource" path="res://data/nengli/fang_dian_ma_bi.tres" id="3_fangdian"]
+[ext_resource type="Resource" path="res://data/nengli/du_ji_hu_ti.tres" id="4_duji"]
+[ext_resource type="Resource" path="res://data/nengli/ji_su_tu_jin.tres" id="5_jisu"]
+[ext_resource type="Resource" path="res://data/nengli/man_li_chong_zhuang.tres" id="6_manli"]
+[ext_resource type="Resource" path="res://data/nengli/qian_fu_tu_xi.tres" id="7_qianfu"]
+[ext_resource type="Resource" path="res://data/nengli/yu_lei_chong_ci.tres" id="8_yulei"]
+[ext_resource type="Resource" path="res://data/nengli/ni_liu_shan_bi.tres" id="9_niliu"]
+[ext_resource type="Resource" path="res://data/nengli/xuan_wo.tres" id="10_xuanwo"]
+[ext_resource type="Resource" path="res://data/nengli/yu_ni_dan.tres" id="11_yuni"]
+[ext_resource type="Resource" path="res://data/nengli/kuang_bao_si_yao.tres" id="12_kuangbao"]
+[ext_resource type="Resource" path="res://data/nengli/sheng_na_mai_chong.tres" id="13_shengna"]
+[ext_resource type="Resource" path="res://data/nengli/si_lie_chi.tres" id="14_silie"]
+[ext_resource type="Resource" path="res://data/nengli/du_xian.tres" id="15_duxian"]
+[ext_resource type="Resource" path="res://data/nengli/bao_shi_lian_suo.tres" id="16_baoshi"]
+[ext_resource type="Resource" path="res://data/nengli/ruan_lin.tres" id="17_ruanlin"]
+[ext_resource type="Resource" path="res://data/nengli/dian_gan_shou_qi.tres" id="18_diangan"]
+[ext_resource type="Resource" path="res://data/nengli/ying_lin_fan_ji.tres" id="19_yinglin"]
+[ext_resource type="Resource" path="res://data/nengli/ling_min_wei_qi.tres" id="20_weiqi"]
+[ext_resource type="Resource" path="res://data/nengli/lie_shou_zhi_jue.tres" id="21_lieshou"]
+[ext_resource type="Resource" path="res://data/nengli/shen_shang_xian.tres" id="22_shenshang"]
+[ext_resource type="Resource" path="res://data/nengli/da_wei_wang.tres" id="23_dawei"]
+[ext_resource type="Resource" path="res://data/nengli/tan_shi_hui_fu.tres" id="24_tanshi"]
+[ext_resource type="Resource" path="res://data/nengli/shi_fu_zhe.tres" id="25_shifu"]
+[ext_resource type="Resource" path="res://data/nengli/ji_e_nai_shou.tres" id="26_jiena"]
+[ext_resource type="Resource" path="res://data/nengli/yin_ni_qi_xi.tres" id="27_yinni"]
+
+[node name="NengLiDanChuang" type="CanvasLayer"]
+layer = 100
+process_mode = 3
+script = ExtResource("1_danchuang")
+neng_li_zu = Array[ExtResource("2_nengli")]([ExtResource("3_fangdian"), ExtResource("4_duji"), ExtResource("5_jisu"), ExtResource("6_manli"), ExtResource("7_qianfu"), ExtResource("8_yulei"), ExtResource("9_niliu"), ExtResource("10_xuanwo"), ExtResource("11_yuni"), ExtResource("12_kuangbao"), ExtResource("13_shengna"), ExtResource("14_silie"), ExtResource("15_duxian"), ExtResource("16_baoshi"), ExtResource("17_ruanlin"), ExtResource("18_diangan"), ExtResource("19_yinglin"), ExtResource("20_weiqi"), ExtResource("21_lieshou"), ExtResource("22_shenshang"), ExtResource("23_dawei"), ExtResource("24_tanshi"), ExtResource("25_shifu"), ExtResource("26_jiena"), ExtResource("27_yinni")])
+
+[node name="BanDi" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="BiaoTi" type="Label" parent="."]
+offset_left = 440.0
+offset_top = 86.0
+offset_right = 840.0
+offset_bottom = 156.0
+theme_override_font_sizes/font_size = 48
+text = "选一个能力！"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TiShi" type="Label" parent="."]
+offset_left = 240.0
+offset_top = 160.0
+offset_right = 1040.0
+offset_bottom = 194.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 0.95)
+theme_override_font_sizes/font_size = 20
+text = "本局还没吃过带能力的鱼"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="KaPianZu" type="HBoxContainer" parent="."]
+offset_left = 190.0
+offset_top = 216.0
+offset_right = 1090.0
+offset_bottom = 600.0
+theme_override_constants/separation = 40
+
+[node name="Ka1" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(260, 360)
+
+[node name="KaZhong1" type="VBoxContainer" parent="KaPianZu/Ka1"]
+theme_override_constants/separation = 16
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka1/KaZhong1"]
+custom_minimum_size = Vector2(240, 120)
+focus_mode = 0
+theme_override_font_sizes/font_size = 34
+text = "能力名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka1/KaZhong1"]
+custom_minimum_size = Vector2(240, 210)
+theme_override_font_sizes/font_size = 18
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Ka2" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(260, 360)
+
+[node name="KaZhong2" type="VBoxContainer" parent="KaPianZu/Ka2"]
+theme_override_constants/separation = 16
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka2/KaZhong2"]
+custom_minimum_size = Vector2(240, 120)
+focus_mode = 0
+theme_override_font_sizes/font_size = 34
+text = "能力名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka2/KaZhong2"]
+custom_minimum_size = Vector2(240, 210)
+theme_override_font_sizes/font_size = 18
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Ka3" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(260, 360)
+
+[node name="KaZhong3" type="VBoxContainer" parent="KaPianZu/Ka3"]
+theme_override_constants/separation = 16
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka3/KaZhong3"]
+custom_minimum_size = Vector2(240, 120)
+focus_mode = 0
+theme_override_font_sizes/font_size = 34
+text = "能力名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka3/KaZhong3"]
+custom_minimum_size = Vector2(240, 210)
+theme_override_font_sizes/font_size = 18
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 2

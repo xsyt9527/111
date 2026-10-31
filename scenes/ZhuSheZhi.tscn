@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/zhu_she_zhi.gd" id="1_zhushezhi"]
+
+[node name="ZhuSheZhi" type="CanvasLayer"]
+layer = 99
+script = ExtResource("1_zhushezhi")
+
+[node name="SheZhiMianBan" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -140.0
+offset_right = 190.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MianBanLie" type="VBoxContainer" parent="SheZhiMianBan"]
+theme_override_constants/separation = 12
+
+[node name="MianBanBiaoTi" type="Label" parent="SheZhiMianBan/MianBanLie"]
+theme_override_font_sizes/font_size = 24
+text = "设置"
+horizontal_alignment = 1
+
+[node name="YinXiaoLie" type="HBoxContainer" parent="SheZhiMianBan/MianBanLie"]
+theme_override_constants/separation = 10
+
+[node name="YinXiaoBiao" type="Label" parent="SheZhiMianBan/MianBanLie/YinXiaoLie"]
+custom_minimum_size = Vector2(64, 0)
+theme_override_font_sizes/font_size = 18
+text = "音效"
+
+[node name="YinXiaoHua" type="HSlider" parent="SheZhiMianBan/MianBanLie/YinXiaoLie"]
+custom_minimum_size = Vector2(0, 30)
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="BgmLie" type="HBoxContainer" parent="SheZhiMianBan/MianBanLie"]
+theme_override_constants/separation = 10
+
+[node name="BgmBiao" type="Label" parent="SheZhiMianBan/MianBanLie/BgmLie"]
+custom_minimum_size = Vector2(64, 0)
+theme_override_font_sizes/font_size = 18
+text = "音乐"
+
+[node name="BgmHua" type="HSlider" parent="SheZhiMianBan/MianBanLie/BgmLie"]
+custom_minimum_size = Vector2(0, 30)
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="YaoGanAnNiu" type="Button" parent="SheZhiMianBan/MianBanLie"]
+custom_minimum_size = Vector2(0, 46)
+theme_override_font_sizes/font_size = 18
+text = "摇杆位置：左下"
+
+[node name="GuanBi" type="Button" parent="SheZhiMianBan/MianBanLie"]
+custom_minimum_size = Vector2(0, 46)
+theme_override_font_sizes/font_size = 18
+text = "关闭"

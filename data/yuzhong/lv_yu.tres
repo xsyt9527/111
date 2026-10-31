@@ -1,11 +1,16 @@
-[gd_resource type="Resource" script_class="YuZhong" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="YuZhong" load_steps=5 format=3]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
 [ext_resource type="Texture2D" uid="uid://x4tfqjxw8c2b" path="res://assets/sucai/shenhai_yu/dian_yao.png" id="2_tie_tu"]
+[ext_resource type="Resource" path="res://data/nengli/fang_dian_ma_bi.tres" id="3_neng_li"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/dian_yao_4zhen.tres" id="9_dong_hua"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
 dengji = 3
+fan_ying_shi_jian = 0.6
 fenzhi = 2
 sudu_fanwei = Vector2(70, 110)
 tie_tu = ExtResource("2_tie_tu")
+dong_hua = ExtResource("9_dong_hua")
+neng_li = ExtResource("3_neng_li")
