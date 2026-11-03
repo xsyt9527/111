@@ -7,6 +7,7 @@ enum LeiXing { ZHU_DONG, BEI_DONG }  # 主动 / 被动
 
 @export var bian_hao: StringName = &""  # 唯一键：账本计数、鱼种映射、技能分派都靠它
 @export var ming_zi := ""  # 显示名（技能按钮/卡面大字）
+@export var tu_biao: Texture2D = null  # 技能图标（Icon）；为空时 UI 回退纯文字，旧数据不用一次补齐
 @export var miao_shu := ""  # 一句话说明（卡面小字）
 @export var lai_yuan := ""  # 来源鱼名（只用于卡面显示，不参与逻辑）
 @export var lei_xing := LeiXing.ZHU_DONG  # 主动（占唯一技能槽）/ 被动（可叠层）

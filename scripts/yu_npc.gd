@@ -28,6 +28,8 @@ const BOOS_YAO_JI_JI_CHU := 55.0  # 首领咬击判定的基础半径：与玩�
 const TE_XIAO := preload("res://scripts/te_xiao.gd")  # 放电/中毒的一次性特效生成器
 const ROU_KUAI_CHANGJING := preload("res://scenes/RouKuai.tscn")  # 鱼肉块蓝图：撕裂齿咬掉肉用
 const MEI_KUAI_ROU_TI_XING := 0.5  # 每块鱼肉默认携带的体型量（撕裂齿不传量时的兜底）
+const TUN_SHI_JIAN_GE := 0.3  # 首领吞食检查间隔（秒）：与思考间隔同量级，不逐帧扫组
+const SHENG_JI_BIAO := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级曲线参数：与玩家同表，改表两边同步
 
 enum ZhuangTai { YOU_DANG, ZHUI_ZHU, TAO_PAO }  # 巡游 / 追击 / 逃跑
 
@@ -36,6 +38,8 @@ signal bei_ji_bai  # 首领被咬到残血：Main 据此触发「提前开战」
 var yu_zhong: YuZhong  # 鱼种数据（生成器在 add_child 前注入；_ready 里读它）
 var _neng_li: NengLi = null  # 鱼种能力（只读引用）：电鳐放电/蓑鲉反毒都从这里查数值
 var tixing := 1.0  # 体型=当前血量：被咬会变小，被吃归零
+var deng_ji_nei := 1  # 隐藏等级（经验曲线索引，只涨不降）：被咬掉 tixing 不倒扣经验进度
+var jing_yan_nei := 0  # 隐藏经验条：玩家看不见；吃东西涨，涨满升级=体型 +1（v0.4 生态三件套）
 var sudu := 100.0  # 游速（像素/秒），由生成器写入
 var fangxiang := -1.0  # 1 向右，-1 向左，由生成器写入
 var bei_xi: Yu = null  # 吸附目标（玩家 ChiQu 打的标记）：非空 = 被吸中，朝它游
@@ -66,10 +70,14 @@ var _yan_se_tween: Tween
 var _yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时不动、不咬、不吃
 var _kong_zhi_shi_jian := 0.0  # 失控累计时间（驱动抽搐表现）
 var _dian_ji_ji_shi := 0.0  # 电鳐放电倒计时
-var _neng_li_leng_que := 0.0  # 能力冷却（旗鱼突进/金枪鱼冲撞/巨口鱼潜伏共用）
+var _neng_li_leng_que := 0.0  # 能力冷却（旗鱼突进/金枪鱼洞察/巨口鱼潜伏共用）
+var _ruo_dian_sheng_yu := 0.0  # 弱点洞察剩余（秒）：NPC 金枪鱼咬玩家时加伤
+var _ruo_dian_bei_lv := 1.0  # 弱点洞察加伤倍率（起手时按能力表读）
+var _deng_ji_sheng_yu := 0.0  # 等级数字标记剩余（秒）：玩家看穿这条鱼
+var _deng_ji_biao: Label = null  # 等级数字标记（懒创建：被锁定时才 new）
 var _tu_jin_sheng_yu := 0.0  # 旗鱼突进剩余（秒）
 var _tu_jin_fang := Vector2.ZERO  # 突进锁定方向
-var _chong_zhuang_sheng_yu := 0.0  # 金枪鱼冲撞剩余（秒）
+var _chong_zhuang_sheng_yu := 0.0  # 冲撞剩余（秒）：剑鱼穿刺/通用蛮力冲撞共用
 var _chong_zhuang_fang := Vector2.ZERO  # 冲撞锁定方向
 var _chong_zhuang_ming_zhong := {}  # 冲撞去重：instance_id -> true
 var _yin_shen_sheng_yu := 0.0  # 巨口鱼潜伏剩余（秒）
@@ -80,6 +88,7 @@ var _boos_leng_que_ji_shi := 0.0  # 首领追击冷却（秒）
 var _xun_luo_suo_yin := 0  # 当前巡逻目标下标
 var _xun_luo_ting_liu := 0.0  # 在巡逻点停留剩余（秒）
 var _gao_liang_sheng_yu := 0.0  # 声呐/猎手直觉高亮剩余（秒）：泛黄显示，纯表现
+var _tun_shi_ji_shi := 0.0  # 首领吞食检查节流计时（秒）
 
 @onready var rou_qu: Area2D = $RouQu  # 鱼肉区：NPC 也能吃鱼肉（策划案 8.1「任何鱼可进食」）
 
@@ -87,6 +96,7 @@ var _gao_liang_sheng_yu := 0.0  # 声呐/猎手直觉高亮剩余（秒）：泛
 func _ready() -> void:
 	# 体型直接取鱼种等级：同种鱼不再随机大小，玩家一眼能判断吃不吃得下
 	tixing = float(yu_zhong.dengji) if yu_zhong != null else 1.0
+	deng_ji_nei = yu_zhong.dengji if yu_zhong != null else 1  # 隐藏等级从鱼种等级起跳
 	if yu_zhong != null:
 		gan_zhi = yu_zhong.gan_zhi
 		fan_ying_shi_jian = yu_zhong.fan_ying_shi_jian
@@ -164,7 +174,7 @@ func _process(delta: float) -> void:
 	elif _tu_jin_sheng_yu > 0.0:
 		_tu_jin(delta)  # 旗鱼突进：直线冲刺，够近就咬
 	elif _chong_zhuang_sheng_yu > 0.0:
-		_chong_zhuang_npc(delta)  # 金枪鱼冲撞：直线冲，每目标一次伤害
+		_chong_zhuang_npc(delta)  # 直线冲撞（剑鱼穿刺/蛮力冲撞共用）：每目标一次伤害
 	else:
 		_si_kao_ji_shi += delta
 		if _si_kao_ji_shi >= SI_KAO_JIAN_GE:
@@ -247,7 +257,7 @@ func _xing_dong(delta: float) -> void:
 		_you_dang(delta)
 		return
 	if _chang_shi_neng_li():
-		return  # 旗鱼/金枪鱼：本帧启动突进/冲撞，位移交给专用分支
+		return  # 旗鱼突进 / 剑鱼穿刺：本帧启动位移，交给专用分支
 	var cha: Vector2 = _mu_biao.global_position - global_position
 	var ju_li := cha.length()
 	# 玩家永远不整吞：玩家是体验核心，只吃咬击的消耗（策划案 8.6.3）
@@ -267,7 +277,8 @@ func _xing_dong(delta: float) -> void:
 
 
 func _chang_shi_neng_li() -> bool:
-	# 普通鱼能力起手：旗鱼突进/金枪鱼冲撞返回 true（本帧不再走常规移动）
+	# 普通鱼能力起手：旗鱼突进/剑鱼穿刺返回 true（本帧不再走常规移动）
+	# 金枪鱼洞察返回 false：只挂加伤，移动仍走常规追击
 	# 巨口鱼潜伏返回 false：隐身之后继续正常追击，下一口才爆发
 	if _neng_li == null or _neng_li_leng_que > 0.0:
 		return false
@@ -283,9 +294,19 @@ func _chang_shi_neng_li() -> bool:
 			if ju <= _neng_li.ban_jing:
 				_qi_dong_chong_zhuang()
 				return true
+		&"chang_mao_chuan_ci":
+			if ju <= _neng_li.ban_jing:
+				_qi_dong_chong_zhuang()  # 剑鱼穿刺与蛮力冲撞同构：直线冲 + 路径穿透；数值各看各的表
+				return true
 		&"qian_fu_tu_xi":
 			if ju > _yao_ji_ju_li() and ju <= dang_qian_gan_zhi() and _yin_shen_sheng_yu <= 0.0:
 				_qi_dong_yin_shen_npc()
+		&"ruo_dian_dong_cha":
+			# 弱点洞察：看见目标就锁定，接下来几秒咬它更痛；不改变移动，继续正常追击
+			if ju <= _neng_li.ban_jing and _ruo_dian_sheng_yu <= 0.0:
+				_ruo_dian_sheng_yu = maxf(0.01, _neng_li.chi_xu)
+				_ruo_dian_bei_lv = maxf(1.0, _neng_li.npc_zhi())
+				_neng_li_leng_que = _neng_li.npc_jian_ge if _neng_li.npc_jian_ge > 0.0 else 12.0
 	return false
 
 
@@ -313,7 +334,7 @@ func _tu_jin(delta: float) -> void:
 
 
 func _qi_dong_chong_zhuang() -> void:
-	# 金枪鱼冲撞：锁定方向，0.45 秒以 2.2 倍速直线冲；每目标只结算一次，不整吞
+	# 蛮力冲撞 / 剑鱼穿刺：锁定方向，以 fu_shu_zhi 倍速直线冲；每目标只结算一次，不整吞
 	_neng_li_leng_que = _neng_li.npc_jian_ge if _neng_li.npc_jian_ge > 0.0 else 7.0
 	_chong_zhuang_sheng_yu = maxf(0.01, _neng_li.chi_xu)
 	_chong_zhuang_fang = (_mu_biao.global_position - global_position).normalized()
@@ -379,9 +400,23 @@ func _geng_xin_neng_li(delta: float) -> void:
 		_yin_shen_sheng_yu = maxf(0.0, _yin_shen_sheng_yu - delta)
 		if _yin_shen_sheng_yu <= 0.0:
 			_jie_chu_yin_shen_npc()
+	if _ruo_dian_sheng_yu > 0.0:
+		_ruo_dian_sheng_yu = maxf(0.0, _ruo_dian_sheng_yu - delta)
+		if _ruo_dian_sheng_yu <= 0.0:
+			_ruo_dian_bei_lv = 1.0
+	if _deng_ji_sheng_yu > 0.0:
+		# 玩家看穿的等级数字：到期关掉；期间每帧刷新——目标被咬小后数字跟着变
+		_deng_ji_sheng_yu = maxf(0.0, _deng_ji_sheng_yu - delta)
+		if _deng_ji_biao != null and _deng_ji_biao.visible:
+			_deng_ji_biao.text = "Lv.%d" % int(tixing)
+		if _deng_ji_sheng_yu <= 0.0 and _deng_ji_biao != null:
+			_deng_ji_biao.visible = false
 
 
 func _tun_diao(mu) -> void:
+	# 吃 NPC 记隐藏经验（先记账再吞：经验取被吞方的鱼种分值）
+	if mu is YuNpc and mu.yu_zhong != null:
+		jia_jing_yan_nei(int(mu.yu_zhong.fenzhi))
 	mu.bei_chi(false, self)  # NPC 吃 NPC：不给玩家记经验（玩家没参与）；毒鱼照样毒到吃它的鱼
 	_mu_biao = null
 	zhuang_tai = ZhuangTai.YOU_DANG
@@ -450,10 +485,25 @@ func _yao(mu) -> void:
 	if _qian_fu_zhun_bei:
 		shang_hai *= _neng_li.shu_zhi  # 巨口鱼潜伏：下一口 ×2
 		_jie_chu_yin_shen_npc()
+	if _ruo_dian_sheng_yu > 0.0:
+		shang_hai *= _ruo_dian_bei_lv  # 弱点洞察：锁定期间咬得更痛
 	# 传来源：玩家毒棘护体 / NPC 蓑鲉反毒都靠它判断“谁咬了我”
 	if mu is Yu:
 		YinXiang.fang(&"yao", -4.0)  # 咬到玩家才出声：NPC 互咬一屏会太吵
 	mu.shou_dao_yao_ji(shang_hai, self)
+
+
+func xian_shi_deng_ji(shi_chang: float) -> void:
+	# 弱点洞察：头顶亮出等级数字（纯表现，不参与判定）
+	_deng_ji_sheng_yu = maxf(_deng_ji_sheng_yu, shi_chang)
+	if _deng_ji_biao == null:
+		_deng_ji_biao = Label.new()
+		_deng_ji_biao.position = Vector2(-26.0, -124.0)
+		_deng_ji_biao.add_theme_font_size_override("font_size", 24)
+		_deng_ji_biao.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
+		add_child(_deng_ji_biao)
+	_deng_ji_biao.text = "Lv.%d" % int(tixing)
+	_deng_ji_biao.visible = true
 
 
 func _xiang(fang: Vector2, delta: float) -> void:
@@ -468,6 +518,26 @@ func _xiang(fang: Vector2, delta: float) -> void:
 func _you_dang(delta: float) -> void:
 	position.x += fangxiang * sudu * delta
 	$AnimatedSprite2D.flip_h = fangxiang < 0.0  # 贴图默认朝右，向左游时翻转
+
+
+func jia_jing_yan_nei(fen: int) -> void:
+	# NPC 隐藏经验条（v0.4）：吃东西涨经验，涨满升级 = 体型 +1（视觉变大，顺带回 1 点血——
+	# 单值模型下「变大」与「不回血」不可兼得，拍板取变大：大鱼变强即压迫感）
+	# deng_ji_nei 只涨不降：被咬掉 tixing 不倒扣经验进度（隐藏成长永不回退）
+	if fen <= 0:
+		return
+	jing_yan_nei += fen
+	while jing_yan_nei >= _sheng_ji_yu_zhi():  # while：鲸鲨一口吞一群可能连升
+		jing_yan_nei -= _sheng_ji_yu_zhi()
+		deng_ji_nei += 1
+		tixing += 1.0
+		_ying_she_ti_xing()
+
+
+func _sheng_ji_yu_zhi() -> int:
+	# 升级阈值：读与玩家同一张 sheng_ji_biao.tres（10 × 1.2^等级），按自己的隐藏等级算。
+	# 不调 ZhangBen.dangqian_yuzhi()——账本曲线读玩家的 deng_ji 且有状态，NPC 借它会污染玩家账本
+	return ceili(SHENG_JI_BIAO.ji_chu * pow(SHENG_JI_BIAO.zeng_zhang, maxi(deng_ji_nei, 0)))
 
 
 func zou_boos_sheng_ji(delta: float) -> void:
@@ -502,8 +572,28 @@ func tui_kai(fang: Vector2, ju_li: float) -> void:
 	position += fang * ju_li
 
 
+func _tun_shen_bian_yu(delta: float) -> void:
+	# 首领同食（v0.4）：巨口吞入不分玩家与 NPC——巡游/追击路上碰到吃得下的小鱼照吞。
+	# 节流 0.3 秒查一次（组扫描 O(n)，不逐帧扫）；吞不掉的交给推挤层顶开，两不误。
+	# 失控中不吞（电麻/毒晕的鲸鲨嘴张不开）：_process 的失控分支提前 return，走不到这里
+	_tun_shi_ji_shi += delta
+	if _tun_shi_ji_shi < TUN_SHI_JIAN_GE:
+		return
+	_tun_shi_ji_shi = 0.0
+	for mu in _zhou_wei_yu():
+		if mu.si_le:
+			continue
+		if global_position.distance_to(mu.global_position) > _chi_yu_ju_li(mu):
+			continue
+		if tixing < float(mu.tixing) * CHI_YU_BEI_LV:
+			continue  # 吞不动的大鱼：留给推挤层顶开
+		_tun_diao(mu)  # 吃 NPC 管道现成：隐藏经验自动挂上
+
+
 func _boos_xing_dong(delta: float) -> void:
 	# 首领两态：看见玩家 → 优先追 8 秒；平时在 4 个巡逻点之间游荡
+	# 同食两态都吃（策划案：巡游路上碰到的小鱼照吞不误）
+	_tun_shen_bian_yu(delta)
 	var wan := _zhao_wan_jia()
 	if is_instance_valid(wan) and wan.yin_shen:
 		# 潜伏中的玩家：首领也看不见——立刻放弃追击回巡逻（潜伏是首领战的脱战手段）
@@ -795,10 +885,11 @@ func _geng_xin_hong_guang(delta: float) -> void:
 
 
 func _chi_rou() -> void:
-	# NPC 吃可食物：只清场不加经验（NPC 没有成长系统）；路过就吃，不主动追
+	# NPC 吃可食物：涨隐藏经验（v0.4 吃白吃时代结束）；路过就吃，不主动追
 	for qu in rou_qu.get_overlapping_areas():
 		var wu := qu as KeChiWu
 		if wu != null and wu.ke_chi:
+			jia_jing_yan_nei(wu.jing_yan)
 			wu.bei_chi()
 
 

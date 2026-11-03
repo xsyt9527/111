@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://scripts/zhi_wu_qun.gd" id="18_zhiwuqun"]
 [ext_resource type="Script" path="res://scripts/neng_li_ui.gd" id="19_nengliui"]
 [ext_resource type="PackedScene" path="res://scenes/SheZhi.tscn" id="20_shezhi"]
+[ext_resource type="Script" path="res://scripts/qi_pao_ceng.gd" id="22_qipao"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -39,6 +40,9 @@ limit_bottom = 2304
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="QiPaoCeng" type="Node2D" parent="."]
+script = ExtResource("22_qipao")
 
 [node name="ZhiWuQun" type="Node2D" parent="."]
 script = ExtResource("18_zhiwuqun")

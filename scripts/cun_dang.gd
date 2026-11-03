@@ -8,12 +8,12 @@ const JIE_JU_WEI_DING := 0  # 与 ZhangBen.JieJu.WEI_DING 对齐；--script 模�
 const JIE_JU_SHENG_LI := 1  # 与 ZhangBen.JieJu.SHENG_LI 对齐；--script 模式不加载 Autoload，不能直接写全局名
 const MO_REN_LU_JING := "user://shenhaishiji_jin_du.json"
 const ZHONG_TU_BAN_BEN := 1  # 中途存档格式版本；不兼容时整体作废（当没有存档处理）
-const MO_REN_BIAN_HAO := &"deng_long_yu"
+const MO_REN_BIAN_HAO := &"ao_tu_wo_niu_yu"
 # 显式注册表：导出后 .tres 会变成 .remap/.res，运行时 DirAccess 列目录不可靠
+# 当前唯一主角是凹凸蜗牛鱼；灯笼鱼/电鳐/旗鱼的 .tres 仍保留，但只作为 NPC 鱼种数据，
+# 不再进入形态注册表（选择页因此只生成蜗牛鱼一张卡）。以后加主角向这里追加即可。
 const XING_TAI_ZU := [
-	preload("res://data/xingtai/deng_long_yu.tres"),
-	preload("res://data/xingtai/dian_yao.tres"),
-	preload("res://data/xingtai/qi_yu.tres"),
+	preload("res://data/xingtai/ao_tu_wo_niu_yu.tres"),
 ]
 
 var lu_jing := MO_REN_LU_JING  # 测试可换临时路径；正式运行用默认路径
@@ -311,10 +311,11 @@ func xuan_ze(bian_hao: StringName) -> bool:
 
 func tiao_shi_jie_suo_quan_bu() -> void:
 	# 仅编辑器调试按钮：胜场拉到最高阈值，解锁全部形态
+	# 唯一形态的解锁阈值是 0：用 maxi 保留玩家已有胜场，别让“解锁全部”反而把进度清零
 	var zui_gao := 0
 	for xt in _xing_tai_zu:
 		zui_gao = maxi(zui_gao, xt.jie_suo_sheng_li_ci_shu)
-	sheng_li_ci_shu = zui_gao
+	sheng_li_ci_shu = maxi(sheng_li_ci_shu, zui_gao)
 	bao_cun()
 
 

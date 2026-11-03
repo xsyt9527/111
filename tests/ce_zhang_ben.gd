@@ -146,7 +146,7 @@ func _initialize() -> void:
 	var zb8: Node = load("res://scripts/zhang_ben.gd").new()
 	assert_float(zb8.ji_e, 100.0, "开局饥饿满格 100")
 	zb8.xia_jiang_ji_e(2.0)
-	assert_float(zb8.ji_e, 95.0, "饥饿每秒降 2.5：2 秒后 95")
+	assert_float(zb8.ji_e, 90.0, "饥饿每秒降 5.0：2 秒后 90")
 	zb8.hui_ji_e(10.0)
 	assert_float(zb8.ji_e, 100.0, "吃一口回 10，封顶 100")
 	zb8.ji_e = 50.0
@@ -378,18 +378,18 @@ func _initialize() -> void:
 	var nai_shou: NengLi = load("res://data/nengli/ji_e_nai_shou.tres")  # 0.1/层，满层附加 hui_de_bei 1.2
 	var tan_shi: NengLi = load("res://data/nengli/tan_shi_hui_fu.tres")  # 0.15/层，满层附加 xi_shu 1.3
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 95.0, "基线：无被动 2 秒降 5（2.5/秒）")
+	assert_float(zb19.ji_e, 90.0, "基线：无被动 2 秒降 10（5.0/秒）")
 	# 饥饿耐受 1 层：降速 ×0.9
 	zb19.xuan_neng_li(nai_shou)
 	zb19.ji_e = 100.0
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 95.5, "饥饿耐受 1 层：降速 ×0.9，2 秒只降 4.5")
+	assert_float(zb19.ji_e, 91.0, "饥饿耐受 1 层：降速 ×0.9，2 秒只降 9")
 	# 满层 3 层：降速 ×0.7；满层附加：吃食回饥饿 ×1.2
 	zb19.xuan_neng_li(nai_shou)
 	zb19.xuan_neng_li(nai_shou)
 	zb19.ji_e = 100.0
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 96.5, "饥饿耐受满层：降速 ×0.7，2 秒只降 3.5")
+	assert_float(zb19.ji_e, 93.0, "饥饿耐受满层：降速 ×0.7，2 秒只降 7")
 	zb19.ji_e = 50.0
 	zb19.hui_ji_e(10.0)
 	assert_float(zb19.ji_e, 62.0, "满层耐受附加：回 10 饥饿 ×1.2 = 12（50 → 62）")

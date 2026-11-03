@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/dian_gan_shou_qi.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"dian_gan_shou_qi"
 ming_zi = "电感受器"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "感知水中的杀气，被盯上时头顶亮起叹号；叠层预警停留更久。"
 lai_yuan = "通用能力池"
 lei_xing = 1

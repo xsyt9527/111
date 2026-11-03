@@ -25,12 +25,13 @@ var jie_duan := JieDuan.ZHENG_CHANG  # 当前阶段
 var jie_ju := JieJu.WEI_DING          # 本局结局：只写一次，结算页读它选文案
 
 const KAI_JU_DENG_JI := 0    # 开局等级：从最底层的小鱼开始，先吃海草珊瑚再吃鱼
+const MO_REN_XING_TAI := preload("res://data/xingtai/ao_tu_wo_niu_yu.tres")  # 默认主角形态：直接启动 Main 也认它
 const TI_XING_XI_SHU := 0.32  # 体型→像素缩放系数（贴图基准高 100px，1 点体型≈32px）
 const TI_XING_QU_XIAN := 0.7  # 体型→像素的曲线指数：等级无上限，线性增长会在高等级把鱼撑爆
 const JI_CHU_TI_XING := 1.0   # Lv.0 的基础体型（血量）：没有它 0 级就没法玩了
 const MEI_CI_SHANG_HAI := 1.0 # 每次受伤扣 1 点体型单位（= 1 级的分量）
 const JI_E_SHANG_XIAN := 100.0   # 饥饿条上限：一条 100 点的条
-const JI_E_XIA_JIANG_LV := 2.5  # 饥饿每秒下降：约 40 秒见底，逼玩家持续觅食
+const JI_E_XIA_JIANG_LV := 5.0  # 饥饿每秒下降：2026-11-02 实机反馈"压力不足"，2.5 → 5.0 加倍，约 20 秒见底
 const JI_E_E_SI_KOU_XUE := 0.1  # 饥饿归零后每秒扣多少当前体型：Lv.0 约 10 秒死
 const HUI_TI_CHU_SHU := 1.5  # 体型恢复除数：吃进肚子的体型 ÷1.5 才是回血（策划案 8.6.2）
 const KONG_ZHI_SHANG_XIAN := 100.0  # 电麻条/毒晕条上限：任一条满 → 失控（策划案 8.6.3）
@@ -61,6 +62,10 @@ var yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时玩家不能�
 func _ready() -> void:
 	# 账本挂 Autoload：升级三选一暂停时，饥饿也必须停——否则选卡期间玩家会被饿死
 	process_mode = Node.PROCESS_MODE_PAUSABLE
+	# 默认形态：直接启动 Main（测试/调试路径）不经过选择页，账本要自带主角。
+	# 选择页与继续游戏都会先 chong_zhi() 再按存档重装，不会被这里的默认值覆盖。
+	if dang_qian_xing_tai == null:
+		kai_ju_xing_tai(MO_REN_XING_TAI)
 
 
 func _process(delta: float) -> void:

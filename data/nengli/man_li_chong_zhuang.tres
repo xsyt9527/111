@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/man_li_chong_zhuang.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"man_li_chong_zhuang"
 ming_zi = "蛮力冲撞"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "直线冲撞，撞到的鱼受双倍伤害；撞不碎就撞不碎。"
-lai_yuan = "大眼金枪鱼"
+lai_yuan = "通用能力池"
 lei_xing = 0
 leng_que = 9.0
 chi_xu = 0.45

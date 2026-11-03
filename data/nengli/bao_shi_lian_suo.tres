@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/bao_shi_lian_suo.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"bao_shi_lian_suo"
 ming_zi = "暴食连锁"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "吞下整鱼后的下一口伤害翻倍；叠层拉长连锁窗口，连吃越吃越凶。"
 lai_yuan = "通用能力池"
 lei_xing = 1

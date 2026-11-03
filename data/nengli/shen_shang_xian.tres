@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/shen_shang_xian.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"shen_shang_xian"
 ming_zi = "肾上腺"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "濒死时游速暴涨（体型低于三成触发）；满层饥饿见底也能激发。"
 lai_yuan = "通用能力池"
 lei_xing = 1

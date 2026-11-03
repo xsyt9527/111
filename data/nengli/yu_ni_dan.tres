@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/yu_ni_dan.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"yu_ni_dan"
 ming_zi = "淤泥弹"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "喷出一团淤泥雾，雾里的鱼看不清东西；升档雾更久，满档连你也藏进雾里。"
 lai_yuan = "通用能力池"
 lei_xing = 0

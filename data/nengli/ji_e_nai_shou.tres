@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/ji_e_nai_shou.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"ji_e_nai_shou"
 ming_zi = "饥饿耐受"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "饥饿掉得慢；叠层耐受更强，满层吃任何东西都更顶饿。"
 lai_yuan = "通用能力池"
 lei_xing = 1

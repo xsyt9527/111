@@ -53,7 +53,11 @@ var _bao_shi_sheng_yu := 0.0  # 暴食连锁窗口剩余（秒）：吞鱼后的
 var _bao_shi_bei_lv := 1.0  # 暴食咬伤倍率
 var _lie_shou_ji_shi := 0.0  # 猎手直觉扫描节拍（每 0.5 秒扫一圈）
 var _yu_jing_sheng_yu := 0.0  # 电感受器预警剩余（秒）：头顶"!"
+var _dian_gan_fx_ji_shi := -1000  # 电感受器特效上次播放时刻（毫秒）：多条鱼反复预警时节流，默认 -1000 保证首次触发必定播
 var _yu_jing_biao: Label = null  # 预警标记（懒创建：第一次预警才 new，死后随节点释放）
+var _ruo_dian_mu_biao: YuNpc = null  # 弱点洞察锁定目标：视野内体型最大的鱼（可空）
+var _ruo_dian_sheng_yu := 0.0  # 锁定剩余（秒）：>0 时对锁定目标加伤
+var _ruo_dian_bei_lv := 1.0  # 对锁定目标的伤害倍率（施放时按档读表）
 
 @onready var zui_qu: Area2D = $ZuiQu  # 嘴圈（吃）：够大才吞——收益的唯一入口
 @onready var yao_qu: Area2D = $YaoQu  # 咬击区（咬）：够 0.6 倍就能咬，把大鱼咬小再吞
@@ -115,6 +119,9 @@ func _process(delta: float) -> void:
 	$AnimatedSprite2D.modulate = Color.WHITE  # 失控结束：恢复本色
 	if _dian_ma_biao_xian > 0.0:
 		$AnimatedSprite2D.modulate = Color(0.55, 0.85, 1.0)  # 放电闪蓝
+	elif _kuang_bao_sheng_yu > 0.0:
+		# 狂暴窗口持续泛红：特效只有 0.25 秒，光靠一次性特效玩家看不清“我现在还在狂暴”
+		$AnimatedSprite2D.modulate = Color(1.0, 0.55, 0.55, 0.45 if yin_shen else 1.0)
 	elif yin_shen:
 		$AnimatedSprite2D.modulate.a = 0.45  # 潜伏半透明
 	if _chong_zhuang_sheng_yu > 0.0:
@@ -236,6 +243,19 @@ func _zeng_yi_shi_chang(delta: float) -> void:
 		_yu_jing_sheng_yu = maxf(0.0, _yu_jing_sheng_yu - delta)
 		if _yu_jing_sheng_yu <= 0.0 and _yu_jing_biao != null:
 			_yu_jing_biao.visible = false
+	if _ruo_dian_sheng_yu > 0.0:
+		# 弱点洞察：锁定到期 / 目标被吃 / 目标已死，都立刻解除——加伤不留到下一个目标身上
+		_ruo_dian_sheng_yu = maxf(0.0, _ruo_dian_sheng_yu - delta)
+		if _ruo_dian_sheng_yu <= 0.0 or not is_instance_valid(_ruo_dian_mu_biao) or _ruo_dian_mu_biao.si_le:
+			_ruo_dian_mu_biao = null
+			_ruo_dian_bei_lv = 1.0
+
+
+func _ruo_dian_bei(mu: Node) -> float:
+	# 弱点洞察加伤：只对锁定目标生效（冲撞路径扫到别的鱼不加）
+	if _ruo_dian_sheng_yu <= 0.0 or _ruo_dian_mu_biao == null or not is_instance_valid(_ruo_dian_mu_biao):
+		return 1.0
+	return _ruo_dian_bei_lv if mu == _ruo_dian_mu_biao else 1.0
 
 
 func _lie_shou_sao_miao(delta: float) -> void:
@@ -310,6 +330,11 @@ func shi_fang_zhu_dong(neng: NengLi) -> bool:
 			_shi_fang_ji_su(neng)
 		&"man_li_chong_zhuang":
 			_shi_fang_chong_zhuang(neng)
+		&"chang_mao_chuan_ci":
+			_shi_fang_chong_zhuang(neng)  # 剑鱼穿刺与冲撞同构：直线冲刺 + 路径伤害，数值各看各的表
+		&"ruo_dian_dong_cha":
+			if not _shi_fang_ruo_dian(neng, dang):
+				return false  # 视野里没有鱼：空放不扣冷却、不响技能音
 		&"qian_fu_tu_xi":
 			_shi_fang_qian_fu(neng)
 		&"yu_lei_chong_ci":
@@ -341,7 +366,7 @@ func _shi_fang_fang_dian(neng: NengLi) -> void:
 		if global_position.distance_to(yu_npc.global_position) <= neng.ban_jing:
 			yu_npc.jia_dian_ma(neng.shu_zhi)
 	_dian_ma_biao_xian = 0.15  # 闪蓝 0.15 秒（表现层，_process 里读）
-	TE_XIAO.fang_dian(get_parent(), global_position)
+	TE_XIAO.fang_dian(get_parent(), global_position, 1.3)  # 范围型技能放大 30%：手机上一眼能看见电圈
 
 
 func _shi_fang_ji_su(neng: NengLi) -> void:
@@ -353,7 +378,7 @@ func _shi_fang_ji_su(neng: NengLi) -> void:
 
 
 func _shi_fang_chong_zhuang(neng: NengLi) -> void:
-	# 蛮力冲撞：锁死施放瞬间的方向，0.45 秒直线冲刺；每目标只撞一次，不整吞
+	# 蛮力冲撞 / 长矛穿刺：锁死施放瞬间的方向，直线冲刺；每目标只撞一次，不整吞
 	var fang := fang_xiang
 	if fang == Vector2.ZERO:
 		fang = Vector2.RIGHT.rotated(dang_qian_jiao)  # 没按摇杆：沿当前朝向冲
@@ -365,6 +390,30 @@ func _shi_fang_chong_zhuang(neng: NengLi) -> void:
 	dang_qian_jiao = _chong_zhuang_fang.angle()
 	if absf(_chong_zhuang_fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = _chong_zhuang_fang.x < 0.0
+	if neng.bian_hao == &"yu_lei_chong_ci":
+		# 鱼雷冲刺起手：在施放位置甩出一道冲刺水花；长矛穿刺 / 蛮力冲撞不播这套特效
+		TE_XIAO.yu_lei(get_parent(), global_position)
+
+
+func _shi_fang_ruo_dian(neng: NengLi, dang: int) -> bool:
+	# 弱点洞察：锁定视野半径内体型最大的鱼（含首领），亮出它的等级；持续期对它加伤
+	# 返回 false = 视野里没有鱼：调用方不扣冷却（空放不罚）
+	var mu: YuNpc = null
+	for node in get_tree().get_nodes_in_group("yu_npc"):
+		var yu_npc := node as YuNpc
+		if yu_npc == null or yu_npc.si_le:
+			continue
+		if global_position.distance_to(yu_npc.global_position) > neng.ban_jing:
+			continue
+		if mu == null or yu_npc.tixing > mu.tixing:
+			mu = yu_npc
+	if mu == null:
+		return false
+	_ruo_dian_mu_biao = mu
+	_ruo_dian_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
+	_ruo_dian_bei_lv = maxf(1.0, neng.dang_zhi(&"shu_zhi", dang))
+	mu.xian_shi_deng_ji(_ruo_dian_sheng_yu)  # 头顶亮 Lv.N：看穿目标的分量
+	return true
 
 
 func _shi_fang_qian_fu(neng: NengLi) -> void:
@@ -378,6 +427,7 @@ func _shi_fang_qian_fu(neng: NengLi) -> void:
 func _shi_fang_ni_liu(neng: NengLi, dang: int) -> void:
 	# 逆流闪避：短无敌窗（档 2 起加长）；档 3（shu_zhi 覆写 ≥ 1）把身边的鱼推开一段
 	_ni_liu_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
+	TE_XIAO.ni_liu(get_parent(), global_position)  # 无敌窗开启瞬间的闪身特效
 	if neng.dang_zhi(&"shu_zhi", dang) >= 1.0:
 		for node in get_tree().get_nodes_in_group("yu_npc"):
 			var yu_npc := node as YuNpc
@@ -397,7 +447,7 @@ func _shi_fang_xuan_wo(neng: NengLi, dang: int) -> void:
 	_xuan_wo_la_li = maxf(0.1, neng.shu_zhi)
 	_xuan_wo_ji_shi = 0.0  # 第一拍立刻拉
 	_xuan_wo_sheng_yu = maxf(0.01, neng.chi_xu)
-	TE_XIAO.fang_dian(get_parent(), global_position, 1.6)  # 大号电圈当涡纹：复用现有特效
+	TE_XIAO.xuan_wo(get_parent(), global_position)  # 专属涡纹：以玩家为涡心
 
 
 func _shi_fang_yu_ni(neng: NengLi, dang: int) -> void:
@@ -411,7 +461,7 @@ func _shi_fang_yu_ni(neng: NengLi, dang: int) -> void:
 	wu.shi_chang = neng.dang_zhi(&"chi_xu", dang)
 	wu.wan_jia_yin_bi = neng.dang_zhi(&"yin_bi", dang)  # 档 3 才有：雾里玩家可见度再打折
 	wu.position = global_position + fang.normalized() * 150.0
-	TE_XIAO.zhong_du(get_parent(), wu.position, 1.5)  # 落点一团墨绿：告诉玩家雾在哪
+	TE_XIAO.yu_ni(get_parent(), wu.position)  # 落点一团淤泥：告诉玩家雾在哪
 	if Engine.is_in_physics_frame():
 		get_parent().add_child.call_deferred(wu)  # 物理帧里加节点要推迟（同掉肉的处理）
 	else:
@@ -422,6 +472,7 @@ func _shi_fang_kuang_bao(neng: NengLi, dang: int) -> void:
 	# 狂暴撕咬：窗口期内自动咬击全部按倍率结算（档 2 起窗口加长）
 	_kuang_bao_bei_lv = maxf(1.0, neng.shu_zhi)
 	_kuang_bao_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
+	TE_XIAO.kuang_bao(get_parent(), global_position, 1.25)  # 狂暴窗口开启：玩家身上亮出撕咬特效（放大 25%）
 
 
 func _shi_fang_sheng_na(neng: NengLi, dang: int) -> void:
@@ -436,7 +487,7 @@ func _shi_fang_sheng_na(neng: NengLi, dang: int) -> void:
 		yu_npc.shi_fang_gao_liang(neng.dang_zhi(&"chi_xu", dang))
 		if dang >= 3:
 			yu_npc.ding_zhu(neng.dang_zhi(&"shu_zhi", dang))
-	TE_XIAO.fang_dian(get_parent(), global_position, 2.0)  # 最大号电圈当声呐波纹
+	TE_XIAO.sheng_na(get_parent(), global_position)  # 专属声呐波纹：以玩家为圆心扩散
 
 
 func _chong_zhuang(delta: float) -> void:
@@ -458,7 +509,7 @@ func _chong_zhuang(delta: float) -> void:
 		if _chong_zhuang_ming_zhong.has(jian):
 			continue  # 同一目标冲撞期间只结算一次
 		_chong_zhuang_ming_zhong[jian] = true
-		mu.call("shou_dao_yao_ji", shang_hai, self, "shen")
+		mu.call("shou_dao_yao_ji", shang_hai * _ruo_dian_bei(mu), self, "shen")  # 洞察加伤只给锁定目标
 
 
 func _zhao_bei_dong(bian_hao: StringName) -> NengLi:
@@ -574,6 +625,7 @@ func _chang_shi_yao_ji() -> void:
 		shang_hai *= _kuang_bao_bei_lv  # 狂暴撕咬：窗口内每一口都按倍率结算
 	if _bao_shi_sheng_yu > 0.0:
 		shang_hai *= _bao_shi_bei_lv  # 暴食连锁：刚吞完鱼的下一口加倍
+	shang_hai *= _ruo_dian_bei(mu_biao)  # 弱点洞察：只对锁定目标加伤
 	mu_biao.call("shou_dao_yao_ji", shang_hai, self, bu)
 	_yao_ji_lian_dong(mu_biao, shang_hai)  # 咬击落定后的被动联动：毒腺上毒 / 撕裂齿掉肉
 
@@ -627,6 +679,12 @@ func shi_fang_yu_jing() -> void:
 		_yu_jing_biao.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 		add_child(_yu_jing_biao)
 	_yu_jing_biao.visible = true
+	# 电感受器特效：多条鱼可能在同一帧反复锁定玩家，这里按 0.5 秒节流，避免特效刷屏
+	# 播放位置用玩家自身：这是“玩家感知到被盯上”的被动，贴在玩家身上不会被误读成 NPC 放电
+	var xian_zai := Time.get_ticks_msec()
+	if xian_zai - _dian_gan_fx_ji_shi >= 500:
+		_dian_gan_fx_ji_shi = xian_zai
+		TE_XIAO.dian_gan(get_parent(), global_position)
 
 
 func _bao_shi_chu_fa() -> void:
@@ -740,6 +798,7 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 	if fan > 0.0 and lai_yuan != null and is_instance_valid(lai_yuan) \
 			and lai_yuan != self and lai_yuan.has_method("shou_dao_yao_ji"):
 		lai_yuan.shou_dao_yao_ji(shang_hai * fan, self)
+		TE_XIAO.ying_lin(get_parent(), global_position)  # 硬鳞真正弹伤时才亮，普通受击不播
 	_jie_chu_yin_shen()  # 受伤破隐：潜伏的 ×2 不留给下一次
 	_shoushang(shang_hai)
 

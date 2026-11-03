@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://begsi5v6owqua"]
 
 [ext_resource type="Script" uid="uid://jfusrqxlruww" path="res://scripts/yu.gd" id="1_yu"]
-[ext_resource type="SpriteFrames" path="res://data/donghua/deng_long_yu_4zhen.tres" id="2_donghua"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/ao_tu_wo_niu_yu_4zhen.tres" id="2_donghua"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yuan"]
 radius = 55.0

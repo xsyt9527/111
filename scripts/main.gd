@@ -30,6 +30,7 @@ const DI_TU_MING := [
 ]  # 行优先：左上→中上→右上→左中→正中→右中→左下→中下→右下
 
 @onready var yu: Yu = $Yu  # 玩家鱼实例
+@onready var yu_qun: YuQun = $YuQun  # 鱼群生成器：决战期由 Main 通知停刷（只停新增，不清存量）
 @onready var yao_gan: YaoGan = $UI/YaoGan  # 虚拟摇杆（只给方向，不给速度）
 @onready var ti_xing_label: Label = $TiXingUI/TiXingLabel  # 体型数字（替代退役的血条）
 @onready var ji_e_label: Label = $JiEUI/JiELabel  # 饥饿数字：低于 20 变红示警
@@ -156,6 +157,8 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	# 只在玩家上方生成一次；重复调用（时间到 + 提前开战）不会叠出两条船
 	if is_instance_valid(ji_qi_chuan):
 		return
+	# 机器船降临 = 决战期开始：通知鱼群停刷，存量 NPC 保持原样（2026-11-02 拍板）
+	yu_qun.ting_zhi_shua_xin()
 	ji_qi_chuan = JI_QI_CHUAN_CHANGJING.instantiate()
 	ji_qi_chuan.wan_jia = yu  # 注入玩家：船不靠组名找人，测试也好塞假玩家
 	ji_qi_chuan.position = yu.global_position + Vector2(0, -240)

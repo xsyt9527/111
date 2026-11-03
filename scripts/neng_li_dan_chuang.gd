@@ -24,6 +24,11 @@ var _dai_chu_ci_shu := 0  # 弹窗开着时又升级了几次：选完继续弹�
 	$KaPianZu/Ka2/KaZhong2/MiaoShu,
 	$KaPianZu/Ka3/KaZhong3/MiaoShu,
 ]
+@onready var tu_biao: Array = [
+	$KaPianZu/Ka1/KaZhong1/TuBiao,
+	$KaPianZu/Ka2/KaZhong2/TuBiao,
+	$KaPianZu/Ka3/KaZhong3/TuBiao,
+]
 
 
 func _ready() -> void:
@@ -65,6 +70,8 @@ func _kai_shi() -> void:
 			var neng := dang_qian_san_zhang[i]
 			ming_cheng[i].text = neng.ming_zi
 			miao_shu[i].text = _miao_shu_wen_an(neng)
+			tu_biao[i].texture = neng.tu_biao
+			tu_biao[i].visible = neng.tu_biao != null  # 没图的旧能力：整块隐藏，卡片自动收高
 		else:
 			ka_pian[i].visible = false  # 候选不足 3 个：藏掉多余卡位
 	get_tree().paused = true  # 引擎级暂停：玩家/鱼群/Timer 全停

@@ -15,6 +15,7 @@ var ti_xing_liang := 0.0  # 吃到的体型量：鱼肉按伤害折算，植物�
 
 var _hong_guang: Sprite2D = null  # 红光层（子场景可选）：没有就跳过，不影响可食物契约
 var _wan_jia: Node2D = null       # 玩家（靠 player 组找）：没有玩家（测试场景）就不亮
+var _ben_ti: Node2D = null        # 本体显示节点：鱼肉用 Sprite2D，植物用 AnimatedSprite2D
 var _guang_shi_jian := 0.0        # 红光呼吸相位（秒）
 
 
@@ -24,14 +25,34 @@ func _ready() -> void:
 	_hong_guang = get_node_or_null("HongGuang") as Sprite2D
 	if _hong_guang == null:
 		return
-	var tie: Texture2D = $Sprite2D.texture
+	# 两种本体都认：旧鱼肉/单帧食物是 Sprite2D，新的海草/珊瑚是 AnimatedSprite2D
+	_ben_ti = get_node_or_null("AnimatedSprite2D") as Node2D
+	if _ben_ti == null:
+		_ben_ti = get_node_or_null("Sprite2D") as Node2D
+	if _ben_ti == null:
+		return
+	var tie := _dang_qian_tie_tu()
 	if tie != null:
 		_hong_guang.texture = tie  # 与本体同一张贴图：不用另画美术资源
-		_hong_guang.scale = $Sprite2D.scale * HONG_GUANG_BEICHENG  # 跟着本体的显示比例走
+		_hong_guang.scale = _ben_ti.scale * HONG_GUANG_BEICHENG  # 跟着本体的显示比例走
 	var cai: CanvasItemMaterial = CanvasItemMaterial.new()
 	cai.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD  # 叠加发光：比半透明盖一层更像“光”
 	_hong_guang.material = cai
 	_hong_guang.visible = false
+
+
+func _dang_qian_tie_tu() -> Texture2D:
+	# 动画本体取「当前帧」贴图：植物会摆，红光必须跟着帧走，否则两张图会错位
+	if _ben_ti is AnimatedSprite2D:
+		var dong := _ben_ti as AnimatedSprite2D
+		if dong.sprite_frames == null:
+			return null
+		if not dong.sprite_frames.has_animation(dong.animation):
+			return null
+		return dong.sprite_frames.get_frame_texture(dong.animation, dong.frame)
+	if _ben_ti is Sprite2D:
+		return (_ben_ti as Sprite2D).texture
+	return null
 
 
 func _process(delta: float) -> void:
@@ -50,6 +71,10 @@ func _geng_xin_hong_guang(delta: float) -> void:
 	if ju_li > HONG_GUANG_BAN_JING:
 		_hong_guang.visible = false
 		return
+	# 同步当前帧：植物每帧在摆，红光贴图要跟着换（仅换引用，不复制像素）
+	var tie := _dang_qian_tie_tu()
+	if tie != null and _hong_guang.texture != tie:
+		_hong_guang.texture = tie
 	_guang_shi_jian += delta
 	_hong_guang.visible = true
 	var jin_bi := 1.0 - ju_li / HONG_GUANG_BAN_JING  # 0=圈边 1=贴脸

@@ -6,15 +6,15 @@ class_name JiQiChuan
 
 signal bei_ji_bai  # 船被打沉：Main 据此判胜
 
-const ZUI_DA_XUE := 90.0          # 血量：Lv.8 咬弱点约 11 秒纯输出，算上躲招约半分钟
+const ZUI_DA_XUE := 360.0         # 血量：2026-11-02 用户再拍板：人类太弱，血量再 ×2（180→360）
 const RUO_DIAN_BEI_LV := 3.0      # 弱点（玻璃舱）伤害倍率
 const GEN_SUI_SU_DU := 90.0       # 横向跟随玩家的速度（px/秒）：慢到玩家能绕到侧面
 const XUAN_FU_GAO_DU := 240.0     # 悬停在玩家上方多高
-const GONG_JI_JIAN_GE := 4.5      # 两次攻击的间隔（秒）
-const YU_WANG_BAN_JING := 150.0   # 渔网预警圈半径
-const YU_WANG_YU_JING := 1.2      # 渔网预警时长：给了反应时间才叫“可躲”
+const GONG_JI_JIAN_GE := 1.0      # 两次攻击的间隔（秒）：2026-11-02 用户再拍板，9.0→1.0 变成高频压迫
+const YU_WANG_BAN_JING := 100.0   # 渔网预警圈半径：0.45 秒 × 300 速 ≈ 135px，半径 100 才留得出躲位
+const YU_WANG_YU_JING := 0.45     # 渔网预警时长：1 秒一击下仍保留 0.45 秒可躲窗口
 const YU_WANG_KONG_ZHI := 1.5     # 渔网命中后的失控时长
-const XIE_BI_SHI_CHANG := 0.6     # 机械臂伸出耗时
+const XIE_BI_SHI_CHANG := 0.45    # 机械臂伸出耗时：与渔网统一 0.45 秒前摇，玩家看得见也躲得开
 const XIE_BI_SHANG_HAI := 1.0     # 机械臂伤害（走玩家现有受伤/无敌帧流程）
 const XIE_BI_BAN_JING := 90.0     # 机械臂落点的判定半径：躲开就不掉血
 
@@ -31,6 +31,7 @@ var _gong_ji_lun := 0  # 攻击轮次：偶数渔网、奇数机械臂
 var _yu_wang_dian := Vector2.ZERO  # 渔网落点（放招瞬间的玩家位置）
 var _yu_wang_jin_xing := false
 var _yu_wang_sheng_yu := 0.0
+var _zheng_zai_chu_zhao := false  # 防重叠：上一招还在前摇/结算时，本轮定时器直接跳过，绝不会叠出两条网/两只臂
 
 
 func _ready() -> void:
@@ -40,7 +41,7 @@ func _ready() -> void:
 	$Zhua/ZhuaTi.play(&"dong")  # 机械臂伸出时也在动，不像一张贴图平移
 	_gong_ji_dingshi = $GongJiDingshi
 	_gong_ji_dingshi.timeout.connect(_on_gong_ji_timeout)
-	_gong_ji_dingshi.start(GONG_JI_JIAN_GE)  # 降临后给玩家 4.5 秒看清血条
+	_gong_ji_dingshi.start(GONG_JI_JIAN_GE)  # 降临后 1 秒首次出招（与后续间隔读同一常量，避免两处数字打架）
 
 
 func _process(delta: float) -> void:
@@ -87,6 +88,7 @@ func _chen_mo() -> void:
 	$ChuanTiQu.collision_layer = 0
 	_zhua.visible = false
 	_yu_wang_jin_xing = false
+	_zheng_zai_chu_zhao = false
 	queue_redraw()
 	bei_ji_bai.emit()
 	var bu_jian := create_tween()
@@ -99,7 +101,17 @@ func _chen_mo() -> void:
 
 func _on_gong_ji_timeout() -> void:
 	# 两招交替：渔网（控制）→ 机械臂（伤害）→ 渔网……
+	# 防重叠：1 秒间隔短于“出招 + 收招”总时长时，若上一招未收完就跳过本轮（不推进轮次、也不排队），
+	# 等下一次定时器再出招——实现最简单，且保证场上最多只有一条网/一只机械臂。
 	if si_le:
+		return
+	if _zheng_zai_chu_zhao:
+		_gong_ji_dingshi.start(GONG_JI_JIAN_GE)
+		return
+	# 失控保护：渔网控住 1.5 秒，而攻击间隔只有 1 秒——玩家还没恢复就出下一招，
+	# 必然接成「控住→机械臂必中」的连段。失控期间整拍跳过，等玩家能动了再出招。
+	if ZhangBen.zai_kong_zhi():
+		_gong_ji_dingshi.start(GONG_JI_JIAN_GE)
 		return
 	if _gong_ji_lun % 2 == 0:
 		_kai_shi_yu_wang()
@@ -110,9 +122,10 @@ func _on_gong_ji_timeout() -> void:
 
 
 func _kai_shi_yu_wang() -> void:
-	# 渔网：先在玩家当前位置画预警圈，1.2 秒后才落网——不追人，只封走位
+	# 渔网：先在玩家当前位置画预警圈，0.45 秒后才落网——不追人，只封走位
 	if wan_jia == null:
 		return
+	_zheng_zai_chu_zhao = true
 	_yu_wang_dian = wan_jia.global_position
 	_yu_wang_jin_xing = true
 	_yu_wang_sheng_yu = YU_WANG_YU_JING
@@ -131,6 +144,7 @@ func _geng_xin_yu_wang(delta: float) -> void:
 func _jie_suan_yu_wang() -> void:
 	# 落网：还在圈里就失控（停游/停咬/停吃），跑出去就没事
 	_yu_wang_jin_xing = false
+	_zheng_zai_chu_zhao = false  # 网已结算，允许下一招
 	queue_redraw()
 	if wan_jia != null and wan_jia.global_position.distance_to(_yu_wang_dian) <= YU_WANG_BAN_JING:
 		ZhangBen.qiang_zhi_kong_zhi(YU_WANG_KONG_ZHI)
@@ -147,9 +161,10 @@ func _draw() -> void:
 
 
 func _kai_shi_xie_bi() -> void:
-	# 机械臂：从船底伸向玩家“此刻”的位置（0.6 秒），落点固定——会走位就能躲
+	# 机械臂：从船底伸向玩家“此刻”的位置（0.45 秒），落点固定——会走位就能躲
 	if wan_jia == null:
 		return
+	_zheng_zai_chu_zhao = true
 	_zhua.visible = true
 	_zhua.global_position = global_position + Vector2(0, 250)
 	var mu_biao := wan_jia.global_position
@@ -165,4 +180,10 @@ func _jie_suan_xie_bi() -> void:
 		wan_jia.shou_dao_yao_ji(XIE_BI_SHANG_HAI)  # 走玩家现有受伤入口：无敌帧、掉肉都照旧
 	var bu_jian := create_tween()
 	bu_jian.tween_property(_zhua, "global_position", global_position + Vector2(0, 250), 0.4)
-	bu_jian.tween_callback(func() -> void: _zhua.visible = false)
+	bu_jian.tween_callback(_shou_bi_wan_cheng)
+
+
+func _shou_bi_wan_cheng() -> void:
+	# 收臂结束才解锁，避免上一招的收臂回调把新伸出的机械臂藏掉
+	_zhua.visible = false
+	_zheng_zai_chu_zhao = false

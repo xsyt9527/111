@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/lie_shou_zhi_jue.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"lie_shou_zhi_jue"
 ming_zi = "猎手直觉"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "直觉锁定感知范围内的猎物，让它们泛黄显形；叠层扩大锁定圈。"
 lai_yuan = "通用能力池"
 lei_xing = 1

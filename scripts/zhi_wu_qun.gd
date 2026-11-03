@@ -6,18 +6,11 @@ class_name ZhiWuQun
 
 const ZHI_WU_CHANGJING := preload("res://scenes/ZhiWu.tscn")  # 植物蓝图（Area2D + 重生计时器）
 
-const HAI_CAO_TIE_TU: Array[Texture2D] = [
-	preload("res://assets/sucai/shenhai_zhuangshi/haicao_01.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/haicao_02.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/haicao_03.png"),
-]  # 01=3 视图侧视，02/03=正面/背面：同屏海草不再像复制粘贴（素材包无海草四帧）
-const SHAN_HU_TIE_TU: Array[Texture2D] = [
-	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_01.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_02.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_03.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_04.png"),
-	preload("res://assets/sucai/shenhai_zhuangshi/shanhu_05.png"),
-]
+const HAI_CAO_DONG_HUA: SpriteFrames = preload("res://data/donghua/hai_cao_4zhen.tres")
+const SHAN_HU_DONG_HUA: SpriteFrames = preload("res://data/donghua/shan_hu_4zhen.tres")
+# 4 帧循环摆动（2026-11-02 新版素材）：动画名 "bai"、5fps、loop=true
+const HAI_CAO_XIAN_SHI_BI := 0.5   # 海草输出帧 127×192 → 显示约 64×96
+const SHAN_HU_XIAN_SHI_BI := 0.38  # 珊瑚输出帧 248×192 → 显示约 94×73（横宽，别压过鱼）
 
 const HAI_CAO_JING_YAN := 1  # 海草：到处都是，收益低（等同一块鱼肉）
 const SHAN_HU_JING_YAN := 2  # 珊瑚：长在地貌区，收益高一点，值得绕路
@@ -58,14 +51,18 @@ func _sui_ji_wei_zhi(lie: int, hang: int) -> Vector2:
 
 func _zhong_yi_zhu(wei_zhi: Vector2) -> void:
 	var zhu: ZhiWu = ZHI_WU_CHANGJING.instantiate()
-	# 先注入贴图与经验，再进树：植物 _ready 要按贴图尺寸算碰撞半径
+	# 先注入动画与经验，再进树：植物 _ready 要按当前帧尺寸算碰撞半径、并按类型定显示比例
+	var dong := zhu.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	if randf() < 0.55:  # 海草略多于珊瑚（食物链底层该更常见）
-		zhu.get_node("Sprite2D").texture = HAI_CAO_TIE_TU.pick_random()
+		dong.sprite_frames = HAI_CAO_DONG_HUA
+		zhu.xian_shi_bi = HAI_CAO_XIAN_SHI_BI
 		zhu.jing_yan = HAI_CAO_JING_YAN
 		zhu.ji_e = HAI_CAO_JI_E
 	else:
-		zhu.get_node("Sprite2D").texture = SHAN_HU_TIE_TU.pick_random()
+		dong.sprite_frames = SHAN_HU_DONG_HUA
+		zhu.xian_shi_bi = SHAN_HU_XIAN_SHI_BI
 		zhu.jing_yan = SHAN_HU_JING_YAN
 		zhu.ji_e = SHAN_HU_JI_E
+	dong.animation = ZhiWu.DONG_HUA_MING  # 只设名字；_ready 里统一 play，保证 4 帧从第 1 帧开始摆
 	zhu.position = wei_zhi
 	add_child(zhu)

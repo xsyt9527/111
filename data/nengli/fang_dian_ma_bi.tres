@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/fang_dian_ma_bi.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"fang_dian_ma_bi"
 ming_zi = "放电麻痹"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "电击身边所有鱼，叠满电麻条让它们失控 2 秒。"
 lai_yuan = "电鳐"
 lei_xing = 0
