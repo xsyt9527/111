@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/wen_yao_zhan_wei.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_wen_yao_zhan_wei_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"wen_yao_zhan_wei"
+ming_zi = "文鳐战鲔"
+ji_yu_bian_hao = &"zong_yu"
+ji_yu_ming = "大眼金枪鱼"
+fen_zhi = 0
+miao_shu = "生出银色双翼，游动如流星破海；能掀起狂风巨浪，跃出水面即可滑翔。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

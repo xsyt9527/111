@@ -41,8 +41,7 @@ const DI_TU_MING := [
 @onready var dian_ma_tiao: ProgressBar = $KongZhiUI/DianMaTiao  # 电麻条
 @onready var du_yun_tiao: ProgressBar = $KongZhiUI/DuYunTiao  # 毒晕条
 @onready var camera: Camera2D = $Camera2D  # 3×3 大地图相机：跟着玩家走，边界夹在地图内
-@onready var di_tu_ming: Label = $DiTuUI/DiTuMing  # 当前区域名（右上角）
-@onready var shi_jian_label: Label = $ShiJianUI/ShiJianLabel  # 局内倒计时（右上角）
+@onready var shi_jian_label: Label = $ShiJianUI/ShiJianLabel  # 局内倒计时（经验条下方）
 @onready var boss_label: Label = $BossUI/BossLabel  # Boss 名称（人类战才显示）
 @onready var boss_tiao: ProgressBar = $BossUI/BossTiao  # Boss 血条
 @onready var xiao_xi_label: Label = $XiaoXiUI/XiaoXiLabel  # 大事件横幅（降临/体型不足）
@@ -55,8 +54,7 @@ func _ready() -> void:
 	# 相机先对准玩家再开平滑，避免开局从 (0,0) 滑过来
 	camera.global_position = yu.global_position
 	camera.reset_smoothing()
-	camera.zoom = Vector2.ONE / _shi_jiao_bei()  # 首帧就按开局等级取景，避免 Lv.1 电鳐镜头跳变
-	di_tu_ming.text = qu_yu_ming(yu.global_position)
+	camera.zoom = Vector2.ONE / _shi_jiao_bei()  # 首帧就按开局等级取景，避免 Lv.1 电鳗镜头跳变
 	dian_ma_tiao.modulate = Color(1.0, 0.85, 0.35)  # 电麻条：黄（只染色，不改主题）
 	du_yun_tiao.modulate = Color(0.55, 1.0, 0.45)   # 毒晕条：绿
 	# 终局时间轴：阶段切换由账本广播，Main 只负责“演出”（生成船、横幅、切结算页）
@@ -96,10 +94,6 @@ func _process(_delta: float) -> void:
 	# 镜头拉远：等级越高看得越远（范围 ×(1+0.1×等级)，Lv.10 封顶 2.0×）
 	# Camera2D.zoom 是放大倍数，>1 看得更少；范围 ×N 等价于 zoom ÷N
 	camera.zoom = Vector2.ONE / _shi_jiao_bei()
-	# 区域名：玩家跨过 1376/768 的格子边界才换字
-	var ming := qu_yu_ming(yu.global_position)
-	if di_tu_ming.text != ming:
-		di_tu_ming.text = ming
 	_geng_xin_zhong_ju_hud()
 
 
@@ -161,7 +155,9 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	yu_qun.ting_zhi_shua_xin()
 	ji_qi_chuan = JI_QI_CHUAN_CHANGJING.instantiate()
 	ji_qi_chuan.wan_jia = yu  # 注入玩家：船不靠组名找人，测试也好塞假玩家
-	ji_qi_chuan.position = yu.global_position + Vector2(0, -240)
+	# 鲸鲨还活着：船降临后先打它 8~10 秒（玩家咬船会立刻转仇）
+	ji_qi_chuan.jing_sha = _jing_sha if is_instance_valid(_jing_sha) and not _jing_sha.si_le else null
+	ji_qi_chuan.position = yu.global_position + Vector2(0, -600)
 	add_child(ji_qi_chuan)
 	ji_qi_chuan.bei_ji_bai.connect(_on_ji_qi_chuan_bei_ji_bai)
 

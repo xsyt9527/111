@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="XingTai" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/xing_tai.gd" id="1_xing_tai"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/ju_kou_yu_4zhen.tres" id="2_dong_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/shenhai_yu/ju_kou_yu.png" id="3_tie_tu"]
+[ext_resource type="Resource" path="res://data/nengli/qian_fu_tu_xi.tres" id="4_neng_li"]
+
+[resource]
+script = ExtResource("1_xing_tai")
+bian_hao = &"ju_kou_yu"
+ming_zi = "巨口鱼"
+miao_shu = "深渊大嘴：嘴巴系数极高，咬得慢却能一口撕下大块血肉。"
+ji_yu_bian_hao = &"ju_kou_yu"
+pai_xu = 5
+dong_hua = ExtResource("2_dong_hua")
+tie_tu = ExtResource("3_tie_tu")
+kai_ju_deng_ji = 1
+yi_dong_su_du = 280.00
+zui_ba = 1.50
+zhuan_xiang_ji_su = 6.00
+kai_ju_neng_li = ExtResource("4_neng_li")
+jie_suo_sheng_li_ci_shu = 0

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/ling_hun_xi_shi_zhe.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_ling_hun_xi_shi_zhe_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"ling_hun_xi_shi_zhe"
+ming_zi = "灵魂吸食者"
+ji_yu_bian_hao = &"ju_kou_yu"
+ji_yu_ming = "巨口鱼"
+fen_zhi = 2
+miao_shu = "放弃物理咬合，成半透明幽冥鱼；巨口吞噬目标灵魂（能量槽），被咬中陷入恐惧与虚弱。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

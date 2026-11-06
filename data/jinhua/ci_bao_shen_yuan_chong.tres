@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/ci_bao_shen_yuan_chong.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_ci_bao_shen_yuan_chong_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"ci_bao_shen_yuan_chong"
+ming_zi = "磁暴深渊虫"
+ji_yu_bian_hao = &"lv_yu"
+ji_yu_ming = "电鳗"
+fen_zhi = 2
+miao_shu = "放弃放电，转为磁场控制——令周围金属武器失效，甚至扭曲光线与空间。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

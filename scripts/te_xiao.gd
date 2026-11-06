@@ -1,11 +1,11 @@
 extends RefCounted
-# 一次性特效生成器：放电 / 中毒 + 8 套专属能力特效
+# 一次性特效生成器：放电 / 中毒 + 12 套专属能力特效
 # 不挂场景、不做常驻节点：触发时现场建一个 AnimatedSprite2D，播完自己 queue_free
 # 调用方只给“挂在谁下面 + 世界坐标 + 大小”，特效帧资源全部在这里收口
 
 const DIAN_TE_XIAO: SpriteFrames = preload("res://data/donghua/dian_texiao_4zhen.tres")
 const DU_TE_XIAO: SpriteFrames = preload("res://data/donghua/du_texiao_4zhen.tres")
-# 8 套专属能力特效：动画名统一为 bao、4 帧、12 fps、loop=0（播完即销毁）
+# 12 套专属能力特效：动画名统一为 bao、4 帧、loop=0（播完即销毁）
 const XUAN_WO_TE_XIAO: SpriteFrames = preload("res://data/donghua/xuan_wo_4zhen.tres")
 const YU_NI_TE_XIAO: SpriteFrames = preload("res://data/donghua/yu_ni_dan_4zhen.tres")
 const SHENG_NA_TE_XIAO: SpriteFrames = preload("res://data/donghua/sheng_na_mai_chong_4zhen.tres")
@@ -14,10 +14,15 @@ const KUANG_BAO_TE_XIAO: SpriteFrames = preload("res://data/donghua/kuang_bao_si
 const NI_LIU_TE_XIAO: SpriteFrames = preload("res://data/donghua/ni_liu_shan_bi_4zhen.tres")
 const YING_LIN_TE_XIAO: SpriteFrames = preload("res://data/donghua/ying_lin_fan_ji_4zhen.tres")
 const DIAN_GAN_TE_XIAO: SpriteFrames = preload("res://data/donghua/dian_gan_shou_qi_4zhen.tres")
+# 新增 4 主动特效：都是发光型素材，播放时用叠加混合，避免黑底在深海里变成方块
+const YING_KE_TE_XIAO: SpriteFrames = preload("res://data/donghua/ying_ke_hu_ti_4zhen.tres")
+const DIAN_MAI_TE_XIAO: SpriteFrames = preload("res://data/donghua/dian_mai_chong_4zhen.tres")
+const YOU_ER_TE_XIAO: SpriteFrames = preload("res://data/donghua/you_er_qi_pao_4zhen.tres")
+const XUE_XING_TE_XIAO: SpriteFrames = preload("res://data/donghua/xue_xing_kuang_re_4zhen.tres")
 
 
 static func fang_dian(gen: Node, wei: Vector2, bi := 1.0) -> void:
-	# 放电圈：电鳐半径 90 → 特效直径约 180 像素，scale 1.0 正好覆盖
+	# 放电圈：电鳗半径 90 → 特效直径约 180 像素，scale 1.0 正好覆盖
 	_sheng_chu(gen, DIAN_TE_XIAO, wei, bi)
 
 
@@ -73,12 +78,38 @@ static func dian_gan(gen: Node, wei: Vector2, bi := 1.0) -> void:
 	bo(gen, DIAN_GAN_TE_XIAO, wei, bi)
 
 
-static func _sheng_chu(gen: Node, kuang: SpriteFrames, wei: Vector2, bi: float) -> void:
+# ---- 新增 4 主动特效：发光型素材统一走叠加混合 ----
+
+static func ying_ke_hu_ti(gen: Node, wei: Vector2, bi := 1.0) -> void:
+	# 硬壳护体：缩壳成形 / 受击再亮一圈，都由调用方决定时机
+	_sheng_chu(gen, YING_KE_TE_XIAO, wei, bi, true)
+
+
+static func dian_mai_chong(gen: Node, wei: Vector2, bi := 1.0) -> void:
+	# 电脉冲：以玩家为圆心的电环爆发
+	_sheng_chu(gen, DIAN_MAI_TE_XIAO, wei, bi, true)
+
+
+static func you_er_qi_pao(gen: Node, wei: Vector2, bi := 1.0) -> void:
+	# 诱饵气泡：吐泡 / 咬破时的一次性演出（常驻气泡本体由 YouErQiPao 负责）
+	_sheng_chu(gen, YOU_ER_TE_XIAO, wei, bi, true)
+
+
+static func xue_xing_kuang_re(gen: Node, wei: Vector2, bi := 1.0) -> void:
+	# 血腥狂热：开启狂热窗口时在玩家身上卷起血雾
+	_sheng_chu(gen, XUE_XING_TE_XIAO, wei, bi, true)
+
+
+static func _sheng_chu(gen: Node, kuang: SpriteFrames, wei: Vector2, bi: float, jia_se := false) -> void:
 	if gen == null or not gen.is_inside_tree():
 		return  # 场景切换/测试裸节点：没有父节点可挂就不放特效
 	var fx := AnimatedSprite2D.new()
 	fx.sprite_frames = kuang
 	fx.z_index = 5  # 盖在鱼上面：电光 / 毒雾要看得见
+	if jia_se:
+		var cai := CanvasItemMaterial.new()
+		cai.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD  # 黑底不叠亮：发光素材不会出现黑方块
+		fx.material = cai
 	gen.add_child(fx)
 	fx.global_position = wei
 	fx.scale = Vector2.ONE * bi

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/shen_hai_shi_lai_mu_nv_wang.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_shen_hai_shi_lai_mu_nv_wang_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"shen_hai_shi_lai_mu_nv_wang"
+ming_zi = "深海史莱姆女王"
+ji_yu_bian_hao = &"ao_tu_wo_niu_yu"
+ji_yu_ming = "凹凸蜗牛鱼"
+fen_zhi = 1
+miao_shu = "吸收周遭有机物巨大化，器官发光；喷吐强酸或吸收其他鱼基因改变外形。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

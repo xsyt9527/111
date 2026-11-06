@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/po_lang_du_jiao_jiao.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_po_lang_du_jiao_jiao_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"po_lang_du_jiao_jiao"
+ming_zi = "破浪独角蛟"
+ji_yu_bian_hao = &"jian_yu"
+ji_yu_ming = "剑鱼"
+fen_zhi = 0
+miao_shu = "吻部螺旋化为钻头（类独角鲸），生龙鳞与须；冲刺如鱼雷穿透极厚海冰或甲板。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

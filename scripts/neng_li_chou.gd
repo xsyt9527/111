@@ -18,6 +18,8 @@ static func ke_xuan_chi(quan_bu: Array[NengLi], zhu_dong_dang: Dictionary,
 	for neng in quan_bu:
 		if neng == null:
 			continue
+		if neng.shi_zhuan_shu():
+			continue  # 进化专属技：只随对应形态装配，永不参与升级三选一
 		if neng.shi_zhu_dong():
 			if int(zhu_dong_dang.get(neng.bian_hao, 0)) >= neng.zui_da_dang:
 				continue  # 满档主动：升无可升

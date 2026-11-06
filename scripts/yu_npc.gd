@@ -12,8 +12,8 @@ const ZUI_XIAO_TI_XING := 0.5  # 被咬到的最小体型：不会被咬成负�
 const ZHUI_GAN_JIA_SU := 1.15  # 追击/逃跑步频略快于巡游
 const CHI_YU_BEI_LV := 1.1  # 整吞门槛（与玩家 Yu.TUN_CHI_BEI_LV 同值）
 const BU_RE_DA_BEI_LV := 2.0  # NPC 不惹大太多：同类比它大 2 倍以上就不去复仇（鱼群磨不死鲸鲨）
-const DIAN_JI_JIAN_GE := 1.5  # 电鳐放电间隔（秒）
-const DIAN_JI_BAN_JING := 90.0  # 电鳐放电半径（世界像素）：身边的鱼和玩家一起被电
+const DIAN_JI_JIAN_GE := 1.5  # 电鳗放电间隔（秒）
+const DIAN_JI_BAN_JING := 90.0  # 电鳗放电半径（世界像素）：身边的鱼和玩家一起被电
 const SHOU_HUI_YU_LIANG := 240.0  # 游出镜头多远才回收：留出“刚出生在一屏外排队进场”的纵深
 const BOOS_SHENG_JI_JIAN_GE := 30.0  # 首领每 30 秒长一次（想改成长节奏改这里）
 const BOOS_MEI_CI_JIA_DENG_JI := 2.0  # ★首领每次加多少等级（体型 +N）：想改成长速度就改这一行
@@ -36,7 +36,7 @@ enum ZhuangTai { YOU_DANG, ZHUI_ZHU, TAO_PAO }  # 巡游 / 追击 / 逃跑
 signal bei_ji_bai  # 首领被咬到残血：Main 据此触发「提前开战」奖励（普通鱼永不发）
 
 var yu_zhong: YuZhong  # 鱼种数据（生成器在 add_child 前注入；_ready 里读它）
-var _neng_li: NengLi = null  # 鱼种能力（只读引用）：电鳐放电/蓑鲉反毒都从这里查数值
+var _neng_li: NengLi = null  # 鱼种能力（只读引用）：电鳗放电/蓑鲉反毒都从这里查数值
 var tixing := 1.0  # 体型=当前血量：被咬会变小，被吃归零
 var deng_ji_nei := 1  # 隐藏等级（经验曲线索引，只涨不降）：被咬掉 tixing 不倒扣经验进度
 var jing_yan_nei := 0  # 隐藏经验条：玩家看不见；吃东西涨，涨满升级=体型 +1（v0.4 生态三件套）
@@ -50,7 +50,7 @@ var gong_ji_yu_wang := true  # 攻击欲望：路人鱼 false，只在被咬时�
 var zui_ba := 1.0  # 嘴巴系数（鱼种表 zui_ba）：咬击伤害的倍率，决定“咬小大鱼”的快慢
 var zhuang_tai := ZhuangTai.YOU_DANG  # 当前状态（调试/测试可读）
 var si_le := false  # 已被吃掉（queue_free 前先立旗）：防止同一帧被重复咬/重复吞
-var dian_ma := 0.0  # 电麻条（0~100）：被电鳐电到会涨，满了失控
+var dian_ma := 0.0  # 电麻条（0~100）：被电鳗电到会涨，满了失控
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉毒到会涨，满了失控
 var shi_boss := false  # 首领：不参与普通鱼群刷新；不逃跑，被咬到残血才算击败（TASK-017）
 var xun_luo_dian: Array[Vector2] = []  # 首领巡逻点（世界坐标）：Main 注入 4 个，循环游荡
@@ -69,7 +69,7 @@ var _dai_chou_hen = null  # 反应延迟结束后才记账的偷袭者
 var _yan_se_tween: Tween
 var _yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时不动、不咬、不吃
 var _kong_zhi_shi_jian := 0.0  # 失控累计时间（驱动抽搐表现）
-var _dian_ji_ji_shi := 0.0  # 电鳐放电倒计时
+var _dian_ji_ji_shi := 0.0  # 电鳗放电倒计时
 var _neng_li_leng_que := 0.0  # 能力冷却（旗鱼突进/金枪鱼洞察/巨口鱼潜伏共用）
 var _ruo_dian_sheng_yu := 0.0  # 弱点洞察剩余（秒）：NPC 金枪鱼咬玩家时加伤
 var _ruo_dian_bei_lv := 1.0  # 弱点洞察加伤倍率（起手时按能力表读）
@@ -89,6 +89,8 @@ var _xun_luo_suo_yin := 0  # 当前巡逻目标下标
 var _xun_luo_ting_liu := 0.0  # 在巡逻点停留剩余（秒）
 var _gao_liang_sheng_yu := 0.0  # 声呐/猎手直觉高亮剩余（秒）：泛黄显示，纯表现
 var _tun_shi_ji_shi := 0.0  # 首领吞食检查节流计时（秒）
+var _gong_ci := 0  # 咬击动画代次：连咬时旧协程回来不把新动画切掉
+var _zai_gong_ji := false  # 咬击动画播放中：红光让位，避免两层帧错位
 
 @onready var rou_qu: Area2D = $RouQu  # 鱼肉区：NPC 也能吃鱼肉（策划案 8.1「任何鱼可进食」）
 
@@ -125,7 +127,7 @@ func _ready() -> void:
 	_hong_guang.material = cai
 	_hong_guang.visible = false
 	add_to_group("yu_npc")  # 同类互相索敌、互相吃：状态机靠这个组扫附近
-	# 电鳐错峰放电：一群鱼不会同一帧全开火；间隔读能力表（npc_jian_ge），改表零代码
+	# 电鳗错峰放电：一群鱼不会同一帧全开火；间隔读能力表（npc_jian_ge），改表零代码
 	if _neng_li != null and _neng_li.bian_hao == &"fang_dian_ma_bi":
 		_dian_ji_ji_shi = randf_range(0.0, _neng_li.npc_jian_ge if _neng_li.npc_jian_ge > 0.0 else DIAN_JI_JIAN_GE)
 
@@ -161,7 +163,7 @@ func _process(delta: float) -> void:
 	if _gao_liang_sheng_yu > 0.0:
 		$AnimatedSprite2D.modulate = Color(1.0, 0.92, 0.45)  # 声呐/猎手直觉标记：泛黄一瞬
 	$AnimatedSprite2D.rotation = 0.0
-	_fang_dian(delta)  # 电鳐：醒着才放电（被动能力）
+	_fang_dian(delta)  # 电鳗：醒着才放电（被动能力）
 	if bei_xi != null:
 		# 被吸中：朝玩家游（吸力略快于自身游速）；路自己走（设计决策 1A：NPC 自决）
 		var cha_xi: Vector2 = bei_xi.global_position - position
@@ -201,6 +203,18 @@ func _si_kao() -> void:
 	if _tao_pao_ji_shi > 0.0:
 		_mu_biao = null
 		zhuang_tai = ZhuangTai.TAO_PAO
+		return
+	# 诱饵优先于一切常规目标：气泡是主动技吐出来的“假猎物”，腐肉是咬出来的发光肉
+	# 放在 gong_ji_yu_wang 之前：连不主动攻击的路人鱼也会被诱饵骗走
+	var qi := _zhao_you_er_qi_pao()
+	if qi != null:
+		_mu_biao = qi
+		zhuang_tai = ZhuangTai.ZHUI_ZHU
+		return
+	var fu_rou := _zhao_fu_rou_you_er()
+	if fu_rou != null:
+		_mu_biao = fu_rou
+		zhuang_tai = ZhuangTai.ZHUI_ZHU
 		return
 	if not gong_ji_yu_wang:
 		_mu_biao = null
@@ -255,6 +269,29 @@ func _xing_dong(delta: float) -> void:
 		_mu_biao = null
 	if not is_instance_valid(_mu_biao):
 		_you_dang(delta)
+		return
+	# 诱饵气泡：游到嘴边就咬破；被咬破由气泡自己播特效（满档会炸晕咬它的鱼）
+	if _mu_biao is YouErQiPao:
+		var qi := _mu_biao as YouErQiPao
+		var cha_qi: Vector2 = qi.global_position - global_position
+		if cha_qi.length() <= _yao_ji_ju_li():
+			qi.bei_yao(self)
+			_mu_biao = null
+			zhuang_tai = ZhuangTai.YOU_DANG
+			return
+		_xiang(cha_qi.normalized(), delta)
+		return
+	# 腐肉诱饵：游到发光的肉旁边直接吃掉，涨隐藏经验（和路过吃同一套账）
+	if _mu_biao is RouKuai:
+		var rou := _mu_biao as RouKuai
+		var cha_rou: Vector2 = rou.global_position - global_position
+		if cha_rou.length() <= _yao_ji_ju_li() and rou.ke_chi:
+			jia_jing_yan_nei(rou.jing_yan)
+			rou.bei_chi()
+			_mu_biao = null
+			zhuang_tai = ZhuangTai.YOU_DANG
+			return
+		_xiang(cha_rou.normalized(), delta)
 		return
 	if _chang_shi_neng_li():
 		return  # 旗鱼突进 / 剑鱼穿刺：本帧启动位移，交给专用分支
@@ -459,13 +496,17 @@ func shi_fang_gao_liang(shi_chang: float) -> void:
 	_gao_liang_sheng_yu = maxf(_gao_liang_sheng_yu, shi_chang)
 
 
-func diao_rou(shu: int, mei_kuai_ti_xing := MEI_KUAI_ROU_TI_XING) -> void:
+func diao_rou(shu: int, mei_kuai_ti_xing := MEI_KUAI_ROU_TI_XING,
+		fu_rou_sheng_yu := 0.0, xi_yin_ban_jing := 0.0) -> void:
 	# 被玩家的撕裂齿咬掉肉：往四周随机方向弹出去（镜像玩家版 diao_rou；NPC 互咬不掉肉）
+	# fu_rou_sheng_yu/xi_yin_ban_jing 只给「腐肉诱饵」用：>0 时这块肉会发光并吸引附近的鱼
 	if si_le:
 		return
 	for i in range(shu):
 		var rou: RouKuai = ROU_KUAI_CHANGJING.instantiate()
 		rou.ti_xing_liang = mei_kuai_ti_xing  # 每块肉携带的体型量：玩家吃回来时 ÷1.5
+		rou.fu_rou_you_er_sheng_yu = fu_rou_sheng_yu
+		rou.xi_yin_ban_jing = xi_yin_ban_jing
 		var jiao := randf_range(0.0, TAU)
 		rou.position = position + Vector2(cos(jiao), sin(jiao)) * randf_range(46.0, 58.0)
 		rou.position.x = clampf(rou.position.x, 40.0, Yu.DI_TU_DA_XIAO.x - 40.0)
@@ -481,6 +522,7 @@ func _yao(mu) -> void:
 	if _yao_ji_leng_que > 0.0:
 		return
 	_yao_ji_leng_que = YAO_JI_LENG_QUE
+	_bo_gong_ji()  # 咬中同帧播 4 帧咬击动画：有素材的鱼种才播，没有就沿用游动帧
 	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, zui_ba)
 	if _qian_fu_zhun_bei:
 		shang_hai *= _neng_li.shu_zhi  # 巨口鱼潜伏：下一口 ×2
@@ -491,6 +533,28 @@ func _yao(mu) -> void:
 	if mu is Yu:
 		YinXiang.fang(&"yao", -4.0)  # 咬到玩家才出声：NPC 互咬一屏会太吵
 	mu.shou_dao_yao_ji(shang_hai, self)
+
+
+func _bo_gong_ji() -> void:
+	# 咬击动画：临时把本体 SpriteFrames 换成 gong 四帧，播完切回 you
+	# 攻击帧只有 0.4 秒（4 帧 @10fps）；用代次 _gong_ci 防止连咬时旧计时器把新动画打断
+	if yu_zhong == null or yu_zhong.gong_ji_dong_hua == null:
+		return
+	var ti: AnimatedSprite2D = $AnimatedSprite2D
+	_gong_ci += 1
+	var ci := _gong_ci
+	_zai_gong_ji = true
+	ti.sprite_frames = yu_zhong.gong_ji_dong_hua
+	ti.play(&"gong")
+	if _hong_guang != null:
+		_hong_guang.visible = false
+	await get_tree().create_timer(0.4).timeout
+	if not is_instance_valid(self) or ci != _gong_ci:
+		return
+	_zai_gong_ji = false
+	if yu_zhong != null and yu_zhong.dong_hua != null:
+		ti.sprite_frames = yu_zhong.dong_hua
+		ti.play(&"you")
 
 
 func xian_shi_deng_ji(shi_chang: float) -> void:
@@ -719,7 +783,7 @@ func _kong_zhi_zhong(delta: float) -> void:
 
 
 func _fang_dian(delta: float) -> void:
-	# 电鳐：能力表 bian_hao = fang_dian_ma_bi 的鱼，每 npc_jian_ge 秒电一次身边的鱼与玩家
+	# 电鳗：能力表 bian_hao = fang_dian_ma_bi 的鱼，每 npc_jian_ge 秒电一次身边的鱼与玩家
 	# 数值走 npc_zhi()：玩家拿 100（一次满条），NPC 用 55（保留原来的两下节奏）
 	if _neng_li == null or _neng_li.bian_hao != &"fang_dian_ma_bi":
 		return
@@ -848,6 +912,36 @@ func _zhou_wei_yu() -> Array:
 	return jie_guo
 
 
+func _zhao_you_er_qi_pao() -> YouErQiPao:
+	# 找感知内最近的诱饵气泡：气泡自带吸引半径，只有圈里的鱼才被骗
+	var zui_jin: YouErQiPao = null
+	var zui_jin_ju := INF
+	for node in get_tree().get_nodes_in_group("you_er_qi_pao"):
+		var qi := node as YouErQiPao
+		if qi == null or not is_instance_valid(qi):
+			continue
+		var ju := global_position.distance_to(qi.global_position)
+		if ju <= qi.ban_jing and ju < zui_jin_ju:
+			zui_jin_ju = ju
+			zui_jin = qi
+	return zui_jin
+
+
+func _zhao_fu_rou_you_er() -> RouKuai:
+	# 找腐肉诱饵：只认被玩家咬出来的“发光肉”，普通鱼肉不吸鱼
+	var zui_jin: RouKuai = null
+	var zui_jin_ju := INF
+	for node in get_tree().get_nodes_in_group("rou_kuai"):
+		var rou := node as RouKuai
+		if rou == null or not is_instance_valid(rou) or rou.fu_rou_you_er_sheng_yu <= 0.0:
+			continue
+		var ju := global_position.distance_to(rou.global_position)
+		if ju <= rou.xi_yin_ban_jing and ju < zui_jin_ju:
+			zui_jin_ju = ju
+			zui_jin = rou
+	return zui_jin
+
+
 func _zhao_wan_jia() -> Yu:
 	if _wan_jia == null or not is_instance_valid(_wan_jia):
 		_wan_jia = get_tree().get_first_node_in_group("player") as Yu
@@ -873,6 +967,9 @@ func _geng_xin_hong_guang(delta: float) -> void:
 	# “玩家能不能吃我”与 yu.gd 嘴圈的判定共用同一常数 Yu.TUN_CHI_BEI_LV——两边永不分叉
 	if _wan_jia == null:
 		_wan_jia = get_tree().get_first_node_in_group("player") as Yu
+	if _zai_gong_ji:
+		_hong_guang.visible = false  # 咬击帧和游动帧不是同一套图：红光层先让位
+		return
 	if _wan_jia == null or _wan_jia.tixing < tixing * Yu.TUN_CHI_BEI_LV:
 		_hong_guang.visible = false  # 吃不下 / 没有玩家：关灯，少画一层
 		return

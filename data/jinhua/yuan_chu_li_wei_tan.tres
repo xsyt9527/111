@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/yuan_chu_li_wei_tan.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_yuan_chu_li_wei_tan_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"yuan_chu_li_wei_tan"
+ming_zi = "原初利维坦"
+ji_yu_bian_hao = &"fen_yu"
+ji_yu_ming = "鲸鲨"
+fen_zhi = 1
+miao_shu = "暗金色装甲鳞片，巨口变黑洞般的深渊；吞吐海水引发大漩涡，纯粹深海霸主。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

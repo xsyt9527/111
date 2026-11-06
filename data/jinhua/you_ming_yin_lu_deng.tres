@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/you_ming_yin_lu_deng.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_you_ming_yin_lu_deng_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"you_ming_yin_lu_deng"
+ming_zi = "幽冥引路灯"
+ji_yu_bian_hao = &"ye_deng_long_yu"
+ji_yu_ming = "灯笼鱼"
+fen_zhi = 0
+miao_shu = "半透明幽灵鱼，发光器脱离身体化作悬浮鬼火；引诱迷失的船只触礁。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

@@ -36,16 +36,50 @@ func _ready() -> void:
 	layer = 100  # 盖住技能按钮/摇杆/其他 UI
 	_rng.randomize()
 	ZhangBen.sheng_ji.connect(_on_sheng_ji)  # sheng_ji 第三家听众（玩家/经验条之后）
+	ZhangBen.jin_hua_wan_cheng.connect(_on_jin_hua_wan_cheng)  # 进化选完，接着弹这一级欠下的能力
+	# 策划案 v0.18 8.6：暂缓进化要立刻还账（不再让位）；演出期间欠账，演出结束才弹
+	ZhangBen.jin_hua_zan_huan_wan.connect(_huan_dai_chu)
+	ZhangBen.jin_hua_yan_chu_jie_shu.connect(_on_jin_hua_yan_chu_jie_shu)
 	for i in ming_cheng.size():
 		ming_cheng[i].pressed.connect(_on_neng_li_dian.bind(i))  # 按钮带序号回调
 
 
+func _huan_dai_chu() -> void:
+	# 还一轮欠账：弹窗已开 / 无欠账 → 什么都不做（剩余欠账由选完后的回调接着还）
+	if _dai_chu_ci_shu <= 0 or visible:
+		return
+	_dai_chu_ci_shu -= 1  # 这一弹就是还账：不清掉的话选完能力会以为还欠一轮，再弹一次
+	_kai_shi()
+
+
 func _on_sheng_ji(_xin_deng_ji: int) -> void:
 	# 升级了：弹窗还开着就排队，选完再弹；否则立刻开下一轮
+	# 6 级优先让位给进化三选一（同一级欠一次能力选择，先记在排队数里，进化选完补弹）
+	# 已点了「稍后再选」：不让位，立刻照常弹——否则暂缓期间升级三选一永久卡住
+	if ZhangBen.jin_hua_dan_chuang_zai_chang and ZhangBen.ke_yi_jin_hua() \
+			and not ZhangBen.jin_hua_zan_huan:
+		_dai_chu_ci_shu += 1
+		return
+	if ZhangBen.jin_hua_yan_chu_zhong:
+		_dai_chu_ci_shu += 1  # 演出中不弹窗（会暂停盖住演出），演出结束再还
+		return
 	if visible:
 		_dai_chu_ci_shu += 1
 		return
 	_kai_shi()
+
+
+func _on_jin_hua_wan_cheng(_jin_hua: JinHua) -> void:
+	# 进化选完：把 6 级欠下的那一轮三选一补上（没有欠账就什么都不做）
+	# 演出中先欠着：1.7 秒后 jin_hua_yan_chu_jie_shu 到了再弹，别让暂停盖住演出
+	if ZhangBen.jin_hua_yan_chu_zhong:
+		return
+	_huan_dai_chu()
+
+
+func _on_jin_hua_yan_chu_jie_shu(_jin_hua: JinHua) -> void:
+	# 进化演出结束：这时才补弹演出期间欠下的升级三选一
+	_huan_dai_chu()
 
 
 func _kai_shi() -> void:

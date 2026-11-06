@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/hai_shen_xun_yang_ju.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_hai_shen_xun_yang_ju_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"hai_shen_xun_yang_ju"
+ming_zi = "海神巡洋驹"
+ji_yu_bian_hao = &"zong_yu"
+ji_yu_ming = "大眼金枪鱼"
+fen_zhi = 1
+miao_shu = "鱼鳍化金色半透明鬃毛，鱼尾变海马卷尾，身披骨质重甲；海神波塞冬的冲锋坐骑。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

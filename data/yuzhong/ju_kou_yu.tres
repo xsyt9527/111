@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="YuZhong" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="YuZhong" load_steps=6 format=3]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
 [ext_resource type="Texture2D" uid="uid://dr03y6ghov06t" path="res://assets/sucai/shenhai_yu/ju_kou_yu.png" id="2_tie_tu"]
 [ext_resource type="Resource" path="res://data/nengli/qian_fu_tu_xi.tres" id="3_neng_li"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/ju_kou_yu_4zhen.tres" id="9_dong_hua"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/ju_kou_yu_gong_4zhen.tres" id="10_gong"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
@@ -14,4 +15,5 @@ zui_ba = 1.5
 sudu_fanwei = Vector2(70, 110)
 tie_tu = ExtResource("2_tie_tu")
 dong_hua = ExtResource("9_dong_hua")
+gong_ji_dong_hua = ExtResource("10_gong")
 neng_li = ExtResource("3_neng_li")

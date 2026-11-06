@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1_xing_tai")
 bian_hao = &"dian_yao"
-ming_zi = "电鳐"
+ming_zi = "电鳗"
 miao_shu = "厚实开局：Lv.1 体型更大、游得更慢，自带放电麻痹。"
 dong_hua = ExtResource("2_dong_hua")
 tie_tu = ExtResource("4_tie_tu")

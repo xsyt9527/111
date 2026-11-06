@@ -10,12 +10,13 @@ enum LeiXing { ZHU_DONG, BEI_DONG }  # 主动 / 被动
 @export var tu_biao: Texture2D = null  # 技能图标（Icon）；为空时 UI 回退纯文字，旧数据不用一次补齐
 @export var miao_shu := ""  # 一句话说明（卡面小字）
 @export var lai_yuan := ""  # 来源鱼名（只用于卡面显示，不参与逻辑）
+@export var suoshu_xing_tai: StringName = &""  # 进化专属技归属的形态 id；空 = 通用/鱼种能力
 @export var lei_xing := LeiXing.ZHU_DONG  # 主动（占唯一技能槽）/ 被动（可叠层）
 @export var leng_que := 0.0  # 主动冷却（秒）；被动为 0
 @export var chi_xu := 0.0  # 主动持续（秒）；0 = 瞬发
 @export var ban_jing := 0.0  # 放电半径 / NPC 突进触发半径（世界像素）
 @export var shu_zhi := 0.0  # 主数值：电麻量 / 反毒量 / 速度倍率 / 伤害倍率
-@export var npc_shu_zhi := 0.0  # NPC 覆写主数值；0 = 回退 shu_zhi（电鳐 55 就是靠它）
+@export var npc_shu_zhi := 0.0  # NPC 覆写主数值；0 = 回退 shu_zhi（电鳗 55 就是靠它）
 @export var fu_shu_zhi := 0.0  # 副数值：冲撞的冲刺速度倍率
 @export var npc_jian_ge := 0.0  # NPC 冷却（秒）：同一能力在 NPC 身上多久能用一次
 @export var ceng_jia := 0.0  # 被动每层增量；主动为 0
@@ -28,8 +29,13 @@ func shi_zhu_dong() -> bool:
 	return lei_xing == LeiXing.ZHU_DONG
 
 
+func shi_zhuan_shu() -> bool:
+	# 进化专属技：填了归属形态 id 就只认那一个形态，永不进通用池/成就兑换
+	return suoshu_xing_tai != &""
+
+
 func npc_zhi() -> float:
-	# NPC 数值：有覆写用覆写，没覆写用主值——电鳐玩家 100 / NPC 55 就是这里分叉
+	# NPC 数值：有覆写用覆写，没覆写用主值——电鳗玩家 100 / NPC 55 就是这里分叉
 	return npc_shu_zhi if npc_shu_zhi > 0.0 else shu_zhi
 
 

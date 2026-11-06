@@ -22,6 +22,8 @@
 [ext_resource type="Script" path="res://scripts/neng_li_ui.gd" id="19_nengliui"]
 [ext_resource type="PackedScene" path="res://scenes/SheZhi.tscn" id="20_shezhi"]
 [ext_resource type="Script" path="res://scripts/qi_pao_ceng.gd" id="22_qipao"]
+[ext_resource type="PackedScene" path="res://scenes/JinHuaDanChuang.tscn" id="23_jinhua"]
+[ext_resource type="PackedScene" path="res://scenes/JinHuaYanChu.tscn" id="24_yanchu"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -143,35 +145,20 @@ offset_right = 324.0
 offset_bottom = 206.0
 show_percentage = false
 
-[node name="DiTuUI" type="CanvasLayer" parent="."]
+[node name="ShiJianUI" type="CanvasLayer" parent="."]
 
-[node name="DiTuMing" type="Label" parent="DiTuUI"]
-offset_left = 900.0
-offset_top = 52.0
-offset_right = 1256.0
+[node name="ShiJianLabel" type="Label" parent="ShiJianUI"]
+offset_left = 340.0
+offset_top = 48.0
+offset_right = 940.0
 offset_bottom = 80.0
 theme_override_colors/font_color = Color(0.92, 0.97, 1, 0.95)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.65)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 20
-text = "正中 · 核心海山交汇大殿"
-horizontal_alignment = 2
-
-[node name="ShiJianUI" type="CanvasLayer" parent="."]
-
-[node name="ShiJianLabel" type="Label" parent="ShiJianUI"]
-offset_left = 960.0
-offset_top = 12.0
-offset_right = 1256.0
-offset_bottom = 44.0
-theme_override_colors/font_color = Color(0.92, 0.97, 1, 0.95)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.65)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 22
 text = "剩余 10:00"
-horizontal_alignment = 2
+horizontal_alignment = 1
 
 [node name="BossUI" type="CanvasLayer" parent="."]
 
@@ -229,6 +216,33 @@ theme_override_colors/font_color = Color(0.76, 1, 0.82, 0.95)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="JinHuaTiShi" type="Button" parent="NengLiUI"]
+visible = false
+offset_left = 990.0
+offset_top = 22.0
+offset_right = 1250.0
+offset_bottom = 92.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
+theme_override_font_sizes/font_size = 20
+text = "进化待选择\n点此继续"
+
+[node name="DiaoShiShengJi" type="Button" parent="NengLiUI"]
+visible = false
+offset_left = 540.0
+offset_top = 650.0
+offset_right = 740.0
+offset_bottom = 700.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
+theme_override_font_sizes/font_size = 18
+text = "测试升级 +1"
+tooltip_text = "仅调试构建显示：立刻升 1 级"
+
+[node name="JinHuaDanChuang" parent="." instance=ExtResource("23_jinhua")]
+
+[node name="JinHuaYanChu" parent="." instance=ExtResource("24_yanchu")]
 
 [node name="NengLiDanChuang" parent="." instance=ExtResource("12_danchuang")]
 

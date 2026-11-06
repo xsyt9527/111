@@ -1,0 +1,143 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua_dan_chuang.gd" id="1_jinhua"]
+
+[node name="JinHuaDanChuang" type="CanvasLayer"]
+layer = 110
+process_mode = 3
+script = ExtResource("1_jinhua")
+
+[node name="BanDi" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 0.68)
+
+[node name="BiaoTi" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 54.0
+offset_right = 940.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 0.93, 0.75, 1)
+theme_override_font_sizes/font_size = 48
+text = "进 化 ！选 择 你 的 分 支"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TiShi" type="Label" parent="."]
+offset_left = 240.0
+offset_top = 128.0
+offset_right = 1040.0
+offset_bottom = 162.0
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 0.95)
+theme_override_font_sizes/font_size = 20
+text = "Lv.6 质变 · 每局一次 · 全数值 ×1.5 · 获得该分支专属技能与被动"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShaoHou" type="Button" parent="."]
+offset_left = 1010.0
+offset_top = 54.0
+offset_right = 1230.0
+offset_bottom = 104.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "稍后再选"
+
+[node name="YanChuDingshi" type="Timer" parent="."]
+process_mode = 1
+wait_time = 1.7
+one_shot = true
+
+[node name="KaPianZu" type="HBoxContainer" parent="."]
+offset_left = 150.0
+offset_top = 180.0
+offset_right = 1130.0
+offset_bottom = 690.0
+theme_override_constants/separation = 40
+
+[node name="Ka1" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(300, 480)
+
+[node name="KaZhong1" type="VBoxContainer" parent="KaPianZu/Ka1"]
+theme_override_constants/separation = 10
+
+[node name="Tu" type="TextureRect" parent="KaPianZu/Ka1/KaZhong1"]
+custom_minimum_size = Vector2(280, 190)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FenZhi" type="Label" parent="KaPianZu/Ka1/KaZhong1"]
+theme_override_font_sizes/font_size = 20
+text = "东方神话"
+horizontal_alignment = 1
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka1/KaZhong1"]
+custom_minimum_size = Vector2(280, 64)
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "形态名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka1/KaZhong1"]
+custom_minimum_size = Vector2(280, 170)
+theme_override_font_sizes/font_size = 15
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Ka2" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(300, 480)
+
+[node name="KaZhong2" type="VBoxContainer" parent="KaPianZu/Ka2"]
+theme_override_constants/separation = 10
+
+[node name="Tu" type="TextureRect" parent="KaPianZu/Ka2/KaZhong2"]
+custom_minimum_size = Vector2(280, 190)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FenZhi" type="Label" parent="KaPianZu/Ka2/KaZhong2"]
+theme_override_font_sizes/font_size = 20
+text = "西方神话"
+horizontal_alignment = 1
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka2/KaZhong2"]
+custom_minimum_size = Vector2(280, 64)
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "形态名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka2/KaZhong2"]
+custom_minimum_size = Vector2(280, 170)
+theme_override_font_sizes/font_size = 15
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Ka3" type="PanelContainer" parent="KaPianZu"]
+custom_minimum_size = Vector2(300, 480)
+
+[node name="KaZhong3" type="VBoxContainer" parent="KaPianZu/Ka3"]
+theme_override_constants/separation = 10
+
+[node name="Tu" type="TextureRect" parent="KaPianZu/Ka3/KaZhong3"]
+custom_minimum_size = Vector2(280, 190)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FenZhi" type="Label" parent="KaPianZu/Ka3/KaZhong3"]
+theme_override_font_sizes/font_size = 20
+text = "能力异化"
+horizontal_alignment = 1
+
+[node name="MingCheng" type="Button" parent="KaPianZu/Ka3/KaZhong3"]
+custom_minimum_size = Vector2(280, 64)
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "形态名"
+
+[node name="MiaoShu" type="Label" parent="KaPianZu/Ka3/KaZhong3"]
+custom_minimum_size = Vector2(280, 170)
+theme_override_font_sizes/font_size = 15
+text = "描述"
+horizontal_alignment = 1
+autowrap_mode = 3

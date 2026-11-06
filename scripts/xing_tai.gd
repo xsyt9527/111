@@ -6,6 +6,8 @@ class_name XingTai
 @export var bian_hao: StringName = &""  # 唯一键：存档、选择页、测试都靠它
 @export var ming_zi := ""  # 显示名（选择页卡片大字）
 @export var miao_shu := ""  # 一句话说明（选择页卡片小字）
+@export var ji_yu_bian_hao: StringName = &""  # 所属鱼种 id（对应 JinHua 分组）；空 = 与 bian_hao 相同
+@export var pai_xu := 100  # 选择页排序：小在前；玩家 0、首领最大
 @export var dong_hua: SpriteFrames = null  # 必须含 "you" 动画；4 帧游动动画
 @export var tie_tu: Texture2D = null  # 选择页静态侧视预览（3 视图）；为空时退回动画首帧
 @export var kai_ju_deng_ji := 0  # 开局等级（同时决定开局体型/血量上限）
@@ -14,3 +16,8 @@ class_name XingTai
 @export var zhuan_xiang_ji_su := 7.0  # 初始转向基准速率（弧度/秒）
 @export var kai_ju_neng_li: NengLi = null  # 开局自带主动能力；null = 无
 @export var jie_suo_sheng_li_ci_shu := 0  # 累计胜利达到几次解锁
+
+
+func yu_zhong_bian_hao() -> StringName:
+	# 当前形态归属的鱼种：决定 Lv.6 进化用哪一组三分支；旧数据没填则把自己当鱼种
+	return ji_yu_bian_hao if ji_yu_bian_hao != &"" else bian_hao

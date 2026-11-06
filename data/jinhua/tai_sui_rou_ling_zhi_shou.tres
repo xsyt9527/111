@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/tai_sui_rou_ling_zhi_shou.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_tai_sui_rou_ling_zhi_shou_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"tai_sui_rou_ling_zhi_shou"
+ming_zi = "太岁肉灵芝兽"
+ji_yu_bian_hao = &"ao_tu_wo_niu_yu"
+ji_yu_ming = "凹凸蜗牛鱼"
+fen_zhi = 0
+miao_shu = "身体化巨大果冻，切块即速再生，凝胶反弹一切物理攻击。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

@@ -70,6 +70,16 @@ offset_bottom = 665.0
 theme_override_font_sizes/font_size = 22
 text = "换形态"
 
+[node name="ChengJiuZhi" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 32.0
+offset_right = 440.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 0
+
 [node name="JieSuoTiShi" type="Label" parent="."]
 visible = false
 offset_left = 440.0

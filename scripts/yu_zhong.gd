@@ -5,6 +5,7 @@ class_name YuZhong
 
 @export var tie_tu: Texture2D  # 这种鱼的静态侧视贴图（3 视图里取的最宽那张）：红光层与兜底显示用
 @export var dong_hua: SpriteFrames = null  # 4 帧游动动画（必须含 "you"）：NPC 用 AnimatedSprite2D 播放
+@export var gong_ji_dong_hua: SpriteFrames = null  # 4 帧咬击动画（含 "gong"）：咬中时临时替换游动帧，播完切回
 @export var dengji := 1  # 体型等级（1~10）：同时决定 NPC 的体型，玩家需高 1 级才能整吞
 @export var sudu_fanwei := Vector2(60.0, 160.0)  # 游速随机范围（像素/秒）
 @export var fenzhi := 1  # 吃掉它得多少分（TASK-005 经验记账用）

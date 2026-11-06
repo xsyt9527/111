@@ -17,8 +17,11 @@ var _an_zhu: Array[bool] = []  # 每个按钮当前是否按住：多指同时�
 var _an_shi_jian: Array[float] = []  # 每个按钮已按住秒数：到 0.25 才显示范围
 var _fan_wei_suo_yin := -1  # 正在显示范围的按钮下标；-1 = 当前没显示
 var _fan_wei = null  # 范围指示节点（ji_neng_fan_wei.gd）：首次长按才创建，全局只建一个
+var _ti_shi_mai_dong := 0.0  # 进化提示脉动相位：用正弦自己呼吸，不靠 Tween（暂停时不冻结）
 
 @onready var bei_dong_label: Label = $BeiDongLabel
+@onready var jin_hua_ti_shi: Button = $JinHuaTiShi  # 「进化待选择」脉动提示（策划案 v0.18 8.6）
+@onready var diao_shi_sheng_ji: Button = $DiaoShiShengJi  # 开发测试用：局内直接升 1 级
 
 
 func _ready() -> void:
@@ -31,6 +34,11 @@ func _ready() -> void:
 		bei_dong_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT  # 换边后贴左缘
 	# 死亡会立刻切结算场景，指示节点跟着释放；信号里再收一次，保证切场景前那一帧不残留
 	ZhangBen.si_wang.connect(_on_si_wang)
+	jin_hua_ti_shi.visible = false  # 平时藏着：只有点了「稍后再选」才脉动提醒
+	jin_hua_ti_shi.pressed.connect(_on_jin_hua_ti_shi_pressed)
+	# 测试升级按钮：编辑器与 debug 导出可见，正式 release 构建自动隐藏
+	diao_shi_sheng_ji.visible = OS.is_debug_build()
+	diao_shi_sheng_ji.pressed.connect(_on_diao_shi_sheng_ji_pressed)
 
 
 func _process(delta: float) -> void:
@@ -62,6 +70,33 @@ func _process(delta: float) -> void:
 		an.modulate = Color.WHITE if ke_fang else Color(0.62, 0.62, 0.62, 0.85)
 	_geng_xin_chang_an(delta, wan)
 	_geng_xin_bei_dong()
+	_geng_xin_jin_hua_ti_shi(delta)
+
+
+func _geng_xin_jin_hua_ti_shi(delta: float) -> void:
+	# 进化待选择：账本读数决定显隐；显示时字号/透明度正弦脉动，提醒玩家点回来选
+	var dai_xuan := ZhangBen.jin_hua_dai_xuan()
+	jin_hua_ti_shi.visible = dai_xuan
+	if not dai_xuan:
+		_ti_shi_mai_dong = 0.0  # 归零：下次暂缓从最亮开始，不接着上次相位
+		return
+	_ti_shi_mai_dong += delta
+	var liang := 0.55 + 0.45 * (0.5 + 0.5 * sin(_ti_shi_mai_dong * 5.0))
+	jin_hua_ti_shi.modulate = Color(1.0, 0.95, 0.8, liang)
+
+
+func _on_jin_hua_ti_shi_pressed() -> void:
+	# 点提示 = 重新打开进化三选一：按组找弹窗，不写死节点路径（与 JinHuaDanChuang 自登记对应）
+	var dan_chuang := get_tree().get_first_node_in_group(&"jin_hua_dan_chuang")
+	if dan_chuang != null:
+		dan_chuang.zai_kai()
+
+
+func _on_diao_shi_sheng_ji_pressed() -> void:
+	# 开发测试按钮：正式构建里按钮不显示；这里再挡一层，防误触发
+	if not OS.is_debug_build():
+		return
+	ZhangBen.tiao_shi_sheng_yi_ji()
 
 
 func _tong_bu_an_niu(shu: int) -> void:

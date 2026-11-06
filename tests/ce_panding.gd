@@ -140,7 +140,7 @@ func _ready() -> void:
 	await get_tree().physics_frame  # 等一帧：三个圈注册进物理世界
 	assert_eq(1 if yu.get_node("AnimatedSprite2D").sprite_frames == load("res://data/donghua/ao_tu_wo_niu_yu_4zhen.tres") else 0,
 			1, "玩家默认外观是凹凸蜗牛鱼 4 帧动画")
-	assert_eq(_xiang_deng(zhang_ben_tixing(yu), 1.0), 1, "开局 Lv.0：当前体型（血量）应为基础 1.0")
+	assert_eq(_xiang_deng(zhang_ben_tixing(yu), 2.0), 1, "开局统一 Lv.1：当前体型（血量）应为 2.0")
 	_she_deng_ji(3)  # 测试从 Lv.3 开始：血 4.0，方便做“吃小鱼 / 挨大鱼”两类用例
 
 	# ---- 用例 0b：朝向死区（纯上下时 cos≈0，浮点符号不该把鱼头甩向左边）----
@@ -172,7 +172,7 @@ func _ready() -> void:
 	xiao2.position = yu.position
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 3.0 + 1.0 / 1.5), 1, "吃掉一条 1 级鱼应回 1÷1.5 格血（3.0 → 3.67）")
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 3.0 + (1.0 / 1.5) * 1.2), 1, "吃掉一条 1 级鱼应回 0.8 格血（1÷1.5×1.2 加成，3.0 → 3.8）")
 	assert_eq(_xiang_deng(ZhangBen.ji_e, 60.0), 1, "吃掉路人鱼应回 10 饥饿（50 → 60）")
 
 	# ---- 用例 2：大鱼进伤区 → 扣当前体型，不动等级 ----
@@ -447,6 +447,27 @@ func _ready() -> void:
 	assert_eq(ZhangBen.jing_yan, lan_zhong.fenzhi, "消化完成才把经验记进账本（1 级鱼 +1）")
 	assert_eq(1 if yu.xiao_hua_jin_du == 0.0 else 0, 1, "消化完槽应清空")
 
+	# ---- 用例 6j2：吃 NPC 鱼体型收益 +20%（缺口 28，2026-11-03 拍板；鱼肉块不在此列）----
+	ZhangBen.dang_qian_ti_xing = 1.0  # 压到 1.0：吃一口 2 级鱼（÷1.5×1.2=1.6）不会撞到 Lv.5 的 6.0 上限
+	ZhangBen.ji_e = 100.0
+	yu.zi_dong_yao_ji = false
+	yu.wudi = true
+	var chi_zhong: YuZhong = load("res://data/yuzhong/cheng_yu.tres")
+	var chi_can: YuNpc = _zao_yu(2, chi_zhong)
+	chi_can.position = yu.position + Vector2(400, 0)  # 远离嘴圈：只测吞吃业务，不让物理时序插一脚
+	await get_tree().physics_frame
+	var chi_ti := chi_can.tixing
+	var qi_wang_hui := ZhangBen.chi_wu_hui_ti_xing(chi_ti) * Yu.CHI_YU_TI_XING_BEI
+	assert_eq(_xiang_deng(qi_wang_hui, ZhangBen.chi_wu_hui_ti_xing(chi_ti) * 1.2), 1,
+			"加成幅度 = 基础体型收益 ×1.2（+20%）")
+	yu._chi_diao(chi_can)
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 1.0 + qi_wang_hui), 1,
+			"吃 NPC 鱼：体型收益按 +20% 结算")
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_eq(1 if not is_instance_valid(chi_can) else 0, 1, "吞鱼收益用例：目标应被吃掉")
+	yu._xiao_hua.clear()  # 清掉这一口的消化槽：别让后面的用例白捡经验
+
 	# ---- 用例 6k：控制条（电麻/毒晕满 100 → 失控 2 秒）----
 	ZhangBen.dian_ma = 0.0
 	ZhangBen.du_yun = 0.0
@@ -472,14 +493,29 @@ func _ready() -> void:
 	yu.fang_xiang = Vector2.ZERO
 	assert_eq(1 if not ZhangBen.zai_kong_zhi() else 0, 1, "清空失控计时即可恢复")
 
-	# ---- 用例 6l：蓑鲉毒人 / 电鳐电人 / NPC 自己也会失控 ----
+	# ---- 用例 6l：蓑鲉毒人 / 电鳗电人 / NPC 自己也会失控 ----
 	ZhangBen.du_yun = 0.0
 	ZhangBen.dian_ma = 0.0
 	var shi_zi: YuNpc = _zao_yu(2, load("res://data/yuzhong/cheng_yu.tres"))
 	shi_zi.position = yu.position + Vector2(120, 0)
 	await get_tree().physics_frame
+	# 五鱼攻击帧：咬中同帧换成 gong 四帧，0.4 秒后自动切回 you
+	var shi_ti: AnimatedSprite2D = shi_zi.get_node("AnimatedSprite2D")
+	assert_eq(1 if shi_ti.sprite_frames.has_animation(&"you") else 0, 1, "蓑鲉默认播游动动画")
+	shi_zi.set_process(false)  # 等动画期间冻住它的 AI：别让 0.5 秒自然巡游干扰后续断言
+	yu.set_process(false)  # 玩家也冻住：否则这 0.5 秒里可能自动放漩涡，把靶鱼吸走
+	shi_zi._bo_gong_ji()
+	await get_tree().process_frame
+	assert_eq(1 if shi_ti.sprite_frames.has_animation(&"gong") else 0, 1, "咬击触发：切到 gong 攻击帧")
+	assert_eq(1 if shi_zi._zai_gong_ji else 0, 1, "攻击帧播放中：红光层让位")
+	await get_tree().create_timer(0.5).timeout
+	assert_eq(1 if shi_ti.sprite_frames.has_animation(&"you") else 0, 1, "0.4 秒后切回 you 游动帧")
+	assert_eq(1 if not shi_zi._zai_gong_ji else 0, 1, "攻击帧结束：红光层恢复")
+	shi_zi.set_process(true)
+	yu.set_process(true)
 	shi_zi.shou_dao_yao_ji(0.1, yu)  # 玩家咬它一口：蓑鲉反毒
 	assert_eq(_xiang_deng(ZhangBen.du_yun, 45.0), 1, "咬蓑鲉一口：毒晕条 +45")
+	shi_zi.bei_xi = null  # 清掉可能残留的漩涡吸力：本用例只测直线巡游
 	var shi_zhi := shi_zi.position
 	shi_zi.sudu = 50.0
 	shi_zi.fangxiang = 1.0
@@ -492,7 +528,7 @@ func _ready() -> void:
 	shi_zi._process(0.1)
 	assert_eq(1 if shi_zi.position.x > shi_zhi.x else 0, 1, "解除失控后恢复巡游")
 	shi_zi.queue_free()
-	# 电鳐放电半径 90：玩家先缩到 1.0（嘴圈够不着），站在 70 像素处挨电
+	# 电鳗放电半径 90：玩家先缩到 1.0（嘴圈够不着），站在 70 像素处挨电
 	ZhangBen.dang_qian_ti_xing = 1.0
 	yu.scale = yu._ti_xing_vector()
 	var dian_yao: YuNpc = _zao_yu(3, load("res://data/yuzhong/lv_yu.tres"))
@@ -502,7 +538,7 @@ func _ready() -> void:
 	ZhangBen.dian_ma = 0.0
 	dian_yao._dian_ji_ji_shi = 0.0
 	dian_yao._fang_dian(0.0)
-	assert_eq(_xiang_deng(ZhangBen.dian_ma, 55.0), 1, "电鳐放电：玩家电麻条 +55")
+	assert_eq(_xiang_deng(ZhangBen.dian_ma, 55.0), 1, "电鳗放电：玩家电麻条 +55")
 	dian_yao.queue_free()
 	ZhangBen.dian_ma = 0.0
 	ZhangBen.du_yun = 0.0
@@ -530,9 +566,26 @@ func _ready() -> void:
 	chuan._gong_ji_dingshi.stop()  # 关掉自动出招：招式由用例逐个手动放
 	assert_eq(_xiang_deng(chuan.xue, 360.0), 1, "机器船满血 360（2026-11-02 再拍板：180→360）")
 	assert_eq(_xiang_deng(JiQiChuan.GONG_JI_JIAN_GE, 1.0), 1, "机器船攻击间隔 9.0→1.0：1 秒一击")
-	assert_eq(_xiang_deng(JiQiChuan.YU_WANG_YU_JING, 0.45), 1, "渔网前摇 0.45 秒：1 秒一击仍留可躲窗口")
-	assert_eq(_xiang_deng(JiQiChuan.XIE_BI_SHI_CHANG, 0.45), 1, "机械臂前摇 0.45 秒：两招前摇统一")
-	assert_eq(_xiang_deng(JiQiChuan.YU_WANG_BAN_JING, 100.0), 1, "渔网半径 100：0.45 秒预警下 300 速跑得出去")
+	assert_eq(_xiang_deng(JiQiChuan.ZHA_DAN_BAN_JING, 240.0), 1, "深水炸弹半径 240（120 × 2）")
+	assert_eq(_xiang_deng(JiQiChuan.MAO_WAI_BAN_JING, 480.0), 1, "船锚外径 480（240 × 2）")
+	assert_eq(_xiang_deng(JiQiChuan.TAN_ZHAO_CHANG, 1120.0), 1, "探照灯长度 1120（560 × 2）")
+	assert_eq(_xiang_deng(JiQiChuan.YU_CHA_SHE_CHENG, 1300.0), 1, "鱼叉射程 1300（650 × 2）")
+	assert_eq(JiQiChuan.ZHAO_QUAN_BU.size(), 4, "机器船四招齐备：探照灯/船锚/深水炸弹/鱼叉")
+	assert_eq(1 if JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_TAN_ZHAO) \
+			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_CHUAN_MAO) \
+			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_ZHA_DAN) \
+			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_YU_CHA) else 0, 1,
+			"四招就是素材包里的四招，不再有渔网/机械臂")
+	assert_eq(_xiang_deng(chuan._chuan_ti.scale.x, 3.0), 1, "整船视觉 ×3")
+	var she_ding: CollisionShape2D = chuan.get_node("SheDingQu/CollisionShape2D")
+	var chuan_qu: CollisionShape2D = chuan.get_node("ChuanTiQu/CollisionShape2D")
+	assert_eq(_xiang_deng(she_ding.shape.radius, 180.0), 1, "弱点判定半径 ×3（60 → 180）")
+	assert_eq(_xiang_deng(chuan_qu.shape.radius, 450.0), 1, "船体判定半径 ×3（150 → 450）")
+	assert_eq(1 if chuan._zhao_ti.sprite_frames.has_animation(&"chuan_mao") \
+			and chuan._zhao_ti.sprite_frames.has_animation(&"tan_zhao") \
+			and chuan._zhao_ti.sprite_frames.has_animation(&"shen_zha_dan") \
+			and chuan._zhao_ti.sprite_frames.has_animation(&"yu_cha") else 0, 1,
+			"整船招式动画已接入四条，与四招一一对应")
 	assert_eq(1 if yu._yao_ji_mu_biao() == chuan else 0, 1, "鸭子类型：船没有继承鱼，但玩家咬击照样能锁定它")
 	# 从下方咬：离船体底部最近 → 普通伤害 ×1（1.4）
 	await get_tree().physics_frame
@@ -547,26 +600,134 @@ func _ready() -> void:
 	yu._chang_shi_yao_ji()
 	assert_eq(_xiang_deng(chuan.xue, 358.6 - 4.2), 1, "咬玻璃舱（弱点）：1.4×3=4.2（358.6 → 354.4）")
 	assert_eq(_xiang_deng(chuan.tixing, 99.0), 1, "机器船体型 99：玩家永远吞不掉，只能咬沉")
-	# 渔网：预警圈落在玩家位置，落网时还在圈内 → 失控 1.5 秒
-	ZhangBen.yun_xuan_ji_shi = 0.0
-	chuan._kai_shi_yu_wang()
-	chuan._jie_suan_yu_wang()
-	assert_eq(1 if ZhangBen.zai_kong_zhi() else 0, 1, "渔网命中：玩家失控")
-	assert_eq(_xiang_deng(ZhangBen.yun_xuan_ji_shi, 1.5), 1, "渔网失控 1.5 秒（比控制条的 2 秒短）")
-	# 失控保护：1 秒节拍 + 1.5 秒失控会接成「控住→下一招必中」，失控期间整拍必须跳过
+	# 失控保护：1 秒节拍 + 控制会接成「控住→下一招必中」，失控期间整拍必须跳过
+	ZhangBen.yun_xuan_ji_shi = 1.5
+	chuan._zui_jin.clear()
 	var lun_zhi_qian := chuan._gong_ji_lun
 	chuan._on_gong_ji_timeout()
 	assert_eq(chuan._gong_ji_lun, lun_zhi_qian, "失控保护：玩家失控时本拍跳过，不推进轮次")
-	assert_eq(1 if chuan._yu_wang_jin_xing else 0, 0, "失控保护不会偷偷放渔网")
+	assert_eq(1 if chuan._zui_jin.is_empty() else 0, 1, "失控保护不会偷偷出招")
 	ZhangBen.yun_xuan_ji_shi = 0.0  # 放开，别影响后面的用例
 	chuan._gong_ji_dingshi.stop()  # 失控保护测试启动过定时器：停掉，避免 1 秒后自动出招干扰后续步骤
-	# 机械臂：落点在玩家身上 → 掉 1.0 体型（走玩家现有受伤入口）
+	# 深水炸弹：预警后落在目标位置，范围内玩家吃 1.0 伤害
 	ZhangBen.dang_qian_ti_xing = 9.0
 	yu.wudi = false
-	chuan._zhua.global_position = yu.global_position
-	chuan._jie_suan_xie_bi()
-	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.0), 1, "机械臂命中：掉 1.0 当前体型（9.0 → 8.0）")
-	assert_eq(1 if yu.wudi else 0, 1, "机械臂伤害走玩家受伤流程：进入无敌帧")
+	yu._ni_liu_sheng_yu = 0.0
+	yu._ying_ke_sheng_yu = 0.0
+	chuan._kai_shi_shen_zha_dan()
+	chuan._jie_suan_zha_dan()
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.0), 1, "深水炸弹命中：掉 1.0 当前体型（9.0 → 8.0）")
+	# 船锚横扫：300 像素处在内径 100 / 外径 480 之间 → 吃 0.7 并被击退
+	ZhangBen.dang_qian_ti_xing = 9.0
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	yu.position = chuan.position + Vector2(300, 0)
+	chuan._kai_shi_chuan_mao()
+	chuan._jie_suan_chuan_mao()
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.3), 1, "船锚命中：掉 0.7 当前体型（9.0 → 8.3）")
+	assert_eq(_xiang_deng(yu._tui_kai_sheng_yu, 0.25), 1, "船锚击退：持续 0.25 秒")
+	assert_eq(_xiang_deng(yu._tui_kai_su_du, 1760.0), 1, "船锚击退：440 像素 ÷ 0.25 秒 = 1760 像素/秒")
+	assert_eq(1 if chuan._mao_ming_zhong else 0, 1, "船锚命中标记：下一拍不出炸弹")
+	# 探照灯：无伤害，只减速到 55%
+	yu.position = chuan.position + Vector2(300, 0)
+	chuan._kai_shi_tan_zhao()
+	chuan._geng_xin_tan_zhao(0.1)
+	assert_eq(_xiang_deng(yu._wai_bu_jian_su_bei, 0.55), 1, "探照灯照到：移速 ×0.55")
+	assert_eq(_xiang_deng(yu._wai_bu_jian_su_sheng_yu, 0.4), 1, "探照灯减速残留 0.4 秒")
+	# 鱼叉：单发命中 0.6，并标记“下一拍不出船锚”
+	ZhangBen.dang_qian_ti_xing = 9.0
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	yu._ying_ke_sheng_yu = 0.0
+	yu.position = chuan.position + Vector2(400, 0)
+	chuan._yu_chas.append({"pos": yu.global_position - Vector2(10, 0), "fang": Vector2.RIGHT, "fei": 0.0})
+	chuan._geng_xin_yu_chas(0.01)
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.4), 1, "鱼叉命中：掉 0.6 当前体型（9.0 → 8.4）")
+	assert_eq(1 if chuan._cha_ming_zhong else 0, 1, "鱼叉命中标记：下一拍不出船锚")
+	# 开局优先打鲸鲨：有鲸鲨且窗口未清零 → 目标切到鲸鲨，且只出炸弹/鱼叉
+	var sha: YuNpc = load("res://scenes/YuNpc.tscn").instantiate()
+	sha.yu_zhong = load("res://data/yuzhong/fen_yu.tres")
+	sha.ai_kai_qi = false  # 手动测目标选择：不让首领 AI 游走干扰坐标
+	sha.position = Vector2(2064, 900)
+	add_child(sha)
+	chuan.jing_sha = sha
+	chuan._xian_da_jing_sha = 9.0
+	chuan._leng_que.clear()
+	chuan._zui_jin.clear()
+	assert_eq(1 if chuan._mu_biao() == sha else 0, 1, "开局窗口内：机器船目标锁定鲸鲨")
+	var jing_zhao_ok := true
+	for i in range(30):
+		var z := chuan._ke_xuan_zhao()
+		if z != JiQiChuan.ZHAO_ZHA_DAN and z != JiQiChuan.ZHAO_YU_CHA:
+			jing_zhao_ok = false
+	assert_eq(1 if jing_zhao_ok else 0, 1, "打鲸鲨阶段只出深水炸弹/鱼叉")
+	# 玩家咬船一口 → 立即转仇：窗口清零、目标回到玩家
+	chuan.shou_dao_yao_ji(0.1, yu, "shen")
+	assert_eq(_xiang_deng(chuan._xian_da_jing_sha, 0.0), 1, "玩家咬船：鲸鲨优先窗口立即清零")
+	assert_eq(1 if chuan._mu_biao() == yu else 0, 1, "转仇后目标回到玩家")
+	chuan._gang_shou_ji = false  # 这一口可能触发连续受击保护，先清掉：下面单独测
+	chuan._shou_ji_lian_xu = 0
+	# 无阶段限制：满血 + 非鲸鲨窗口，四招都可能被抽到（2026-11-05 取消阶段解锁）
+	chuan.xue = chuan.zui_da_xue
+	chuan._zui_jin.clear()
+	chuan._leng_que.clear()
+	chuan._mao_ming_zhong = false
+	chuan._cha_ming_zhong = false
+	var man_xue_chu := {}
+	for i in range(400):
+		var z := chuan._ke_xuan_zhao()
+		if z != &"":
+			man_xue_chu[z] = true
+	assert_eq(man_xue_chu.size(), 4, "满血开局四招都可能出现（实测 %d 种）" % man_xue_chu.size())
+	# 硬规则：不连续 3 拍伤害——最近两拍都是伤害 → 第三拍只能控制/跳过
+	chuan._zui_jin.assign([JiQiChuan.ZHAO_ZHA_DAN, JiQiChuan.ZHAO_YU_CHA])
+	chuan._leng_que.clear()
+	var z3 := chuan._ke_xuan_zhao()
+	assert_eq(1 if z3 == &"" or not JiQiChuan.SHANG_HAI_ZHAO.has(z3) else 0, 1,
+			"连续两拍伤害后：第三拍只能出控制招或跳过")
+	# 硬规则：连续受击保护——下一拍只从控制招里出（唯一控制招是探照灯）
+	chuan.xue = chuan.zui_da_xue
+	chuan._zui_jin.clear()
+	chuan._leng_que.clear()
+	chuan._gang_shou_ji = true
+	assert_eq(1 if chuan._ke_xuan_zhao() == JiQiChuan.ZHAO_TAN_ZHAO else 0, 1,
+			"连续受击：下一拍只出控制招（探照灯）")
+	chuan._gang_shou_ji = false
+	# 回归：硬规则互相锁死 → 船彻底停手（2026-11-06 实机反馈「打 2 下就不动了」）
+	# A. 受击保护只许探照灯，但探照灯刚出过且还在冷却 → 必须放宽，不能返回空
+	chuan._zui_jin.assign([JiQiChuan.ZHAO_TAN_ZHAO])
+	chuan._leng_que[JiQiChuan.ZHAO_TAN_ZHAO] = 3.0
+	chuan._gang_shou_ji = true
+	assert_eq(1 if chuan._ke_xuan_zhao() != &"" else 0, 1,
+			"锁死回归 A：受击保护撞上探照灯冷却时仍然出招，不停手")
+	chuan._leng_que.clear()
+	chuan._gang_shou_ji = false
+	# B. 鲸鲨窗口只有两招伤害，打满 2 拍后被“不连续 3 拍伤害”卡死 → 提前结束窗口回玩家
+	chuan._xian_da_jing_sha = 9.0
+	chuan._zui_jin.assign([JiQiChuan.ZHAO_ZHA_DAN, JiQiChuan.ZHAO_YU_CHA])
+	chuan._leng_que.clear()
+	assert_eq(1 if chuan._ke_xuan_zhao() != &"" else 0, 1,
+			"锁死回归 B：鲸鲨窗口打满 2 拍后也不会停手")
+	assert_eq(1 if chuan._xian_da_jing_sha == 0.0 else 0, 1,
+			"打不出鲸鲨的招时提前结束优先窗口，目标回到玩家")
+	# C. 连续 60 拍都触发受击保护：每拍都必须有招可出（冷却不参与，只看规则互锁）
+	chuan._zui_jin.clear()
+	chuan._leng_que.clear()
+	var kong_pai := 0
+	for i in range(60):
+		chuan._gang_shou_ji = true
+		var zp := chuan._ke_xuan_zhao()
+		if zp == &"":
+			kong_pai += 1
+		else:
+			chuan._ji_lu_chu_zhao(zp)
+			chuan._leng_que[zp] = 0.0  # 只测规则互锁：把刚出的招的冷却归零
+	assert_eq(kong_pai, 0, "连续受击 60 拍：每拍都有招可出（实测空拍 %d）" % kong_pai)
+	sha.queue_free()
+	await get_tree().process_frame
+	chuan.jing_sha = null
+	yu.position = chuan.position + Vector2(0, -10)
+	await get_tree().physics_frame
 	# 打沉：血量归零 → bei_ji_bai，船关闭碰撞不再被锁定
 	ji_bai_ci = 0
 	chuan.bei_ji_bai.connect(_shu_ji_bai)
@@ -717,6 +878,19 @@ func _ready() -> void:
 	assert_eq(1 if ZhangBen.zhao_zhu_dong(&"fang_dian_ma_bi") == fang_dian else 0, 1,
 			"放电装入主动组")
 	assert_eq(1 if yu.shi_fang_zhu_dong(fang_dian) else 0, 1, "放电释放成功")
+	# 技能替身虚影（缺口 20）：放出来才浮现，来源鱼贴图对得上，且纯表现不建判定
+	var xu_ying := yu.get_parent().get_node_or_null("XuYing") as Node2D
+	assert_eq(1 if xu_ying != null else 0, 1, "主动技释放：身后浮现替身虚影")
+	var xu_ying_tu := xu_ying.get_node_or_null("Ying") as Sprite2D if xu_ying != null else null
+	var dian_yao_zhong: YuZhong = load("res://data/yuzhong/lv_yu.tres")
+	assert_eq(1 if xu_ying_tu != null and xu_ying_tu.texture == dian_yao_zhong.tie_tu else 0, 1,
+			"放电麻痹的虚影 = 来源鱼电鳗的贴图")
+	assert_eq(1 if xu_ying != null and xu_ying.get_child_count() == 1
+			and xu_ying.get_node("Ying").get_child_count() == 0 else 0, 1,
+			"虚影纯表现：只有一个贴图子节点，没有碰撞/判定")
+	var xuan_wo_z: NengLi = load("res://data/nengli/xuan_wo.tres")
+	assert_eq(1 if yu._xu_ying_tie_tu(xuan_wo_z) != null else 0, 1,
+			"通用池主动没有来源鱼：虚影回退玩家形态贴图（每个主动都有演出）")
 	assert_eq(1 if jin_dian.zai_kong_zhi() else 0, 1, "半径 90 内的鱼：电麻条满 → 失控")
 	assert_eq(_xiang_deng(jin_dian._yun_xuan_ji_shi, 2.0), 1, "放电一次控制 2 秒")
 	assert_eq(1 if yuan_dian.zai_kong_zhi() else 0, 0, "半径 90 外的鱼不受影响")
@@ -1202,6 +1376,230 @@ func _ready() -> void:
 		r.queue_free()
 	await get_tree().process_frame
 
+	# ---- 用例 6t5：新增八能力——4 主动 + 4 被动（策划案 v0.9，2026-11-03）----
+	for n in get_tree().get_nodes_in_group("yu_npc"):
+		n.queue_free()
+	for r in get_tree().get_nodes_in_group("rou_kuai"):
+		r.queue_free()
+	await get_tree().process_frame
+	ZhangBen.chong_zhi()
+	_she_deng_ji(5)
+	ZhangBen.dang_qian_ti_xing = 5.0
+	yu.scale = yu._ti_xing_vector()
+	yu.position = Vector2(400, 400)
+	yu.dang_qian_jiao = 0.0
+	yu.fang_xiang = Vector2.ZERO
+	yu.wudi = true
+	yu.zi_dong_yao_ji = false
+	yu.set_process(false)
+	yu._qu_xiao_shi_fang()
+	yu._bao_shi_sheng_yu = 0.0  # 上一用例的暴食窗口没走表（玩家 process 已停）：这里手动清
+	yu._bao_shi_bei_lv = 1.0
+	yu.zhu_dong_leng_que.clear()
+	# 硬壳护体：2 秒减伤 60%，咬壳的鱼被撞退 130 像素
+	var ying_ke: NengLi = _zhuang_bei(&"ying_ke_hu_ti")
+	assert_eq(1 if yu.shi_fang_zhu_dong(ying_ke) else 0, 1, "硬壳护体释放成功")
+	assert_eq(_xiang_deng(yu._ying_ke_sheng_yu, 2.0), 1, "硬壳护体 1 档持续 2 秒")
+	assert_eq(_xiang_deng(yu._ying_ke_jian_shang, 0.6), 1, "硬壳护体 1 档减伤 60%")
+	var ke_yu: YuNpc = _zao_yu(6)
+	await get_tree().physics_frame
+	yu.wudi = false
+	var ke_xue := ZhangBen.dang_qian_ti_xing
+	var ke_wei := ke_yu.position
+	yu.shou_dao_yao_ji(0.2, ke_yu)
+	assert_eq(_xiang_deng(ke_xue - ZhangBen.dang_qian_ti_xing, 0.08), 1, "硬壳护体：0.2 伤害只吃 0.08")
+	assert_eq(_xiang_deng(ke_yu.position.distance_to(ke_wei), 130.0), 1, "咬硬壳的鱼被撞退 130 像素")
+	ke_yu.queue_free()
+	await get_tree().process_frame
+	# 电脉冲：清自己的电麻条，半径内 NPC +50；满档电晕的鱼掉一块肉
+	yu._qu_xiao_shi_fang()
+	yu.zhu_dong_leng_que.clear()
+	var dian_mai: NengLi = _zhuang_bei(&"dian_mai_chong")
+	ZhangBen.dian_ma = 70.0
+	var dian_yu1: YuNpc = _zao_yu(2)
+	dian_yu1.position = Vector2(450, 400)
+	dian_yu1.dian_ma = 10.0
+	var dian_yu2: YuNpc = _zao_yu(2)
+	dian_yu2.position = Vector2(500, 400)
+	dian_yu2.dian_ma = 80.0
+	assert_eq(1 if yu.shi_fang_zhu_dong(dian_mai) else 0, 1, "电脉冲释放成功")
+	assert_eq(_xiang_deng(ZhangBen.dian_ma, 0.0), 1, "电脉冲先清空自己的电麻条")
+	assert_eq(_xiang_deng(dian_yu1.dian_ma, 60.0), 1, "半径内 NPC 电麻条 +50（10 → 60）")
+	assert_eq(1 if dian_yu2.zai_kong_zhi() else 0, 1, "电麻条被推满的 NPC 当场失控")
+	dian_yu1.queue_free()
+	dian_yu2.queue_free()
+	await get_tree().process_frame
+	ZhangBen.xuan_neng_li(dian_mai)  # 升 2 档：半径 330
+	yu.zhu_dong_leng_que.clear()
+	var yuan_yu: YuNpc = _zao_yu(2)
+	yuan_yu.position = Vector2(700, 400)  # 距玩家 300：1 档 220 够不着，2 档 330 够得着
+	yuan_yu.dian_ma = 0.0
+	assert_eq(1 if yu.shi_fang_zhu_dong(dian_mai) else 0, 1, "电脉冲 2 档再释放")
+	assert_eq(_xiang_deng(yuan_yu.dian_ma, 50.0), 1, "电脉冲 2 档半径 330：300 像素外的鱼也吃电")
+	yuan_yu.queue_free()
+	await get_tree().process_frame
+	ZhangBen.xuan_neng_li(dian_mai)  # 升 3 档：电晕的鱼掉肉
+	yu.zhu_dong_leng_que.clear()
+	var dian_dao: YuNpc = _zao_yu(2)
+	dian_dao.position = Vector2(500, 400)
+	dian_dao.dian_ma = 80.0
+	var rou_qian_dian := get_tree().get_nodes_in_group("rou_kuai").size()
+	assert_eq(1 if yu.shi_fang_zhu_dong(dian_mai) else 0, 1, "电脉冲 3 档释放成功")
+	await get_tree().process_frame
+	assert_eq(1 if dian_dao.zai_kong_zhi() else 0, 1, "电脉冲 3 档同样能把鱼电晕")
+	assert_eq(get_tree().get_nodes_in_group("rou_kuai").size() - rou_qian_dian, 1, "电脉冲 3 档：被电晕的鱼掉 1 块肉")
+	dian_dao.queue_free()
+	for r in get_tree().get_nodes_in_group("rou_kuai"):
+		r.queue_free()
+	await get_tree().process_frame
+	# 诱饵气泡：吐出一颗漂泡，NPC 优先去咬；满档咬破炸晕咬它的鱼
+	yu._qu_xiao_shi_fang()
+	yu.zhu_dong_leng_que.clear()
+	var you_er: NengLi = _zhuang_bei(&"you_er_qi_pao")
+	var pao_qian := get_tree().get_nodes_in_group("you_er_qi_pao").size()
+	assert_eq(1 if yu.shi_fang_zhu_dong(you_er) else 0, 1, "诱饵气泡释放成功")
+	await get_tree().process_frame
+	assert_eq(get_tree().get_nodes_in_group("you_er_qi_pao").size() - pao_qian, 1, "应生成 1 颗诱饵气泡")
+	var qi_pao: YouErQiPao = get_tree().get_nodes_in_group("you_er_qi_pao")[pao_qian]
+	assert_eq(_xiang_deng(qi_pao.chi_xu, 3.0), 1, "气泡 1 档存在 3 秒")
+	assert_eq(_xiang_deng(qi_pao.ban_jing, 360.0), 1, "气泡吸引半径 360")
+	assert_eq(1 if qi_pao.zha_yun else 0, 0, "气泡 1 档咬破不炸晕")
+	assert_eq(_xiang_deng(qi_pao.position.x, yu.position.x + 110.0), 1, "气泡吐在朝向前方 110 像素")
+	var mi_yu: YuNpc = _zao_yu(2)
+	mi_yu.position = qi_pao.position + Vector2(200, 0)
+	mi_yu.gong_ji_yu_wang = false  # 连不主动攻击的路人鱼也会被诱饵骗走
+	mi_yu._si_kao()
+	assert_eq(1 if mi_yu._mu_biao == qi_pao else 0, 1, "NPC 优先把诱饵气泡当目标")
+	ZhangBen.xuan_neng_li(you_er)
+	ZhangBen.xuan_neng_li(you_er)  # 升 3 档：咬破炸晕
+	for q in get_tree().get_nodes_in_group("you_er_qi_pao"):
+		q.queue_free()
+	await get_tree().process_frame
+	yu.zhu_dong_leng_que.clear()
+	assert_eq(1 if yu.shi_fang_zhu_dong(you_er) else 0, 1, "诱饵气泡 3 档再释放")
+	await get_tree().process_frame
+	var qi_pao3: YouErQiPao = get_tree().get_nodes_in_group("you_er_qi_pao")[0]
+	assert_eq(1 if qi_pao3.zha_yun else 0, 1, "气泡 3 档咬破会炸晕")
+	var zha_yu: YuNpc = _zao_yu(2)
+	zha_yu.position = qi_pao3.position + Vector2(40, 0)
+	qi_pao3.bei_yao(zha_yu)
+	assert_eq(1 if zha_yu.zai_kong_zhi() else 0, 1, "气泡 3 档被咬破：咬它的鱼当场毒晕/失控")
+	zha_yu.queue_free()
+	mi_yu.queue_free()
+	await get_tree().process_frame
+	# 血腥狂热：4 秒内进食回体型 +100%；满档咬伤 +25%
+	yu._qu_xiao_shi_fang()
+	yu.zhu_dong_leng_que.clear()
+	var xue_xing: NengLi = _zhuang_bei(&"xue_xing_kuang_re")
+	assert_eq(1 if yu.shi_fang_zhu_dong(xue_xing) else 0, 1, "血腥狂热释放成功")
+	assert_eq(_xiang_deng(yu._xue_xing_sheng_yu, 4.0), 1, "血腥狂热 1 档持续 4 秒")
+	assert_eq(_xiang_deng(yu._xue_xing_hui_bei, 1.0), 1, "血腥狂热：进食回体型 +100%")
+	assert_eq(_xiang_deng(yu._xue_xing_hui(1.5), 3.0), 1, "进食回体型加成：1.5 → 3.0")
+	ZhangBen.dang_qian_ti_xing = 2.0
+	var xue_chi_yu: YuNpc = _zao_yu(1)
+	yu._chi_diao(xue_chi_yu)
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 2.0 + (1.0 / 1.5) * 1.2 * 2.0), 1, "狂热期间吃 1 体型鱼：回 1.6（平时 0.8，含吃鱼 +20%）")
+	ZhangBen.xuan_neng_li(xue_xing)
+	ZhangBen.xuan_neng_li(xue_xing)  # 升 3 档：咬伤 +25%
+	yu._qu_xiao_shi_fang()
+	yu.zhu_dong_leng_que.clear()
+	assert_eq(1 if yu.shi_fang_zhu_dong(xue_xing) else 0, 1, "血腥狂热 3 档再释放")
+	assert_eq(_xiang_deng(yu._xue_xing_yao_shang, 0.25), 1, "血腥狂热 3 档：窗口内咬伤 +25%")
+	ZhangBen.dang_qian_ti_xing = 5.0
+	var xue_yao_yu: YuNpc = _zao_yu(6)
+	xue_yao_yu.position = yu.position + Vector2(20, 0)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	yu._yao_ji_leng_que = 0.0
+	yu._chang_shi_yao_ji()
+	assert_eq(_xiang_deng(xue_yao_yu.tixing, 5.0), 1, "狂热咬伤：基础 0.8 ×1.25 = 1.0（6 → 5）")
+	xue_yao_yu.queue_free()
+	await get_tree().process_frame
+
+	# ---- 用例 6t6：新增四被动（背刺 / 绝境 / 锈鳞 / 腐肉诱饵）----
+	for n in get_tree().get_nodes_in_group("yu_npc"):
+		n.queue_free()
+	for r in get_tree().get_nodes_in_group("rou_kuai"):
+		r.queue_free()
+	await get_tree().process_frame
+	ZhangBen.chong_zhi()
+	_she_deng_ji(5)
+	ZhangBen.dang_qian_ti_xing = 5.0
+	yu.scale = yu._ti_xing_vector()
+	yu.position = Vector2(400, 400)
+	yu.fang_xiang = Vector2.ZERO
+	yu.wudi = true
+	yu.zi_dong_yao_ji = false
+	yu.set_process(false)
+	yu._qu_xiao_shi_fang()
+	yu._bao_shi_sheng_yu = 0.0
+	yu._bao_shi_bei_lv = 1.0
+	# 背刺直觉：目标背对我才 +30%
+	_zhuang_bei(&"bei_ci_zhi_jue")
+	var bei_yu: YuNpc = _zao_yu(3)
+	bei_yu.position = Vector2(500, 400)
+	var bei_tie := bei_yu.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	bei_tie.flip_h = false  # 朝右：玩家在它左边 = 背后
+	assert_eq(_xiang_deng(yu._bei_ci_bei(bei_yu), 1.3), 1, "背刺直觉 1 层：从背后咬 ×1.3")
+	bei_tie.flip_h = true  # 朝左：玩家在它正前方
+	assert_eq(_xiang_deng(yu._bei_ci_bei(bei_yu), 1.0), 1, "正面咬不加背刺伤害")
+	bei_yu.queue_free()
+	await get_tree().process_frame
+	# 绝境反咬：目标越大加成越高，2 倍体型吃满
+	var jue_jing: NengLi = _zhuang_bei(&"jue_jing_fan_yao")
+	var xiao_ju: YuNpc = _zao_yu(3)
+	assert_eq(_xiang_deng(yu._jue_jing_bei(xiao_ju), 1.0), 1, "目标比我小：绝境反咬不触发")
+	var da_ju: YuNpc = _zao_yu(6)
+	assert_eq(_xiang_deng(yu._jue_jing_bei(da_ju), 1.08), 1, "目标 1.2 倍体型：1 档 +40% 按比例给 +8%")
+	xiao_ju.queue_free()
+	da_ju.queue_free()
+	await get_tree().process_frame
+	ZhangBen.xuan_neng_li(jue_jing)
+	ZhangBen.xuan_neng_li(jue_jing)  # 升 3 档：上限 +60%
+	var ju_da: YuNpc = _zao_yu(10)
+	assert_eq(_xiang_deng(yu._jue_jing_bei(ju_da), 1.6), 1, "目标 2 倍体型：满档 +60% 全吃")
+	ju_da.queue_free()
+	await get_tree().process_frame
+	# 锈鳞：被咬时攻击者叠 25 电麻
+	_zhuang_bei(&"xiu_lin")
+	var xiu_yu: YuNpc = _zao_yu(3)
+	xiu_yu.position = Vector2(450, 450)
+	xiu_yu.dian_ma = 0.0
+	xiu_yu._yun_xuan_ji_shi = 0.0
+	yu.wudi = false
+	yu.shou_dao_yao_ji(0.2, xiu_yu)
+	assert_eq(_xiang_deng(xiu_yu.dian_ma, 25.0), 1, "锈鳞 1 层：咬我的鱼 +25 电麻")
+	xiu_yu.queue_free()
+	await get_tree().process_frame
+	# 腐肉诱饵：咬中的鱼掉 1 块发光肉，肉自己吸引 NPC 来吃
+	_zhuang_bei(&"fu_rou_you_er")
+	var fu_yu: YuNpc = _zao_yu(6)
+	fu_yu.position = Vector2(600, 600)
+	var rou_qian_fu := get_tree().get_nodes_in_group("rou_kuai").size()
+	yu._yao_ji_lian_dong(fu_yu, 0.8)
+	assert_eq(get_tree().get_nodes_in_group("rou_kuai").size() - rou_qian_fu, 1, "腐肉诱饵：咬一口掉 1 块发光肉")
+	var you_rou: RouKuai = get_tree().get_nodes_in_group("rou_kuai")[rou_qian_fu]
+	assert_eq(_xiang_deng(you_rou.fu_rou_you_er_sheng_yu, 2.0), 1, "腐肉诱饵 1 层：发光 2 秒")
+	assert_eq(_xiang_deng(you_rou.xi_yin_ban_jing, 320.0), 1, "腐肉诱饵吸引半径 320")
+	await get_tree().process_frame
+	var chou_yu: YuNpc = _zao_yu(2)
+	chou_yu.position = you_rou.position + Vector2(200, 0)
+	chou_yu.gong_ji_yu_wang = false
+	chou_yu._si_kao()
+	assert_eq(1 if chou_yu._mu_biao == you_rou else 0, 1, "附近的鱼被发光肉吸过去")
+	you_rou.ke_chi = true
+	var rou_jing := you_rou.jing_yan
+	chou_yu.position = you_rou.position
+	var chou_jing_qian := chou_yu.jing_yan_nei
+	chou_yu._mu_biao = you_rou
+	chou_yu._xing_dong(0.016)
+	assert_eq(chou_yu.jing_yan_nei - chou_jing_qian, rou_jing, "NPC 吃掉发光肉：涨隐藏经验")
+	await get_tree().process_frame
+	assert_eq(1 if not is_instance_valid(you_rou) else 0, 1, "发光肉被吃掉后释放")
+	chou_yu.queue_free()
+	fu_yu.queue_free()
+	await get_tree().process_frame
+
 	# ---- 用例 6u：NPC 能力——旗鱼突进 / 金枪鱼洞察 / 巨口鱼潜伏 / 首领看不见潜伏 ----
 	for n in get_tree().get_nodes_in_group("yu_npc"):
 		n.queue_free()
@@ -1291,8 +1689,8 @@ func _ready() -> void:
 
 	# ---- 用例 6v：形态外观/数值应用（直接调 Yu.ying_yong_xing_tai）----
 	var qi_yu_xt: XingTai = load("res://data/xingtai/qi_yu.tres")
-	var deng_xt: XingTai = load("res://data/xingtai/deng_long_yu.tres")
-	var dian_xt: XingTai = load("res://data/xingtai/dian_yao.tres")
+	var deng_xt: XingTai = load("res://data/xingtai/ye_deng_long_yu.tres")
+	var dian_xt: XingTai = load("res://data/xingtai/lv_yu.tres")
 	assert_eq(1 if qi_yu_xt != null and deng_xt != null and dian_xt != null else 0, 1,
 			"形态资源应能加载（集成用例前置）")
 	yu.ying_yong_xing_tai(qi_yu_xt)
@@ -1308,29 +1706,29 @@ func _ready() -> void:
 	yu.ying_yong_xing_tai(deng_xt)  # 还原灯笼鱼，后续死亡用例沿用
 	assert_eq(_xiang_deng(yu.yidong_sudu, 300.0), 1, "还原灯笼鱼速度 300")
 
-	# ---- 用例 6w：第二个 Yu 在 _ready 自动应用当前形态（电鳐）----
+	# ---- 用例 6w：第二个 Yu 在 _ready 自动应用当前形态（电鳗）----
 	ZhangBen.chong_zhi()
-	assert_eq(1 if ZhangBen.kai_ju_xing_tai(dian_xt) else 0, 1, "装配电鳐形态")
+	assert_eq(1 if ZhangBen.kai_ju_xing_tai(dian_xt) else 0, 1, "装配电鳗形态")
 	var yu2: Yu = load("res://scenes/Yu.tscn").instantiate()
 	yu2.position = Vector2(600, 600)
 	yu2.zi_dong_yao_ji = false
 	add_child(yu2)
 	await get_tree().physics_frame
-	assert_eq(ZhangBen.deng_ji, 1, "电鳐开局 Lv.1")
-	assert_eq(_xiang_deng(yu2.yidong_sudu, 260.0), 1, "第二个 Yu 自动读电鳐速度 260")
-	assert_eq(_xiang_deng(yu2.zui_ba, 1.0), 1, "第二个 Yu 自动读电鳐嘴巴 1.0")
-	assert_eq(_xiang_deng(yu2.zhuanxiang_ji_su, 6.0), 1, "第二个 Yu 自动读电鳐转向 6.0")
+	assert_eq(ZhangBen.deng_ji, 1, "电鳗开局 Lv.1")
+	assert_eq(_xiang_deng(yu2.yidong_sudu, 260.0), 1, "第二个 Yu 自动读电鳗速度 260")
+	assert_eq(_xiang_deng(yu2.zui_ba, 1.0), 1, "第二个 Yu 自动读电鳗嘴巴 1.0")
+	assert_eq(_xiang_deng(yu2.zhuanxiang_ji_su, 6.0), 1, "第二个 Yu 自动读电鳗转向 6.0")
 	assert_eq(1 if yu2.get_node("AnimatedSprite2D").sprite_frames == dian_xt.dong_hua else 0, 1,
-			"第二个 Yu 自动换电鳐 4 帧动画")
+			"第二个 Yu 自动换电鳗 4 帧动画")
 	assert_eq(yu2.get_node("AnimatedSprite2D").sprite_frames.get_frame_count(&"you"), 4,
-			"电鳐形态动画应是 4 帧")
+			"电鳗形态动画应是 4 帧")
 	assert_eq(_xiang_deng(yu2.scale.x, ZhangBen.ti_xing_dao_chi_du(2.0)), 1,
-			"电鳐 Lv.1 开局缩放按体型 2.0 计算")
+			"电鳗 Lv.1 开局缩放按体型 2.0 计算")
 	yu2.queue_free()
 	await get_tree().process_frame
 	ZhangBen.chong_zhi()
 
-	# ---- 用例 6x：形态选择页（唯一主角：单卡、0 胜即可选）----
+	# ---- 用例 6x：形态选择页（12 形态：玩家 + 10 NPC 鱼 + 首领鲸鲨）----
 	var ce_lu_jing := "user://ce_panding_jie_suo_%d.json" % OS.get_process_id()
 	var ce_zhong_tu := "user://ce_panding_zhongtu_%d.json" % OS.get_process_id()
 	var ce_she_zhi := "user://ce_panding_shezhi_%d.json" % OS.get_process_id()
@@ -1345,19 +1743,19 @@ func _ready() -> void:
 	var xuan: CanvasLayer = load("res://scenes/XingTaiXuanZe.tscn").instantiate()
 	add_child(xuan)
 	await get_tree().process_frame
-	var ka_zu: HBoxContainer = xuan.get_node("KaPianZu")
-	assert_eq(ka_zu.get_child_count(), 1, "选择页只有 1 张卡：凹凸蜗牛鱼")
-	assert_eq(_shu_suo_ka(ka_zu), 0, "0 胜也不上锁：唯一主角直接可选")
-	assert_eq_ming(xuan.get_node("FuBiaoTi").text, "已胜利 0 次 · 解锁 1/1", "0 胜副标题")
+	var ka_zu: GridContainer = xuan.get_node("KaPianZu/WangGe")
+	assert_eq(ka_zu.get_child_count(), 12, "选择页 12 张卡：玩家 + 10 NPC 鱼 + 鲸鲨")
+	assert_eq(_shu_suo_ka(ka_zu), 0, "0 胜全开：12 个形态都可选")
+	assert_eq_ming(xuan.get_node("FuBiaoTi").text, "已胜利 0 次 · 解锁 12/12", "0 胜副标题")
 	CunDang.sheng_li_ci_shu = 2  # 直接模拟两胜（解锁推导只读这个计数）
 	xuan._shua_xin()
-	assert_eq(ka_zu.get_child_count(), 1, "2 胜仍是 1 张卡")
-	assert_eq(_shu_suo_ka(ka_zu), 0, "2 胜：主角仍解锁")
-	assert_eq_ming(xuan.get_node("FuBiaoTi").text, "已胜利 2 次 · 解锁 1/1", "2 胜副标题")
+	assert_eq(ka_zu.get_child_count(), 12, "2 胜仍是 12 张卡")
+	assert_eq(_shu_suo_ka(ka_zu), 0, "2 胜：全部形态仍解锁")
+	assert_eq_ming(xuan.get_node("FuBiaoTi").text, "已胜利 2 次 · 解锁 12/12", "2 胜副标题")
 	xuan.queue_free()
 	await get_tree().process_frame
 
-	# ---- 用例 6y：胜利信号 → 局外记档；唯一主角没有可解锁的新形态 ----
+	# ---- 用例 6y：胜利信号 → 局外记档；形态全部预解锁，胜利不再解锁新形态 ----
 	CunDang.tiao_shi_qing_chu_jin_du()  # 清回 0 胜
 	ZhangBen.chong_zhi()
 	ZhangBen.ding_jie_suan(ZhangBen.JieJu.SHENG_LI)  # 场景无 Main：只发信号，不切场景
@@ -1370,7 +1768,7 @@ func _ready() -> void:
 	assert_eq(1 if jie_suan.has_node("HuanXingTai") else 0, 1, "结算页有换形态按钮")
 	assert_eq(1 if jie_suan.has_node("JieSuoTiShi") else 0, 1, "结算页有解锁提示")
 	assert_eq(1 if jie_suan.get_node("JieSuoTiShi").visible else 0, 0,
-			"唯一主角没有新形态可解锁：胜利后不显示解锁提示")
+			"全部形态 0 胜解锁：胜利后不显示新解锁提示")
 	assert_eq(CunDang.shang_ci_xin_jie_suo.size(), 0, "胜利后解锁提示队列为空")
 	jie_suan.queue_free()
 	await get_tree().process_frame
@@ -1390,6 +1788,39 @@ func _ready() -> void:
 	CunDang.zai_ru()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ce_lu_jing))
 	await get_tree().process_frame
+
+	# ---- 用例 6y2：按鱼种进化——选剑鱼后只出剑鱼分支，跨鱼种分支被拒 ----
+	ZhangBen.chong_zhi()
+	var jian_xt: XingTai = load("res://data/xingtai/jian_yu.tres")
+	assert_eq(1 if ZhangBen.kai_ju_xing_tai(jian_xt) else 0, 1, "前置：剑鱼开局装配成功")
+	assert_eq(ZhangBen.deng_ji, 1, "剑鱼开局统一 Lv.1")
+	assert_eq_ming(String(ZhangBen.dang_qian_yu_zhong()), "jian_yu", "当前鱼种是剑鱼")
+	var jian_fen_zhi := JinHuaKu.wan_jia_fen_zhi(ZhangBen.dang_qian_yu_zhong())
+	assert_eq(jian_fen_zhi.size(), 3, "剑鱼有且只有 3 条进化分支")
+	for fz in jian_fen_zhi:
+		assert_eq_ming(String(fz.ji_yu_bian_hao), "jian_yu", "剑鱼候选分支全部属于剑鱼组")
+	ZhangBen.deng_ji = 6  # 直接抬到门槛：弹窗 _ready 会补开
+	var jian_chuang: CanvasLayer = load("res://scenes/JinHuaDanChuang.tscn").instantiate()
+	add_child(jian_chuang)
+	await get_tree().process_frame
+	assert_eq(1 if jian_chuang.visible else 0, 1, "剑鱼 Lv.6 弹出进化三选一")
+	assert_eq(jian_chuang.dang_qian_san_zhang.size(), 3, "剑鱼弹窗展示 3 条剑鱼分支")
+	var wo_niu_fen_zhi := JinHuaKu.wan_jia_fen_zhi(&"ao_tu_wo_niu_yu")
+	assert_eq(1 if ZhangBen.jin_hua_wei(wo_niu_fen_zhi[0]) else 0, 0,
+			"剑鱼选蜗牛鱼分支被拒（跨鱼种）")
+	assert_eq(1 if ZhangBen.dang_qian_jin_hua == null else 0, 1, "跨鱼种失败：不记进化形态")
+	assert_eq(1 if ZhangBen.ke_yi_jin_hua() else 0, 1, "跨鱼种失败：本局资格仍在")
+	var ben_jin_jian := yu.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	jian_chuang._on_fen_zhi_dian(0)
+	assert_eq_ming(String(ZhangBen.dang_qian_jin_hua.bian_hao), String(jian_fen_zhi[0].bian_hao),
+			"剑鱼选定自己的第一条分支")
+	assert_eq(1 if ben_jin_jian.sprite_frames == jian_fen_zhi[0].dong_hua else 0, 1,
+			"剑鱼进化后播剑鱼分支的 6 帧动画")
+	assert_eq(ben_jin_jian.sprite_frames.get_frame_count(&"you"), 6, "剑鱼进化动画 6 帧")
+	ZhangBen.jie_shu_jin_hua_yan_chu()  # 不真等 1.7 秒演出
+	jian_chuang.queue_free()
+	await get_tree().process_frame
+	ZhangBen.chong_zhi()
 
 	# ---- 用例 6z：主界面 + 中途存档显隐 + 设置面板暂停/恢复 ----
 	# 主界面是新启动场景（main_scene 配置断言在 ce_shu_ju）；这里测行为：
@@ -1423,7 +1854,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	# 摆一局"打了一半"的状态 → 写中途档 → 主界面"继续游戏"应现身
 	ZhangBen.chong_zhi()
-	assert_eq(1 if ZhangBen.kai_ju_xing_tai(dian_xt) else 0, 1, "前置：装配电鳐形态")
+	assert_eq(1 if ZhangBen.kai_ju_xing_tai(dian_xt) else 0, 1, "前置：装配电鳗形态")
 	ZhangBen.jia_jing_yan(5)
 	ZhangBen.ju_nei_shi_jian = 66.0
 	assert_eq(1 if CunDang.xie_zhong_tu() else 0, 1, "运行时写档：默认查 /root/ZhangBen")
@@ -1599,6 +2030,178 @@ func _ready() -> void:
 	da_yu_c.queue_free()
 	await get_tree().process_frame
 
+	# ---- 用例 6y：进化体系——Lv.6 弹 3 选 1、全数值 ×1.5、每局一次 ----
+	# 进化完成会点亮图鉴并写永久档：这里重新临时化路径（6x 段末尾已恢复默认），
+	# 否则测试会把玩家真实存档里的「已点亮形态」写脏
+	var ce_jh_lu := "user://ce_panding_jinhua_%d.json" % OS.get_process_id()
+	if FileAccess.file_exists(ce_jh_lu):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(ce_jh_lu))
+	CunDang.lu_jing = ce_jh_lu
+	CunDang.zai_ru()
+	# 玩家专属：账本默认形态是凹凸蜗牛鱼，进化分支 3 条全部可选
+	ZhangBen.chong_zhi()
+	ZhangBen.deng_ji = 5  # 差一级到门槛
+	ZhangBen.dang_qian_ti_xing = ZhangBen.ti_xing_shang_xian()
+	yu.yidong_sudu = 300.0  # 前面用例可能改过：先把基础值摆正，倍率断言才有意义
+	yu.zui_ba = 1.0
+	yu.zhuanxiang_ji_su = 7.0
+	# 已有能力保留（v0.18）：进化前先装 1 主动 + 1 被动，进化后必须原样还在
+	ZhangBen.xuan_neng_li(load("res://data/nengli/fang_dian_ma_bi.tres"))
+	ZhangBen.xuan_neng_li(load("res://data/nengli/ruan_lin.tres"))
+	var jin_hua_chuang: CanvasLayer = load("res://scenes/JinHuaDanChuang.tscn").instantiate()
+	add_child(jin_hua_chuang)
+	await get_tree().process_frame
+	assert_eq(1 if jin_hua_chuang.visible else 0, 0, "进化弹窗平时藏着")
+	assert_eq(1 if ZhangBen.jin_hua_dan_chuang_zai_chang else 0, 1, "进化弹窗在场会在账本登记")
+	assert_eq(1 if ZhangBen.ke_yi_jin_hua() else 0, 0, "Lv.5 还不能进化")
+	# 升到 Lv.6：账本发 sheng_ji，进化弹窗接管
+	ZhangBen.jia_jing_yan(ZhangBen.dangqian_yuzhi())
+	assert_eq(ZhangBen.deng_ji, 6, "前置：应升到 Lv.6")
+	assert_eq(1 if ZhangBen.ke_yi_jin_hua() else 0, 1, "Lv.6 获得进化资格")
+	assert_eq(1 if jin_hua_chuang.visible else 0, 1, "Lv.6 弹出进化三选一")
+	assert_eq(1 if get_tree().paused else 0, 1, "进化选择期间全场暂停")
+	assert_eq(jin_hua_chuang.dang_qian_san_zhang.size(), 3, "进化弹窗恰好 3 张分支卡")
+	assert_eq_ming(String(jin_hua_chuang.dang_qian_san_zhang[0].ming_zi), "太岁肉灵芝兽", "卡 1 = 东方神话分支")
+	assert_eq_ming(String(jin_hua_chuang.dang_qian_san_zhang[2].ming_zi), "超压凝胶炮", "卡 3 = 能力异化分支")
+	var shang_xian_qian := ZhangBen.ti_xing_shang_xian()
+	jin_hua_chuang._on_fen_zhi_dian(0)  # 选东方分支
+	assert_eq(1 if get_tree().paused else 0, 0, "选定分支立即解冻")
+	assert_eq(1 if jin_hua_chuang.visible else 0, 0, "选定分支后弹窗收起")
+	assert_eq_ming(String(ZhangBen.dang_qian_jin_hua.bian_hao), "tai_sui_rou_ling_zhi_shou",
+			"账本记录选中的进化形态")
+	assert_eq(_xiang_deng(yu.yidong_sudu, 450.0), 1, "进化：移动速度 ×1.5（300 → 450）")
+	assert_eq(_xiang_deng(yu.zui_ba, 1.5), 1, "进化：嘴巴系数 ×1.5")
+	assert_eq(_xiang_deng(yu.zhuanxiang_ji_su, 10.5), 1, "进化：转向速率 ×1.5")
+	assert_eq(_xiang_deng(ZhangBen.ti_xing_shang_xian(), shang_xian_qian * 1.5), 1,
+			"进化：体型（血量）上限 ×1.5")
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, ZhangBen.ti_xing_shang_xian()), 1,
+			"进化后体型回满：变强不是残血续命")
+	var ben_jin := yu.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	assert_eq(1 if ben_jin.sprite_frames == ZhangBen.dang_qian_jin_hua.dong_hua else 0, 1,
+			"进化后换用进化形态的 6 帧游动动画")
+	assert_eq(ben_jin.sprite_frames.get_frame_count(&"you"), 6,
+			"进化形态动画恰好 6 帧（不再是单帧兜底）")
+	assert_eq(_xiang_deng(ben_jin.sprite_frames.get_animation_speed(&"you"), 10.0), 1,
+			"进化形态动画速度 10 fps")
+	assert_eq(1 if ben_jin.sprite_frames.get_frame_texture(&"you", 0)
+			!= ZhangBen.dang_qian_jin_hua.tie_tu else 0, 1,
+			"进化后首帧取自 6 帧图集，不再是静态贴图")
+	assert_eq(1 if ZhangBen.ke_yi_jin_hua() else 0, 0, "每局一次：进化后不再有资格")
+	# 已有能力保留：专属主动/被动是“追加”，绝不顶替旧技能（v0.18 8.6）
+	assert_eq(1 if ZhangBen.zhuang_lei(&"fang_dian_ma_bi") else 0, 1,
+			"进化后原有主动仍在（独立键，不顶替）")
+	assert_eq(ZhangBen.dang_qian_bei_dong_ceng(&"ruan_lin"), 1, "进化后原有被动层数不变")
+	# 进化演出：1.7 秒免伤，任何扣血通道都挡下
+	assert_eq(1 if ZhangBen.jin_hua_yan_chu_zhong else 0, 1, "选定分支后进入进化演出")
+	assert_eq(1 if yu.wudi else 0, 1, "演出期间玩家无敌")
+	var xue_jin_qian := ZhangBen.dang_qian_ti_xing
+	ZhangBen.shou_shang(0.5)
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, xue_jin_qian), 1, "演出期间直接扣血被挡下")
+	yu.shou_dao_yao_ji(0.5)
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, xue_jin_qian), 1, "演出期间咬击被玩家无敌挡下")
+	# 图鉴永久点亮：进化完成即写档（CunDang 听 jin_hua_wan_cheng）
+	assert_eq(1 if CunDang.shi_fou_dian_liang(&"tai_sui_rou_ling_zhi_shou") else 0, 1,
+			"进化完成：图鉴永久点亮该分支")
+	assert_eq(1 if FileAccess.file_exists(ce_jh_lu) else 0, 1, "点亮立即写入临时存档")
+	var deng_ji_liu := ZhangBen.deng_ji
+	ZhangBen.jia_jing_yan(ZhangBen.dangqian_yuzhi())
+	assert_eq(ZhangBen.deng_ji, deng_ji_liu + 1, "前置：再升一级")
+	assert_eq(1 if jin_hua_chuang.visible else 0, 0, "每局一次：Lv.7 不再弹进化")
+	# 复位 + 继续游戏恢复：只恢复倍率，不重复发能力
+	ZhangBen.chong_zhi()
+	assert_eq(1 if ZhangBen.dang_qian_jin_hua == null else 0, 1, "重开复位：进化形态清空")
+	assert_eq(_xiang_deng(ZhangBen.ti_xing_shang_xian(), 1.0), 1, "重开复位：体型上限回 Lv.0 的 1.0")
+	assert_eq(1 if ZhangBen.zai_ru_jin_hua(&"chao_ya_ning_jiao_pao") else 0, 1,
+			"继续游戏可按 id 恢复进化形态")
+	assert_eq(_xiang_deng(ZhangBen.jin_hua_ti_xing_bei, 1.5), 1, "恢复进化后倍率仍是 1.5")
+	assert_eq(1 if not ZhangBen.zai_ru_jin_hua(&"bu_cun_zai") else 0, 1, "未知进化 id 恢复失败但不崩")
+	jin_hua_chuang.queue_free()
+	await get_tree().process_frame
+
+	# ---- 用例 6z：6 级先进化、选完再弹升级三选一（欠下的能力选择不丢）----
+	ZhangBen.chong_zhi()
+	ZhangBen.deng_ji = 5
+	ZhangBen.dang_qian_ti_xing = ZhangBen.ti_xing_shang_xian()
+	yu.yidong_sudu = 300.0
+	var jin_chuang: CanvasLayer = load("res://scenes/JinHuaDanChuang.tscn").instantiate()
+	add_child(jin_chuang)
+	var neng_chuang: CanvasLayer = load("res://scenes/NengLiDanChuang.tscn").instantiate()
+	add_child(neng_chuang)
+	await get_tree().process_frame
+	ZhangBen.jia_jing_yan(ZhangBen.dangqian_yuzhi())  # 升到 6 级：两个弹窗同时听到
+	assert_eq(1 if jin_chuang.visible else 0, 1, "6 级：进化先弹")
+	assert_eq(1 if neng_chuang.visible else 0, 0, "6 级：升级三选一先让位排队")
+	assert_eq(neng_chuang._dai_chu_ci_shu, 1, "6 级欠下的一轮能力选择记在排队数里")
+	jin_chuang._on_fen_zhi_dian(0)
+	assert_eq(1 if jin_chuang.visible else 0, 0, "进化选完：进化弹窗收起")
+	# v0.18：演出中升级三选一先欠着，1.7 秒演出结束才补弹（别让暂停盖住演出）
+	assert_eq(1 if ZhangBen.jin_hua_yan_chu_zhong else 0, 1, "进化选完：进入演出")
+	assert_eq(1 if neng_chuang.visible else 0, 0, "演出中：升级三选一不抢镜")
+	assert_eq(neng_chuang._dai_chu_ci_shu, 1, "演出中：欠账仍记在排队数里")
+	ZhangBen.jie_shu_jin_hua_yan_chu()
+	assert_eq(1 if neng_chuang.visible else 0, 1, "演出结束：升级三选一接着弹（欠账不丢）")
+	assert_eq(1 if get_tree().paused else 0, 1, "能力选择期间仍暂停")
+	var yi_xuan_qian := ZhangBen.yi_xuan_neng_li.size()
+	neng_chuang._on_neng_li_dian(0)
+	assert_eq(1 if neng_chuang.visible else 0, 0, "能力选完：升级三选一收起")
+	assert_eq(1 if get_tree().paused else 0, 0, "能力选完：全场解冻")
+	assert_eq(ZhangBen.yi_xuan_neng_li.size(), yi_xuan_qian + 1, "欠下的那一轮能力确实进账")
+	jin_chuang.queue_free()
+	neng_chuang.queue_free()
+	await get_tree().process_frame
+	ZhangBen.chong_zhi()
+
+	# ---- 用例 6z2：稍后再选——升级三选一不再让位、HUD 读数、点提示重开（策划案 v0.18 8.6）----
+	ZhangBen.chong_zhi()
+	ZhangBen.deng_ji = 5
+	ZhangBen.dang_qian_ti_xing = ZhangBen.ti_xing_shang_xian()
+	var jin_zan: CanvasLayer = load("res://scenes/JinHuaDanChuang.tscn").instantiate()
+	add_child(jin_zan)
+	var neng_zan: CanvasLayer = load("res://scenes/NengLiDanChuang.tscn").instantiate()
+	add_child(neng_zan)
+	await get_tree().process_frame
+	ZhangBen.jia_jing_yan(ZhangBen.dangqian_yuzhi())  # 升 6：进化先弹
+	assert_eq(1 if jin_zan.visible else 0, 1, "前置：Lv.6 进化弹窗已开")
+	assert_eq(neng_zan._dai_chu_ci_shu, 1, "前置：升级三选一欠一轮")
+	jin_zan._on_shao_hou()  # 稍后再选
+	assert_eq(1 if jin_zan.visible else 0, 0, "稍后再选：进化弹窗收起")
+	assert_eq(1 if ZhangBen.jin_hua_zan_huan else 0, 1, "稍后再选：账本记下暂缓")
+	assert_eq(1 if ZhangBen.jin_hua_dai_xuan() else 0, 1, "HUD 读数：有进化待选择")
+	assert_eq(1 if neng_zan.visible else 0, 1, "稍后再选：升级三选一立刻补弹（不再让位）")
+	assert_eq(1 if get_tree().paused else 0, 1, "升级三选一接管暂停（不是卡在进化窗）")
+	assert_eq(neng_zan._dai_chu_ci_shu, 0, "补弹即还账：排队数清零")
+	neng_zan._on_neng_li_dian(0)
+	assert_eq(1 if get_tree().paused else 0, 0, "能力选完解冻")
+	jin_zan.zai_kai()  # 点 HUD 提示回来
+	assert_eq(1 if jin_zan.visible else 0, 1, "点提示可重新打开进化三选一")
+	assert_eq(1 if ZhangBen.jin_hua_zan_huan else 0, 0, "重开即取消暂缓（脉动提示随之隐藏）")
+	jin_zan._on_shao_hou()  # 再暂缓一次：可反复暂缓，不卡死
+	assert_eq(1 if ZhangBen.jin_hua_zan_huan else 0, 1, "可反复暂缓")
+	jin_zan.zai_kai()
+	var yan_chu: CanvasLayer = load("res://scenes/JinHuaYanChu.tscn").instantiate()
+	add_child(yan_chu)
+	await get_tree().process_frame
+	jin_zan._on_fen_zhi_dian(0)
+	assert_eq(1 if ZhangBen.jin_hua_zan_huan else 0, 0, "选定分支后暂缓状态清掉")
+	assert_eq(1 if ZhangBen.jin_hua_yan_chu_zhong else 0, 1, "选定分支后进入演出")
+	assert_eq(1 if yan_chu.get_node("FenZhiGuang").modulate.a > 0.0 else 0, 1,
+			"进化演出：全屏分支光已亮起")
+	assert_eq_ming(String(yan_chu.get_node("MingZi").text), "进化 · 太岁肉灵芝兽",
+			"进化演出：浮现形态名")
+	assert_eq(1 if neng_zan.visible else 0, 0, "演出中升级三选一不抢镜")
+	ZhangBen.jie_shu_jin_hua_yan_chu()
+	assert_eq(1 if neng_zan.visible else 0, 0, "演出结束：没有欠账就不补弹")
+	yan_chu.queue_free()
+	jin_zan.queue_free()
+	neng_zan.queue_free()
+	await get_tree().process_frame
+	ZhangBen.chong_zhi()
+	# 恢复真实存档路径并删掉临时档（进化点亮测试不许留下正式存档）
+	CunDang.lu_jing = "user://shenhaishiji_jin_du.json"
+	CunDang.zai_ru()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(ce_jh_lu))
+	await get_tree().process_frame
+
 	# ---- 用例 7：血量归零 → 死亡（放最后：切场景会拆掉本测试）----
 	yu.wudi = false  # 清无敌，确保受伤入口真的执行
 	ZhangBen.deng_ji = 1
@@ -1679,7 +2282,7 @@ func _zhuang_bei(bian_hao: StringName) -> NengLi:
 	return neng
 
 
-func _shu_suo_ka(ka_zu: HBoxContainer) -> int:
+func _shu_suo_ka(ka_zu: Container) -> int:
 	# 数锁定卡：每张卡里名为 AnNiu 的按钮 disabled = 锁
 	var shu := 0
 	for ka in ka_zu.get_children():

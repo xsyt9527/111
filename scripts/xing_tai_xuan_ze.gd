@@ -1,17 +1,20 @@
 extends CanvasLayer
-# 形态选择页：启动第一站；三张卡由脚本动态生成，锁定卡禁用
+# 形态选择页：启动第一站；每张卡由脚本动态生成，锁定卡禁用
+# 12 种形态（玩家 + 10 NPC 鱼 + 鲸鲨）走 4 列网格 + 滚动，一屏放不下时可上下滑
 # 选择流程：CunDang 记当前形态 → 账本复位并装形态 → 切 Main
 
-@onready var ka_pian_zu: HBoxContainer = $KaPianZu
+@onready var ka_pian_zu: GridContainer = $KaPianZu/WangGe
 @onready var fu_biao_ti: Label = $FuBiaoTi
 @onready var ti_shi: Label = $TiShi
 @onready var diao_shi_zu: HBoxContainer = $DiaoShiZu
+@onready var fan_hui: Button = $FanHui
 
 
 func _ready() -> void:
 	get_tree().paused = false  # 从结算/暂停状态回来也能操作
 	YinXiang.bo_bgm()  # 启动第一站就开始放：之后所有场景无缝续曲
 	_shua_xin()
+	fan_hui.pressed.connect(_on_fan_hui_pressed)
 	if OS.has_feature("editor"):
 		# 只在编辑器构建暴露调试按钮；导出包不出现
 		_jian_diao_shi_an_niu()
@@ -37,7 +40,7 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 	var dang_qian := xing_tai.bian_hao == CunDang.dang_qian_bian_hao
 	var ka := PanelContainer.new()
 	ka.name = "Ka_" + String(xing_tai.bian_hao)
-	ka.custom_minimum_size = Vector2(300, 400)
+	ka.custom_minimum_size = Vector2(268, 350)
 	var yang_shi := StyleBoxFlat.new()
 	yang_shi.bg_color = Color(0.08, 0.15, 0.23, 0.98)
 	yang_shi.content_margin_left = 12.0
@@ -59,11 +62,11 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 	ka.add_theme_stylebox_override("panel", yang_shi)
 
 	var lie := VBoxContainer.new()
-	lie.add_theme_constant_override("separation", 8)
+	lie.add_theme_constant_override("separation", 6)
 	ka.add_child(lie)
 
 	var yu_lan := TextureRect.new()
-	yu_lan.custom_minimum_size = Vector2(0, 100)
+	yu_lan.custom_minimum_size = Vector2(0, 84)
 	yu_lan.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	yu_lan.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	if xing_tai.tie_tu != null:
@@ -74,15 +77,15 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 
 	var ming := Label.new()
 	ming.text = xing_tai.ming_zi
-	ming.add_theme_font_size_override("font_size", 26)
+	ming.add_theme_font_size_override("font_size", 24)
 	ming.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lie.add_child(ming)
 
 	var miao := Label.new()
 	miao.text = xing_tai.miao_shu
-	miao.custom_minimum_size = Vector2(0, 58)
+	miao.custom_minimum_size = Vector2(0, 44)
 	miao.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	miao.add_theme_font_size_override("font_size", 14)
+	miao.add_theme_font_size_override("font_size", 13)
 	miao.add_theme_color_override("font_color", Color(0.76, 0.84, 0.9, 0.95))
 	lie.add_child(miao)
 
@@ -92,7 +95,7 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 		xing_tai.kai_ju_deng_ji, int(xing_tai.yi_dong_su_du),
 		xing_tai.zui_ba, xing_tai.zhuan_xiang_ji_su, neng_ming,
 	]
-	shu.add_theme_font_size_override("font_size", 14)
+	shu.add_theme_font_size_override("font_size", 13)
 	shu.add_theme_color_override("font_color", Color(0.68, 0.8, 0.88, 0.95))
 	lie.add_child(shu)
 
@@ -103,7 +106,7 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 	var zhuang_tai := Label.new()
 	zhuang_tai.name = "ZhuangTai"
 	zhuang_tai.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	zhuang_tai.add_theme_font_size_override("font_size", 14)
+	zhuang_tai.add_theme_font_size_override("font_size", 13)
 	if dang_qian:
 		zhuang_tai.text = "当前形态"
 		zhuang_tai.add_theme_color_override("font_color", Color(1.0, 0.84, 0.32))
@@ -119,8 +122,8 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 
 	var an_niu := Button.new()
 	an_niu.name = "AnNiu"
-	an_niu.custom_minimum_size = Vector2(0, 42)
-	an_niu.add_theme_font_size_override("font_size", 18)
+	an_niu.custom_minimum_size = Vector2(0, 38)
+	an_niu.add_theme_font_size_override("font_size", 17)
 	if not jie_suo:
 		an_niu.text = "未解锁"
 		an_niu.disabled = true
@@ -143,6 +146,12 @@ func _on_ka_pian_an_niu(xing_tai: XingTai) -> void:
 		ti_shi.text = "形态应用失败"
 		return
 	get_tree().change_scene_to_file("res://scenes/Main.tscn")
+
+
+func _on_fan_hui_pressed() -> void:
+	# 返回主界面：选择页不写任何局内状态，直接切回（中途存档保持原样）
+	YinXiang.fang(&"an_niu")
+	get_tree().change_scene_to_file("res://scenes/ZhuJieMian.tscn")
 
 
 func _jian_diao_shi_an_niu() -> void:

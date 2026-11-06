@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/you_er_qi_pao.png" id="2_tu_biao"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"you_er_qi_pao"
+ming_zi = "诱饵气泡"
+tu_biao = ExtResource("2_tu_biao")
+miao_shu = "吐出一颗发光气泡，附近鱼会优先去咬它 3 秒；升档气泡更久，满档咬破时炸晕咬它的鱼。"
+lai_yuan = "通用能力池"
+lei_xing = 0
+leng_que = 14.0
+chi_xu = 3.0
+ban_jing = 360.0
+shu_zhi = 1.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 3
+dang_biao = {
+2: {
+&"chi_xu": 5.0
+},
+3: {
+&"chi_xu": 5.0,
+&"zha_yun": 1.0
+}
+}

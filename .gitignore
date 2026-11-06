@@ -29,3 +29,6 @@ Thumbs.db
 
 # 原始素材包（游戏引用的是 assets/sucai/ 加工版，源头包不入库）
 美术资源/
+
+# Python 缓存
+__pycache__/

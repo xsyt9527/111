@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/shi_xing_ying_huo_chong.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_shi_xing_ying_huo_chong_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"shi_xing_ying_huo_chong"
+ming_zi = "噬星萤火虫"
+ji_yu_bian_hao = &"lan_yu"
+ji_yu_ming = "钻光鱼"
+fen_zhi = 0
+miao_shu = "身体如萤火虫化作光团；成千上万聚集为巨大光龙，啃食大型海怪。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

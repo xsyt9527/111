@@ -8,10 +8,12 @@
 script = ExtResource("1_xing_tai")
 bian_hao = &"ao_tu_wo_niu_yu"
 ming_zi = "凹凸蜗牛鱼"
-miao_shu = "唯一主角：稳重均衡的起点，背上凹凸皮肤，靠摆尾在深海里慢慢长大。"
+miao_shu = "默认可选：稳重均衡的起点，背上凹凸皮肤，靠摆尾在深海里慢慢长大。"
+ji_yu_bian_hao = &"ao_tu_wo_niu_yu"
+pai_xu = 0
 dong_hua = ExtResource("2_dong_hua")
 tie_tu = ExtResource("3_tie_tu")
-kai_ju_deng_ji = 0
+kai_ju_deng_ji = 1
 yi_dong_su_du = 300.0
 zui_ba = 1.0
 zhuan_xiang_ji_su = 7.0

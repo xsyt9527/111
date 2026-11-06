@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/zu_zhou_xing_chen_chong.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_zu_zhou_xing_chen_chong_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"zu_zhou_xing_chen_chong"
+ming_zi = "诅咒星辰虫"
+ji_yu_bian_hao = &"lan_yu"
+ji_yu_ming = "钻光鱼"
+fen_zhi = 1
+miao_shu = "光点变诅咒孢子，附着敌人不断吸取生命力，并在其身上长出新钻光鱼。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

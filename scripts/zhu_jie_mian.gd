@@ -10,6 +10,8 @@ const BAN_BEN_WEN_BEN := "v0.3-原型"  # 左上角版本号：原型阶段手�
 @onready var kai_shi: Button = $AnNiuZu/KaiShi
 @onready var ji_xu: Button = $AnNiuZu/JiXu
 @onready var she_zhi: Button = $AnNiuZu/SheZhi
+@onready var tu_jian: Button = $AnNiuZu/TuJian
+@onready var cheng_jiu: Button = $AnNiuZu/ChengJiu
 @onready var tui_chu: Button = $AnNiuZu/TuiChu
 @onready var zhu_she_zhi_mian_ban: CanvasLayer = $ZhuSheZhiMianBan  # 主界面设置面板：音量+摇杆侧边（scripts/zhu_she_zhi.gd）
 
@@ -22,13 +24,15 @@ func _ready() -> void:
 	kai_shi.pressed.connect(_on_kai_shi_pressed)
 	ji_xu.pressed.connect(_on_ji_xu_pressed)
 	she_zhi.pressed.connect(_on_she_zhi_pressed)
+	tu_jian.pressed.connect(_on_tu_jian_pressed)
+	cheng_jiu.pressed.connect(_on_cheng_jiu_pressed)
 	tui_chu.pressed.connect(_on_tui_chu_pressed)
 	_gua_gao_liang_yang_shi()
 
 
 func _gua_gao_liang_yang_shi() -> void:
 	# 悬停/聚焦给一条浅底横带（参考稿的交互样式；样式简洁，后续美化只动这里）
-	for an_niu: Button in [kai_shi, ji_xu, she_zhi, tui_chu]:
+	for an_niu: Button in [kai_shi, ji_xu, she_zhi, tu_jian, cheng_jiu, tui_chu]:
 		var gao_liang := StyleBoxFlat.new()
 		gao_liang.bg_color = Color(0.85, 0.93, 1.0, 0.22)
 		gao_liang.set_corner_radius_all(6)
@@ -65,6 +69,18 @@ func _on_she_zhi_pressed() -> void:
 	# 主界面设置 = 游戏外设置：音量滑条 + 摇杆侧边（不含暂停——主界面没有一局在跑）
 	YinXiang.fang(&"an_niu")
 	zhu_she_zhi_mian_ban.da_kai()
+
+
+func _on_tu_jian_pressed() -> void:
+	# 图鉴：抓鱼船 / 鱼 / 主动技能 / 被动四分类，只读展示
+	YinXiang.fang(&"an_niu")
+	get_tree().change_scene_to_file("res://scenes/TuJian.tscn")
+
+
+func _on_cheng_jiu_pressed() -> void:
+	# 成就：花成就值永久解锁开局技能
+	YinXiang.fang(&"an_niu")
+	get_tree().change_scene_to_file("res://scenes/ChengJiu.tscn")
 
 
 func _on_tui_chu_pressed() -> void:

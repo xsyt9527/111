@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/qian_yan_lei_po_yu.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_qian_yan_lei_po_yu_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"qian_yan_lei_po_yu"
+ming_zi = "千眼雷破鱼"
+ji_yu_bian_hao = &"zong_yu"
+ji_yu_ming = "大眼金枪鱼"
+fen_zhi = 2
+miao_shu = "巨大眼睛异变出多颗复眼；不再依靠游速，双眼发射高压电击（类电鳗能力觉醒）。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

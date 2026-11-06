@@ -1,0 +1,136 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/tu_jian.gd" id="1_tujian"]
+[ext_resource type="Texture2D" uid="uid://daq5ma45vhqj7" path="res://assets/sucai/shenhai_beijing/beijing_3x3.webp" id="2_haidi"]
+
+[node name="TuJian" type="CanvasLayer"]
+script = ExtResource("1_tujian")
+
+[node name="HaiDi" type="TextureRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_haidi")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="AnZhao" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.02, 0.06, 0.11, 0.82)
+
+[node name="BiaoTi" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 22.0
+offset_right = 1240.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.86, 0.94, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 40
+text = "图鉴"
+horizontal_alignment = 1
+
+[node name="FanHui" type="Button" parent="."]
+offset_left = 1040.0
+offset_top = 24.0
+offset_right = 1240.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 18
+text = "返回主界面"
+
+[node name="FenLei" type="HBoxContainer" parent="."]
+offset_left = 120.0
+offset_top = 96.0
+offset_right = 1160.0
+offset_bottom = 146.0
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Chuan" type="Button" parent="FenLei"]
+custom_minimum_size = Vector2(180, 46)
+theme_override_font_sizes/font_size = 22
+toggle_mode = true
+text = "抓鱼船"
+
+[node name="Yu" type="Button" parent="FenLei"]
+custom_minimum_size = Vector2(180, 46)
+theme_override_font_sizes/font_size = 22
+toggle_mode = true
+text = "鱼"
+
+[node name="JinHua" type="Button" parent="FenLei"]
+custom_minimum_size = Vector2(180, 46)
+theme_override_font_sizes/font_size = 22
+toggle_mode = true
+text = "进化"
+
+[node name="ZhuDong" type="Button" parent="FenLei"]
+custom_minimum_size = Vector2(180, 46)
+theme_override_font_sizes/font_size = 22
+toggle_mode = true
+text = "主动技能"
+
+[node name="BeiDong" type="Button" parent="FenLei"]
+custom_minimum_size = Vector2(180, 46)
+theme_override_font_sizes/font_size = 22
+toggle_mode = true
+text = "被动"
+
+[node name="GunDong" type="ScrollContainer" parent="."]
+offset_left = 60.0
+offset_top = 164.0
+offset_right = 1220.0
+offset_bottom = 700.0
+horizontal_scroll_mode = 0
+
+[node name="WangGe" type="GridContainer" parent="GunDong"]
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 4
+
+[node name="XiangQingZhe" type="Control" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BanDi" type="ColorRect" parent="XiangQingZhe"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.72)
+
+[node name="MianBan" type="PanelContainer" parent="XiangQingZhe"]
+offset_left = 240.0
+offset_top = 104.0
+offset_right = 1040.0
+offset_bottom = 616.0
+
+[node name="Lie" type="VBoxContainer" parent="XiangQingZhe/MianBan"]
+theme_override_constants/separation = 10
+
+[node name="BiaoTi" type="Label" parent="XiangQingZhe/MianBan/Lie"]
+theme_override_font_sizes/font_size = 34
+text = "形态名"
+
+[node name="FuBiaoTi" type="Label" parent="XiangQingZhe/MianBan/Lie"]
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 17
+text = "基础鱼种 · 分支"
+
+[node name="ZhengWen" type="Label" parent="XiangQingZhe/MianBan/Lie"]
+custom_minimum_size = Vector2(0, 360)
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.85, 0.9, 0.96, 1)
+theme_override_font_sizes/font_size = 18
+text = "设定与专属技能"
+autowrap_mode = 3
+
+[node name="GuanBi" type="Button" parent="XiangQingZhe/MianBan/Lie"]
+custom_minimum_size = Vector2(0, 48)
+theme_override_font_sizes/font_size = 20
+text = "关闭"

@@ -1,0 +1,95 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/cheng_jiu.gd" id="1_chengjiu"]
+[ext_resource type="Texture2D" uid="uid://daq5ma45vhqj7" path="res://assets/sucai/shenhai_beijing/beijing_3x3.webp" id="2_haidi"]
+
+[node name="ChengJiu" type="CanvasLayer"]
+script = ExtResource("1_chengjiu")
+
+[node name="HaiDi" type="TextureRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+texture = ExtResource("2_haidi")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="AnZhao" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.02, 0.06, 0.11, 0.84)
+
+[node name="BiaoTi" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 18.0
+offset_right = 1240.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.86, 0.94, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 38
+text = "成就"
+horizontal_alignment = 1
+
+[node name="FanHui" type="Button" parent="."]
+offset_left = 1040.0
+offset_top = 24.0
+offset_right = 1240.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 18
+text = "返回主界面"
+
+[node name="ChongZhi" type="Button" parent="."]
+offset_left = 860.0
+offset_top = 24.0
+offset_right = 1020.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 18
+text = "重置成就"
+tooltip_text = "重置已购买技能并按原价返还成就值；当前未花余额保留，重置前后总成就值不变"
+
+[node name="ChengJiuZhi" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 78.0
+offset_right = 640.0
+offset_bottom = 118.0
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "成就值：0"
+
+[node name="ShuoMing" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 118.0
+offset_right = 1000.0
+offset_bottom = 144.0
+theme_override_colors/font_color = Color(0.68, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "每次通关 +10。花成就值永久解锁的技能会在每局开局自动装配（主动 1 档 / 被动 1 层）。"
+
+[node name="DiaoShi" type="Button" parent="."]
+visible = false
+offset_left = 900.0
+offset_top = 80.0
+offset_right = 1020.0
+offset_bottom = 116.0
+theme_override_font_sizes/font_size = 16
+text = "调试 +100"
+
+[node name="GunDong" type="ScrollContainer" parent="."]
+offset_left = 60.0
+offset_top = 152.0
+offset_right = 1220.0
+offset_bottom = 700.0
+horizontal_scroll_mode = 0
+
+[node name="WangGe" type="GridContainer" parent="GunDong"]
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
+columns = 3
+
+[node name="QueRen" type="ConfirmationDialog" parent="."]
+title = "重置成就"
+dialog_text = "将清空已永久解锁的技能。\n已购买技能会按原价返还成就值（主动 30 / 被动 20），当前未花余额保留。\n重置前后成就值总额不变（用掉的 + 还没用的）。\n胜场、当前形态和图鉴点亮不受影响。\n\n确定重置吗？"
+ok_button_text = "确认重置"
+cancel_button_text = "取消"

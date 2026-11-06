@@ -26,6 +26,17 @@ func _initialize() -> void:
 	assert_eq(zb.deng_ji, 0, "开局 Lv.0，未跨阈值 4 不应升级")
 	zb.free()  # 不入树的实例用完即弃，避免退出时报资源占用
 
+	# ---- 用例 1b：调试「测试升级」每次恰好一级（清余量，不连升）----
+	var zb_dbg: Node = load("res://scripts/zhang_ben.gd").new()
+	zb_dbg.jing_yan = 7  # 故意留余量：调试按钮应清掉它，而不是 7+阈值一次连升
+	zb_dbg.tiao_shi_sheng_yi_ji()
+	assert_eq(zb_dbg.deng_ji, 1, "测试升级：Lv.0 → Lv.1")
+	assert_eq(zb_dbg.jing_yan, 0, "测试升级清空本级余量")
+	zb_dbg.tiao_shi_sheng_yi_ji()
+	assert_eq(zb_dbg.deng_ji, 2, "测试升级：再点一次 → Lv.2")
+	assert_eq(zb_dbg.jing_yan, 0, "第二次测试升级仍只升一级")
+	zb_dbg.free()
+
 	# ---- 用例 2：跨级升级扣减（余量带入下一级）----
 	var zb2: Node = load("res://scripts/zhang_ben.gd").new()
 	zb2.jia_jing_yan(13)  # Lv.0 阈值 10：13-10=3，余量带入 Lv.1
@@ -275,23 +286,23 @@ func _initialize() -> void:
 
 	# ---- 用例 17：形态装配（等级/体型/初始主动/幂等/再来一次）----
 	var zb17: Node = load("res://scripts/zhang_ben.gd").new()
-	var dian_yao: XingTai = load("res://data/xingtai/dian_yao.tres")
-	var deng_long_yu: XingTai = load("res://data/xingtai/deng_long_yu.tres")
+	var dian_yu: XingTai = load("res://data/xingtai/lv_yu.tres")  # 可玩电鳗（旧 dian_yao 仅历史数据）
+	var lan_yu: XingTai = load("res://data/xingtai/lan_yu.tres")
 	var qi_yu: XingTai = load("res://data/xingtai/qi_yu.tres")
-	assert_eq(1 if dian_yao != null and deng_long_yu != null and qi_yu != null else 0, 1,
+	assert_eq(1 if dian_yu != null and lan_yu != null and qi_yu != null else 0, 1,
 			"形态资源应能加载（账本形态用例的前置）")
 	sheng_ji_ci = 0
 	zhuang_bei_ci = 0
 	zb17.sheng_ji.connect(_shu_sheng_ji)
 	zb17.neng_li_zhuang_bei.connect(_shu_neng_li)
-	assert_eq(int(zb17.kai_ju_xing_tai(dian_yao)), 1, "开局装电鳐应成功")
-	assert_eq(zb17.deng_ji, 1, "电鳐开局 Lv.1")
+	assert_eq(int(zb17.kai_ju_xing_tai(dian_yu)), 1, "开局装电鳗应成功")
+	assert_eq(zb17.deng_ji, 1, "电鳗开局 Lv.1")
 	assert_eq(zb17.jing_yan, 0, "形态开局经验归零")
-	assert_float(zb17.dang_qian_ti_xing, 2.0, "电鳐开局体型 = 1+1 = 2.0（填满）")
-	assert_eq(1 if zb17.dang_qian_xing_tai == dian_yao else 0, 1, "账本记下本局形态")
+	assert_float(zb17.dang_qian_ti_xing, 2.0, "电鳗开局体型 = 1+1 = 2.0（填满）")
+	assert_eq(1 if zb17.dang_qian_xing_tai == dian_yu else 0, 1, "账本记下本局形态")
 	assert_eq(1 if zb17.xing_tai_yi_ying_yong else 0, 1, "形态已应用标记置位")
 	assert_eq(zhuang_bei_ci, 1, "初始主动装备应广播一次")
-	assert_eq(zb17.zhu_dong_zu.size(), 1, "电鳐自带放电麻痹：入主动组")
+	assert_eq(zb17.zhu_dong_zu.size(), 1, "电鳗自带放电麻痹：入主动组")
 	assert_string(String(zb17.zhu_dong_zu[0].bian_hao), "fang_dian_ma_bi", "初始主动是放电麻痹")
 	assert_eq(zb17.yi_xuan_neng_li.size(), 1, "初始主动应进本局历史")
 	assert_eq(sheng_ji_ci, 0, "形态开局不得触发 sheng_ji（否则开局弹三选一）")
@@ -303,7 +314,7 @@ func _initialize() -> void:
 	zb17.jing_yan = 42
 	zb17.dang_qian_ti_xing = 3.0
 	zb17.chong_zhi_bao_liu_xing_tai()
-	assert_eq(1 if zb17.dang_qian_xing_tai == dian_yao else 0, 1, "再来一次保留电鳐")
+	assert_eq(1 if zb17.dang_qian_xing_tai == dian_yu else 0, 1, "再来一次保留电鳗")
 	assert_eq(zb17.deng_ji, 1, "再来一次回到形态开局等级")
 	assert_eq(zb17.jing_yan, 0, "再来一次经验归零")
 	assert_float(zb17.dang_qian_ti_xing, 2.0, "再来一次体型重新填满")
@@ -316,10 +327,10 @@ func _initialize() -> void:
 	assert_eq(1 if not zb17.xing_tai_yi_ying_yong else 0, 1, "chong_zhi 清空形态应用标记")
 	assert_eq(zb17.deng_ji, 0, "chong_zhi 回默认等级")
 	assert_float(zb17.dang_qian_ti_xing, 1.0, "chong_zhi 回默认体型")
-	# 灯笼鱼：无初始能力
-	assert_eq(int(zb17.kai_ju_xing_tai(deng_long_yu)), 1, "开局装灯笼鱼应成功")
-	assert_eq(zb17.deng_ji, 0, "灯笼鱼开局 Lv.0")
-	assert_eq(1 if zb17.zhu_dong_zu.is_empty() else 0, 1, "灯笼鱼没有初始主动")
+	# 钻光鱼：无初始能力
+	assert_eq(int(zb17.kai_ju_xing_tai(lan_yu)), 1, "开局装钻光鱼应成功")
+	assert_eq(zb17.deng_ji, 1, "钻光鱼开局 Lv.1")
+	assert_eq(1 if zb17.zhu_dong_zu.is_empty() else 0, 1, "钻光鱼没有初始主动")
 	assert_eq(zb17.yi_xuan_neng_li.size(), 0, "没有初始能力就不进历史")
 	assert_eq(int(zb17.kai_ju_xing_tai(null)), 0, "空形态拒绝装配")
 	zb17.free()
@@ -410,11 +421,11 @@ func _initialize() -> void:
 	cd20.qing_chu_zhong_tu()
 	assert_eq(1 if not cd20.you_zhong_tu() else 0, 1, "清档后不应有中途存档")
 	assert_eq(1 if cd20.du_zhong_tu().is_empty() else 0, 1, "没档时读取应返回空字典")
-	# 摆一局"打了一半"的状态：电鳐 Lv.1 起步 → 灌经验升 Lv.2 → 掉血掉饥饿走时间 → 装能力记食谱
-	var cd_dian_yao: XingTai = load("res://data/xingtai/dian_yao.tres")
+	# 摆一局"打了一半"的状态：电鳗 Lv.1 起步 → 灌经验升 Lv.2 → 掉血掉饥饿走时间 → 装能力记食谱
+	var cd_dian_yu: XingTai = load("res://data/xingtai/lv_yu.tres")
 	var cd_xuan_wo: NengLi = load("res://data/nengli/xuan_wo.tres")
 	var cd_du_xian: NengLi = load("res://data/nengli/du_xian.tres")
-	assert_eq(1 if zb20.kai_ju_xing_tai(cd_dian_yao) else 0, 1, "装配电鳐形态")
+	assert_eq(1 if zb20.kai_ju_xing_tai(cd_dian_yu) else 0, 1, "装配电鳗形态")
 	zb20.jia_jing_yan(15)  # Lv.1 阈值 12：15-12=3 → 升 Lv.2 余 3
 	assert_eq(zb20.deng_ji, 2, "前置：应升到 Lv.2")
 	zb20.shou_shang(1.0)  # 掉 1 点血：Lv.2 上限 3.0 → 2.0
@@ -429,12 +440,12 @@ func _initialize() -> void:
 	assert_eq(1 if cd20.you_zhong_tu() else 0, 1, "写入后应存在中途存档")
 	var du_hui: Dictionary = cd20.du_zhong_tu()
 	assert_eq(1 if not du_hui.is_empty() else 0, 1, "读取应返回非空字典")
-	assert_string(String(du_hui.get("xing_tai", "")), "dian_yao", "存档形态 id 应为电鳐")
+	assert_string(String(du_hui.get("xing_tai", "")), "lv_yu", "存档形态 id 应为电鳗")
 	assert_eq(int(du_hui.get("deng_ji", -1)), 2, "存档等级应为 2")
 	# 清空账本 → 载回 → 逐字段核对
 	zb20.chong_zhi()
 	assert_eq(zb20.deng_ji, 0, "前置：复位后回 Lv.0")
-	assert_eq(1 if zb20.zai_ru_zhong_tu(du_hui, cd_dian_yao) else 0, 1, "载入中途存档应成功")
+	assert_eq(1 if zb20.zai_ru_zhong_tu(du_hui, cd_dian_yu) else 0, 1, "载入中途存档应成功")
 	assert_eq(zb20.deng_ji, 2, "载入：等级恢复 Lv.2")
 	assert_eq(zb20.jing_yan, 3, "载入：本级经验恢复 3")
 	assert_float(zb20.dang_qian_ti_xing, 2.0, "载入：当前体型（血量）恢复 2.0")
@@ -448,6 +459,22 @@ func _initialize() -> void:
 	assert_string(String(zb20.zui_duo_bian_hao), "xuan_wo", "载入：最常吃从食谱推导回漩涡")
 	assert_eq(1 if zb20.xing_tai_yi_ying_yong else 0, 1, "载入：幂等保护应置位（不许再走开局装配）")
 	assert_eq(int(zb20.jie_ju), 0, "载入：结局回到未定")
+	# 进化往返：Lv.6 进化 → 存档带 jin_hua → 复位 → 读档恢复形态与倍率
+	zb20.deng_ji = 6
+	var jin_hua_shou = JinHuaKu.wan_jia_fen_zhi(&"lv_yu")[0]
+	assert_eq(1 if zb20.jin_hua_wei(jin_hua_shou) else 0, 1, "前置：Lv.6 可进化（电鳗东方分支）")
+	assert_eq(1 if cd20.xie_zhong_tu(zb20) else 0, 1, "进化后写中途档应成功")
+	var du_hui_jin: Dictionary = cd20.du_zhong_tu()
+	assert_string(String(du_hui_jin.get("jin_hua", "")), "lei_yuan_ming_she",
+			"存档应记录进化形态 id")
+	zb20.chong_zhi()
+	assert_eq(1 if zb20.dang_qian_jin_hua == null else 0, 1, "前置：复位后进化清空")
+	assert_eq(1 if zb20.zai_ru_zhong_tu(du_hui_jin, cd_dian_yu) else 0, 1, "载入进化档应成功")
+	assert_string(String(zb20.dang_qian_jin_hua.bian_hao), "lei_yuan_ming_she",
+			"读档恢复进化形态")
+	assert_float(zb20.jin_hua_ti_xing_bei, 1.5, "读档恢复进化倍率 1.5")
+	assert_float(zb20.ti_xing_shang_xian(), (float(zb20.deng_ji) + zb20.JI_CHU_TI_XING) * 1.5,
+			"读档后体型上限按进化倍率算（先恢复倍率再算上限）")
 	# 结局已定 / 死亡的局面拒绝写中途档（写档前置守门）
 	zb20.ding_jie_suan(1)  # 胜利：与 CunDang.JIE_JU_SHENG_LI 对齐
 	assert_eq(1 if not cd20.xie_zhong_tu(zb20) else 0, 1, "结局已定应拒绝写中途档")
@@ -457,6 +484,27 @@ func _initialize() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(zt_lu_jing))  # 保险：幂等删除临时档
 	zb20.free()  # 不入树实例用完即弃
 	cd20.free()
+
+	# ---- 用例 21：进化专属技归属校验（策划案 v0.21 独占规则）----
+	var zb21: Node = load("res://scripts/zhang_ben.gd").new()
+	var zhuan := NengLi.new()
+	zhuan.bian_hao = &"ce_zhuan_shu"
+	zhuan.lei_xing = NengLi.LeiXing.ZHU_DONG
+	zhuan.zui_da_dang = 1
+	zhuan.suoshu_xing_tai = &"lei_yuan_ming_she"
+	assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "填了归属形态即视为专属技")
+	assert_eq(1 if not zb21.neng_li_ke_yong(zhuan) else 0, 1, "未进化时专属技不可用")
+	zb21.xuan_neng_li(zhuan)
+	assert_eq(1 if not zb21.zhuang_lei(&"ce_zhuan_shu") else 0, 1, "归属不符时装备入口应拒绝")
+	zb21.dang_qian_jin_hua = JinHuaKu.zhao(&"lei_yuan_ming_she")
+	assert_eq(1 if zb21.neng_li_ke_yong(zhuan) else 0, 1, "进化成对应形态后专属技可用")
+	zb21.xuan_neng_li(zhuan)
+	assert_eq(1 if zb21.zhuang_lei(&"ce_zhuan_shu") else 0, 1, "归属匹配后装备入口放行")
+	var pu_tong := NengLi.new()
+	pu_tong.bian_hao = &"ce_pu_tong"
+	pu_tong.zui_da_dang = 1
+	assert_eq(1 if zb21.neng_li_ke_yong(pu_tong) else 0, 1, "无归属的普通能力始终可用")
+	zb21.free()
 
 	# ---- 收卷：退出码是唯一门禁语言 ----
 	print("Results: %d passed, %d failed" % [passed, failed])

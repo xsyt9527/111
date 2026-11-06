@@ -10,6 +10,9 @@ signal si_wang                                       # 当前体型（血量）�
 signal neng_li_zhuang_bei(neng_li: NengLi, ceng: int)  # 能力装备/叠层：玩家与技能按钮刷新
 signal jie_duan_gai_bian(xin_jie_duan: int)          # 阶段变了：Main 据此生成机器船、刷 HUD
 signal ju_jie_shu(jie_guo: int)                      # 一局结束（胜/负）：Main 延时切结算页
+signal jin_hua_wan_cheng(jin_hua: JinHua)            # 进化完成：玩家鱼换外观/调数值、升级三选一接着弹
+signal jin_hua_zan_huan_wan                           # 玩家点了「稍后再选」：升级三选一立刻补弹当级欠账
+signal jin_hua_yan_chu_jie_shu(jin_hua: JinHua)       # 进化演出结束：升级三选一这时才补弹
 
 # 终局时间轴（策划案第九章）：一局 10 分钟，第 8 分钟人类机器船降临，8~10 分钟人类战
 const JU_SHI_CHANG := 600.0          # 一局总时长（秒）
@@ -37,6 +40,8 @@ const HUI_TI_CHU_SHU := 1.5  # 体型恢复除数：吃进肚子的体型 ÷1.5 
 const KONG_ZHI_SHANG_XIAN := 100.0  # 电麻条/毒晕条上限：任一条满 → 失控（策划案 8.6.3）
 const KONG_ZHI_XIA_JIANG := 20.0    # 控制条每秒自然消退：离开危险源约 5 秒清空
 const YUN_XUAN_SHI_CHANG := 2.0     # 条满后的失控时长（秒）：任人宰割
+const JIN_HUA_DENG_JI := 6          # 进化等级门槛：Lv.6 起可进化（策划案 8.6 拍板）
+const JIN_HUA_SHU_ZHI_BEI := 1.5    # 进化基础倍率：所有数值 ×1.5（策划案 8.6 拍板）
 var sheng_ji_biao := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级曲线参数（改表零代码调曲线）
 
 var jing_yan := 0  # 当前经验（本级的，升级时扣掉已用部分）
@@ -54,9 +59,15 @@ var _zui_duo_ci_shu := 0  # 最常吃的条数：平局保留先到者（只有�
 var ji_e := JI_E_SHANG_XIAN  # 当前饥饿：0~100，随时间下降，吃东西回
 var sheng_cun_zhong := true  # 局内活着才掉饥饿：死亡后停止，重开复位
 var _e_si_lei_ji := 0.0  # 饥饿归零后的计时器：攒满 1 秒扣一次体型
-var dian_ma := 0.0  # 电麻条（0~100）：被电鳐放电/电麻猎物叠满 → 失控
+var dian_ma := 0.0  # 电麻条（0~100）：被电鳗放电/电麻猎物叠满 → 失控
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉咬/吞蓑鲉叠满 → 失控
 var yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时玩家不能游、不能咬、不能吃
+var dang_qian_jin_hua: JinHua = null  # 本局已选进化形态；null = 还没进化（每局一次）
+var jin_hua_ti_xing_bei := 1.0        # 进化倍率：体型上限也跟着 ×1.5，未进化时恒为 1.0
+var jin_hua_dan_chuang_zai_chang := false  # 进化弹窗在 _ready/_exit_tree 登记：没有弹窗的场景（测试）不拖住升级三选一
+var jin_hua_zan_huan := false  # 进化「稍后再选」：暂缓期间升级三选一不再让位（策划案 v0.18 8.6）
+var jin_hua_yan_chu_zhong := false  # 进化演出中：玩家免伤，升级三选一等演出结束再弹
+var jin_hua_yan_chu_shi_chang := 1.7  # 进化演出时长（秒）：策划案 1.5~2 秒，实机可调
 
 
 func _ready() -> void:
@@ -77,7 +88,8 @@ func _process(delta: float) -> void:
 
 func ti_xing_shang_xian() -> float:
 	# 体型上限：Lv.0 给 1 点基础体型，之后每级 +1（Lv.8 → 9 点）
-	return float(deng_ji) + JI_CHU_TI_XING
+	# 进化后整体 ×1.5（策划案 8.6「所有数值 ×1.5」）：未进化时倍率恒为 1.0，旧规则原样
+	return (float(deng_ji) + JI_CHU_TI_XING) * jin_hua_ti_xing_bei
 
 
 func ti_xing_dao_chi_du(ti_xing_zhi: float) -> float:
@@ -107,11 +119,21 @@ func dangqian_yuzhi() -> int:
 	return ceili(sheng_ji_biao.ji_chu * pow(sheng_ji_biao.zeng_zhang, maxi(deng_ji, 0)))
 
 
+func tiao_shi_sheng_yi_ji() -> void:
+	# 仅调试构建的局内「测试升级」：清掉本级余量，正好补满一级。
+	# 先清余量是为了“点一次 = 升一级”，不会因为已有经验一次连升几级；
+	# 仍然走 jia_jing_yan 唯一入口，升级信号/回血/进化弹窗等后续逻辑全部照常触发。
+	jing_yan = 0
+	jia_jing_yan(dangqian_yuzhi())
+
+
 func shou_shang(liang: float = MEI_CI_SHANG_HAI) -> void:
 	# 受伤唯一入口：扣当前体型（血量），不碰等级上限
 	# 体型越大血越厚——同样扣 1 点，Lv.0 一次见底，Lv.8 能扛九次
 	if dang_qian_ti_xing <= 0.0:
 		return  # 已死亡：不再重复扣、不重复播死亡
+	if jin_hua_yan_chu_zhong:
+		return  # 进化演出无敌：连饿死等绕过玩家 wudi 的直接扣血也挡住（策划案 v0.18）
 	dang_qian_ti_xing = maxf(0.0, dang_qian_ti_xing - liang)
 	ti_xing_bian_hua.emit(dang_qian_ti_xing, ti_xing_shang_xian())
 	if dang_qian_ti_xing <= 0.0:
@@ -193,6 +215,11 @@ func jia_dian_ma(liang: float) -> void:
 	dian_ma = minf(KONG_ZHI_SHANG_XIAN, dian_ma + liang)
 	if dian_ma >= KONG_ZHI_SHANG_XIAN:
 		_chu_fa_yun_xuan()
+
+
+func qing_dian_ma() -> void:
+	# 电脉冲主动：清空自己的电麻条，但不解除已经触发的失控
+	dian_ma = 0.0
 
 
 func jia_du_yun(liang: float) -> void:
@@ -314,6 +341,10 @@ func chong_zhi() -> void:
 	jie_ju = JieJu.WEI_DING  # 结局清空：上一局的胜负不能带进新局
 	dang_qian_xing_tai = null  # 形态属于“上一局开局”，纯复位必须清掉
 	xing_tai_yi_ying_yong = false
+	dang_qian_jin_hua = null  # 进化是每局一次：重开回到基础形态
+	jin_hua_ti_xing_bei = 1.0
+	jin_hua_zan_huan = false  # 暂缓状态不跨局
+	jin_hua_yan_chu_zhong = false  # 演出标志不跨局（防止免伤残留）
 
 
 func kai_ju_xing_tai(xing_tai: XingTai) -> bool:
@@ -329,6 +360,12 @@ func kai_ju_xing_tai(xing_tai: XingTai) -> bool:
 	dang_qian_ti_xing = ti_xing_shang_xian()  # 新上限直接填满
 	if xing_tai.kai_ju_neng_li != null:
 		xuan_neng_li(xing_tai.kai_ju_neng_li)
+	# 成就永久解锁：形态自带的那一个不重复加，其余每样装一份（主动 1 档 / 被动 1 层）
+	# 纯逻辑测试用 --script 跑，账本还没进场景树：此时不碰 /root，避免 get_node 报错
+	if is_inside_tree():
+		var cun_dang := get_node_or_null("/root/CunDang")
+		if cun_dang != null:
+			cun_dang.ying_yong_yong_jiu(self)
 	return true
 
 
@@ -338,6 +375,87 @@ func chong_zhi_bao_liu_xing_tai() -> void:
 	chong_zhi()
 	if xing_tai != null:
 		kai_ju_xing_tai(xing_tai)
+
+
+func ke_yi_jin_hua() -> bool:
+	# 进化资格：活到 Lv.6、还没进化、本局未结束——三个条件缺一不可（每局一次）
+	# 弹窗与测试都读这一处，不各写一份判断
+	return dang_qian_jin_hua == null and deng_ji >= JIN_HUA_DENG_JI \
+			and sheng_cun_zhong and jie_ju == JieJu.WEI_DING
+
+
+func dang_qian_yu_zhong() -> StringName:
+	# 当前鱼种 id：选 NPC 鱼开局后，Lv.6 只能选该鱼种自己的三分支
+	# 没装形态（纯逻辑测试/极端读档失败）时按默认主角处理，绝不返回空串
+	if dang_qian_xing_tai != null:
+		return dang_qian_xing_tai.yu_zhong_bian_hao()
+	return MO_REN_XING_TAI.yu_zhong_bian_hao()
+
+
+func jin_hua_dai_xuan() -> bool:
+	# 「进化待选择」读数：已暂缓、且仍然有资格——HUD 脉动提示与测试都读这一处
+	return jin_hua_zan_huan and ke_yi_jin_hua()
+
+
+func zan_huan_jin_hua() -> bool:
+	# 「稍后再选」：只置暂缓标志，不改 ke_yi_jin_hua（之后仍能回来选）
+	# 发信号让升级三选一立刻补弹 6 级欠下的那一轮，别等下一次升级
+	if not ke_yi_jin_hua():
+		return false
+	jin_hua_zan_huan = true
+	jin_hua_zan_huan_wan.emit()
+	return true
+
+
+func kai_shi_jin_hua_yan_chu() -> void:
+	# 进化演出开始：玩家免伤，升级三选一先欠账不出（演出结束由弹窗发结束信号）
+	jin_hua_yan_chu_zhong = true
+
+
+func jie_shu_jin_hua_yan_chu(jin_hua: JinHua = null) -> void:
+	# 进化演出结束：清免伤标志并广播，升级三选一这时才补弹
+	if not jin_hua_yan_chu_zhong:
+		return
+	jin_hua_yan_chu_zhong = false
+	jin_hua_yan_chu_jie_shu.emit(jin_hua if jin_hua != null else dang_qian_jin_hua)
+
+
+func jin_hua_wei(xuan_ze: JinHua) -> bool:
+	# 进化唯一入口：玩家在 3 选 1 里选定分支 → 记形态、乘倍率、装配专属能力、广播
+	# 倍率分工：体型上限在这里乘（账本自己管），速度/嘴巴/转向由玩家鱼听信号后乘——
+	# 账本不持有玩家的移动参数，谁拥有谁改
+	if xuan_ze == null or not xuan_ze.wan_jia_ke_yong or not ke_yi_jin_hua():
+		return false
+	# 分支必须属于当前鱼种：防旧测试/旧存档把别的鱼种分支装进来
+	if xuan_ze.ji_yu_bian_hao != dang_qian_yu_zhong():
+		return false
+	dang_qian_jin_hua = xuan_ze
+	jin_hua_zan_huan = false  # 选定即完成：暂缓状态清掉，HUD 提示随之消失
+	jin_hua_ti_xing_bei = maxf(1.0, xuan_ze.shu_zhi_bei)
+	dang_qian_ti_xing = ti_xing_shang_xian()  # 新上限直接填满：进化是变强，不是残血续命
+	ti_xing_bian_hua.emit(dang_qian_ti_xing, ti_xing_shang_xian())
+	# 专属主动/专属被动：走现有装备入口（主动占槽、被动叠层）；内容待填时为空，这里不动作
+	if xuan_ze.zhuan_shu_zhu_dong != null:
+		xuan_neng_li(xuan_ze.zhuan_shu_zhu_dong)
+	if xuan_ze.zhuan_shu_bei_dong != null:
+		xuan_neng_li(xuan_ze.zhuan_shu_bei_dong)
+	jin_hua_wan_cheng.emit(xuan_ze)
+	return true
+
+
+func zai_ru_jin_hua(bian_hao: StringName) -> bool:
+	# 继续游戏：按存档 id 恢复进化形态（只恢复倍率与外观引用，不重复发专属能力——
+	# 专属能力已经躺在存档的主动/被动列表里，再装一次会白升一档）
+	var jin_hua := JinHuaKu.zhao(bian_hao)
+	if jin_hua == null or not jin_hua.wan_jia_ke_yong:
+		return false
+	# 存档里的分支必须属于当前鱼种：旧档/手改档跨鱼种分支一律忽略（回退基础形态）
+	if jin_hua.ji_yu_bian_hao != dang_qian_yu_zhong():
+		return false
+	dang_qian_jin_hua = jin_hua
+	jin_hua_ti_xing_bei = maxf(1.0, jin_hua.shu_zhi_bei)
+	return true
+
 
 
 func zai_ru_zhong_tu(shu_ju: Dictionary, xing_tai: XingTai) -> bool:
@@ -353,6 +471,14 @@ func zai_ru_zhong_tu(shu_ju: Dictionary, xing_tai: XingTai) -> bool:
 	xing_tai_yi_ying_yong = true  # 幂等保护照常生效：这一局不许再走 kai_ju_xing_tai
 	deng_ji = maxi(0, int(shu_ju.get("deng_ji", KAI_JU_DENG_JI)))
 	jing_yan = maxi(0, int(shu_ju.get("jing_yan", 0)))
+	# 进化恢复：先恢复倍率再算上限——否则读回的血量上限会比进化前少 1/3
+	var jin_hua_id = shu_ju.get("jin_hua", "")
+	if jin_hua_id is String and String(jin_hua_id) != "":
+		if zai_ru_jin_hua(StringName(jin_hua_id)) and is_inside_tree():
+			# 继续游戏也算“进化过”：图鉴永久点亮（已亮则 dian_liang_jin_hua 幂等返回 false）
+			var cun_dang := get_node_or_null("/root/CunDang")
+			if cun_dang != null:
+				cun_dang.dian_liang_jin_hua(StringName(jin_hua_id))
 	var shang_xian := ti_xing_shang_xian()
 	dang_qian_ti_xing = clampf(float(shu_ju.get("dang_qian_ti_xing", shang_xian)), 0.0, shang_xian)
 	ji_e = clampf(float(shu_ju.get("ji_e", JI_E_SHANG_XIAN)), 0.0, JI_E_SHANG_XIAN)
@@ -364,13 +490,17 @@ func zai_ru_zhong_tu(shu_ju: Dictionary, xing_tai: XingTai) -> bool:
 			yi_xuan_neng_li.append(li_shi_neng)
 	for id_wen in shu_ju.get("zhu_dong", []):
 		var zhu_dong_neng: NengLi = load("res://data/nengli/%s.tres" % String(id_wen))
-		if zhu_dong_neng != null:
+		if zhu_dong_neng != null and neng_li_ke_yong(zhu_dong_neng):
 			zhu_dong_zu.append(zhu_dong_neng)
 	var cun_dang_biao: Dictionary = shu_ju.get("zhu_dong_dang", {})
 	for jian in cun_dang_biao:
 		zhu_dong_dang[StringName(jian)] = maxi(1, int(cun_dang_biao[jian]))
 	var ceng_cun: Dictionary = shu_ju.get("bei_dong_ceng", {})
 	for jian in ceng_cun:
+		# 专属被动：旧档/手改档若带着不属于当前形态的归属，整条丢弃（不生效）
+		var bei_dong_neng := NengLiKu.zhao(StringName(jian))
+		if bei_dong_neng != null and not neng_li_ke_yong(bei_dong_neng):
+			continue
 		bei_dong_ceng[StringName(jian)] = maxi(1, int(ceng_cun[jian]))
 	# 食谱恢复：最常吃（id + 次数）从计数表重新推导，不单独存——推导比存两份更不会不一致
 	var shi_pu_cun: Dictionary = shu_ju.get("chi_yu_ji_lu", {})
@@ -385,10 +515,20 @@ func zai_ru_zhong_tu(shu_ju: Dictionary, xing_tai: XingTai) -> bool:
 	return true
 
 
+func neng_li_ke_yong(neng: NengLi) -> bool:
+	# 进化专属技的运行时归属校验（策划案 v0.21）：只有当前进化形态恰好是它绑定的形态才生效。
+	# 通用/鱼种能力（suoshu_xing_tai 为空）不受影响；这条同时挡住读档、未来商店/掉落等旁路。
+	if neng == null:
+		return false
+	if not neng.shi_zhuan_shu():
+		return true
+	return dang_qian_jin_hua != null and dang_qian_jin_hua.bian_hao == neng.suoshu_xing_tai
+
+
 func xuan_neng_li(neng: NengLi) -> void:
 	# 能力装备唯一入口：主动入组/升档（满档静默）；被动叠层（满层静默）；生效的选择进历史
 	# neng_li_zhuang_bei 的 ceng 参数双义：主动=当前档位，被动=当前层数（UI 统一显示 ×N）
-	if neng == null:
+	if neng == null or not neng_li_ke_yong(neng):
 		return
 	if neng.shi_zhu_dong():
 		if zhuang_lei(neng.bian_hao):

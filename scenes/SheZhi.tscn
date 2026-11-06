@@ -8,9 +8,9 @@ layer = 99
 script = ExtResource("1_shezhi")
 
 [node name="SheZhiAnNiu" type="Button" parent="."]
-offset_left = 900.0
+offset_left = 1168.0
 offset_top = 12.0
-offset_right = 936.0
+offset_right = 1248.0
 offset_bottom = 44.0
 theme_override_font_sizes/font_size = 16
 text = "设置"

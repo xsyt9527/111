@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/tao_tie_tun_hai_shou.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_tao_tie_tun_hai_shou_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"tao_tie_tun_hai_shou"
+ming_zi = "饕餮吞海兽"
+ji_yu_bian_hao = &"ju_kou_yu"
+ji_yu_ming = "巨口鱼"
+fen_zhi = 0
+miao_shu = "嘴巴占满全身，下巴可脱臼裂开，牙齿化钢铁；一口吞下比自身大两倍的猎物。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

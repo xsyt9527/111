@@ -17,6 +17,8 @@ const FAN_WEI_BIAO := [
 	&"sheng_na_mai_chong",
 	&"yu_ni_dan",
 	&"ruo_dian_dong_cha",
+	&"dian_mai_chong",
+	&"you_er_qi_pao",
 ]
 # 突进型：朝向前方的扇形 + 箭头
 const TU_JIN_BIAO := [
@@ -30,6 +32,8 @@ const ZI_SHEN_BIAO := [
 	&"kuang_bao_si_yao",
 	&"ni_liu_shan_bi",
 	&"qian_fu_tu_xi",
+	&"ying_ke_hu_ti",
+	&"xue_xing_kuang_re",
 ]
 
 const TIAN_CHONG_SE := Color(1.0, 0.3, 0.3, 0.32)  # 填充：淡红半透明

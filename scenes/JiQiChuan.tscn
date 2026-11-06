@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ji_qi_chuan.gd" id="1_jiqichuan"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/ji_qi_chuan_4zhen.tres" id="2_chuanti_frames"]
-[ext_resource type="SpriteFrames" path="res://data/donghua/ji_qi_chuan_zhuai_4zhen.tres" id="3_zhuati_frames"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/chuan_zhao_4zhen.tres" id="4_zhaoti_frames"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ruodian"]
 radius = 60.0
@@ -16,6 +16,10 @@ script = ExtResource("1_jiqichuan")
 [node name="ChuanTi" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_chuanti_frames")
 autoplay = "dong"
+
+[node name="ZhaoTi" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = ExtResource("4_zhaoti_frames")
 
 [node name="SheDingQu" type="Area2D" parent="."]
 collision_layer = 2
@@ -34,13 +38,6 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ChuanTiQu"]
 position = Vector2(0, 60)
 shape = SubResource("CircleShape2D_chuanti")
-
-[node name="Zhua" type="Node2D" parent="."]
-visible = false
-
-[node name="ZhuaTi" type="AnimatedSprite2D" parent="Zhua"]
-sprite_frames = ExtResource("3_zhuati_frames")
-autoplay = "dong"
 
 [node name="GongJiDingshi" type="Timer" parent="."]
 wait_time = 1.0

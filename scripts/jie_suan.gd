@@ -11,8 +11,17 @@ func _ready() -> void:
 	# 存活时长：死亡也算本局用时，账本时钟只在活着时走，正好是“活了多久”
 	$ShengCun.text = "存活 " + ZhangBen.ge_shi_shi_jian(ZhangBen.ju_nei_shi_jian)
 	_xie_jie_ju()
+	_xie_cheng_jiu()
 	_xie_neng_li()
 	_xie_jie_suo()
+
+
+func _xie_cheng_jiu() -> void:
+	# 成就值只在胜利时入账（CunDang._on_ju_jie_shu 已写档）：这里只报本局增量与累计
+	if ZhangBen.jie_ju != ZhangBen.JieJu.SHENG_LI:
+		$ChengJiuZhi.visible = false
+		return
+	$ChengJiuZhi.text = "本局成就值 +%d ｜ 累计 %d" % [CunDang.CHENG_JIU_MEI_CI, CunDang.cheng_jiu_zhi]
 
 
 func _xie_neng_li() -> void:

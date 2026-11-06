@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/xing_luo_you_hun.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_xing_luo_you_hun_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"xing_luo_you_hun"
+ming_zi = "星落游魂"
+ji_yu_bian_hao = &"ye_deng_long_yu"
+ji_yu_ming = "灯笼鱼"
+fen_zhi = 1
+miao_shu = "全身发光点连成星座图谱，如一条星辰光带；折射光线实现完全隐身。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

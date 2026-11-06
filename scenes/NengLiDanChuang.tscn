@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=40 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li_dan_chuang.gd" id="1_danchuang"]
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="2_nengli"]
@@ -29,12 +29,20 @@
 [ext_resource type="Resource" path="res://data/nengli/yin_ni_qi_xi.tres" id="27_yinni"]
 [ext_resource type="Resource" path="res://data/nengli/chang_mao_chuan_ci.tres" id="28_changmao"]
 [ext_resource type="Resource" path="res://data/nengli/ruo_dian_dong_cha.tres" id="29_ruodian"]
+[ext_resource type="Resource" path="res://data/nengli/ying_ke_hu_ti.tres" id="30_yingke"]
+[ext_resource type="Resource" path="res://data/nengli/dian_mai_chong.tres" id="31_dianmai"]
+[ext_resource type="Resource" path="res://data/nengli/you_er_qi_pao.tres" id="32_youer"]
+[ext_resource type="Resource" path="res://data/nengli/xue_xing_kuang_re.tres" id="33_xuexing"]
+[ext_resource type="Resource" path="res://data/nengli/bei_ci_zhi_jue.tres" id="34_beici"]
+[ext_resource type="Resource" path="res://data/nengli/jue_jing_fan_yao.tres" id="35_juejing"]
+[ext_resource type="Resource" path="res://data/nengli/xiu_lin.tres" id="36_xiulin"]
+[ext_resource type="Resource" path="res://data/nengli/fu_rou_you_er.tres" id="37_furou"]
 
 [node name="NengLiDanChuang" type="CanvasLayer"]
 layer = 100
 process_mode = 3
 script = ExtResource("1_danchuang")
-neng_li_zu = Array[ExtResource("2_nengli")]([ExtResource("3_fangdian"), ExtResource("4_duji"), ExtResource("5_jisu"), ExtResource("6_manli"), ExtResource("7_qianfu"), ExtResource("8_yulei"), ExtResource("9_niliu"), ExtResource("10_xuanwo"), ExtResource("11_yuni"), ExtResource("12_kuangbao"), ExtResource("13_shengna"), ExtResource("14_silie"), ExtResource("15_duxian"), ExtResource("16_baoshi"), ExtResource("17_ruanlin"), ExtResource("18_diangan"), ExtResource("19_yinglin"), ExtResource("20_weiqi"), ExtResource("21_lieshou"), ExtResource("22_shenshang"), ExtResource("23_dawei"), ExtResource("24_tanshi"), ExtResource("25_shifu"), ExtResource("26_jiena"), ExtResource("27_yinni"), ExtResource("28_changmao"), ExtResource("29_ruodian")])
+neng_li_zu = Array[ExtResource("2_nengli")]([ExtResource("3_fangdian"), ExtResource("4_duji"), ExtResource("5_jisu"), ExtResource("6_manli"), ExtResource("7_qianfu"), ExtResource("8_yulei"), ExtResource("9_niliu"), ExtResource("10_xuanwo"), ExtResource("11_yuni"), ExtResource("12_kuangbao"), ExtResource("13_shengna"), ExtResource("14_silie"), ExtResource("15_duxian"), ExtResource("16_baoshi"), ExtResource("17_ruanlin"), ExtResource("18_diangan"), ExtResource("19_yinglin"), ExtResource("20_weiqi"), ExtResource("21_lieshou"), ExtResource("22_shenshang"), ExtResource("23_dawei"), ExtResource("24_tanshi"), ExtResource("25_shifu"), ExtResource("26_jiena"), ExtResource("27_yinni"), ExtResource("28_changmao"), ExtResource("29_ruodian"), ExtResource("30_yingke"), ExtResource("31_dianmai"), ExtResource("32_youer"), ExtResource("33_xuexing"), ExtResource("34_beici"), ExtResource("35_juejing"), ExtResource("36_xiulin"), ExtResource("37_furou")])
 
 [node name="BanDi" type="ColorRect" parent="."]
 offset_left = 0.0

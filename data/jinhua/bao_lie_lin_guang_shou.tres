@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/bao_lie_lin_guang_shou.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_bao_lie_lin_guang_shou_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"bao_lie_lin_guang_shou"
+ming_zi = "爆裂磷光兽"
+ji_yu_bian_hao = &"ye_deng_long_yu"
+ji_yu_ming = "灯笼鱼"
+fen_zhi = 2
+miao_shu = "温和发光器变成暴躁爆炸器官；遇险全身高亮后引发闪光爆炸，致盲敌人。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

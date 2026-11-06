@@ -15,6 +15,9 @@ const SHOU_MING := 12.0  # 存活 12 秒，最后 1 秒淡出
 
 var piao_su := Vector2.ZERO  # 漂浮速度（像素/秒）
 var yi_cun_huo := 0.0  # 已存活时长（秒）
+var fu_rou_you_er_sheng_yu := 0.0  # 腐肉诱饵剩余（秒）：>0 时发光并主动吸引附近 NPC
+var xi_yin_ban_jing := 0.0  # 腐肉诱饵的吸引半径（世界像素）
+var _you_er_guang_shi := 0.0  # 诱饵发光呼吸相位（秒）
 
 
 func _ready() -> void:
@@ -37,6 +40,14 @@ func _process(delta: float) -> void:
 	rotation += sin(yi_cun_huo * 3.0) * 0.15 * delta
 	if yi_cun_huo > SHOU_MING - 1.0:
 		modulate.a = clampf(SHOU_MING - yi_cun_huo, 0.0, 1.0)  # 最后 1 秒淡出
+	# 腐肉诱饵：还活着就金红呼吸发光——玩家和 NPC 都能一眼看到“这块肉在勾鱼”
+	if fu_rou_you_er_sheng_yu > 0.0:
+		fu_rou_you_er_sheng_yu = maxf(0.0, fu_rou_you_er_sheng_yu - delta)
+		_you_er_guang_shi += delta
+		var mai := 0.5 + 0.5 * sin(_you_er_guang_shi * 8.0)
+		modulate = Color(1.0 + 0.45 * mai, 0.7 + 0.25 * mai, 0.35 + 0.2 * mai, modulate.a)
+	elif modulate != Color.WHITE:
+		modulate = Color(1.0, 1.0, 1.0, modulate.a)  # 诱饵到点：恢复本色，透明度保留淡出值
 	if yi_cun_huo >= SHOU_MING:
 		queue_free()
 	super._process(delta)  # 基类管红光：子类覆写了 _process 就必须显式接力

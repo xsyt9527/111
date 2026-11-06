@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="JinHua" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/jin_hua.gd" id="1_jin_hua"]
+[ext_resource type="Texture2D" path="res://assets/sucai/jinhua/mei_du_sha_du_guan.png" id="2_tie_tu"]
+[ext_resource type="SpriteFrames" path="res://data/donghua/jinhua_mei_du_sha_du_guan_6zhen.tres" id="3_dong_hua"]
+
+[resource]
+script = ExtResource("1_jin_hua")
+bian_hao = &"mei_du_sha_du_guan"
+ming_zi = "美杜莎毒冠"
+ji_yu_bian_hao = &"cheng_yu"
+ji_yu_ming = "狮子鱼（蓑鲉）"
+fen_zhi = 1
+miao_shu = "毒刺变成条条蠕动小毒蛇（类美杜莎头发），游动时喷吐毒液；石化或麻痹猎物。"
+dong_hua = ExtResource("3_dong_hua")
+tie_tu = ExtResource("2_tie_tu")
+wan_jia_ke_yong = true
+shu_zhi_bei = 1.5

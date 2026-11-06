@@ -43,9 +43,9 @@ horizontal_alignment = 1
 
 [node name="AnNiuZu" type="VBoxContainer" parent="."]
 offset_left = 540.0
-offset_top = 240.0
+offset_top = 220.0
 offset_right = 740.0
-offset_bottom = 580.0
+offset_bottom = 660.0
 theme_override_constants/separation = 16
 alignment = 1
 
@@ -64,6 +64,16 @@ text = "继续游戏"
 custom_minimum_size = Vector2(0, 52)
 theme_override_font_sizes/font_size = 22
 text = "设置"
+
+[node name="TuJian" type="Button" parent="AnNiuZu"]
+custom_minimum_size = Vector2(0, 52)
+theme_override_font_sizes/font_size = 22
+text = "图鉴"
+
+[node name="ChengJiu" type="Button" parent="AnNiuZu"]
+custom_minimum_size = Vector2(0, 52)
+theme_override_font_sizes/font_size = 22
+text = "成就"
 
 [node name="TuiChu" type="Button" parent="AnNiuZu"]
 custom_minimum_size = Vector2(0, 52)
