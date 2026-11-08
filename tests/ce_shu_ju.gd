@@ -23,7 +23,7 @@ var quan_bu_neng_li: Array[NengLi] = []  # 能力池（用例 1 装载，用例 
 
 
 func _initialize() -> void:
-	# ---- 用例 1：能力池 35 个全过校验 ----
+	# ---- 用例 1：能力池 41 个全过校验（35 通用 + 6 进化专属 P0）----
 	var neng_wen_jian := DirAccess.get_files_at("res://data/nengli")
 	var neng_shu := 0  # .tres 实际个数（跳过杂项文件）
 	var bian_hao_ji := {}  # 能力 id 查重集合
@@ -36,9 +36,10 @@ func _initialize() -> void:
 		if neng != null:
 			bian_hao_ji[neng.bian_hao] = true
 			quan_bu_neng_li.append(neng)
-	assert_eq(neng_shu, 35, "能力池应恰好 35 个（6 鱼种能力 + 通用能力池 29 新能力）")
-	assert_eq(bian_hao_ji.size(), 35, "35 个能力的 bian_hao 应互不重复")
-	# 图标挂载契约（2026-11-02 全量接入）：35 个能力全部有图——路径错/漏导入/漏挂都会在这里红
+	assert_eq(neng_shu, 41, "能力池应恰好 41 个（35 通用/鱼种 + 6 进化专属 P0）")
+	assert_eq(bian_hao_ji.size(), 41, "41 个能力的 bian_hao 应互不重复")
+	# 图标挂载契约（2026-11-02 全量接入）：35 个通用能力全部有图；
+	# 进化专属技暂用纯文字卡面（美术未出，交接文档口径：图标随形态绑定，后续补齐）
 	var you_tu_biao := {
 		&"ruan_lin": true, &"ling_min_wei_qi": true, &"shen_shang_xian": true,
 		&"da_wei_wang": true, &"ji_e_nai_shou": true, &"yin_ni_qi_xi": true,
@@ -59,7 +60,7 @@ func _initialize() -> void:
 			continue
 		tu_biao_shu += 1
 		assert_guo("图标: " + String(neng.bian_hao), "" if neng.tu_biao != null else "缺少 tu_biao")
-	assert_eq(tu_biao_shu, 35, "图标应恰好挂到全部 35 个能力上")
+	assert_eq(tu_biao_shu, 35, "图标应恰好挂到全部 35 个通用能力上")
 
 	# ---- 用例 2：红测——已知坏数据必须被校验器抓到 ----
 	var huai: NengLi = load("res://tests/huai_neng_li.tres")  # 键合法、数值为负
@@ -159,15 +160,26 @@ func _initialize() -> void:
 			assert_eq(1 if yz.gong_ji_dong_hua.get_frame_texture(&"gong", 0) != null else 0, 1,
 					"鱼种 %s 攻击帧有贴图" % wen_jian)
 	assert_eq(1 if ye_deng.gong_ji_dong_hua == null else 0, 1, "未配攻击帧的鱼种保持 null（回退游动帧）")
-	assert_eq(NengLiKu.quan_bu().size(), 35, "能力总表 35 个（16 主动 + 19 被动）")
+	assert_eq(NengLiKu.quan_bu().size(), 41, "能力总表 41 个（19 主动 + 22 被动：含 6 进化专属 P0）")
+	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池仍是 35 个：专属技永不流入三选一/成就")
 
 	# ---- 用例 4：三选一算法（注入固定种子，可复现；档位版规则）----
 	# 候选池 = 未满档能力：满档主动排除、未满档主动保留（可升档）、满层被动排除、未满层被动保留
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20261030
-	var quan_bu: Array[NengLi] = []
-	quan_bu.assign(quan_bu_neng_li)
-	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {}, {}).size(), 35, "无装备时候选池 35 个（16 主动 + 19 被动）")
+	var quan_bu: Array[NengLi] = NengLiChou.ke_xuan_chi(quan_bu_neng_li, {}, {})
+	assert_eq(quan_bu.size(), 35, "无装备时候选池 35 个（16 主动 + 19 被动；6 专属被过滤）")
+	# 进化专属：带归属形态、永不进三选一（P0 三条主动 + 三条被动）
+	var zhuan_shu_id := [&"tai_sui_ge_rou", &"ning_jiao_tan_fu", &"qiang_suan_pen_tu",
+			&"ji_yin_she_lu", &"chao_ya_shui_dao", &"xie_ya_ji_dong"]
+	for id in zhuan_shu_id:
+		var zhuan := NengLiKu.zhao(id)
+		assert_eq(1 if zhuan != null else 0, 1, "专属能力必须注册: " + String(id))
+		if zhuan != null:
+			assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "专属能力必须带归属形态: " + String(id))
+			assert_eq(1 if zhuan.suoshu_xing_tai != &"" else 0, 1, "专属归属不能为空: " + String(id))
+			assert_eq(zhuan.zui_da_dang, 1, "专属技单档不可升级: " + String(id))
+	assert_eq(quan_bu.size(), 35, "专属技不参与三选一（候选池不因新增 6 条而变大）")
 	# 满档排除：放电麻痹 1 档即满——装上就从候选池消失
 	var fang_dian := _zhao_neng(&"fang_dian_ma_bi")
 	var ke_xuan := NengLiChou.ke_xuan_chi(quan_bu, {&"fang_dian_ma_bi": 1}, {})
@@ -211,8 +223,8 @@ func _initialize() -> void:
 	assert_eq(wei_gui, 0, "200 轮抽样每轮应恰 3 张且互不重复")
 	assert_eq(chu_xian.size(), 35, "200 轮后每个能力都该出现过（随机性覆盖）")
 
-	# 强制包含：35 个 id 逐个测
-	for neng in quan_bu_neng_li:
+	# 强制包含：35 个通用 id 逐个测
+	for neng in quan_bu:
 		var san := NengLiChou.chou_san_zhang(quan_bu, neng.bian_hao, true, rng)
 		var zhao_dao := false
 		for xuan in san:

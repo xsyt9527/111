@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"ji_yin_she_lu"
+ming_zi = "基因摄录"
+miao_shu = "获得的能力数值参数（伤害/时长/半径/积累量）统一 ×1.5。"
+lai_yuan = "深海史莱姆女王"
+suoshu_xing_tai = &"shen_hai_shi_lai_mu_nv_wang"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 0.0
+ban_jing = 0.0
+shu_zhi = 1.5
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([&"she_lu"])
+ban_jing_shen_wei = false

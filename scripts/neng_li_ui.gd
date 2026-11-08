@@ -36,8 +36,8 @@ func _ready() -> void:
 	ZhangBen.si_wang.connect(_on_si_wang)
 	jin_hua_ti_shi.visible = false  # 平时藏着：只有点了「稍后再选」才脉动提醒
 	jin_hua_ti_shi.pressed.connect(_on_jin_hua_ti_shi_pressed)
-	# 测试升级按钮：编辑器与 debug 导出可见，正式 release 构建自动隐藏
-	diao_shi_sheng_ji.visible = OS.is_debug_build()
+	# 测试升级按钮：编辑器 / debug 导出 / PC 测试版（ce_shi_ban 特性）可见，其余隐藏
+	diao_shi_sheng_ji.visible = OS.is_debug_build() or OS.has_feature("ce_shi_ban")
 	diao_shi_sheng_ji.pressed.connect(_on_diao_shi_sheng_ji_pressed)
 
 
@@ -93,8 +93,8 @@ func _on_jin_hua_ti_shi_pressed() -> void:
 
 
 func _on_diao_shi_sheng_ji_pressed() -> void:
-	# 开发测试按钮：正式构建里按钮不显示；这里再挡一层，防误触发
-	if not OS.is_debug_build():
+	# 开发测试按钮：不可见构建里不响应；这里再挡一层，防误触发
+	if not (OS.is_debug_build() or OS.has_feature("ce_shi_ban")):
 		return
 	ZhangBen.tiao_shi_sheng_yi_ji()
 

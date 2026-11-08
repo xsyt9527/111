@@ -74,7 +74,7 @@ func _initialize() -> void:
 	cd2.free()
 
 	# ---- 用例 4b：成就值购买永久开局技能 ----
-	assert_eq(NengLiKu.quan_bu().size(), 35, "能力总表 35 个（16 主动 + 19 被动）")
+	assert_eq(NengLiKu.quan_bu().size(), 41, "能力总表 41 个（35 通用 + 6 进化专属 P0）")
 	assert_bool(NengLiKu.zhao(&"yu_lei_chong_ci") != null, true, "按 id 反查主动能力")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"yu_lei_chong_ci")), 30, "主动永久解锁 30 成就值")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"ruan_lin")), 20, "被动永久解锁 20 成就值")
@@ -132,7 +132,7 @@ func _initialize() -> void:
 	zhuan.bian_hao = &"ce_zhuan_shu"
 	zhuan.suoshu_xing_tai = &"lei_yuan_ming_she"
 	assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "带归属形态的能力是专属技")
-	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池 35 个（当前无专属技入库）")
+	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池 35 个（6 条专属技已入库但不入池）")
 	var chi_you_zhuan := 0
 	for neng in NengLiKu.tong_yong_chi():
 		if neng.shi_zhuan_shu():

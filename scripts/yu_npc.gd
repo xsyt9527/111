@@ -91,6 +91,14 @@ var _gao_liang_sheng_yu := 0.0  # 声呐/猎手直觉高亮剩余（秒）：泛
 var _tun_shi_ji_shi := 0.0  # 首领吞食检查节流计时（秒）
 var _gong_ci := 0  # 咬击动画代次：连咬时旧协程回来不把新动画切掉
 var _zai_gong_ji := false  # 咬击动画播放中：红光让位，避免两层帧错位
+# ---- 进化专属状态层（2026-11-06，交接文档第十四章 1）----
+const ZHUANG_TAI_MING: Array[StringName] = [&"shi_hua", &"feng_kuang", &"kong_ju", \
+		&"mei_huo", &"zhi_mang", &"shu_fu"]  # 石化/疯狂/恐惧/魅惑/致盲/束缚
+var _zhuang_tai_sheng_yu := {}  # 六状态剩余秒：StringName -> 秒（不走控制条，受击不打断）
+var _mei_huo_dian := Vector2.ZERO  # 魅惑：反向追随的鬼火落点
+var _qiang_suan_sheng_yu := 0.0  # 酸蚀剩余秒（强酸喷吐的持续状态，≠六状态）
+var _qiang_suan_mei_miao := 0.0  # 酸蚀每秒掉肉量（等级/秒）
+var _qiang_suan_ji_shi := 0.0  # 酸蚀节拍累计（满 1 秒结算一次）
 
 @onready var rou_qu: Area2D = $RouQu  # 鱼肉区：NPC 也能吃鱼肉（策划案 8.1「任何鱼可进食」）
 
@@ -147,6 +155,8 @@ func _process(delta: float) -> void:
 		return  # 场景切换时旧场景节点可能还会被 processing 一帧：不在树里不读视口
 	_yao_ji_leng_que = maxf(0.0, _yao_ji_leng_que - delta)
 	_zou_kong_zhi(delta)  # 控制条消退 / 失控倒数
+	_zou_zhuang_tai(delta)  # 六状态倒数（石化/疯狂/恐惧/魅惑/致盲/束缚）
+	_zou_qiang_suan(delta)  # 酸蚀：每秒掉肉一次
 	_geng_xin_neng_li(delta)  # 能力冷却/突进/冲撞/潜伏倒数
 	if shi_boss:
 		zou_boos_sheng_ji(delta)  # 首领随时间成长：就算被电麻/毒晕也照长
@@ -158,12 +168,37 @@ func _process(delta: float) -> void:
 		_geng_xin_hong_guang(delta)  # 失控时照样亮红光：玩家可以放心去吃
 		return
 	$AnimatedSprite2D.modulate = Color.WHITE  # 失控结束：恢复本色
+	# 石化 / 束缚：完全静止——不游、不咬、不吃（受击不打断，计时走完才动）
+	if you_zhuang_tai(&"shi_hua") or you_zhuang_tai(&"shu_fu"):
+		$AnimatedSprite2D.modulate = Color(0.62, 0.62, 0.7)  # 石化发灰 / 束缚泛暗
+		$AnimatedSprite2D.rotation = 0.0
+		_geng_xin_bu_wei()
+		_geng_xin_hong_guang(delta)
+		return
 	if _yin_shen_sheng_yu > 0.0:
 		$AnimatedSprite2D.modulate.a = 0.45  # 巨口鱼潜伏：半透明
 	if _gao_liang_sheng_yu > 0.0:
 		$AnimatedSprite2D.modulate = Color(1.0, 0.92, 0.45)  # 声呐/猎手直觉标记：泛黄一瞬
 	$AnimatedSprite2D.rotation = 0.0
 	_fang_dian(delta)  # 电鳗：醒着才放电（被动能力）
+	# 恐惧：朝玩家反方向逃窜（六状态之一，不受控制条影响）
+	if you_zhuang_tai(&"kong_ju"):
+		var wan_kong := _zhao_wan_jia()
+		if wan_kong != null:
+			var cha_kong := global_position - wan_kong.global_position
+			if cha_kong.length_squared() > 0.001:
+				_xiang(cha_kong.normalized(), delta * 1.25)
+		_geng_xin_bu_wei()
+		_geng_xin_hong_guang(delta)
+		return
+	# 魅惑：反向追随鬼火落点（不是追玩家）
+	if you_zhuang_tai(&"mei_huo"):
+		var cha_mei := _mei_huo_dian - global_position
+		if cha_mei.length_squared() > 0.001:
+			_xiang(cha_mei.normalized(), delta)
+		_geng_xin_bu_wei()
+		_geng_xin_hong_guang(delta)
+		return
 	if bei_xi != null:
 		# 被吸中：朝玩家游（吸力略快于自身游速）；路自己走（设计决策 1A：NPC 自决）
 		var cha_xi: Vector2 = bei_xi.global_position - position
@@ -199,6 +234,11 @@ func _si_kao() -> void:
 	# 选目标：先看逃不逃，再按“复仇 > 最大的小鱼 > 玩家”挑猎物（策划案 8.5）
 	# 反应延迟里：保持原目标/原路线——被偷袭的鱼还没意识到是谁咬的，不能立刻转头
 	if _fan_ying_ji_shi > 0.0:
+		return
+	# 疯狂：敌我不分，追最近的一条鱼（含同类与玩家）
+	if you_zhuang_tai(&"feng_kuang"):
+		_mu_biao = _zhao_zui_jin_ren()
+		zhuang_tai = ZhuangTai.ZHUI_ZHU if _mu_biao != null else ZhuangTai.YOU_DANG
 		return
 	if _tao_pao_ji_shi > 0.0:
 		_mu_biao = null
@@ -461,6 +501,9 @@ func _tun_diao(mu) -> void:
 
 func dang_qian_gan_zhi() -> float:
 	# 有效感知半径：本体感知 × 淤泥雾系数（站在雾里就瞎）——索敌/起手/复仇圈都读这一处
+	# 致盲：感知直接归零（独立状态，不受「感知最低保留 20%」保护）
+	if you_zhuang_tai(&"zhi_mang"):
+		return 0.0
 	var xi_shu := 1.0
 	for wu in get_tree().get_nodes_in_group("yu_ni_wu"):
 		var yu_ni_wu := wu as YuNiWu
@@ -487,6 +530,117 @@ func ding_zhu(shi_chang: float) -> void:
 	if si_le or not is_inside_tree():
 		return
 	_fan_ying_ji_shi = maxf(_fan_ying_ji_shi, shi_chang)
+
+
+# ---- 进化专属：六状态层 + 酸蚀 + 无视防御直伤（2026-11-06）----
+
+func jia_zhuang_tai(ming: StringName, shi_chang: float, mu_dian := Vector2.ZERO) -> bool:
+	# 六状态统一入口：直接生效 X 秒、不进控制条、受击不打断
+	# boss（敌方鲸鲨/机器船）免疫全部六种；玩家鲸鲨是本类之外的玩家节点，不免疫
+	if si_le or not is_inside_tree():
+		return false
+	if shi_boss:
+		return false
+	if shi_chang <= 0.0 or not ZHUANG_TAI_MING.has(ming):
+		return false
+	_zhuang_tai_sheng_yu[ming] = maxf(float(_zhuang_tai_sheng_yu.get(ming, 0.0)), shi_chang)
+	if ming == &"mei_huo":
+		_mei_huo_dian = mu_dian
+	if ming == &"zhi_mang":
+		_mu_biao = null  # 致盲瞬间丢失目标：要重新感知才能再锁定
+	return true
+
+
+func you_zhuang_tai(ming: StringName) -> bool:
+	# 是否处于某状态：索敌/行动/测试统一读它
+	return float(_zhuang_tai_sheng_yu.get(ming, 0.0)) > 0.0
+
+
+func zhuang_tai_sheng_yu(ming: StringName) -> float:
+	# 状态剩余秒数：0 = 不在该状态
+	return float(_zhuang_tai_sheng_yu.get(ming, 0.0))
+
+
+func _zou_zhuang_tai(delta: float) -> void:
+	# 六状态倒数：归零即移除；同类再施加取更长的那个，不叠成两条
+	if _zhuang_tai_sheng_yu.is_empty():
+		return
+	var guo_qi: Array[StringName] = []
+	for ming in _zhuang_tai_sheng_yu:
+		var sheng := maxf(0.0, float(_zhuang_tai_sheng_yu[ming]) - delta)
+		_zhuang_tai_sheng_yu[ming] = sheng
+		if sheng <= 0.0:
+			guo_qi.append(ming)
+	for ming in guo_qi:
+		_zhuang_tai_sheng_yu.erase(ming)
+
+
+func _zhao_zui_jin_ren():
+	# 疯狂用：最近的「任何鱼」——同类与玩家都算，敌我不分
+	var zui = null
+	var zui_ju := INF
+	for yu in _zhou_wei_yu():
+		if yu == null or yu.si_le:
+			continue
+		var ju := global_position.distance_to(yu.global_position)
+		if ju < zui_ju:
+			zui_ju = ju
+			zui = yu
+	var wan := _zhao_wan_jia()
+	if wan != null:
+		var ju_wan := global_position.distance_to(wan.global_position)
+		if ju_wan < zui_ju:
+			zui = wan
+	return zui
+
+
+func jia_qiang_suan(shi_chang: float, mei_miao: float) -> bool:
+	# 酸蚀（强酸喷吐）：持续 X 秒，每秒掉 mei_miao 级体型；期间被咬掉肉 ×2
+	# 不走六状态：它可以作用在 boss 身上（boss 只免疫六种即时控制）
+	if si_le or not is_inside_tree():
+		return false
+	if shi_chang <= 0.0 or mei_miao <= 0.0:
+		return false
+	_qiang_suan_sheng_yu = maxf(_qiang_suan_sheng_yu, shi_chang)
+	_qiang_suan_mei_miao = maxf(_qiang_suan_mei_miao, mei_miao)
+	return true
+
+
+func qiang_suan_sheng_yu() -> float:
+	# 酸蚀剩余读数：测试与表现层用
+	return _qiang_suan_sheng_yu
+
+
+func _zou_qiang_suan(delta: float) -> void:
+	# 酸蚀节拍：满 1 秒掉一次肉（掉出的肉块玩家/NPC 都能捡）
+	if _qiang_suan_sheng_yu <= 0.0:
+		return
+	_qiang_suan_ji_shi += delta
+	while _qiang_suan_ji_shi >= 1.0 and _qiang_suan_sheng_yu > 0.0:
+		_qiang_suan_ji_shi -= 1.0
+		_qiang_suan_sheng_yu = maxf(0.0, _qiang_suan_sheng_yu - 1.0)
+		var diao := minf(_qiang_suan_mei_miao, tixing - ZUI_XIAO_TI_XING)
+		if diao > 0.0:
+			tixing -= diao
+			_ying_she_ti_xing()
+			_shan_hong()
+			diao_rou(1, diao)  # 掉肉走现有流程：肉块会掉出来
+	if _qiang_suan_sheng_yu <= 0.0:
+		_qiang_suan_mei_miao = 0.0
+		_qiang_suan_ji_shi = 0.0
+
+
+func shou_zhi_jie_shang(liang: float) -> void:
+	# 无视防御直伤（超压水刀/空间裂缝/等离子齐射）：直扣当前体型，
+	# 不经过 shou_dao_yao_ji——跳过减伤/反甲/反毒/记仇，只保留首领败退判定
+	if si_le or not is_inside_tree() or liang <= 0.0:
+		return
+	_jie_chu_yin_shen_npc()
+	tixing = maxf(ZUI_XIAO_TI_XING, tixing - liang)
+	_ying_she_ti_xing()
+	_shan_hong()
+	if shi_boss and tixing <= ZhangBen.BOOS_BAI_TI_XING:
+		_bei_ji_bai()
 
 
 func shi_fang_gao_liang(shi_chang: float) -> void:
@@ -808,6 +962,8 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, bu := "shen") -> void:
 	if si_le or not is_inside_tree():
 		return
 	_jie_chu_yin_shen_npc()  # 受击破隐：潜伏的 ×2 不留给下一次
+	if _qiang_suan_sheng_yu > 0.0:
+		shang_hai *= 2.0  # 酸蚀期间被咬掉肉 ×2（强酸喷吐的配套弱点）
 	tixing = maxf(ZUI_XIAO_TI_XING, tixing - shang_hai)
 	_ying_she_ti_xing()
 	_shan_hong()

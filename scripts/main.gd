@@ -57,11 +57,36 @@ func _ready() -> void:
 	camera.zoom = Vector2.ONE / _shi_jiao_bei()  # 首帧就按开局等级取景，避免 Lv.1 电鳗镜头跳变
 	dian_ma_tiao.modulate = Color(1.0, 0.85, 0.35)  # 电麻条：黄（只染色，不改主题）
 	du_yun_tiao.modulate = Color(0.55, 1.0, 0.45)   # 毒晕条：绿
+	_shua_tiao_yang_se(boss_tiao, Color(0.92, 0.22, 0.22))  # Boss（机器船）血条：红
+	_shua_tiao_yang_se(ji_e_tiao, Color(0.95, 0.82, 0.25))  # 饥饿条：黄
+	_gua_tou_ding_xue_tiao()  # 玩家头顶体型血条（红，跟随体型掉血）
 	# 终局时间轴：阶段切换由账本广播，Main 只负责“演出”（生成船、横幅、切结算页）
 	ZhangBen.jie_duan_gai_bian.connect(_on_jie_duan_gai_bian)
 	ZhangBen.ju_jie_shu.connect(_on_ju_jie_shu)
-	YinXiang.bo_bgm()  # BGM 常驻 Autoload：从选择页续进来，切结算页也不断
+	YinXiang.bo_bgm(&"tan_suo")  # 局内探索曲：从选择页的深海摇篮切过来
 	_sheng_cheng_jing_sha()
+
+
+func _shua_tiao_yang_se(tiao: ProgressBar, tian_se: Color) -> void:
+	# 进度条配色：深色圆角底槽 + 指定填充色（运行时覆写默认主题，不进场景文件）
+	var di := StyleBoxFlat.new()
+	di.bg_color = Color(0.1, 0.13, 0.18, 0.9)
+	di.set_corner_radius_all(4)
+	var tian := StyleBoxFlat.new()
+	tian.bg_color = tian_se
+	tian.set_corner_radius_all(4)
+	tiao.add_theme_stylebox_override("background", di)
+	tiao.add_theme_stylebox_override("fill", tian)
+
+
+func _gua_tou_ding_xue_tiao() -> void:
+	# 玩家头顶体型血条：top_level 脱离鱼的体型缩放，屏幕恒定大小；随体型（血量）掉红条
+	var tiao = Node2D.new()
+	tiao.set_script(load("res://scripts/tou_ding_xue_tiao.gd"))
+	tiao.mu_biao = yu
+	tiao.top_level = true
+	tiao.z_index = 100
+	add_child(tiao)
 
 
 func _process(_delta: float) -> void:
@@ -160,6 +185,7 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	ji_qi_chuan.position = yu.global_position + Vector2(0, -600)
 	add_child(ji_qi_chuan)
 	ji_qi_chuan.bei_ji_bai.connect(_on_ji_qi_chuan_bei_ji_bai)
+	YinXiang.bo_bgm(&"jue_zhan")  # 决战曲：船降临即换，胜利/失败进结算页再切回深海摇篮
 
 
 func _on_ji_qi_chuan_bei_ji_bai() -> void:
@@ -189,16 +215,15 @@ func _xian_shi_xiao_xi(wen_ben: String) -> void:
 
 
 func _du_qu_fang_xiang() -> Vector2:
-	# 调试用键盘：仅 debug 构建生效，方便桌面测试；导出后的正式版仍只认摇杆
-	if OS.is_debug_build():
-		var jian_pan := Vector2(
-			(1.0 if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT) else 0.0)
-			- (1.0 if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT) else 0.0),
-			(1.0 if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN) else 0.0)
-			- (1.0 if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP) else 0.0)
-		)
-		if jian_pan.length() > 0.0:
-			return jian_pan.normalized()  # 键盘优先：按下时覆盖摇杆，松开回到摇杆
+	# PC 键盘控制：WASD/方向键全构建生效（键盘优先覆盖摇杆，松开回落摇杆）；手机版无键盘不受影响
+	var jian_pan := Vector2(
+		(1.0 if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT) else 0.0)
+		- (1.0 if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT) else 0.0),
+		(1.0 if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN) else 0.0)
+		- (1.0 if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP) else 0.0)
+	)
+	if jian_pan.length() > 0.0:
+		return jian_pan.normalized()  # 键盘优先：按下时覆盖摇杆，松开回到摇杆
 	return yao_gan.fang_xiang
 
 

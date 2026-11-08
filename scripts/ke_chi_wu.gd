@@ -12,6 +12,12 @@ var ke_chi := false  # 是否能被吃：子类自己决定何时翻真/翻假
 var jing_yan := 1    # 吃到的经验（玩家独享；NPC 只清场不加经验）
 var ji_e := 8.0      # 吃到的饥饿（玩家独享；植物/鱼肉在生成时覆写）
 var ti_xing_liang := 0.0  # 吃到的体型量：鱼肉按伤害折算，植物为 0（策划案 8.6.2：只有鱼/肉回体型）
+var zi_shi_chi_bei := 1.0  # 自己吃回的结算倍率：太岁割肉的诱饵肉 = 2.0（1 块按 2 块）
+
+
+func chi_shi_ti_xing() -> float:
+	# 玩家吃它时实际结算的体型量：普通鱼肉 1.0 倍，专属诱饵肉按 2 块算
+	return ti_xing_liang * zi_shi_chi_bei
 
 var _hong_guang: Sprite2D = null  # 红光层（子场景可选）：没有就跳过，不影响可食物契约
 var _wan_jia: Node2D = null       # 玩家（靠 player 组找）：没有玩家（测试场景）就不亮

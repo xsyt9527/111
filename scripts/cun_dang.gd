@@ -36,6 +36,7 @@ var she_zhi_lu_jing := "user://shenhaishiji_shezhi.json"  # 游玩设置路径�
 var yin_xiao_yin_liang := 1.0  # 音效音量 0.0~1.0（线性）；主界面设置面板滑条直改
 var bgm_yin_liang := 1.0       # BGM 音量 0.0~1.0（线性）
 var yao_gan_ce := "zuo"        # 摇杆在屏幕哪一侧："zuo"=左下（默认）/ "you"=右下；技能按钮跟着换边
+var hua_zhi_feng_ge := "xiang_su"  # 画风："xiang_su"=像素（默认）/ "jing_dian"=经典2D；主界面设置切换
 var sheng_li_ci_shu := 0  # 累计胜利次数（解锁唯一依据）
 var cheng_jiu_zhi := 0  # 成就值：通关后获得，花在永久开局技能上
 var yong_jiu_neng_li: Array[StringName] = []  # 已永久解锁的开局技能 id
@@ -266,6 +267,7 @@ func zai_ru_she_zhi() -> void:
 	yin_xiao_yin_liang = 1.0
 	bgm_yin_liang = 1.0
 	yao_gan_ce = "zuo"
+	hua_zhi_feng_ge = "xiang_su"
 	if not FileAccess.file_exists(she_zhi_lu_jing):
 		return
 	var wen_jian := FileAccess.open(she_zhi_lu_jing, FileAccess.READ)
@@ -289,6 +291,8 @@ func zai_ru_she_zhi() -> void:
 		bgm_yin_liang = clampf(float(bgm), 0.0, 1.0)
 	if String(shu_ju.get("yao_gan_ce", "zuo")) == "you":
 		yao_gan_ce = "you"
+	if String(shu_ju.get("hua_zhi", "xiang_su")) == "jing_dian":
+		hua_zhi_feng_ge = "jing_dian"
 
 
 func xie_she_zhi() -> bool:
@@ -302,6 +306,7 @@ func xie_she_zhi() -> bool:
 		"yin_xiao": yin_xiao_yin_liang,
 		"bgm": bgm_yin_liang,
 		"yao_gan_ce": yao_gan_ce,
+		"hua_zhi": hua_zhi_feng_ge,
 	}))
 	wen_jian.close()
 	return true

@@ -15,7 +15,7 @@ func _ready() -> void:
 	YinXiang.bo_bgm()  # 启动第一站就开始放：之后所有场景无缝续曲
 	_shua_xin()
 	fan_hui.pressed.connect(_on_fan_hui_pressed)
-	if OS.has_feature("editor"):
+	if OS.is_debug_build() or OS.has_feature("ce_shi_ban"):  # 调试按钮：编辑器 + 测试版导出包
 		# 只在编辑器构建暴露调试按钮；导出包不出现
 		_jian_diao_shi_an_niu()
 

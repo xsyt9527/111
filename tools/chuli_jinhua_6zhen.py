@@ -9,6 +9,7 @@
       下 33 个「鱼种_形态名」目录，每组 6 张 1024×1024 透明 PNG（鱼朝左）。
 输出：
 - assets/sucai/jinhua/<bian_hao>_6zhen.png    6 帧横排图集（内容高 108、外圈 2px 透明边、朝右、帧宽一致）
+- assets/sucai_classic/jinhua/<bian_hao>_6zhen.png  同名同内容（经典画风，PC 默认；两套必须同步）
 - data/donghua/jinhua_<bian_hao>_6zhen.tres   SpriteFrames（动画名 you，6 帧，speed 10）
 - 给 data/jinhua/<bian_hao>.tres 补 dong_hua 字段，并把 33 条 wan_jia_ke_yong 置 true
 
@@ -37,6 +38,7 @@ except Exception:
 GEN = Path(__file__).resolve().parents[1]
 SRC_ROOT = GEN / "美术资源" / "全部33种鱼_6帧自然水平游动单张帧动画全集" / "2_单张序列帧_透明底PNG"
 PNG_DIR = GEN / "assets" / "sucai" / "jinhua"
+JING_DIAN_PNG_DIR = GEN / "assets" / "sucai_classic" / "jinhua"
 DONGHUA_DIR = GEN / "data" / "donghua"
 TRES_DIR = GEN / "data" / "jinhua"
 
@@ -137,10 +139,30 @@ def ning_shi_alpha(rgba: np.ndarray, di: int = 12, gao: int = 48) -> np.ndarray:
     return f.round().clip(0, 255).astype(np.uint8)
 
 
+def jia_shen_yan_se(rgba: np.ndarray, jiang_an: float = 0.22, bao_he: float = 1.08,
+                    di: int = 90, gao: int = 235) -> np.ndarray:
+    """把偏亮/偏淡的鱼体压深一点，暗色线稿和黑边保持原样。
+
+    用户反馈部分进化图（青白、浅粉这类亮色鱼）在亮海底背景上像半透明。
+    实测源图到输出并没有被提亮，问题在原画本身亮部多、饱和度低。
+    这里按像素亮度做自适应：亮度 ≤ 90 不动，越接近 235/255 压得越多（最多 -22%），
+    同时围绕亮度把通道差拉开 8%（轻微提饱和），让颜色更实、不再和背景糊在一起。
+    只改 RGB，不动 alpha；暗线、黑边、透明区都不受影响。
+    """
+    f = rgba.astype(np.float32)
+    rgb = f[..., :3]
+    lum = 0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]
+    rgb = lum[..., None] + (rgb - lum[..., None]) * bao_he
+    t = np.clip((lum - di) / float(gao - di), 0.0, 1.0)
+    t = t * t * (3.0 - 2.0 * t)  # smoothstep：暗部 0，亮部 1
+    f[..., :3] = np.clip(rgb, 0.0, 255.0) * (1.0 - jiang_an * t)[..., None]
+    return f.round().clip(0, 255).astype(np.uint8)
+
+
 def jia_gong_zu(zhen: list[np.ndarray]) -> np.ndarray:
     """并集裁切 -> 同一缩放系数内容高 108 -> 水平镜像（源朝左，游戏朝右）-> 横排 6 格。"""
-    # 先反预乘还原颜色，再把鱼体 alpha 收实：两步都只改颜色/透明度，不改轮廓位置
-    zhen = [ning_shi_alpha(fan_yu_cheng(arr)) for arr in zhen]
+    # 先反预乘还原颜色，再把鱼体 alpha 收实，最后压深亮部：三步都不改轮廓位置
+    zhen = [jia_shen_yan_se(ning_shi_alpha(fan_yu_cheng(arr))) for arr in zhen]
     x0, y0, x1, y1 = he_bing_bao_wei(zhen)
     ch, cw = y1 - y0 + 1, x1 - x0 + 1
     mu_biao_kuan = max(1, round(cw * BASE_H / ch))
@@ -148,6 +170,12 @@ def jia_gong_zu(zhen: list[np.ndarray]) -> np.ndarray:
     for arr in zhen:
         crop = arr[y0:y1 + 1, x0:x1 + 1]
         small = cs.resize_rgba(crop, (mu_biao_kuan, BASE_H))
+        # 缩放会重新造出大量半透明像素（实测占可见像素四到六成）：鱼体内部的透明缝隙、
+        # 鳍膜软边被 LANCZOS 平均成 128~246 的半透明，在海底背景上身体会透出背景，
+        # 像条玻璃鱼。这里在输出尺寸上再收一次 alpha：≥112 全不透明、16~112 平滑过渡、
+        # ≤16 视为透明——保住 1~2px 软边，鱼体内部实心。必须在缩放之后做：缩放前
+        # 收得再实，插值也会重新造出半透明。
+        small = ning_shi_alpha(small, di=16, gao=112)
         small = small[:, ::-1]  # 镜像成朝右；帧序不变
         # 每格四周各留 CHU_PAD 透明边：相邻帧之间就有 2×CHU_PAD 像素间隔，
         # 线性过滤取样不会吸到隔壁帧的鱼体
@@ -256,9 +284,12 @@ def main() -> None:
         tu = jia_gong_zu(zhen)
         zhen_kuan = tu.shape[1] // ZHEN_SHU
         png_size = cs.save_png(tu, png)
+        # 经典画风同名同内容：PC 默认走 sucai_classic，不同步的话 PC 上还是旧图
+        jd_png = JING_DIAN_PNG_DIR / f"{bian_hao}_6zhen.png"
+        jd_size = cs.save_png(tu, jd_png)
         dh_size = xie_dong_hua_tres(dh, bian_hao, zhen_kuan)
         qian_gua_dong_hua(jh, bian_hao)
-        chan_wu.append((png, dh, tu.shape[1], zhen_kuan, png_size, dh_size))
+        chan_wu.append((png, dh, tu.shape[1], zhen_kuan, png_size, dh_size, jd_png, jd_size))
         print(f"  {bian_hao:32s} ← {yu_zhong}_{xing_tai}  "
               f"{tu.shape[1]}×{tu.shape[0]}（帧宽 {zhen_kuan}）")
 
@@ -267,8 +298,8 @@ def main() -> None:
     # 验收：尺寸/透明/帧宽/字段
     print("=" * 96)
     zong = 0
-    for png, dh, w, zhen_kuan, png_size, dh_size in chan_wu:
-        zong += png_size + dh_size
+    for png, dh, w, zhen_kuan, png_size, dh_size, jd_png, jd_size in chan_wu:
+        zong += png_size + dh_size + jd_size
         with Image.open(png) as im:
             mode_ok = im.mode == "RGBA"
             ww, hh = im.size
@@ -278,24 +309,27 @@ def main() -> None:
         bian_ok = bool(a[0].max() == 0 and a[-1].max() == 0
                        and a[:, 0].max() == 0 and a[:, -1].max() == 0)
         dim_ok = (hh == CELL_H and ww == zhen_kuan * ZHEN_SHU)
+        # 经典版必须与像素版逐字节一致：HuaZhi 在 PC 上默认经典画风，漏同步就白改
+        jd_ok = bool(jd_png.exists() and jd_png.read_bytes() == png.read_bytes())
         text = dh.read_text(encoding="utf-8")
         tres_ok = (text.count('[sub_resource type="AtlasTexture"') == ZHEN_SHU
                    and text.count("SubResource(") >= ZHEN_SHU
                    and '"name": &"you"' in text)
-        if not (mode_ok and alpha_ok and dim_ok and tres_ok and bian_ok):
+        if not (mode_ok and alpha_ok and dim_ok and tres_ok and bian_ok and jd_ok):
             FAILURES.append(f"{png.name}: RGBA?{mode_ok} alpha[{a.min()},{a.max()}] "
-                            f"size={ww}x{hh} 四边透明?{bian_ok} tres?{tres_ok}")
-        print(f"{png.relative_to(GEN)}  {ww}×{hh}  {png_size:,} B + tres {dh_size:,} B")
+                            f"size={ww}x{hh} 四边透明?{bian_ok} tres?{tres_ok} 经典同步?{jd_ok}")
+        print(f"{png.relative_to(GEN)}  {ww}×{hh}  {png_size:,} B + tres {dh_size:,} B"
+              f" + 经典 {jd_size:,} B")
 
     print("-" * 96)
-    print(f"产物 {len(chan_wu)} 组（PNG + SpriteFrames），合计 {zong:,} B（{zong / 1024:.1f} KiB）")
+    print(f"产物 {len(chan_wu)} 组（像素 + 经典双画风 PNG + SpriteFrames），合计 {zong:,} B（{zong / 1024:.1f} KiB）")
     if FAILURES:
         print("\n验收失败：")
         for s in FAILURES:
             print("  -", s)
         raise SystemExit(1)
     print(f"\n验收通过：33 组 × {ZHEN_SHU} 帧、内容高 {BASE_H}（图集高 {CELL_H}）、"
-          f"四边透明、朝右横排、dong_hua 已挂、全部分支已开放。")
+          f"四边透明、朝右横排、alpha 已收实、dong_hua 已挂、像素/经典双画风已同步、全部分支已开放。")
 
 
 if __name__ == "__main__":

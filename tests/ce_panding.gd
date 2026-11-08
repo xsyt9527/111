@@ -40,6 +40,21 @@ func _ready() -> void:
 		assert_eq(1 if YinXiang.YIN_XIAO_BIAO[yin_bian_hao] is AudioStream else 0, 1,
 				"音效 %s 必须是 AudioStream" % String(yin_bian_hao))
 	assert_eq(1 if YinXiang.BGM_SHEN_HAI is AudioStream else 0, 1, "BGM 资源必须可加载")
+	# 三首自制 BGM：全部是 AudioStreamWAV、已打前向循环（局内/决战可切曲）
+	assert_eq(YinXiang.BGM_QU_MU.size(), 3, "BGM 曲目表 3 首（深海摇篮/探索/决战）")
+	for qu in YinXiang.BGM_QU_MU:
+		var liu := YinXiang.BGM_QU_MU[qu] as AudioStreamWAV
+		assert_eq(1 if liu != null else 0, 1, "BGM %s 必须是 WAV" % String(qu))
+		assert_eq(liu.loop_mode, AudioStreamWAV.LOOP_FORWARD, "BGM %s 必须开前向循环" % String(qu))
+		assert_eq(1 if liu.loop_end > 0 else 0, 1, "BGM %s 循环终点 = 整首长度" % String(qu))
+	# 切曲：同曲不重头，换曲换流
+	YinXiang.bo_bgm(&"tan_suo")
+	assert_eq(1 if YinXiang._dang_qian_qu == &"tan_suo" else 0, 1, "切到探索曲")
+	assert_eq(1 if YinXiang._bgm.stream == YinXiang.BGM_QU_MU[&"tan_suo"] else 0, 1, "播放器换成探索曲流")
+	YinXiang.bo_bgm(&"jue_zhan")
+	assert_eq(1 if YinXiang._bgm.stream == YinXiang.BGM_QU_MU[&"jue_zhan"] else 0, 1, "机器船降临切决战曲")
+	YinXiang.bo_bgm()  # 回默认：后续用例不受影响
+	assert_eq(1 if YinXiang._dang_qian_qu == &"shen_hai" else 0, 1, "默认曲目回深海摇篮")
 	# ---- 用例 0：九宫格区域名（纯函数，不入树）----
 	var zhu: Node2D = load("res://scripts/main.gd").new()
 	assert_eq_ming(zhu.qu_yu_ming(Vector2(0, 0)), "西北 · 沉船锚链悬崖", "左上角应映射西北")
@@ -2201,6 +2216,154 @@ func _ready() -> void:
 	CunDang.zai_ru()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ce_jh_lu))
 	await get_tree().process_frame
+
+	# ---- 用例 6zc：进化专属技 P0（凹凸蜗牛鱼 3 分支 6 条）----
+	# 交接文档《进化专属技能被动》：专属技进库但不进通用池，只有进化到绑定形态才装配生效
+	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "专属技不入通用池：通用池仍是 35 条")
+	assert_eq(NengLiKu.quan_bu().size(), 41, "能力总表 41 条 = 35 通用 + 6 专属")
+	ZhangBen.chong_zhi()
+	_she_deng_ji(6)
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	var tai_form := JinHuaKu.zhao(&"tai_sui_rou_ling_zhi_shou")
+	assert_eq(1 if ZhangBen.jin_hua_wei(tai_form) else 0, 1, "进化太岁：装配专属主动 + 专属被动")
+	yu.scale = yu._ti_xing_vector()  # 测试不走 0.25 秒补间：身位换算要按最终体型算
+	assert_eq(1 if ZhangBen.zhuang_lei(&"tai_sui_ge_rou") else 0, 1, "太岁割肉已进主动槽")
+	assert_eq(ZhangBen.dang_qian_bei_dong_ceng(&"ning_jiao_tan_fu"), 1, "凝胶弹肤已叠 1 层")
+	var ge_rou := ZhangBen.zhao_zhu_dong(&"tai_sui_ge_rou")
+	assert_eq(1 if ZhangBen.neng_li_ke_yong(ge_rou) else 0, 1, "形态匹配：专属技运行时校验放行")
+	assert_eq(1 if yu._xu_ying_tie_tu(ge_rou) == tai_form.tie_tu else 0, 1,
+			"专属技虚影取进化形态贴图（不取基础形态）")
+	# 太岁割肉：扣 1 级体型 → 撒一块自吃按 ×2 结算的大块诱饵肉
+	var ti_qie := ZhangBen.dang_qian_ti_xing
+	assert_eq(1 if yu.shi_fang_zhu_dong(ge_rou) else 0, 1, "太岁割肉释放成功")
+	assert_eq(_xiang_deng(ti_qie - ZhangBen.dang_qian_ti_xing, 1.0), 1, "割肉扣 1 级体型")
+	var you_er_rou: RouKuai = null
+	for node in get_tree().get_nodes_in_group("rou_kuai"):
+		var rou := node as RouKuai
+		if rou != null and rou.zi_shi_chi_bei > 1.0:
+			you_er_rou = rou
+			break
+	assert_eq(1 if you_er_rou != null else 0, 1, "割下的肉是诱饵肉（会发光吸引 NPC）")
+	if you_er_rou != null:
+		assert_eq(_xiang_deng(you_er_rou.ti_xing_liang, 1.0), 1, "诱饵肉携带 1 级体型")
+		assert_eq(_xiang_deng(you_er_rou.chi_shi_ti_xing(), 2.0), 1, "自己吃回按 2 块结算（×2）")
+		assert_eq(1 if you_er_rou.fu_rou_you_er_sheng_yu >= 6.0 else 0, 1, "诱饵肉 6 秒内吸引抢食")
+		assert_eq(1 if you_er_rou.xi_yin_ban_jing > 0.0 else 0, 1, "诱饵肉有抢食吸引半径")
+	# 体型不足 1 级：割不动，空放不扣体型、不扣冷却
+	var ti_ge_qian := ZhangBen.dang_qian_ti_xing
+	ZhangBen.dang_qian_ti_xing = 0.9
+	yu.zhu_dong_leng_que.clear()
+	assert_eq(1 if yu.shi_fang_zhu_dong(ge_rou) else 0, 0, "体型不足 1 级：割肉放不出")
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 0.9), 1, "空放不扣体型")
+	assert_eq(_xiang_deng(yu.leng_que_sheng(&"tai_sui_ge_rou"), 0.0), 1, "空放不扣冷却")
+	ZhangBen.dang_qian_ti_xing = ti_ge_qian
+	# 凝胶弹肤：掉体型伤害 -20%，其中 20% 反弹给咬击者
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	ZhangBen.dang_qian_ti_xing = 4.0
+	var ning_yao_yu := _zao_yu(1)
+	var ti_ning := ZhangBen.dang_qian_ti_xing
+	var yao_ti_0 := ning_yao_yu.tixing
+	yu.shou_dao_yao_ji(1.0, ning_yao_yu)
+	assert_eq(_xiang_deng(ti_ning - ZhangBen.dang_qian_ti_xing, 0.8), 1,
+			"凝胶弹肤：掉体型伤害 -20%（1.0 → 0.8）")
+	assert_eq(_xiang_deng(yao_ti_0 - ning_yao_yu.tixing, 0.16), 1, "凝胶弹肤：20% 伤害反弹给咬击者")
+	# ---- 深海史莱姆女王：强酸喷吐 + 基因摄录 ----
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	ZhangBen.chong_zhi()
+	_she_deng_ji(6)
+	var suan_form := JinHuaKu.zhao(&"shen_hai_shi_lai_mu_nv_wang")
+	assert_eq(1 if ZhangBen.jin_hua_wei(suan_form) else 0, 1, "进化史莱姆：装配强酸喷吐 + 基因摄录")
+	yu.scale = yu._ti_xing_vector()
+	assert_eq(_xiang_deng(yu._ji_yin_bei(), 1.5), 1, "基因摄录：能力数值参数统一 ×1.5")
+	var pen_tu := ZhangBen.zhao_zhu_dong(&"qiang_suan_pen_tu")
+	yu.dang_qian_jiao = 0.0
+	yu.fang_xiang = Vector2.RIGHT
+	var qian_yu := _zao_yu(8)
+	qian_yu.position = yu.position + Vector2(yu._shen_wei() * 0.5, 0.0)
+	var hou_yu := _zao_yu(8)
+	hou_yu.position = yu.position - Vector2(yu._shen_wei() * 0.5, 0.0)
+	assert_eq(1 if yu.shi_fang_zhu_dong(pen_tu) else 0, 1, "强酸喷吐释放成功")
+	assert_eq(1 if qian_yu.qiang_suan_sheng_yu() > 0.0 else 0, 1, "锥形内靶鱼挂上酸蚀")
+	assert_eq(_xiang_deng(qian_yu.qiang_suan_sheng_yu(), 6.0), 1, "酸蚀持续 4 秒 ×1.5 = 6 秒")
+	assert_eq(1 if hou_yu.qiang_suan_sheng_yu() > 0.0 else 0, 0, "锥形外（背后）的鱼不沾酸")
+	var ti_suan := qian_yu.tixing
+	qian_yu._zou_qiang_suan(1.0)
+	assert_eq(_xiang_deng(ti_suan - qian_yu.tixing, 0.375), 1, "酸蚀每秒掉 0.25 级 ×1.5")
+	var ti_bei_yao := qian_yu.tixing
+	qian_yu.shou_dao_yao_ji(0.5, null)
+	assert_eq(_xiang_deng(ti_bei_yao - qian_yu.tixing, 1.0), 1,
+			"酸蚀期间被咬掉肉 ×2（0.5 → 1.0）")
+	# ---- 超压凝胶炮：蓄力水刀 + 泄压机动 ----
+	ZhangBen.chong_zhi()
+	_she_deng_ji(6)
+	var pao_form := JinHuaKu.zhao(&"chao_ya_ning_jiao_pao")
+	assert_eq(1 if ZhangBen.jin_hua_wei(pao_form) else 0, 1,
+			"进化超压炮：装配超压水刀 + 泄压机动")
+	yu.scale = yu._ti_xing_vector()
+	var shui_dao := ZhangBen.zhao_zhu_dong(&"chao_ya_shui_dao")
+	yu.dang_qian_jiao = 0.0
+	yu.fang_xiang = Vector2.RIGHT
+	var dao_yu := _zao_yu(10)
+	dao_yu.position = yu.position + Vector2(yu._shen_wei() * 2.0, 0.0)
+	var dao_ti_0 := dao_yu.tixing
+	assert_eq(1 if yu.shi_fang_zhu_dong(shui_dao) else 0, 1, "超压水刀起手（进入蓄力）")
+	assert_eq(1 if yu._shui_dao_sheng_yu > 0.0 else 0, 1, "蓄力 0.8 秒中")
+	assert_eq(1 if yu.shi_fang_zhu_dong(shui_dao) else 0, 0, "蓄力中不能放别的主动")
+	yu._geng_xin_zhu_dong(0.79)
+	assert_eq(_xiang_deng(dao_yu.tixing, dao_ti_0), 1, "蓄力未满 0.79 秒不造成伤害")
+	yu._geng_xin_zhu_dong(0.02)  # 步进小一点：同一次更新的后座窗不被整段 delta 吃掉
+	assert_eq(_xiang_deng(dao_ti_0 - dao_yu.tixing, dao_ti_0 * 0.12), 1,
+			"水刀无视减伤直扣当前体型 12%")
+	assert_eq(1 if yu._tui_kai_sheng_yu > 0.0 else 0, 1, "泄压机动：水刀后自动后座 1 身位")
+	assert_eq(1 if yu._ni_liu_sheng_yu > 0.0 else 0, 1, "泄压机动：后座途中无敌")
+	var xie_ya_bei := ZhangBen.zhao_bei_dong(&"xie_ya_ji_dong")
+	assert_eq(_xiang_deng(xie_ya_bei.dang_zhi(&"fu_shu_zhi", 1), 0.3), 1, "泄压机动无敌时长 0.3 秒")
+	assert_eq(_xiang_deng(yu._ni_liu_sheng_yu, 0.28), 1, "后座窗按本帧剩余 0.28 秒（0.3 − 0.02）")
+	var boss_dao := _zao_yu(20)
+	boss_dao.shi_boss = true
+	boss_dao.position = yu.position + Vector2(yu._shen_wei() * 3.0, 0.0)
+	yu._shui_dao_fang = Vector2.RIGHT
+	yu._shui_dao_neng = shui_dao
+	yu._fang_shui_dao()
+	assert_eq(_xiang_deng(20.0 - boss_dao.tixing, 20.0 * 0.12 * 0.5), 1,
+			"首领受伤减半：水刀只扣 6%（20 → 18.8）")
+	# ---- 六状态层：直接生效、不进控制条、受击不打断、boss 全免疫 ----
+	var zt_yu := _zao_yu(3)
+	assert_eq(1 if zt_yu.jia_zhuang_tai(&"shi_hua", 2.0) else 0, 1, "普通鱼可挂石化 2 秒")
+	assert_eq(1 if zt_yu.you_zhuang_tai(&"shi_hua") else 0, 1, "石化立即生效（不进控制条）")
+	assert_eq(_xiang_deng(zt_yu.zhuang_tai_sheng_yu(&"shi_hua"), 2.0), 1, "石化剩余 2 秒")
+	zt_yu._zou_zhuang_tai(1.0)
+	assert_eq(1 if zt_yu.you_zhuang_tai(&"shi_hua") else 0, 1, "状态按秒倒数未到期")
+	zt_yu._zou_zhuang_tai(1.1)
+	assert_eq(1 if zt_yu.you_zhuang_tai(&"shi_hua") else 0, 0, "时间到自动解除石化")
+	assert_eq(1 if zt_yu.jia_zhuang_tai(&"bu_cun_zai", 2.0) else 0, 0, "未登记的状态名拒绝")
+	zt_yu.jia_zhuang_tai(&"shu_fu", 3.0)
+	zt_yu.shou_dao_yao_ji(0.1, null)
+	assert_eq(1 if zt_yu.you_zhuang_tai(&"shu_fu") else 0, 1, "受击不打断束缚（六状态不走控制条）")
+	zt_yu.jia_zhuang_tai(&"zhi_mang", 3.0)
+	assert_eq(_xiang_deng(zt_yu.dang_qian_gan_zhi(), 0.0), 1,
+			"致盲：感知归零（不受 20% 下限保护）")
+	zt_yu._zou_zhuang_tai(3.1)
+	assert_eq(1 if zt_yu.dang_qian_gan_zhi() > 0.0 else 0, 1, "致盲到期：感知恢复")
+	var boss_zt := _zao_yu(20)
+	boss_zt.shi_boss = true
+	assert_eq(1 if boss_zt.jia_zhuang_tai(&"shi_hua", 2.0) else 0, 0, "首领免疫石化")
+	assert_eq(1 if boss_zt.jia_zhuang_tai(&"kong_ju", 2.0) else 0, 0, "首领免疫恐惧")
+	assert_eq(1 if boss_zt.jia_zhuang_tai(&"feng_kuang", 2.0) else 0, 0, "首领免疫疯狂")
+	assert_eq(1 if boss_zt.jia_zhuang_tai(&"mei_huo", 2.0, Vector2.ZERO) else 0, 0,
+			"首领免疫魅惑")
+	assert_eq(1 if boss_zt.jia_zhuang_tai(&"shu_fu", 2.0) else 0, 0, "首领免疫束缚")
+	assert_eq(_xiang_deng(boss_zt.dang_qian_gan_zhi(), boss_zt.gan_zhi), 1,
+			"首领感知不受状态影响")
+	# 无视防御直伤：直扣体型、跳过受伤通道（不吃无敌）
+	var zhishang_yu := _zao_yu(5)
+	var zhi_ti_0 := zhishang_yu.tixing
+	zhishang_yu.shou_zhi_jie_shang(1.5)
+	assert_eq(_xiang_deng(zhi_ti_0 - zhishang_yu.tixing, 1.5), 1, "无视防御直伤：直扣当前体型")
+	assert_eq(1 if zhishang_yu.you_zhuang_tai(&"shi_hua") else 0, 0, "直伤不附带状态")
 
 	# ---- 用例 7：血量归零 → 死亡（放最后：切场景会拆掉本测试）----
 	yu.wudi = false  # 清无敌，确保受伤入口真的执行

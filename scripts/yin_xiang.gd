@@ -17,13 +17,19 @@ const YIN_XIAO_BIAO: Dictionary = {
 	&"si_wang": preload("res://assets/yinxiao/si_wang.wav"),    # 死亡结算
 	&"an_niu": preload("res://assets/yinxiao/an_niu.wav"),      # 按钮点击
 }
-const BGM_SHEN_HAI := preload("res://assets/yinxiao/bgm_shen_hai.wav")  # 深海氛围循环
+const BGM_SHEN_HAI := preload("res://assets/yinxiao/bgm_shen_hai.wav")  # 深海摇篮：主界面/选角/结算/默认氛围
+const BGM_QU_MU: Dictionary = {
+	&"shen_hai": BGM_SHEN_HAI,
+	&"tan_suo": preload("res://assets/yinxiao/bgm_tan_suo.wav"),    # 深海探索：局内成长
+	&"jue_zhan": preload("res://assets/yinxiao/bgm_jue_zhan.wav"),  # 钢铁围猎：机器船决战
+}
 
 const CHI_RONG_LIANG := 6        # 播放器池大小：同屏咬声+吃声+受伤声并发够用
 const BGM_YIN_LIANG_DB := -10.0  # BGM 比音效低一截：氛围垫底，不抢反馈
 
 var _chi: Array[AudioStreamPlayer] = []  # 播放器池
 var _bgm: AudioStreamPlayer
+var _dang_qian_qu: StringName = &"shen_hai"  # 当前曲目：同曲重复调用不重头
 
 # 音量（0~1 线性，主界面设置面板滑条直改）：setter 同步所有播放器，拖动即听即得
 var yin_xiao_yin_liang := 1.0: set = _she_yin_xiao_yin_liang
@@ -39,7 +45,13 @@ func _ready() -> void:
 	_bgm.stream = BGM_SHEN_HAI
 	_bgm.volume_db = BGM_YIN_LIANG_DB
 	add_child(_bgm)
-	# WAV 默认不循环：播完手动续——选择页/主场景/结算页同一首不断曲
+	# 三首 BGM 都是自己用 LMMS 做的无缝循环：运行时打上循环标记（WAV 导入参数不生效，
+	# 实测 4.7 导入器会忽略 edit/loop_mode，所以这里直接改 AudioStreamWAV）。
+	# 循环端点 = 整首长度；AudioStreamPlayer 播到末尾自动回到开头，没有 finished 空档。
+	for qu in BGM_QU_MU:
+		_kai_xun_huan(BGM_QU_MU[qu])
+	# 兜底：万一某个流没打上循环（例如将来换成 ogg），播完手动续，
+	# 选择页/主场景/结算页同一首不断曲
 	_bgm.finished.connect(func() -> void: _bgm.play())
 	# 启动时应用玩家设置：CunDang 在本 Autoload 之前 ready（project.godot 顺序），缓存字段已就绪
 	# 按路径找：--script 模式不注册 Autoload，编译期引用会让那些测试全红（ce_panding 老规矩）
@@ -78,10 +90,26 @@ func fang(bian_hao: StringName, yin_liang_db := 0.0) -> void:
 	_bo_fang(_chi[0], liu, yin_liang_db)  # 全忙：新声音优先（连吃一串鱼时后一口要响）
 
 
-func bo_bgm() -> void:
-	# BGM 常驻播：已在播就不重头（选择页 → Main → 结算页无缝续）
-	if not _bgm.playing:
-		_bgm.play()
+func bo_bgm(qu: StringName = &"shen_hai") -> void:
+	# BGM 常驻播：同一首已在播就不重头（选择页 → Main → 结算页无缝续）；
+	# 换曲（局内探索 → 机器船决战）才切流并从头播
+	var liu: AudioStream = BGM_QU_MU.get(qu, BGM_SHEN_HAI)
+	if _dang_qian_qu == qu and _bgm.playing:
+		return
+	_dang_qian_qu = qu
+	if _bgm.stream != liu:
+		_bgm.stream = liu
+	_bgm.play()
+
+
+func _kai_xun_huan(liu: AudioStream) -> void:
+	# 给 WAV 打开前向循环：loop_end 用帧数（不是秒）
+	var w := liu as AudioStreamWAV
+	if w == null:
+		return
+	w.loop_begin = 0
+	w.loop_end = int(round(w.get_length() * w.mix_rate))
+	w.loop_mode = AudioStreamWAV.LOOP_FORWARD
 
 
 func ting_bgm() -> void:

@@ -16,7 +16,7 @@ func _ready() -> void:
 	fan_hui.pressed.connect(_on_fan_hui_pressed)
 	chong_zhi.pressed.connect(_on_chong_zhi_pressed)
 	que_ren.confirmed.connect(_on_chong_zhi_que_ren)
-	diao_shi.visible = OS.has_feature("editor")
+	diao_shi.visible = OS.is_debug_build() or OS.has_feature("ce_shi_ban")  # 调试按钮：编辑器 + 测试版导出包
 	diao_shi.pressed.connect(_on_diao_shi_pressed)
 	_shua_xin()
 

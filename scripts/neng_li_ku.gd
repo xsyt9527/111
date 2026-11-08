@@ -20,6 +20,10 @@ const ZHU_DONG: Array[NengLi] = [
 	preload("res://data/nengli/you_er_qi_pao.tres"),
 	preload("res://data/nengli/yu_lei_chong_ci.tres"),
 	preload("res://data/nengli/yu_ni_dan.tres"),
+	# 进化专属主动（2026-11-06，P0：凹凸蜗牛鱼 3 分支）——只在对应形态装配，不入通用池
+	preload("res://data/nengli/tai_sui_ge_rou.tres"),
+	preload("res://data/nengli/qiang_suan_pen_tu.tres"),
+	preload("res://data/nengli/chao_ya_shui_dao.tres"),
 ]
 
 const BEI_DONG: Array[NengLi] = [
@@ -42,6 +46,10 @@ const BEI_DONG: Array[NengLi] = [
 	preload("res://data/nengli/xiu_lin.tres"),
 	preload("res://data/nengli/yin_ni_qi_xi.tres"),
 	preload("res://data/nengli/ying_lin_fan_ji.tres"),
+	# 进化专属被动（2026-11-06，P0：凹凸蜗牛鱼 3 分支）
+	preload("res://data/nengli/ning_jiao_tan_fu.tres"),
+	preload("res://data/nengli/ji_yin_she_lu.tres"),
+	preload("res://data/nengli/xie_ya_ji_dong.tres"),
 ]
 
 

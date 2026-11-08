@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var yin_xiao_hua: HSlider = $SheZhiMianBan/MianBanLie/YinXiaoLie/YinXiaoHua
 @onready var bgm_hua: HSlider = $SheZhiMianBan/MianBanLie/BgmLie/BgmHua
 @onready var yao_gan_an_niu: Button = $SheZhiMianBan/MianBanLie/YaoGanAnNiu
+@onready var hua_zhi_an_niu: Button = $SheZhiMianBan/MianBanLie/HuaZhiAnNiu
 @onready var guan_bi: Button = $SheZhiMianBan/MianBanLie/GuanBi
 
 
@@ -20,6 +21,7 @@ func _ready() -> void:
 	yin_xiao_hua.drag_ended.connect(func(_gai_dong: bool) -> void: _bao_cun_she_zhi())
 	bgm_hua.drag_ended.connect(func(_gai_dong: bool) -> void: _bao_cun_she_zhi())
 	yao_gan_an_niu.pressed.connect(_on_yao_gan_an_niu)
+	hua_zhi_an_niu.pressed.connect(_on_hua_zhi_an_niu)
 	guan_bi.pressed.connect(_on_guan_bi)
 
 
@@ -31,6 +33,8 @@ func da_kai() -> void:
 		bgm_hua.set_value_no_signal(float(cd.get("bgm_yin_liang")))
 		yao_gan_an_niu.text = "摇杆位置：右下" if String(cd.get("yao_gan_ce")) == "you" \
 				else "摇杆位置：左下"
+		hua_zhi_an_niu.text = "画风：经典2D" if String(cd.get("hua_zhi_feng_ge")) == "jing_dian" \
+				else "画风：像素"
 	mian_ban.visible = true
 
 
@@ -59,6 +63,15 @@ func _on_yao_gan_an_niu() -> void:
 	cd.set("yao_gan_ce", "you" if huan_cheng_you else "zuo")
 	yao_gan_an_niu.text = "摇杆位置：右下" if huan_cheng_you else "摇杆位置：左下"
 	cd.call("xie_she_zhi")
+
+
+func _on_hua_zhi_an_niu() -> void:
+	# 切换画风：HuaZhi 换纹理缓存 + 修引用 + 落盘存档；当场生效（主界面立换，进战斗沿用）
+	var hz := get_node_or_null("/root/HuaZhi")
+	if hz == null:
+		return
+	var xin := String(hz.call("qie_huan"))
+	hua_zhi_an_niu.text = "画风：经典2D" if xin == "jing_dian" else "画风：像素"
 
 
 func _bao_cun_she_zhi() -> void:

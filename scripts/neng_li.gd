@@ -22,6 +22,11 @@ enum LeiXing { ZHU_DONG, BEI_DONG }  # 主动 / 被动
 @export var ceng_jia := 0.0  # 被动每层增量；主动为 0
 @export var zui_da_dang := 3  # 最大档位：主动=升档上限（1 = 不可升档，装上即满）；被动=叠层上限
 @export var dang_biao: Dictionary = {}  # 档位表：档号 -> {字段名: 值}；命中才覆写，缺省回退基础字段
+# ---- 进化专属技扩展字段（2026-11-06，交接文档《进化专属技能被动》）----
+@export var nei_bu_leng_que := 0.0  # 内部冷却（秒）：被动/触发技自己限频，0 = 无内部冷却
+@export var mei_ju_ci_shu := 0  # 每局可用次数：0 = 不限（亡灵骨躯等「每局 N 次」用）
+@export var lei_bie: Array[StringName] = []  # 分类标签：dian_xi/dan_dao/zhao_huan/wei_yi/yin_shen
+@export var ban_jing_shen_wei := false  # true = ban_jing 以「身位」计（1 身位 = 本体贴图基准身长）
 
 
 func shi_zhu_dong() -> bool:
