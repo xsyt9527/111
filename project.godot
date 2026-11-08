@@ -20,6 +20,7 @@ config/features=PackedStringArray("4.7", "Mobile")
 ZhangBen="*res://scripts/zhang_ben.gd"
 CunDang="*res://scripts/cun_dang.gd"
 YinXiang="*res://scripts/yin_xiang.gd"
+HuaZhi="*res://scripts/hua_zhi.gd"
 
 [display]
 
