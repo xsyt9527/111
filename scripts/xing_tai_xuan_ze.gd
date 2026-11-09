@@ -114,9 +114,7 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 		zhuang_tai.text = "已解锁"
 		zhuang_tai.add_theme_color_override("font_color", Color(0.45, 0.9, 0.7))
 	else:
-		zhuang_tai.text = "胜利 %d 次解锁（当前 %d 次）" % [
-			xing_tai.jie_suo_sheng_li_ci_shu, CunDang.sheng_li_ci_shu,
-		]
+		zhuang_tai.text = CunDang.jie_suo_ti_shi(xing_tai)
 		zhuang_tai.add_theme_color_override("font_color", Color(0.55, 0.6, 0.66))
 	lie.add_child(zhuang_tai)
 
@@ -125,7 +123,8 @@ func _jian_ka(xing_tai: XingTai) -> PanelContainer:
 	an_niu.custom_minimum_size = Vector2(0, 38)
 	an_niu.add_theme_font_size_override("font_size", 17)
 	if not jie_suo:
-		an_niu.text = "未解锁"
+		# D：广告位在 TapTap 广告 SDK 接入前显示「敬请期待」并置灰
+		an_niu.text = "敬请期待" if xing_tai.jie_suo_fang_shi == "guang_gao" else "未解锁"
 		an_niu.disabled = true
 	elif dang_qian:
 		an_niu.text = "当前形态 · 出发"

@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="YuZhong" load_steps=4 format=3 uid="uid://c752yb80qwlfc"]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
-[ext_resource type="Texture2D" uid="uid://dtqg1bp08uqon" path="res://assets/sucai/shenhai_yu/jing_sha.png" id="2_tie_tu"]
+[ext_resource type="Texture2D" uid="uid://be1ia856j00yl" path="res://assets/sucai/shenhai_yu/jing_sha.png" id="2_tie_tu"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/jing_sha_4zhen.tres" id="9_dong_hua"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
+bian_hao = &"fen_yu"
+ming_zi = "鲸鲨"
 tie_tu = ExtResource("2_tie_tu")
 dong_hua = ExtResource("9_dong_hua")
 dengji = 10

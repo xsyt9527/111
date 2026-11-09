@@ -88,6 +88,10 @@ func _kai_shi() -> void:
 	var qiang_zhi := NengLiChou.shi_fou_qiang_zhi(_rng)
 	dang_qian_san_zhang = NengLiChou.chou_san_zhang(
 			ke_xuan, ZhangBen.zui_duo_bian_hao, qiang_zhi, _rng)
+	# E2 保底：上局构筑没成形就死了 → 本局首次三选一必含 1 个进攻主动
+	if CunDang.you_dai_zhu_dong_bao_di and NengLiChou.you_jin_gong(ke_xuan):
+		CunDang.qu_zhu_dong_bao_di()
+		dang_qian_san_zhang = NengLiChou.qiang_zhi_jin_gong(dang_qian_san_zhang, ke_xuan)
 	if dang_qian_san_zhang.is_empty():
 		# 0 候选：绝不留在暂停里（防死锁）；还有排队的升级就继续尝试
 		visible = false

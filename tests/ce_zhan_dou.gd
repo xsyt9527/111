@@ -1,7 +1,7 @@
 extends SceneTree
-# 咬击纯逻辑测试（TASK-012）：伤害公式 × 嘴巴系数、致命区 ≥、无咬击资格
+# 咬击纯逻辑测试（TASK-012）：A2 掉目标当前体型 3%、嘴巴系数、A4 致命区 ×3、一击必杀
 # 运行：Godot --headless --path . --script tests/ce_zhan_dou.gd --quit-after 360
-# 数值出处：策划案 8.1（致命区 ≥）/ 8.4（嘴巴决定咬速）；函数是玩家/NPC 共用的唯一出口
+# 数值出处：2026-11-08 A 核心数值表（shu_zhi.gd）；函数是玩家/NPC 共用的唯一出口
 # 纪律：禁用裸 assert()——失败会中断脚本，quit() 永不执行，进程挂死
 
 const ZD = preload("res://scripts/zhan_dou.gd")
@@ -11,13 +11,25 @@ var failed := 0  # 失败计数（退出码的依据）
 
 
 func _initialize() -> void:
-	# ---- 用例 1：咬击伤害 =（0.15 × 攻击者体型 + 0.05）× 嘴巴系数 ----
-	assert_xiang_deng(ZD.yao_ji_shang_hai(1.0), 0.2, "1 级普通嘴咬一口 0.2")
-	assert_xiang_deng(ZD.yao_ji_shang_hai(3.0), 0.5, "3 级普通嘴咬一口 0.5")
-	assert_xiang_deng(ZD.yao_ji_shang_hai(10.0), 1.55, "10 级（鲸鲨）普通嘴咬一口 1.55")
-	assert_xiang_deng(ZD.yao_ji_shang_hai(4.0, 1.5), 0.975, "巨口鱼（嘴巴 1.5）咬一口 0.975")
-	assert_xiang_deng(ZD.yao_ji_shang_hai(1.0, 0.5), 0.1, "嘴巴 0.5 的鱼咬一口只有 0.1")
-	assert_xiang_deng(ZD.yao_ji_shang_hai(10.0, 2.0), 3.1, "鲸鲨（嘴巴 2.0）咬一口 3.1")
+	# ---- 用例 1：普通咬击 = 目标当前体型 ×3% × 嘴巴系数（A2；保底 0.01）----
+	# 第二参是防御方体型；不传时按攻击者体型估算（同体型近似）
+	assert_xiang_deng(ZD.yao_ji_shang_hai(1.0), 0.03, "1 级普通嘴咬同体型：3% → 0.03")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(3.0), 0.09, "3 级普通嘴咬同体型：3% → 0.09")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(10.0), 0.3, "10 级（鲸鲨）咬同体型：3% → 0.30")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(4.0, 4.0, 1.5), 0.18,
+			"巨口鱼（嘴巴 1.5）咬 4 级鱼：4×3%×1.5 = 0.18")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(1.0, 0.5), 0.015,
+			"1 级鱼咬 0.5 体型：只掉 0.5×3% = 0.015")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(10.0, 2.0), 0.06,
+			"10 级鱼咬 2 体型：只掉 2×3% = 0.06（按目标体型，不看攻击者）")
+	assert_xiang_deng(ZD.yao_ji_shang_hai(1.0, 0.01), 0.01,
+			"A2 保底：目标体型趋零时每口仍保底 0.01")
+
+	# ---- 用例 1b：致命区 = 普通咬 ×3（A4）----
+	assert_xiang_deng(ZD.zhi_ming_shang_hai(5.0, 5.0), 0.45,
+			"A4 致命区：同级 5 体型普通咬 0.15 → 致命区 0.45")
+	assert_xiang_deng(ZD.zhi_ming_shang_hai(3.0, 10.0), 0.9,
+			"A4 致命区按目标体型：10×3%×3 = 0.9")
 
 	# ---- 用例 2：致命区 —— 攻击者体型 ≥ 目标（策划案 8.1）----
 	assert_eq(1 if ZD.zhi_ming_ke_sha(11.0, 10.0) else 0, 1, "11 对 10：更大，可一击必杀")

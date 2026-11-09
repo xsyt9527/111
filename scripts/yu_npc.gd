@@ -26,6 +26,7 @@ const FAN_MIAN_SI_QU := 20.0  # 翻面死区（像素）：横向差小于它就
 const BOOS_TUI_SU_DU := 140.0  # 首领推开 NPC 的速度（像素/秒）：重叠时把小鱼顶开，不让它们卡进鲸鲨身体
 const BOOS_YAO_JI_JI_CHU := 55.0  # 首领咬击判定的基础半径：与玩家 YaoQu 同值，乘体型→像素曲线用
 const TE_XIAO := preload("res://scripts/te_xiao.gd")  # 放电/中毒的一次性特效生成器
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表（2026-11-08）
 const ROU_KUAI_CHANGJING := preload("res://scenes/RouKuai.tscn")  # 鱼肉块蓝图：撕裂齿咬掉肉用
 const MEI_KUAI_ROU_TI_XING := 0.5  # 每块鱼肉默认携带的体型量（撕裂齿不传量时的兜底）
 const TUN_SHI_JIAN_GE := 0.3  # 首领吞食检查间隔（秒）：与思考间隔同量级，不逐帧扫组
@@ -38,6 +39,8 @@ signal bei_ji_bai  # 首领被咬到残血：Main 据此触发「提前开战」
 var yu_zhong: YuZhong  # 鱼种数据（生成器在 add_child 前注入；_ready 里读它）
 var _neng_li: NengLi = null  # 鱼种能力（只读引用）：电鳗放电/蓑鲉反毒都从这里查数值
 var tixing := 1.0  # 体型=当前血量：被咬会变小，被吃归零
+var tixing_chu_shi := 1.0  # 出场时的体型（B2 击杀者「还剩 X%」的基准，只记不改）
+var jiao_xue_wu_shi := false  # C 首局教学：预排布 NPC 不看玩家、不索敌（黑影/被咬尾巴的大鱼）
 var deng_ji_nei := 1  # 隐藏等级（经验曲线索引，只涨不降）：被咬掉 tixing 不倒扣经验进度
 var jing_yan_nei := 0  # 隐藏经验条：玩家看不见；吃东西涨，涨满升级=体型 +1（v0.4 生态三件套）
 var sudu := 100.0  # 游速（像素/秒），由生成器写入
@@ -99,6 +102,8 @@ var _mei_huo_dian := Vector2.ZERO  # 魅惑：反向追随的鬼火落点
 var _qiang_suan_sheng_yu := 0.0  # 酸蚀剩余秒（强酸喷吐的持续状态，≠六状态）
 var _qiang_suan_mei_miao := 0.0  # 酸蚀每秒掉肉量（等级/秒）
 var _qiang_suan_ji_shi := 0.0  # 酸蚀节拍累计（满 1 秒结算一次）
+var _qiang_suan_bei_yao := false  # 酸蚀期间被咬 ×2：只有强酸喷吐的酸蚀开启；共生海葵毒雾不享受这条
+var shi_hua_shou_shang_bei := 1.25  # 石化期间受玩家伤害倍率（施放时按能力表 shu_zhi 覆写）
 
 @onready var rou_qu: Area2D = $RouQu  # 鱼肉区：NPC 也能吃鱼肉（策划案 8.1「任何鱼可进食」）
 
@@ -106,10 +111,12 @@ var _qiang_suan_ji_shi := 0.0  # 酸蚀节拍累计（满 1 秒结算一次）
 func _ready() -> void:
 	# 体型直接取鱼种等级：同种鱼不再随机大小，玩家一眼能判断吃不吃得下
 	tixing = float(yu_zhong.dengji) if yu_zhong != null else 1.0
+	tixing_chu_shi = tixing  # B2：记下出场体型，死亡时算「击杀者还剩 X%」
 	deng_ji_nei = yu_zhong.dengji if yu_zhong != null else 1  # 隐藏等级从鱼种等级起跳
 	if yu_zhong != null:
-		gan_zhi = yu_zhong.gan_zhi
-		fan_ying_shi_jian = yu_zhong.fan_ying_shi_jian
+		# A10：感知半径 = 体型 ×90px、反应延迟 0.4 秒（鱼种表不再逐条配感知）
+		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
+		fan_ying_shi_jian = SHU_ZHI.NPC_FAN_YING_SHI_JIAN
 		gong_ji_yu_wang = yu_zhong.gong_ji_yu_wang
 		zui_ba = yu_zhong.zui_ba
 		shi_boss = yu_zhong.shi_boss
@@ -233,6 +240,11 @@ func _process(delta: float) -> void:
 func _si_kao() -> void:
 	# 选目标：先看逃不逃，再按“复仇 > 最大的小鱼 > 玩家”挑猎物（策划案 8.5）
 	# 反应延迟里：保持原目标/原路线——被偷袭的鱼还没意识到是谁咬的，不能立刻转头
+	if jiao_xue_wu_shi:
+		# C 首局教学专用：影子大鱼/被咬尾巴的猎物绝不索敌，玩家可安全观察与试咬
+		_mu_biao = null
+		zhuang_tai = ZhuangTai.YOU_DANG
+		return
 	if _fan_ying_ji_shi > 0.0:
 		return
 	# 疯狂：敌我不分，追最近的一条鱼（含同类与玩家）
@@ -429,7 +441,6 @@ func _chong_zhuang_npc(delta: float) -> void:
 		return
 	position += _chong_zhuang_fang * sudu * maxf(1.0, _neng_li.fu_shu_zhi) * delta
 	_chao_xiang(_chong_zhuang_fang * 100.0)
-	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, zui_ba) * _neng_li.shu_zhi
 	var mu_biao_men: Array = _zhou_wei_yu()
 	var wan := _zhao_wan_jia()
 	if is_instance_valid(wan) and not wan.yin_shen:
@@ -443,7 +454,11 @@ func _chong_zhuang_npc(delta: float) -> void:
 		if _chong_zhuang_ming_zhong.has(jian):
 			continue
 		_chong_zhuang_ming_zhong[jian] = true
-		mu.call("shou_dao_yao_ji", shang_hai, self, "shen")
+		# A2：冲撞也按目标当前体型 3% 结算
+		var shou_ti := float(mu.get("tixing")) if mu.get("tixing") != null else 0.0
+		var yi_ji := ZhanDou.yao_ji_shang_hai(tixing, shou_ti, zui_ba) if shou_ti > 0.0 \
+				else ZhanDou.jiu_yao_ji_shang_hai(tixing, zui_ba)
+		mu.call("shou_dao_yao_ji", yi_ji * _neng_li.shu_zhi, self, "shen")
 
 
 func _qi_dong_yin_shen_npc() -> void:
@@ -594,15 +609,17 @@ func _zhao_zui_jin_ren():
 	return zui
 
 
-func jia_qiang_suan(shi_chang: float, mei_miao: float) -> bool:
+func jia_qiang_suan(shi_chang: float, mei_miao: float, bei_yao := true) -> bool:
 	# 酸蚀（强酸喷吐）：持续 X 秒，每秒掉 mei_miao 级体型；期间被咬掉肉 ×2
 	# 不走六状态：它可以作用在 boss 身上（boss 只免疫六种即时控制）
+	# bei_yao=false：共生海葵的毒雾只掉肉+毒晕，不触发「被咬 ×2」的强酸配套弱点
 	if si_le or not is_inside_tree():
 		return false
 	if shi_chang <= 0.0 or mei_miao <= 0.0:
 		return false
 	_qiang_suan_sheng_yu = maxf(_qiang_suan_sheng_yu, shi_chang)
 	_qiang_suan_mei_miao = maxf(_qiang_suan_mei_miao, mei_miao)
+	_qiang_suan_bei_yao = _qiang_suan_bei_yao or bei_yao
 	return true
 
 
@@ -628,6 +645,7 @@ func _zou_qiang_suan(delta: float) -> void:
 	if _qiang_suan_sheng_yu <= 0.0:
 		_qiang_suan_mei_miao = 0.0
 		_qiang_suan_ji_shi = 0.0
+		_qiang_suan_bei_yao = false
 
 
 func shou_zhi_jie_shang(liang: float) -> void:
@@ -677,7 +695,10 @@ func _yao(mu) -> void:
 		return
 	_yao_ji_leng_que = YAO_JI_LENG_QUE
 	_bo_gong_ji()  # 咬中同帧播 4 帧咬击动画：有素材的鱼种才播，没有就沿用游动帧
-	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, zui_ba)
+	# A2：NPC 咬击同样按目标当前体型 3% 结算（玩家/NPC 一视同仁）
+	var shou_ti := float(mu.get("tixing")) if mu.get("tixing") != null else 0.0
+	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, shou_ti, zui_ba) if shou_ti > 0.0 \
+			else ZhanDou.jiu_yao_ji_shang_hai(tixing, zui_ba)
 	if _qian_fu_zhun_bei:
 		shang_hai *= _neng_li.shu_zhi  # 巨口鱼潜伏：下一口 ×2
 		_jie_chu_yin_shen_npc()
@@ -728,14 +749,24 @@ func _xiang(fang: Vector2, delta: float) -> void:
 	# 朝目标直线游；带 0.05 死区，纯上下追时不会反复转头
 	if fang == Vector2.ZERO:
 		return
-	position += fang * sudu * ZHUI_GAN_JIA_SU * delta
+	position += fang * sudu * ZHUI_GAN_JIA_SU * _feng_xi_bei(fang) * delta
 	if absf(fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = fang.x < 0.0
 
 
 func _you_dang(delta: float) -> void:
-	position.x += fangxiang * sudu * delta
+	position.x += fangxiang * sudu * _feng_xi_bei(Vector2(fangxiang, 0.0)) * delta
 	$AnimatedSprite2D.flip_h = fangxiang < 0.0  # 贴图默认朝右，向左游时翻转
+
+
+func _feng_xi_bei(fang := Vector2.ZERO) -> float:
+	# 唤风：玩家展开骨帆期间，顺流 NPC 加速 30%、逆流 -25%；首领不吃洋流（洋流是玩家的场地技）
+	if shi_boss:
+		return 1.0
+	var wan := _zhao_wan_jia()
+	if wan == null or not wan.has_method("zhuan_shu_feng_xi_shu"):
+		return 1.0
+	return wan.zhuan_shu_feng_xi_shu(self, fang)
 
 
 func jia_jing_yan_nei(fen: int) -> void:
@@ -749,6 +780,7 @@ func jia_jing_yan_nei(fen: int) -> void:
 		jing_yan_nei -= _sheng_ji_yu_zhi()
 		deng_ji_nei += 1
 		tixing += 1.0
+		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI  # A10：感知随体型同步长大
 		_ying_she_ti_xing()
 
 
@@ -874,7 +906,7 @@ func _tao_pao(delta: float) -> void:
 		var fang: Vector2 = global_position - _tao_pao_lai_yuan.global_position
 		if fang.length_squared() > 0.001:
 			fang = fang.normalized()
-			position += fang * sudu * 1.3 * delta
+			position += fang * sudu * 1.3 * _feng_xi_bei(fang) * delta
 			if absf(fang.x) > 0.05:
 				$AnimatedSprite2D.flip_h = fang.x < 0.0
 	if _tao_pao_ji_shi <= 0.0:
@@ -962,8 +994,13 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, bu := "shen") -> void:
 	if si_le or not is_inside_tree():
 		return
 	_jie_chu_yin_shen_npc()  # 受击破隐：潜伏的 ×2 不留给下一次
-	if _qiang_suan_sheng_yu > 0.0:
-		shang_hai *= 2.0  # 酸蚀期间被咬掉肉 ×2（强酸喷吐的配套弱点）
+	# G T1 石化之瞳的配套规则：石化期间受玩家伤害 +25%（只认玩家，NPC 互咬不加成）
+	# boss 免疫石化 → 这条对 boss 永不触发，不需要额外判 shi_boss
+	if you_zhuang_tai(&"shi_hua") and lai_yuan != null and is_instance_valid(lai_yuan) \
+			and lai_yuan.is_in_group("player"):
+		shang_hai *= shi_hua_shou_shang_bei
+	if _qiang_suan_sheng_yu > 0.0 and _qiang_suan_bei_yao:
+		shang_hai *= 2.0  # 酸蚀期间被咬掉肉 ×2（强酸喷吐的配套弱点；共生毒雾不触发）
 	tixing = maxf(ZUI_XIAO_TI_XING, tixing - shang_hai)
 	_ying_she_ti_xing()
 	_shan_hong()

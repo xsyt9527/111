@@ -37,12 +37,19 @@ var yin_xiao_yin_liang := 1.0  # 音效音量 0.0~1.0（线性）；主界面设
 var bgm_yin_liang := 1.0       # BGM 音量 0.0~1.0（线性）
 var yao_gan_ce := "zuo"        # 摇杆在屏幕哪一侧："zuo"=左下（默认）/ "you"=右下；技能按钮跟着换边
 var hua_zhi_feng_ge := "xiang_su"  # 画风："xiang_su"=像素（默认）/ "jing_dian"=经典2D；主界面设置切换
-var sheng_li_ci_shu := 0  # 累计胜利次数（解锁唯一依据）
-var cheng_jiu_zhi := 0  # 成就值：通关后获得，花在永久开局技能上
+var sheng_li_ci_shu := 0  # 累计胜利次数（通关次数；D 通关解锁用）
+var cheng_jiu_zhi := 0  # 成就值余额（可花在永久开局技能上）
+var lei_ji_cheng_jiu_zhi := 0  # B1/D：历史累计获得的成就值（只增不减；成就解锁只看它）
 var yong_jiu_neng_li: Array[StringName] = []  # 已永久解锁的开局技能 id
 var yi_dian_liang_jin_hua: Array[StringName] = []  # 图鉴已永久点亮的进化形态 id（策划案 v0.18 8.6）
+var yi_chi_yu_zhong: Array[StringName] = []  # B1：跨局已吞噬过的鱼种 id（首次吞噬多给 5 成就值）
+var yi_kan_guang_gao: Array[StringName] = []  # D：已看广告解锁的广告位形态 id（SDK 未接入时不会写入）
 var dang_qian_bian_hao: StringName = MO_REN_BIAN_HAO  # 已选择的形态 id
-var shang_ci_xin_jie_suo: Array[XingTai] = []  # 本次胜利新解锁的形态（瞬时，不存档）
+var shang_ci_xin_jie_suo: Array[XingTai] = []  # 本次结算新解锁的形态（瞬时，不存档）
+var shang_ci_jie_suan: Dictionary = {}  # B2：本局结算明细（瞬时，结算页消费；不存档）
+var ya_li_xiu_zheng := 0  # E2：隐藏压力修正 -2~+2（跨局持久；负=对玩家更宽松）
+var you_dai_zhu_dong_bao_di := false  # E2：下局首次三选一必含 1 个进攻主动（结算时写，消耗后清）
+var shou_ju_jiao_ben_yi_zhi_xing := false  # C：首局 10 分钟节奏脚本只跑一次（存档持久）
 
 var _xing_tai_zu: Array[XingTai] = []  # 按解锁阈值升序排好的形态表
 
@@ -80,10 +87,17 @@ func zai_ru() -> void:
 	# 读档：任何失败都只回退默认值，绝不写文件（避免把玩家存档改坏）
 	sheng_li_ci_shu = 0
 	cheng_jiu_zhi = 0
+	lei_ji_cheng_jiu_zhi = 0
+	ya_li_xiu_zheng = 0
+	you_dai_zhu_dong_bao_di = false
+	shou_ju_jiao_ben_yi_zhi_xing = false
 	yong_jiu_neng_li.clear()
 	dang_qian_bian_hao = MO_REN_BIAN_HAO
 	shang_ci_xin_jie_suo.clear()
+	shang_ci_jie_suan.clear()
 	yi_dian_liang_jin_hua.clear()
+	yi_chi_yu_zhong.clear()
+	yi_kan_guang_gao.clear()
 	if not FileAccess.file_exists(lu_jing):
 		return
 	var wen_jian := FileAccess.open(lu_jing, FileAccess.READ)
@@ -129,14 +143,44 @@ func zai_ru() -> void:
 			var jh_id := StringName(id_wen)
 			if JinHuaKu.zhao(jh_id) != null and not yi_dian_liang_jin_hua.has(jh_id):
 				yi_dian_liang_jin_hua.append(jh_id)
+	# B1/D/E 新字段：缺省时按旧档迁移（累计成就 = 当前余额 + 已花掉的技能原价）
+	var lei_ji = shu_ju.get("lei_ji_cheng_jiu_zhi", null)
+	if _shi_shu_zi(lei_ji):
+		lei_ji_cheng_jiu_zhi = maxi(0, int(lei_ji))
+	else:
+		var hua_fei := 0
+		for id in yong_jiu_neng_li:
+			var yj := NengLiKu.zhao(id)
+			if yj != null:
+				hua_fei += cheng_jiu_dai_jia(yj)
+		lei_ji_cheng_jiu_zhi = cheng_jiu_zhi + hua_fei
+	var xiu_zheng = shu_ju.get("ya_li_xiu_zheng", 0)
+	if _shi_shu_zi(xiu_zheng):
+		ya_li_xiu_zheng = clampi(int(xiu_zheng), -2, 2)
+	you_dai_zhu_dong_bao_di = bool(shu_ju.get("you_dai_zhu_dong_bao_di", false))
+	shou_ju_jiao_ben_yi_zhi_xing = bool(shu_ju.get("shou_ju_jiao_ben_yi_zhi_xing", false))
+	var chi_guo = shu_ju.get("yi_chi_yu_zhong", [])
+	if chi_guo is Array:
+		for id_wen in chi_guo:
+			if id_wen is String:
+				var yz_id := StringName(id_wen)
+				if not yi_chi_yu_zhong.has(yz_id):
+					yi_chi_yu_zhong.append(yz_id)
+	var kan_guo = shu_ju.get("yi_kan_guang_gao", [])
+	if kan_guo is Array:
+		for id_wen in kan_guo:
+			if id_wen is String:
+				var gg_id := StringName(id_wen)
+				if _zhao_xing_tai(gg_id) != null and not yi_kan_guang_gao.has(gg_id):
+					yi_kan_guang_gao.append(gg_id)
 	var bian_hao = shu_ju.get("dang_qian_xing_tai", "")
 	if not (bian_hao is String):
 		return
 	var xt := _zhao_xing_tai(StringName(bian_hao))
 	if xt == null:
 		return  # 未知 id：保留胜场，当前形态回默认
-	if sheng_li_ci_shu < xt.jie_suo_sheng_li_ci_shu:
-		return  # 已选形态尚未解锁：保留胜场，当前形态回默认
+	if not _pan_duan_jie_suo(xt, sheng_li_ci_shu, lei_ji_cheng_jiu_zhi):
+		return  # 已选形态尚未解锁（广告/成就/通关任一来源）：保留胜场，当前形态回默认
 	dang_qian_bian_hao = xt.bian_hao
 
 
@@ -152,12 +196,24 @@ func bao_cun() -> bool:
 	var jin_hua_wen := []
 	for id in yi_dian_liang_jin_hua:
 		jin_hua_wen.append(String(id))
+	var chi_yu_wen := []
+	for id in yi_chi_yu_zhong:
+		chi_yu_wen.append(String(id))
+	var guang_gao_wen := []
+	for id in yi_kan_guang_gao:
+		guang_gao_wen.append(String(id))
 	wen_jian.store_string(JSON.stringify({
 		"ban_ben": BAN_BEN,
 		"sheng_li_ci_shu": sheng_li_ci_shu,
 		"cheng_jiu_zhi": cheng_jiu_zhi,
+		"lei_ji_cheng_jiu_zhi": lei_ji_cheng_jiu_zhi,
+		"ya_li_xiu_zheng": ya_li_xiu_zheng,
+		"you_dai_zhu_dong_bao_di": you_dai_zhu_dong_bao_di,
+		"shou_ju_jiao_ben_yi_zhi_xing": shou_ju_jiao_ben_yi_zhi_xing,
 		"yong_jiu_neng_li": yong_jiu_wen,
 		"yi_dian_liang_jin_hua": jin_hua_wen,
+		"yi_chi_yu_zhong": chi_yu_wen,
+		"yi_kan_guang_gao": guang_gao_wen,
 		"dang_qian_xing_tai": String(dang_qian_bian_hao),
 	}))
 	wen_jian.close()
@@ -174,6 +230,24 @@ func qing_chu_zhong_tu() -> void:
 	# 文件不存在就安静返回：清档是幂等操作，调用方不用先问有没有
 	if FileAccess.file_exists(zhong_tu_lu_jing):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(zhong_tu_lu_jing))
+
+
+func _id_shu_zu(shu_zu) -> Array:
+	# StringName 数组 → JSON 可存的 String 数组（中途存档共用）
+	var jie_guo: Array = []
+	if shu_zu is Array:
+		for id in shu_zu:
+			jie_guo.append(String(id))
+	return jie_guo
+
+
+func _ming_shu_zu(shu_zu) -> Array:
+	# 显示名数组 → JSON 可存数组（保持与 id 数组一一对应）
+	var jie_guo: Array = []
+	if shu_zu is Array:
+		for ming in shu_zu:
+			jie_guo.append(String(ming))
+	return jie_guo
 
 
 func xie_zhong_tu(zhang_ben: Node = null) -> bool:
@@ -229,6 +303,16 @@ func xie_zhong_tu(zhang_ben: Node = null) -> bool:
 		"bei_dong_ceng": ceng_cun,
 		"yi_xuan": yi_xuan_id,
 		"chi_yu_ji_lu": shi_pu_cun,
+		# B1 局内战绩：继续游戏后结算公式仍按本局真实数据算（旧档缺这些键时按 0 读）
+		"ben_ju_tun_chi_shu": int(zb.get("ben_ju_tun_chi_shu")),
+		"ben_ju_ji_sha_shu": int(zb.get("ben_ju_ji_sha_shu")),
+		"ben_ju_diao_rou_liang": float(zb.get("ben_ju_diao_rou_liang")),
+		"ben_ju_tun_chi_yu_zhong": _id_shu_zu(zb.get("ben_ju_tun_chi_yu_zhong")),
+		"ben_ju_tun_chi_yu_zhong_ming": _ming_shu_zu(zb.get("ben_ju_tun_chi_yu_zhong_ming")),
+		"ben_ju_sha_shou_ming": String(zb.get("ben_ju_sha_shou_ming")),
+		"ben_ju_sha_shou_ti_xing": float(zb.get("ben_ju_sha_shou_ti_xing")),
+		"ben_ju_sha_shou_chu_shi": float(zb.get("ben_ju_sha_shou_chu_shi")),
+		"ben_ju_fan_sha_kou": int(zb.get("ben_ju_fan_sha_kou")),
 	}))
 	wen_jian.close()
 	return true
@@ -317,18 +401,214 @@ func an_bian_hao_zhao_xing_tai(bian_hao: StringName) -> XingTai:
 	return _zhao_xing_tai(bian_hao)
 
 
-func ji_lu_sheng_li() -> Array[XingTai]:
-	# 胜利瞬间调用：胜场 +1、成就值入账，返回跨过阈值的新解锁形态，并立即写档
-	var jiu_ci_shu := sheng_li_ci_shu
-	sheng_li_ci_shu += 1
-	cheng_jiu_zhi += CHENG_JIU_MEI_CI
+func shi_fou_shou_ju() -> bool:
+	# C：只在「0 胜 + 首局脚本没跑过」时启动教学时间轴；通关后不再触发
+	return sheng_li_ci_shu == 0 and not shou_ju_jiao_ben_yi_zhi_xing
+
+
+func biao_ji_shou_ju_jiao_ben() -> void:
+	# C：首局脚本跑过就打标记写档；重复调用幂等
+	if shou_ju_jiao_ben_yi_zhi_xing:
+		return
+	shou_ju_jiao_ben_yi_zhi_xing = true
+	bao_cun()
+
+
+func qu_zhu_dong_bao_di() -> bool:
+	# E2：消费「下局首次三选一必含进攻主动」欠账；消费后立刻写档，跨启动也只生效一次
+	var you := you_dai_zhu_dong_bao_di
+	if you:
+		you_dai_zhu_dong_bao_di = false
+		bao_cun()
+	return you
+
+
+func jie_suan_ben_ju(jie_guo: int, zhang_ben = null) -> Dictionary:
+	# B1/B2/B3：每局结束都入账——死亡/失败也拿保底（不再只有胜利才有成就值）
+	# zhang_ben 可传账本节点或字典（--script 测试用字典喂数据）；默认查 /root/ZhangBen
+	var zb = zhang_ben
+	if zb == null:
+		zb = get_node_or_null("/root/ZhangBen")
+	if zb == null:
+		return {}
+	var dang_ji := int(_qu(zb, "deng_ji", 0))
+	var ji_sha := int(_qu(zb, "ben_ju_ji_sha_shu", 0))
+	var tun_chi := int(_qu(zb, "ben_ju_tun_chi_shu", 0))
+	var diao_rou := float(_qu(zb, "ben_ju_diao_rou_liang", 0.0))
+	var miao := maxf(0.0, float(_qu(zb, "ju_nei_shi_jian", 0.0)))
+	var fen := int(floor(miao / 60.0))
+	var tong_guan := 50 if jie_guo == JIE_JU_SHENG_LI else 0
+	var qiang_du := _ji_suan_qiang_du(zb)
+	# 首次吞噬新鱼种：跨局集合求差，每局限计 5 个（之后仍记入图鉴/持久集合，只是不再计费）
+	var xin_id: Array[StringName] = []
+	var xin_ming: Array[String] = []
+	var tun_ids = _qu(zb, "ben_ju_tun_chi_yu_zhong", [])
+	var tun_ming = _qu(zb, "ben_ju_tun_chi_yu_zhong_ming", [])
+	if tun_ids is Array:
+		for i in tun_ids.size():
+			var yz_id := StringName(str(tun_ids[i]))
+			if yz_id == &"" or yi_chi_yu_zhong.has(yz_id):
+				continue
+			xin_id.append(yz_id)
+			var ming := String(yz_id)
+			if tun_ming is Array and i < tun_ming.size():
+				ming = str(tun_ming[i])
+			xin_ming.append(ming)
+	var ji_fei := mini(xin_id.size(), 5)
+	var cheng_jiu := 10 + dang_ji * 2 + ji_sha + fen * 2 + tong_guan + ji_fei * 5
+	# 明细（结算页 B2③ 逐条展示）
+	var ming_xi: Array[String] = []
+	ming_xi.append("参战保底 +10")
+	ming_xi.append("体型 Lv.%d +%d" % [dang_ji, dang_ji * 2])
+	ming_xi.append("击杀 %d +%d" % [ji_sha, ji_sha])
+	ming_xi.append("存活 %d 分钟 +%d" % [fen, fen * 2])
+	if tong_guan > 0:
+		ming_xi.append("击沉机器船 +50")
+	if ji_fei > 0:
+		ming_xi.append("首次吞噬新鱼种 %d ×5 +%d" % [ji_fei, ji_fei * 5])
+	# 入账：余额与累计同时加；持久集合记录本局所有新鱼种（计费只取前 5）
+	cheng_jiu_zhi += cheng_jiu
+	lei_ji_cheng_jiu_zhi += cheng_jiu
+	for yz_id in xin_id:
+		if not yi_chi_yu_zhong.has(yz_id):
+			yi_chi_yu_zhong.append(yz_id)
+	var jiu_sheng := sheng_li_ci_shu
+	var jiu_lei := lei_ji_cheng_jiu_zhi - cheng_jiu
+	var jie_suo_qian := {}
+	for xt in _xing_tai_zu:
+		jie_suo_qian[xt.bian_hao] = _pan_duan_jie_suo(xt, jiu_sheng, jiu_lei)
+	if jie_guo == JIE_JU_SHENG_LI:
+		sheng_li_ci_shu += 1
+		ya_li_xiu_zheng = mini(2, ya_li_xiu_zheng + 1)  # E2：通关者下局压力 +
+	elif qiang_du >= 10:
+		ya_li_xiu_zheng = maxi(-2, ya_li_xiu_zheng - 1)  # E2：构筑成形仍死亡 → 下局宽松
+	else:
+		you_dai_zhu_dong_bao_di = true  # E2：构筑没成形 → 下局首次三选一保底进攻主动
+	# D：扫一遍新跨过门槛的形态（成就/通关两种来源；广告位只认已看广告集合）
 	var xin_jie_suo: Array[XingTai] = []
 	for xt in _xing_tai_zu:
-		if xt.jie_suo_sheng_li_ci_shu > jiu_ci_shu and xt.jie_suo_sheng_li_ci_shu <= sheng_li_ci_shu:
+		if not bool(jie_suo_qian.get(xt.bian_hao, false)) and shi_fou_jie_suo(xt.bian_hao):
+			xin_jie_suo.append(xt)
+	shang_ci_xin_jie_suo.assign(xin_jie_suo)
+	# B2③：最近未购能力差额（余额+本局之后看）
+	var dui_huan := _zui_jin_dui_huan()
+	var jie_suan := {
+		"jie_guo": jie_guo,
+		"deng_ji": dang_ji,
+		"ji_sha": ji_sha,
+		"tun_chi": tun_chi,
+		"diao_rou": diao_rou,
+		"sheng_cun": miao,
+		"sheng_cun_min": fen,
+		"qiang_du": qiang_du,
+		"cheng_jiu": cheng_jiu,
+		"ming_xi": ming_xi,
+		"lei_ji": lei_ji_cheng_jiu_zhi,
+		"yu_e": cheng_jiu_zhi,
+		"xin_yu_zhong": xin_ming,
+		"xin_jie_suo": xin_jie_suo,
+		"sha_shou_ming": str(_qu(zb, "ben_ju_sha_shou_ming", "")),
+		"sha_shou_sheng_yu": int(round(float(_qu(zb, "ben_ju_sha_shou_chu_shi", 0.0)) / maxf(float(_qu(zb, "ben_ju_sha_shou_ti_xing", 0.0)), 0.001) * 100.0)) if float(_qu(zb, "ben_ju_sha_shou_chu_shi", 0.0)) > 0.0 else 0,
+		"fan_sha_kou": int(_qu(zb, "ben_ju_fan_sha_kou", 0)),
+		"dui_huan_ming": str(dui_huan.get("ming", "")),
+		"dui_huan_cha": int(dui_huan.get("cha", 0)),
+		"tong_guan_ci_shu": sheng_li_ci_shu,
+	}
+	# 击杀者剩余比例按「当前体型 / 初始体型」算：上面直接按账本函数口径重算，避免 UI 再推
+	jie_suan["sha_shou_sheng_yu"] = _sha_shou_sheng_yu_bi(zb)
+	shang_ci_jie_suan = jie_suan
+	bao_cun()
+	return jie_suan
+
+
+func _sha_shou_sheng_yu_bi(zb) -> int:
+	# B2 文案 X%：击杀者当前体型 / 出场体型（无记录时 0）
+	var chu := float(_qu(zb, "ben_ju_sha_shou_chu_shi", 0.0))
+	var dang := float(_qu(zb, "ben_ju_sha_shou_ti_xing", 0.0))
+	if chu <= 0.0:
+		return 0
+	return int(round(clampf(dang / chu, 0.0, 1.0) * 100.0))
+
+
+func _ji_suan_qiang_du(zb) -> int:
+	# E1：强度 = 主动技数 ×3 + 被动总档位 ×2 + 专属技持有 ×4 + 最终体型等级
+	var zhu_dong = _qu(zb, "zhu_dong_zu", [])
+	var zhu_dong_shu: int = zhu_dong.size() if zhu_dong is Array else 0
+	var bei_dong_dang := 0
+	var ceng = _qu(zb, "bei_dong_ceng", {})
+	if ceng is Dictionary:
+		for jian in ceng:
+			bei_dong_dang += int(ceng[jian])
+	var zhuan_shu := 0
+	var yi_jing := {}
+	var yi_xuan = _qu(zb, "yi_xuan_neng_li", [])
+	if yi_xuan is Array:
+		for neng in yi_xuan:
+			if neng != null and neng.shi_zhuan_shu() and not yi_jing.has(neng.bian_hao):
+				yi_jing[neng.bian_hao] = true
+				zhuan_shu += 1
+	return zhu_dong_shu * 3 + bei_dong_dang * 2 + zhuan_shu * 4 + int(_qu(zb, "deng_ji", 0))
+
+
+func _zui_jin_dui_huan() -> Dictionary:
+	# B2③：在所有未购、可兑换的通用能力里，找差额绝对值最小的一项
+	var ming := ""
+	var cha := 0
+	var zui_cha := 1 << 30
+	for neng in NengLiKu.quan_bu():
+		if not ke_yong_jiu_dui_huan(neng) or you_yong_jiu(neng.bian_hao):
+			continue
+		var dai := cheng_jiu_dai_jia(neng)
+		var cha_zhi := dai - cheng_jiu_zhi
+		if absi(cha_zhi) < zui_cha:
+			zui_cha = absi(cha_zhi)
+			ming = neng.ming_zi
+			cha = cha_zhi
+	return {"ming": ming, "cha": cha}
+
+
+func _qu(zb, jian: String, mo_ren = null):
+	# 统一取值：账本节点 / 测试字典都能读；Node.get 读不到时给默认值
+	if zb is Dictionary:
+		return zb.get(jian, mo_ren)
+	if zb is Object:
+		var zhi = zb.get(jian)
+		return mo_ren if zhi == null else zhi
+	return mo_ren
+
+
+func ji_lu_sheng_li() -> Array[XingTai]:
+	# 兼容旧调用：按当前账本状态记一次胜利（B1 公式在 jie_suan_ben_ju；无账本时给保底 10）
+	var jie_guo := {}
+	# 裸实例（--script 测试）不在场景树里：绝对路径 get_node 会报 ERROR，
+	# 直接走无账本保底分支，别让门禁被 ERROR 污染
+	if is_inside_tree():
+		jie_guo = jie_suan_ben_ju(JIE_JU_SHENG_LI)
+	if jie_guo.is_empty():
+		_ji_sheng_bao_di()
+	return shang_ci_xin_jie_suo
+
+
+func _ji_sheng_bao_di() -> void:
+	# 无账本保底：胜场 +1，余额与累计成就各 +10（不叠加 B1 胜利的击沉机器船 +50）
+	# 解锁差集按 D 的四类来源重算，让 --script 旧测试也能看到真实的新解锁提示
+	var jiu_sheng := sheng_li_ci_shu
+	var jiu_lei := lei_ji_cheng_jiu_zhi
+	sheng_li_ci_shu += 1
+	cheng_jiu_zhi += CHENG_JIU_MEI_CI
+	lei_ji_cheng_jiu_zhi += CHENG_JIU_MEI_CI
+	var xin_jie_suo: Array[XingTai] = []
+	for xt in _xing_tai_zu:
+		if not _pan_duan_jie_suo(xt, jiu_sheng, jiu_lei) and _pan_duan_jie_suo(xt, sheng_li_ci_shu, lei_ji_cheng_jiu_zhi):
 			xin_jie_suo.append(xt)
 	shang_ci_xin_jie_suo.assign(xin_jie_suo)
 	bao_cun()
-	return xin_jie_suo
+
+
+func get_xin_jie_suo() -> Array[XingTai]:
+	var jie_guo: Array[XingTai] = []
+	jie_guo.assign(shang_ci_xin_jie_suo)
+	return jie_guo
 
 
 func qu_xin_jie_suo() -> Array[XingTai]:
@@ -343,13 +623,47 @@ func shi_fou_jie_suo(bian_hao: StringName) -> bool:
 	var xt := _zhao_xing_tai(bian_hao)
 	if xt == null:
 		return false
-	return sheng_li_ci_shu >= xt.jie_suo_sheng_li_ci_shu
+	return _pan_duan_jie_suo(xt, sheng_li_ci_shu, lei_ji_cheng_jiu_zhi)
+
+
+func _pan_duan_jie_suo(xt: XingTai, sheng: int, lei_ji: int) -> bool:
+	# D 解锁分派：默认免费 / 广告 / 累计成就值 / 累计通关
+	match xt.jie_suo_fang_shi:
+		"mian":
+			return true
+		"guang_gao":
+			return yi_kan_guang_gao.has(xt.bian_hao)
+		"cheng_jiu":
+			return lei_ji >= xt.jie_suo_can_shu
+		"tong_guan":
+			return sheng >= xt.jie_suo_can_shu
+	# 旧数据/未知方式：退回旧字段的胜场阈值（保证旧 .tres 行为不变）
+	return sheng >= xt.jie_suo_sheng_li_ci_shu
+
+
+func jie_suo_ti_shi(xt: XingTai) -> String:
+	# 选择页锁定卡文案：按 D 的解锁来源给一句人话
+	if xt == null:
+		return ""
+	match xt.jie_suo_fang_shi:
+		"guang_gao":
+			return "看广告解锁（敬请期待）"
+		"cheng_jiu":
+			return "累计成就值 %d 解锁（当前 %d）" % [xt.jie_suo_can_shu, lei_ji_cheng_jiu_zhi]
+		"tong_guan":
+			return "累计通关 %d 次解锁（当前 %d）" % [xt.jie_suo_can_shu, sheng_li_ci_shu]
+	return "胜利 %d 次解锁（当前 %d 次）" % [xt.jie_suo_sheng_li_ci_shu, sheng_li_ci_shu]
+
+
+func shi_fou_guang_gao_jie_suo(bian_hao: StringName) -> bool:
+	# 广告位判定：D 规定 TapTap SDK 未接入前置灰；这里只提供数据钩子
+	return yi_kan_guang_gao.has(bian_hao)
 
 
 func ke_xuan_xing_tai() -> Array[XingTai]:
 	var jie_guo: Array[XingTai] = []
 	for xt in _xing_tai_zu:
-		if sheng_li_ci_shu >= xt.jie_suo_sheng_li_ci_shu:
+		if shi_fou_jie_suo(xt.bian_hao):
 			jie_guo.append(xt)
 	return jie_guo
 
@@ -362,7 +676,7 @@ func suo_you_xing_tai() -> Array[XingTai]:
 
 func dang_qian_xing_tai() -> XingTai:
 	var xt := _zhao_xing_tai(dang_qian_bian_hao)
-	if xt == null or sheng_li_ci_shu < xt.jie_suo_sheng_li_ci_shu:
+	if xt == null or not shi_fou_jie_suo(dang_qian_bian_hao):
 		return _zhao_xing_tai(MO_REN_BIAN_HAO)
 	return xt
 
@@ -377,12 +691,20 @@ func xuan_ze(bian_hao: StringName) -> bool:
 
 
 func tiao_shi_jie_suo_quan_bu() -> void:
-	# 仅编辑器调试按钮：胜场拉到最高阈值，解锁全部形态
-	# 唯一形态的解锁阈值是 0：用 maxi 保留玩家已有胜场，别让“解锁全部”反而把进度清零
-	var zui_gao := 0
+	# 仅编辑器调试按钮：按 D 的三种来源全部满足，解锁全部形态
+	# 成就来源抬高「累计成就」而不是余额：不会凭空多出可消费的成就值
+	var zui_gao_sheng := 0
+	var zui_gao_lei := 0
 	for xt in _xing_tai_zu:
-		zui_gao = maxi(zui_gao, xt.jie_suo_sheng_li_ci_shu)
-	sheng_li_ci_shu = maxi(sheng_li_ci_shu, zui_gao)
+		zui_gao_sheng = maxi(zui_gao_sheng, xt.jie_suo_sheng_li_ci_shu)
+		if xt.jie_suo_fang_shi == "tong_guan":
+			zui_gao_sheng = maxi(zui_gao_sheng, xt.jie_suo_can_shu)
+		elif xt.jie_suo_fang_shi == "cheng_jiu":
+			zui_gao_lei = maxi(zui_gao_lei, xt.jie_suo_can_shu)
+		elif xt.jie_suo_fang_shi == "guang_gao" and not yi_kan_guang_gao.has(xt.bian_hao):
+			yi_kan_guang_gao.append(xt.bian_hao)
+	sheng_li_ci_shu = maxi(sheng_li_ci_shu, zui_gao_sheng)
+	lei_ji_cheng_jiu_zhi = maxi(lei_ji_cheng_jiu_zhi, zui_gao_lei)
 	bao_cun()
 
 
@@ -390,10 +712,17 @@ func tiao_shi_qing_chu_jin_du() -> void:
 	# 仅编辑器调试按钮：进度归零、当前形态回默认、成就一并清空（调试口径一致）
 	sheng_li_ci_shu = 0
 	cheng_jiu_zhi = 0
+	lei_ji_cheng_jiu_zhi = 0
+	ya_li_xiu_zheng = 0
+	you_dai_zhu_dong_bao_di = false
+	shou_ju_jiao_ben_yi_zhi_xing = false
 	yong_jiu_neng_li.clear()
 	dang_qian_bian_hao = MO_REN_BIAN_HAO
 	shang_ci_xin_jie_suo.clear()
+	shang_ci_jie_suan.clear()
 	yi_dian_liang_jin_hua.clear()  # 图鉴点亮也算进度：清进度一并清掉
+	yi_chi_yu_zhong.clear()
+	yi_kan_guang_gao.clear()
 	bao_cun()
 
 
@@ -495,13 +824,10 @@ func yi_dian_liang_ming_dan() -> Array[StringName]:
 
 
 func _on_ju_jie_shu(jie_guo: int) -> void:
-	# 胜利立刻记档（玩家直接关游戏也不丢解锁）；失败/死亡清掉瞬时提示
-	# 一局打完（胜/负/死）中途存档即作废：这一局已经走到了终点，没得"继续"了（生命周期规则①）
+	# 一局打完（胜/负/死）都走 B1 结算入账；中途存档随即作废
+	# 成就/解锁/压力修正都在 jie_suan_ben_ju 里一次写完并落盘
 	qing_chu_zhong_tu()
-	if jie_guo == JIE_JU_SHENG_LI:
-		ji_lu_sheng_li()
-	else:
-		shang_ci_xin_jie_suo.clear()
+	jie_suan_ben_ju(jie_guo)
 
 
 func _zhao_xing_tai(bian_hao: StringName) -> XingTai:

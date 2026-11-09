@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE lmms-project>
+<lmms-project type="song" version="1.0" creator="LMMS" creatorversion="1.2.0">
+  <head timesig_numerator="4" timesig_denominator="4" bpm="120" mastervol="28" masterpitch="0"/>
+  <song>
+    <trackcontainer type="song" visible="1" width="900" height="600" x="0" y="0" maximized="0" minimized="0">
+      <track type="0" muted="0" name="咬合噪声" solo="0">
+        <instrumenttrack pitch="0" vol="100" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="audiofileprocessor"><audiofileprocessor stutter="0" interp="1" reversed="0" looped="0" sframe="0" lframe="0" src="drums/snare_short01.ogg" eframe="0.9999" amp="100"/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="1" att="0.001" dec="0.055" sustain="0" rel="0.03" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="1" att="0.001" dec="0.055" sustain="0" rel="0.03" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="1" att="0.001" dec="0.055" sustain="0" rel="0.03" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="0" enabled="0"/>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="咬合噪声" pos="0" len="192">
+          <note key="57" vol="110" pos="0" pan="0" len="3"/>
+        </pattern>
+      </track>
+      <track type="0" muted="0" name="低频 thump" solo="0">
+        <instrumenttrack pitch="0" vol="100" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="kicker"><kicker decay_syncmode="0" startnote="1" version="1" endfreq="50" env="0.163" noise="0.05" decay_denominator="4" dist="0.7" endnote="0" decay_numerator="4" distend="0.7" gain="1" slope="0.06" decay="180" startfreq="180" click="0.2"/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="0" enabled="0"/>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="低频 thump" pos="0" len="192">
+          <note key="57" vol="100" pos="0" pan="0" len="24"/>
+        </pattern>
+      </track>
+    </trackcontainer>
+    <fxmixer visible="1" width="647" height="332" x="0" y="0" maximized="0" minimized="0">
+      <fxchannel num="0" muted="0" volume="1" name="Master" soloed="0">
+        <fxchain numofeffects="0" enabled="0"/>
+      </fxchannel>
+    </fxmixer>
+  </song>
+</lmms-project>

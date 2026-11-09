@@ -24,6 +24,19 @@ const ZHU_DONG: Array[NengLi] = [
 	preload("res://data/nengli/tai_sui_ge_rou.tres"),
 	preload("res://data/nengli/qiang_suan_pen_tu.tres"),
 	preload("res://data/nengli/chao_ya_shui_dao.tres"),
+	# 进化专属主动（2026-11-08，G T1：电鳗/旗鱼/剑鱼/蓑鲉 4 鱼种 ×3 分支）
+	preload("res://data/nengli/lei_bao_zhao_huan.tres"),
+	preload("res://data/nengli/jiu_tou_dian_wang.tres"),
+	preload("res://data/nengli/ci_chang_hu_bi.tres"),
+	preload("res://data/nengli/huan_feng.tres"),
+	preload("res://data/nengli/you_ling_qi_she.tres"),
+	preload("res://data/nengli/po_kong_fu_chong.tres"),
+	preload("res://data/nengli/luo_xuan_zuan_tu.tres"),
+	preload("res://data/nengli/ju_du_tu_ci.tres"),
+	preload("res://data/nengli/kong_jian_lie_feng.tres"),
+	preload("res://data/nengli/kong_que_huan_ying.tres"),
+	preload("res://data/nengli/shi_hua_zhi_tong.tres"),
+	preload("res://data/nengli/ji_guan_fan_jia.tres"),
 ]
 
 const BEI_DONG: Array[NengLi] = [
@@ -50,6 +63,19 @@ const BEI_DONG: Array[NengLi] = [
 	preload("res://data/nengli/ning_jiao_tan_fu.tres"),
 	preload("res://data/nengli/ji_yin_she_lu.tres"),
 	preload("res://data/nengli/xie_ya_ji_dong.tres"),
+	# 进化专属被动（2026-11-08，G T1：电鳗/旗鱼/剑鱼/蓑鲉 4 鱼种 ×3 分支）
+	preload("res://data/nengli/ming_lei_lin.tres"),
+	preload("res://data/nengli/duo_tou_rong_cuo.tres"),
+	preload("res://data/nengli/jin_shu_chi_li.tres"),
+	preload("res://data/nengli/ye_cha_fan.tres"),
+	preload("res://data/nengli/you_ling_chuan_hai.tres"),
+	preload("res://data/nengli/hua_xiang_yi.tres"),
+	preload("res://data/nengli/po_jia_long_lin.tres"),
+	preload("res://data/nengli/wang_ling_gu_qu.tres"),
+	preload("res://data/nengli/lie_kong_bu.tres"),
+	preload("res://data/nengli/jin_shen_ji_ma.tres"),
+	preload("res://data/nengli/she_fa_pen_du.tres"),
+	preload("res://data/nengli/gong_sheng_hai_kui.tres"),
 ]
 
 

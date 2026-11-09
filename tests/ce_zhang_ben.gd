@@ -6,6 +6,8 @@ extends SceneTree
 # 纪律：全程禁用裸 assert()——失败会中断脚本，quit() 永不执行，进程挂死。
 # 架构：等级 = 体型上限（只升不降）；当前体型 = 血量（受伤扣、吃东西回）
 
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表：期望值从常量算，不手抄
+
 var passed := 0  # 通过计数（收卷用）
 var failed := 0  # 失败计数（退出码的依据）
 var si_wang_ci := 0  # si_wang 广播计数（死亡只报一次）
@@ -157,7 +159,8 @@ func _initialize() -> void:
 	var zb8: Node = load("res://scripts/zhang_ben.gd").new()
 	assert_float(zb8.ji_e, 100.0, "开局饥饿满格 100")
 	zb8.xia_jiang_ji_e(2.0)
-	assert_float(zb8.ji_e, 90.0, "饥饿每秒降 5.0：2 秒后 90")
+	assert_float(zb8.ji_e, 100.0 - SHU_ZHI.JI_E_XIA_JIANG_MEI_MIAO * 2.0,
+			"A5 饥饿每秒降 0.6：2 秒后 98.8")
 	zb8.hui_ji_e(10.0)
 	assert_float(zb8.ji_e, 100.0, "吃一口回 10，封顶 100")
 	zb8.ji_e = 50.0
@@ -165,36 +168,39 @@ func _initialize() -> void:
 	assert_float(zb8.ji_e, 60.0, "半饱吃一口：50 → 60")
 	zb8.free()
 
-	# ---- 用例 9：饥饿归零 → 每秒扣 0.1 当前体型，扣到 0 广播死亡 ----
+	# ---- 用例 9：饥饿归零 → 每秒扣「体型 0.5% + 0.01 底值」，扣到 0 广播死亡 ----
 	var zb9: Node = load("res://scripts/zhang_ben.gd").new()
 	si_wang_ci = 0
+	jie_suan_ci = 0
 	zb9.si_wang.connect(_shu_si_wang)
+	zb9.ju_jie_shu.connect(_shu_jie_suan)
 	zb9.ji_e = 0.0
 	zb9.xia_jiang_ji_e(0.5)
 	assert_float(zb9.dang_qian_ti_xing, 1.0, "归零不足 1 秒：先不扣体型")
 	zb9.xia_jiang_ji_e(0.5)
-	assert_float(zb9.dang_qian_ti_xing, 0.9, "归零满 1 秒：扣 0.1 当前体型")
+	assert_float(zb9.dang_qian_ti_xing, 0.99, "归零满 1 秒：扣 0.5%（保底 0.01）→ 0.99")
 	assert_eq(zb9.deng_ji, 0, "饿死也不掉等级")
 	zb9.hui_ji_e(10.0)  # 吃一口，脱离饥饿
 	zb9.ji_e = 0.0  # 再饿回去：计时器应已清零
 	zb9.xia_jiang_ji_e(0.5)
-	assert_float(zb9.dang_qian_ti_xing, 0.9, "吃东西后饿死计时重新攒：0.5 秒不扣")
+	assert_float(zb9.dang_qian_ti_xing, 0.99, "吃东西后饿死计时重新攒：0.5 秒不扣")
 	zb9.xia_jiang_ji_e(0.5)
-	assert_float(zb9.dang_qian_ti_xing, 0.8, "重新攒满 1 秒才扣")
-	zb9.dang_qian_ti_xing = 0.1  # 只剩最后一丝
+	assert_float(zb9.dang_qian_ti_xing, 0.98, "重新攒满 1 秒才扣")
+	zb9.dang_qian_ti_xing = 0.01  # 只剩最后一丝：保底 0.01 正好扣光
 	zb9.xia_jiang_ji_e(1.0)
 	assert_float(zb9.dang_qian_ti_xing, 0.0, "饥饿扣到 0：死亡")
 	assert_eq(si_wang_ci, 1, "饿死应广播 si_wang 一次")
+	assert_eq(jie_suan_ci, 1, "B2：饿死也发一次 ju_jie_shu（死亡入账）")
 	assert_eq(1 if not zb9.sheng_cun_zhong else 0, 1, "死亡后饥饿时钟停止")
 	zb9.xia_jiang_ji_e(5.0)
 	assert_float(zb9.dang_qian_ti_xing, 0.0, "死后不再扣体型")
 	zb9.free()
 
-	# ---- 用例 10：吃鱼回饥饿的档位（路人鱼 10 / 普通 8 / 鲸鲨 30）----
+	# ---- 用例 10：吃鱼回饥饿固定 +25（A7：不再按路人/普通/鲸鲨分 10/8/30）----
 	var zb10: Node = load("res://scripts/zhang_ben.gd").new()
-	assert_float(zb10.chi_yu_hui_ji_e(1), 10.0, "路人鱼（1 级）回 10 饥饿")
-	assert_float(zb10.chi_yu_hui_ji_e(5), 8.0, "普通鱼回 8 饥饿")
-	assert_float(zb10.chi_yu_hui_ji_e(10), 30.0, "鲸鲨回 30 饥饿")
+	assert_float(zb10.chi_yu_hui_ji_e(1), SHU_ZHI.TUN_YU_HUI_JI_E, "A7 吞鱼固定回 25 饥饿")
+	assert_float(zb10.chi_yu_hui_ji_e(5), SHU_ZHI.TUN_YU_HUI_JI_E, "普通鱼同样回 25（不再分档）")
+	assert_float(zb10.chi_yu_hui_ji_e(10), SHU_ZHI.TUN_YU_HUI_JI_E, "鲸鲨同样回 25（不再分档）")
 	zb10.free()
 
 	# ---- 用例 11：体型→像素曲线（等级无上限：高等级不能再线性放大）----
@@ -266,9 +272,10 @@ func _initialize() -> void:
 	zb15.shou_shang()
 	assert_eq(zb15.jie_ju, 3, "血量归零：结局记为死亡（SI_WANG）")
 	assert_eq(zb15.jie_duan, 2, "死亡即结束阶段")
-	assert_eq(jie_suan_ci, 0, "死亡走 si_wang，不重复发 ju_jie_shu")
+	assert_eq(jie_suan_ci, 1, "B2：死亡也发一次 ju_jie_shu（结算/成就入账）")
 	zb15.zou_ju_shi_jian(700.0)
 	assert_eq(zb15.jie_ju, 3, "死后再走表也改写不了结局")
+	assert_eq(jie_suan_ci, 1, "死亡结算只发一次，不重复发")
 	zb15.chong_zhi()
 	assert_eq(zb15.jie_ju, 0, "重开清空结局")
 	assert_eq(zb15.jie_duan, 0, "重开回到正常生态期")
@@ -389,28 +396,34 @@ func _initialize() -> void:
 	var nai_shou: NengLi = load("res://data/nengli/ji_e_nai_shou.tres")  # 0.1/层，满层附加 hui_de_bei 1.2
 	var tan_shi: NengLi = load("res://data/nengli/tan_shi_hui_fu.tres")  # 0.15/层，满层附加 xi_shu 1.3
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 90.0, "基线：无被动 2 秒降 10（5.0/秒）")
+	assert_float(zb19.ji_e, 100.0 - SHU_ZHI.JI_E_XIA_JIANG_MEI_MIAO * 2.0,
+			"基线：无被动 2 秒降 1.2（0.6/秒）")
 	# 饥饿耐受 1 层：降速 ×0.9
 	zb19.xuan_neng_li(nai_shou)
 	zb19.ji_e = 100.0
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 91.0, "饥饿耐受 1 层：降速 ×0.9，2 秒只降 9")
+	assert_float(zb19.ji_e, 100.0 - SHU_ZHI.JI_E_XIA_JIANG_MEI_MIAO * 0.9 * 2.0,
+			"饥饿耐受 1 层：降速 ×0.9，2 秒只降 1.08")
 	# 满层 3 层：降速 ×0.7；满层附加：吃食回饥饿 ×1.2
 	zb19.xuan_neng_li(nai_shou)
 	zb19.xuan_neng_li(nai_shou)
 	zb19.ji_e = 100.0
 	zb19.xia_jiang_ji_e(2.0)
-	assert_float(zb19.ji_e, 93.0, "饥饿耐受满层：降速 ×0.7，2 秒只降 7")
+	assert_float(zb19.ji_e, 100.0 - SHU_ZHI.JI_E_XIA_JIANG_MEI_MIAO * 0.7 * 2.0,
+			"饥饿耐受满层：降速 ×0.7，2 秒只降 0.84")
 	zb19.ji_e = 50.0
 	zb19.hui_ji_e(10.0)
 	assert_float(zb19.ji_e, 62.0, "满层耐受附加：回 10 饥饿 ×1.2 = 12（50 → 62）")
-	# 贪食回复 1 层：恢复量 +15%
+	# 贪食回复 1 层：恢复量 +15%（A7：按自身上限 1.5%，再 ÷1.5）
+	var rou_ji_chu: float = zb19.ti_xing_shang_xian() * SHU_ZHI.ROU_HUI_TI_XING_BI / 1.5
 	zb19.xuan_neng_li(tan_shi)
-	assert_float(zb19.chi_wu_hui_ti_xing(1.5), 1.15, "贪食 1 层：1.5÷1.5×1.15 = 1.15")
-	# 贪食满层质变：恢复系数 1.5 → 1.3，再吃一次共 ×1.45 —— 1.3 体型恰好回 1.45
+	assert_float(zb19.chi_wu_hui_ti_xing(1.5), rou_ji_chu * 1.15,
+			"贪食 1 层：鱼肉基础回复 ×1.15")
+	# 贪食满层质变：恢复系数 1.5 → 1.3，再吃一次共 ×1.45
 	zb19.xuan_neng_li(tan_shi)
 	zb19.xuan_neng_li(tan_shi)
-	assert_float(zb19.chi_wu_hui_ti_xing(1.3), 1.45, "贪食满层：系数换 1.3 且 ×1.45（1.3 体型回 1.45）")
+	assert_float(zb19.chi_wu_hui_ti_xing(1.3), rou_ji_chu * 1.45 * 1.5 / 1.3,
+			"贪食满层：×1.45 且恢复系数 1.5→1.3（÷1.3 而非 ÷1.5）")
 	zb19.free()
 
 	# ---- 用例 20：中途存档往返（写入 → 读取 → 载回 → 清除）----
@@ -435,6 +448,18 @@ func _initialize() -> void:
 	zb20.xuan_neng_li(cd_xuan_wo)  # 漩涡升到 2 档
 	zb20.xuan_neng_li(cd_du_xian)  # 毒腺 1 层
 	zb20.ji_chi_yu(cd_xuan_wo)  # 食谱：漩涡鱼吃 1 条
+	# B1 局内战绩：写入前摆一组非零数据，读档后逐项核对（防「继续游戏丢战绩」）
+	zb20.ben_ju_tun_chi_shu = 7
+	zb20.ben_ju_ji_sha_shu = 9
+	zb20.ben_ju_diao_rou_liang = 12.5
+	zb20.ben_ju_tun_chi_yu_zhong.append(&"xuan_wo")
+	zb20.ben_ju_tun_chi_yu_zhong.append(&"du_xian")
+	zb20.ben_ju_tun_chi_yu_zhong_ming.append("漩涡鱼")
+	zb20.ben_ju_tun_chi_yu_zhong_ming.append("毒腺鱼")
+	zb20.ben_ju_sha_shou_ming = "测试杀手"
+	zb20.ben_ju_sha_shou_ti_xing = 4.5
+	zb20.ben_ju_sha_shou_chu_shi = 6.0
+	zb20.ben_ju_fan_sha_kou = 3
 	# 写入 → 读取
 	assert_eq(1 if cd20.xie_zhong_tu(zb20) else 0, 1, "写入中途存档应成功")
 	assert_eq(1 if cd20.you_zhong_tu() else 0, 1, "写入后应存在中途存档")
@@ -459,6 +484,16 @@ func _initialize() -> void:
 	assert_string(String(zb20.zui_duo_bian_hao), "xuan_wo", "载入：最常吃从食谱推导回漩涡")
 	assert_eq(1 if zb20.xing_tai_yi_ying_yong else 0, 1, "载入：幂等保护应置位（不许再走开局装配）")
 	assert_eq(int(zb20.jie_ju), 0, "载入：结局回到未定")
+	assert_eq(zb20.ben_ju_tun_chi_shu, 7, "载入：吞噬数恢复 7")
+	assert_eq(zb20.ben_ju_ji_sha_shu, 9, "载入：击杀数恢复 9")
+	assert_float(zb20.ben_ju_diao_rou_liang, 12.5, "载入：掉肉总量恢复 12.5")
+	assert_eq(1 if zb20.ben_ju_tun_chi_yu_zhong.has(&"xuan_wo") else 0, 1,
+			"载入：本局吞噬鱼种恢复（xuan_wo）")
+	assert_eq(zb20.ben_ju_tun_chi_yu_zhong_ming.size(), 2, "载入：鱼种显示名一一恢复")
+	assert_string(zb20.ben_ju_sha_shou_ming, "测试杀手", "载入：击杀者名字恢复")
+	assert_float(zb20.ben_ju_sha_shou_ti_xing, 4.5, "载入：击杀者当前体型恢复 4.5")
+	assert_float(zb20.ben_ju_sha_shou_chu_shi, 6.0, "载入：击杀者初始体型恢复 6.0")
+	assert_eq(zb20.ben_ju_fan_sha_kou, 3, "载入：再咬几口可反杀恢复 3")
 	# 进化往返：Lv.6 进化 → 存档带 jin_hua → 复位 → 读档恢复形态与倍率
 	zb20.deng_ji = 6
 	var jin_hua_shou = JinHuaKu.wan_jia_fen_zhi(&"lv_yu")[0]

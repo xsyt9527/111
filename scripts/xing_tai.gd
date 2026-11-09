@@ -15,7 +15,9 @@ class_name XingTai
 @export var zui_ba := 1.0  # 初始嘴巴系数（咬击伤害倍率）
 @export var zhuan_xiang_ji_su := 7.0  # 初始转向基准速率（弧度/秒）
 @export var kai_ju_neng_li: NengLi = null  # 开局自带主动能力；null = 无
-@export var jie_suo_sheng_li_ci_shu := 0  # 累计胜利达到几次解锁
+@export var jie_suo_sheng_li_ci_shu := 0  # 旧字段：累计胜利达到几次解锁（保留给旧数据/测试；D 起改用 jie_suo_fang_shi）
+@export var jie_suo_fang_shi := "mian"  # D 解锁方式：mian=默认免费 / guang_gao=广告 / cheng_jiu=累计成就值 / tong_guan=累计通关（胜场）
+@export var jie_suo_can_shu := 0  # 该方式的门槛数值：广告位暂不用；成就=累计成就值；通关=累计通关次数
 
 
 func yu_zhong_bian_hao() -> StringName:

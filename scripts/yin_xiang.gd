@@ -5,16 +5,26 @@ extends Node
 # 素材全部是程序合成 WAV（免版税·自制，见 docs/美术资源首装记录/引擎词总表）
 
 const YIN_XIAO_BIAO: Dictionary = {
-	&"chi": preload("res://assets/yinxiao/chi.wav"),            # 吞鱼 / 吃鱼肉 / 吃植物
-	&"yao": preload("res://assets/yinxiao/yao.wav"),            # 咬击命中
-	&"shou_shang": preload("res://assets/yinxiao/shou_shang.wav"),  # 玩家受伤
-	&"sheng_ji": preload("res://assets/yinxiao/sheng_ji.wav"),  # 升级琶音
-	&"shi_kong": preload("res://assets/yinxiao/shi_kong.wav"),  # 电麻/毒晕失控
+	# F 2026-11-08 12 条新音效（LMMS 自制，全部 44.1kHz/16bit/单声道，峰值 -1.5dBFS）
+	&"yao": preload("res://assets/yinxiao/yin_xiao_yao_ji.wav"),        # F1 每次咬中：短噪声脉冲+低频 thump
+	&"tun_xia": preload("res://assets/yinxiao/yin_xiao_tun_xia.wav"),    # F2 吞噬成功：上滑滑音+咕咚
+	&"sheng_ji": preload("res://assets/yinxiao/yin_xiao_sheng_ji.wav"),  # F3 升级三选一：大调琶音铃
+	&"shou_shang": preload("res://assets/yinxiao/yin_xiao_shou_shang.wav"),  # F4 被咬掉肉：撕裂+下滑
+	&"si_wang": preload("res://assets/yinxiao/yin_xiao_si_wang.wav"),    # F5 玩家死亡：下潜→留白→回声
+	&"chong_ci": preload("res://assets/yinxiao/yin_xiao_chong_ci.wav"),  # F6 鱼雷/冲撞类冲刺：白噪扫频 whoosh
+	&"dian_xi": preload("res://assets/yinxiao/yin_xiao_dian_xi.wav"),    # F7 电系（放电麻痹/电脉冲/电麻失控）
+	&"du_xi": preload("res://assets/yinxiao/yin_xiao_du_xi.wav"),        # F8 毒系（毒晕失控）
+	&"xuan_wo": preload("res://assets/yinxiao/yin_xiao_xuan_wo.wav"),    # F9 漩涡释放：反向吸聚
+	&"sheng_na": preload("res://assets/yinxiao/yin_xiao_sheng_na.wav"),  # F10 声呐脉冲：800Hz ping
+	&"jing_bao": preload("res://assets/yinxiao/yin_xiao_jing_bao.wav"),  # F11 机械船入场预告：双音警报
+	&"jiao_zhi": preload("res://assets/yinxiao/yin_xiao_jiao_zhi.wav"),  # F12 吃鱼肉块：两下短咀嚼
+	# 旧音效保留：植物进食与其余按钮/结算反馈仍用原素材
+	&"chi": preload("res://assets/yinxiao/chi.wav"),            # 吃植物（海草/珊瑚）
+	&"shi_kong": preload("res://assets/yinxiao/shi_kong.wav"),  # 失控兜底（来源未知时）
 	&"tan_chuang": preload("res://assets/yinxiao/tan_chuang.wav"),  # 升级三选一弹出
-	&"fang_neng_li": preload("res://assets/yinxiao/fang_neng_li.wav"),  # 主动能力释放
+	&"fang_neng_li": preload("res://assets/yinxiao/fang_neng_li.wav"),  # 主动能力释放（通用兜底）
 	&"sheng_li": preload("res://assets/yinxiao/sheng_li.wav"),  # 胜利结算
 	&"shi_bai": preload("res://assets/yinxiao/shi_bai.wav"),    # 失败结算
-	&"si_wang": preload("res://assets/yinxiao/si_wang.wav"),    # 死亡结算
 	&"an_niu": preload("res://assets/yinxiao/an_niu.wav"),      # 按钮点击
 }
 const BGM_SHEN_HAI := preload("res://assets/yinxiao/bgm_shen_hai.wav")  # 深海摇篮：主界面/选角/结算/默认氛围

@@ -20,3 +20,5 @@ zui_ba = 1.00
 zhuan_xiang_ji_su = 6.00
 kai_ju_neng_li = ExtResource("4_neng_li")
 jie_suo_sheng_li_ci_shu = 0
+jie_suo_fang_shi = "guang_gao"
+jie_suo_can_shu = 0

@@ -10,7 +10,8 @@ class_name JiQiChuan
 
 signal bei_ji_bai  # 船被打沉：Main 据此判胜
 
-const ZUI_DA_XUE := 360.0         # 血量：2026-11-02 用户再拍板：人类太弱，血量再 ×2（180→360）
+const ZUI_DA_XUE := 360.0         # 默认血量：A13 起由 Main 按「玩家体型 ×40」覆写（常量只作编辑器/测试兜底）
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
 const RUO_DIAN_BEI_LV := 3.0      # 弱点（玻璃舱）伤害倍率
 const GEN_SUI_SU_DU := 110.0      # 横向跟随玩家的速度（px/秒）：慢到玩家能绕到侧面
 const XUAN_FU_GAO_DU := 600.0     # 悬停在玩家上方多高（整船 ×3 后同步抬高，避免船体压住玩家）
@@ -177,6 +178,9 @@ func shou_dao_yao_ji(shang_hai: float, _lai_yuan = null, bu := "shen") -> void:
 	if si_le:
 		return
 	var xi_shu := RUO_DIAN_BEI_LV if bu == "zhi_ming" else 1.0
+	# A13：非致命区（船体）护甲减伤 30%；玻璃舱是弱点，不吃护甲
+	if bu != "zhi_ming":
+		shang_hai *= 1.0 - SHU_ZHI.CHUAN_HU_JIA_JIAN_SHANG
 	xue = maxf(0.0, xue - shang_hai * xi_shu)
 	_shan_guang()
 	# 玩家咬船 = 立刻转仇：开局先打鲸鲨的窗口作废，后续招式回到玩家身上
@@ -421,7 +425,10 @@ func _jie_suan_zha_dan() -> void:
 	_zha_dan_bao_sheng_yu = 0.35
 	queue_redraw()
 	if wan_jia != null and wan_jia.global_position.distance_to(_zha_dan_dian) <= ZHA_DAN_BAN_JING:
-		wan_jia.shou_dao_yao_ji(ZHA_DAN_SHANG_HAI, self)
+		# G 玩家侧：磁场护壁 → 深水炸弹偏转失效；金属斥力 → 船伤 -30%
+		if not wan_jia.zhuan_shu_pi_bi_dan_dao(_zha_dan_dian):
+			# 磁场只罩半径内：炸弹落点在圈外照样炸（不再全屏免弹道）
+			wan_jia.shou_dao_yao_ji(ZHA_DAN_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
 	for npc in get_tree().get_nodes_in_group("yu_npc"):
 		if npc == self or not is_instance_valid(npc) or bool(npc.get("si_le")):
 			continue
@@ -466,7 +473,7 @@ func _jie_suan_chuan_mao() -> void:
 		return
 	if absf(rad_to_deg(wrapf(cha.angle() - _mao_fang.angle(), -PI, PI))) > MAO_JIAO_DU * 0.5:
 		return
-	wan_jia.shou_dao_yao_ji(MAO_SHANG_HAI, self)
+	wan_jia.shou_dao_yao_ji(MAO_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
 	wan_jia.tui_kai(cha, MAO_TUI_KAI, MAO_TUI_KAI_SHI_CHANG)
 	_mao_ming_zhong = true
 
@@ -543,6 +550,7 @@ func _fa_yi_fa(mu: Node2D) -> void:
 func _geng_xin_yu_chas(delta: float) -> void:
 	if _yu_chas.is_empty():
 		return
+	# G：磁场护壁期间，落进磁场圈的鱼叉偏转失效（逐发判位置：圈外照飞，不是全局清空）
 	var huo_zhe: Array[Dictionary] = []
 	for cha in _yu_chas:
 		var pos: Vector2 = cha["pos"] + (cha["fang"] as Vector2) * YU_CHA_SU_DU * delta
@@ -550,9 +558,12 @@ func _geng_xin_yu_chas(delta: float) -> void:
 		cha["fei"] = float(cha["fei"]) + YU_CHA_SU_DU * delta
 		if float(cha["fei"]) > YU_CHA_SHE_CHENG:
 			continue
+		if wan_jia != null and is_instance_valid(wan_jia) and wan_jia.zhuan_shu_pi_bi_dan_dao(pos):
+			_cha_ming_zhong = true
+			continue
 		if wan_jia != null and is_instance_valid(wan_jia) \
 				and pos.distance_to(wan_jia.global_position) <= YU_CHA_BAN_JING:
-			wan_jia.shou_dao_yao_ji(YU_CHA_SHANG_HAI, self)
+			wan_jia.shou_dao_yao_ji(YU_CHA_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
 			_cha_ming_zhong = true
 			continue
 		if _jing_sha_huo() and pos.distance_to(jing_sha.global_position) <= YU_CHA_BAN_JING * 2.0:

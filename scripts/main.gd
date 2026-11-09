@@ -7,6 +7,8 @@ const SHI_JIAO_MEI_JI := 0.10  # 每升 1 级，可见范围 +10%
 const SHI_JIAO_FENG_DING := 2.0  # 可见范围最多拉到 2 倍
 const SHI_JIAO_FENG_DING_JI := 10  # Lv.10 封顶：等级无上限，镜头必须有上限，否则地图会缩成一点
 const JI_QI_CHUAN_CHANGJING := preload("res://scenes/JiQiChuan.tscn")  # 人类战 Boss 蓝图
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
+const SHOU_JU_JIAO_BEN := preload("res://scripts/shou_ju_jiao_ben.gd")  # C 首局 10 分钟节奏脚本
 const YU_NPC_CHANGJING := preload("res://scenes/YuNpc.tscn")  # 鱼骨架：首领也用同一套
 const FEN_YU := preload("res://data/yuzhong/fen_yu.tres")  # 鲸鲨鱼种（shi_boss = true）
 const BOOS_CHU_SHENG_DIAN := Vector2(3440.0, 1920.0)  # 东南 · 远古祭坛地宫中心
@@ -64,6 +66,14 @@ func _ready() -> void:
 	ZhangBen.jie_duan_gai_bian.connect(_on_jie_duan_gai_bian)
 	ZhangBen.ju_jie_shu.connect(_on_ju_jie_shu)
 	YinXiang.bo_bgm(&"tan_suo")  # 局内探索曲：从选择页的深海摇篮切过来
+	# E2：把跨局隐藏压力修正交给鱼群（只影响刷怪节奏/数量，不碰玩家数值与能力池）
+	yu_qun.ya_li_xiu_zheng = CunDang.ya_li_xiu_zheng
+	# C：首局教学时间轴（只第一局；后续局不挂脚本，零额外开销）
+	if CunDang.shi_fou_shou_ju():
+		var jiao_ben := SHOU_JU_JIAO_BEN.new()
+		jiao_ben.name = "ShouJuJiaoBen"
+		add_child(jiao_ben)
+		jiao_ben.kai_shi(self)
 	_sheng_cheng_jing_sha()
 
 
@@ -169,6 +179,7 @@ func _on_jie_duan_gai_bian(xin_jie_duan: int) -> void:
 	# 账本宣布进入人类战：Main 负责生成机器船 + 打横幅
 	if xin_jie_duan == ZhangBen.JieDuan.REN_LEI_ZHAN:
 		_sheng_cheng_ji_qi_chuan()
+		YinXiang.fang(&"jing_bao")  # F11 机械船入场警报：与横幅同一拍
 		_xian_shi_xiao_xi("人类机器船降临！")
 
 
@@ -180,6 +191,10 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	yu_qun.ting_zhi_shua_xin()
 	ji_qi_chuan = JI_QI_CHUAN_CHANGJING.instantiate()
 	ji_qi_chuan.wan_jia = yu  # 注入玩家：船不靠组名找人，测试也好塞假玩家
+	# A13：船血量 = 玩家当前体型 ×40（生成时定格；鲸鲨战/提前开战都不另外加成）
+	var chuan_xue := maxf(1.0, ZhangBen.dang_qian_ti_xing * SHU_ZHI.CHUAN_XUE_MEI_TI)
+	ji_qi_chuan.zui_da_xue = chuan_xue
+	ji_qi_chuan.xue = chuan_xue
 	# 鲸鲨还活着：船降临后先打它 8~10 秒（玩家咬船会立刻转仇）
 	ji_qi_chuan.jing_sha = _jing_sha if is_instance_valid(_jing_sha) and not _jing_sha.si_le else null
 	ji_qi_chuan.position = yu.global_position + Vector2(0, -600)
@@ -194,7 +209,10 @@ func _on_ji_qi_chuan_bei_ji_bai() -> void:
 
 
 func _on_ju_jie_shu(jie_guo: int) -> void:
-	# 胜负已定：留 1.2 秒给横幅/沉没动画，再进结算页（死亡仍走 Yu._si_wang）
+	# 胜负已定：留 1.2 秒给横幅/沉没动画，再进结算页
+	# 死亡不走这里：Yu._si_wang 已立即切结算页，这里再切会二次加载场景
+	if jie_guo == ZhangBen.JieJu.SI_WANG:
+		return
 	if jie_guo == ZhangBen.JieJu.SHI_BAI:
 		_xian_shi_xiao_xi("时间耗尽——机器船仍在头顶")
 	elif jie_guo == ZhangBen.JieJu.SHENG_LI:

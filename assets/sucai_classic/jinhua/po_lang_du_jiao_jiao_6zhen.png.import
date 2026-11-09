@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lb7g1bp0t3s"
-path="res://.godot/imported/po_lang_du_jiao_jiao_6zhen.png-be5d375d310f10519b66b992a00b3928.ctex"
+uid="uid://8ivrxln8oyvm"
+path="res://.godot/imported/po_lang_du_jiao_jiao_6zhen.png-51f4d2f3b7ef0eb0914d89703f904c5a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sucai/jinhua/po_lang_du_jiao_jiao_6zhen.png"
-dest_files=["res://.godot/imported/po_lang_du_jiao_jiao_6zhen.png-be5d375d310f10519b66b992a00b3928.ctex"]
+source_file="res://assets/sucai_classic/jinhua/po_lang_du_jiao_jiao_6zhen.png"
+dest_files=["res://.godot/imported/po_lang_du_jiao_jiao_6zhen.png-51f4d2f3b7ef0eb0914d89703f904c5a.ctex"]
 
 [params]
 

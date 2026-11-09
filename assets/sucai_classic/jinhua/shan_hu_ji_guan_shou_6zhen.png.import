@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ij6bjfb265r0"
-path="res://.godot/imported/shan_hu_ji_guan_shou_6zhen.png-fffef03d31deb618f960d1c9f41a0595.ctex"
+uid="uid://j0vs8leqakvw"
+path="res://.godot/imported/shan_hu_ji_guan_shou_6zhen.png-418ece39ccdc6254a9eaec5bc34d4347.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sucai/jinhua/shan_hu_ji_guan_shou_6zhen.png"
-dest_files=["res://.godot/imported/shan_hu_ji_guan_shou_6zhen.png-fffef03d31deb618f960d1c9f41a0595.ctex"]
+source_file="res://assets/sucai_classic/jinhua/shan_hu_ji_guan_shou_6zhen.png"
+dest_files=["res://.godot/imported/shan_hu_ji_guan_shou_6zhen.png-418ece39ccdc6254a9eaec5bc34d4347.ctex"]
 
 [params]
 

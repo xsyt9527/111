@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpx2lisy0hj80"
-path="res://.godot/imported/shen_yuan_chuan_ci_zhe_6zhen.png-fcad88d7c6626791c13e0aee3a9ff84f.ctex"
+uid="uid://bwwqvnyxfbnig"
+path="res://.godot/imported/shen_yuan_chuan_ci_zhe_6zhen.png-69d56ee99a9357719180c0dc6430403e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sucai/jinhua/shen_yuan_chuan_ci_zhe_6zhen.png"
-dest_files=["res://.godot/imported/shen_yuan_chuan_ci_zhe_6zhen.png-fcad88d7c6626791c13e0aee3a9ff84f.ctex"]
+source_file="res://assets/sucai_classic/jinhua/shen_yuan_chuan_ci_zhe_6zhen.png"
+dest_files=["res://.godot/imported/shen_yuan_chuan_ci_zhe_6zhen.png-69d56ee99a9357719180c0dc6430403e.ctex"]
 
 [params]
 

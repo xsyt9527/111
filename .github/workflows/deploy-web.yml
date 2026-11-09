@@ -1,0 +1,81 @@
+name: Deploy Web Preview to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot and matching export templates
+        run: |
+          set -euo pipefail
+          V="${GODOT_VERSION}-stable"
+          BASE="https://github.com/godotengine/godot/releases/download/${V}"
+          curl -fsSL -o /tmp/godot.zip "${BASE}/Godot_v${V}_linux.x86_64.zip"
+          curl -fsSL -o /tmp/templates.tpz "${BASE}/Godot_v${V}_export_templates.tpz"
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x "/tmp/godot/Godot_v${V}_linux.x86_64"
+          unzip -q /tmp/templates.tpz -d /tmp/templates
+          mkdir -p "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          cp /tmp/templates/templates/web_*.zip \
+             "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/"
+          cp /tmp/templates/templates/version.txt \
+             "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/" 2>/dev/null || true
+          test -f "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/web_nothreads_release.zip"
+
+      - name: Import project
+        run: |
+          set -euo pipefail
+          "/tmp/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" \
+            --headless --path . --import
+
+      - name: Export single-threaded Web build
+        run: |
+          set -euo pipefail
+          mkdir -p build/web
+          "/tmp/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" \
+            --headless --path . --export-release "Web" build/web/index.html
+          test -f build/web/index.html
+          test -f build/web/index.js
+          test -f build/web/index.wasm
+          test -f build/web/index.pck
+          grep -q "GODOT_THREADS_ENABLED = false" build/web/index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

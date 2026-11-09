@@ -3,6 +3,8 @@ class_name YuZhong
 # 鱼种数据模具：一个 .tres 文件 = 鱼种表的一行
 # 代码只定结构（有哪些字段），数值全存在数据文件里——加新鱼不改代码
 
+@export var bian_hao: StringName = &""  # 鱼种 id（B1 首次吞噬新鱼种/教学脚本按它查；与 data/yuzhong 文件名一致）
+@export var ming_zi := ""  # 显示名（结算页「被【鱼种名】击杀」/首次吞噬提示）
 @export var tie_tu: Texture2D  # 这种鱼的静态侧视贴图（3 视图里取的最宽那张）：红光层与兜底显示用
 @export var dong_hua: SpriteFrames = null  # 4 帧游动动画（必须含 "you"）：NPC 用 AnimatedSprite2D 播放
 @export var gong_ji_dong_hua: SpriteFrames = null  # 4 帧咬击动画（含 "gong"）：咬中时临时替换游动帧，播完切回

@@ -18,6 +18,7 @@ var _an_shi_jian: Array[float] = []  # 每个按钮已按住秒数：到 0.25 �
 var _fan_wei_suo_yin := -1  # 正在显示范围的按钮下标；-1 = 当前没显示
 var _fan_wei = null  # 范围指示节点（ji_neng_fan_wei.gd）：首次长按才创建，全局只建一个
 var _ti_shi_mai_dong := 0.0  # 进化提示脉动相位：用正弦自己呼吸，不靠 Tween（暂停时不冻结）
+var _shan_liang_sheng_yu := 0.0  # C 首局教学：第一个主动按钮高亮剩余秒数（金色，不改按钮逻辑）
 
 @onready var bei_dong_label: Label = $BeiDongLabel
 @onready var jin_hua_ti_shi: Button = $JinHuaTiShi  # 「进化待选择」脉动提示（策划案 v0.18 8.6）
@@ -42,6 +43,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_shan_liang_sheng_yu = maxf(0.0, _shan_liang_sheng_yu - delta)
 	var zu := ZhangBen.zhu_dong_zu
 	var wan := get_tree().get_first_node_in_group("player") as Yu
 	if _an_niu_zu.size() != zu.size():
@@ -68,9 +70,16 @@ func _process(delta: float) -> void:
 		# 是否真的放得出仍由 Yu.shi_fang_zhu_dong 说了算（它自己会拒绝冷却/失控/施放中）
 		an.disabled = wan == null
 		an.modulate = Color.WHITE if ke_fang else Color(0.62, 0.62, 0.62, 0.85)
+		if _shan_liang_sheng_yu > 0.0 and i == 0:
+			an.modulate = Color(1.7, 1.35, 0.45)  # C 首局教学：首个技能按钮金色高亮 2 秒
 	_geng_xin_chang_an(delta, wan)
 	_geng_xin_bei_dong()
 	_geng_xin_jin_hua_ti_shi(delta)
+
+
+func shan_liang_di_yi_ge(shi_chang := 2.0) -> void:
+	# C 首局教学：把第一个主动按钮点亮一小会儿（只改 modulate，不动按钮状态机）
+	_shan_liang_sheng_yu = maxf(_shan_liang_sheng_yu, shi_chang)
 
 
 func _geng_xin_jin_hua_ti_shi(delta: float) -> void:

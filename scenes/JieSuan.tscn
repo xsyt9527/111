@@ -49,10 +49,40 @@ text = "存活 00:00"
 horizontal_alignment = 1
 
 [node name="NengLiLieBiao" type="VBoxContainer" parent="."]
-offset_left = 530.0
-offset_top = 320.0
-offset_right = 750.0
+offset_left = 560.0
+offset_top = 300.0
+offset_right = 1240.0
 offset_bottom = 570.0
+
+[node name="ZhanJi" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 96.0
+offset_right = 500.0
+offset_bottom = 216.0
+theme_override_colors/font_color = Color(0.82, 0.9, 0.98, 1)
+theme_override_font_sizes/font_size = 16
+text = ""
+autowrap_mode = 3
+
+[node name="ChaYiDian" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 232.0
+offset_right = 500.0
+offset_bottom = 332.0
+theme_override_colors/font_color = Color(1, 0.65, 0.55, 1)
+theme_override_font_sizes/font_size = 16
+text = ""
+autowrap_mode = 3
+
+[node name="JinDuGou" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 348.0
+offset_right = 500.0
+offset_bottom = 570.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.55, 1)
+theme_override_font_sizes/font_size = 15
+text = ""
+autowrap_mode = 3
 
 [node name="ChongKai" type="Button" parent="."]
 offset_left = 400.0

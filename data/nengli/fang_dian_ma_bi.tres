@@ -20,3 +20,4 @@ fu_shu_zhi = 0.0
 npc_jian_ge = 1.5
 ceng_jia = 0.0
 zui_da_dang = 1
+lei_bie = Array[StringName]([&"dian_xi"])

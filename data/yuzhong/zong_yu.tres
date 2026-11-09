@@ -1,12 +1,14 @@
 [gd_resource type="Resource" script_class="YuZhong" load_steps=5 format=3]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
-[ext_resource type="Texture2D" uid="uid://drofy15k6kdpb" path="res://assets/sucai/shenhai_yu/da_yan_jin_qiang_yu.png" id="2_tie_tu"]
+[ext_resource type="Texture2D" uid="uid://bmvtb3528rro6" path="res://assets/sucai/shenhai_yu/da_yan_jin_qiang_yu.png" id="2_tie_tu"]
 [ext_resource type="Resource" path="res://data/nengli/ruo_dian_dong_cha.tres" id="3_neng_li"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/da_yan_jin_qiang_yu_4zhen.tres" id="9_dong_hua"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
+bian_hao = &"zong_yu"
+ming_zi = "大眼金枪鱼"
 dengji = 5
 fan_ying_shi_jian = 0.9
 fenzhi = 5

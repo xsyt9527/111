@@ -8,6 +8,15 @@ class_name NengLiChou
 
 const QIANG_ZHI_GAI_LV := 0.5  # 强制出现「最常吃能力」的概率（用户调参入口）
 const SAN_ZHANG := 3  # 每次弹窗给几张
+# E2 保底用：进攻向主动技（造成伤害/控制/突进压制）。防御、位移闪避、召唤诱饵不在此列。
+# 只用于「首次三选一必含 1 个进攻主动」，不改变常规抽卡概率。
+const JIN_GONG_ZHU_DONG: Array[StringName] = [
+	&"chang_mao_chuan_ci", &"chao_ya_shui_dao", &"dian_mai_chong", &"fang_dian_ma_bi",
+	&"jiu_tou_dian_wang", &"ju_du_tu_ci", &"kong_jian_lie_feng", &"kuang_bao_si_yao",
+	&"lei_bao_zhao_huan", &"luo_xuan_zuan_tu", &"man_li_chong_zhuang", &"po_kong_fu_chong",
+	&"qian_fu_tu_xi", &"qiang_suan_pen_tu", &"shi_hua_zhi_tong", &"you_ling_qi_she",
+	&"yu_lei_chong_ci", &"xuan_wo", &"xue_xing_kuang_re", &"ji_su_tu_jin",
+]
 
 
 static func ke_xuan_chi(quan_bu: Array[NengLi], zhu_dong_dang: Dictionary,
@@ -54,6 +63,41 @@ static func chou_san_zhang(ke_xuan: Array[NengLi], zui_duo_bian_hao: StringName,
 		jie_guo.append(sheng.pop_front())
 	_xi_pai(jie_guo, rng)  # 再洗一次：强制项也有机会出现在任意卡位
 	return jie_guo
+
+
+static func you_jin_gong(ke_xuan: Array[NengLi]) -> bool:
+	# E2：候选池里有没有进攻主动（一张都没有就别浪费保底）
+	for neng in ke_xuan:
+		if shi_jin_gong(neng):
+			return true
+	return false
+
+
+static func shi_jin_gong(neng: NengLi) -> bool:
+	return neng != null and neng.shi_zhu_dong() and JIN_GONG_ZHU_DONG.has(neng.bian_hao)
+
+
+static func qiang_zhi_jin_gong(jie_guo: Array[NengLi],
+		ke_xuan: Array[NengLi]) -> Array[NengLi]:
+	# E2 保底：三选一结果里没有进攻主动时，用候选池里的进攻主动替换最后一张
+	# 调用方先确认 ke_xuan 里确实有进攻主动，再消费存档里的欠账标记
+	var jie_lun: Array[NengLi] = []
+	jie_lun.assign(jie_guo)
+	for neng in jie_lun:
+		if shi_jin_gong(neng):
+			return jie_lun
+	var ti_huan: NengLi = null
+	for neng in ke_xuan:
+		if shi_jin_gong(neng) and not jie_lun.has(neng):
+			ti_huan = neng
+			break
+	if ti_huan == null:
+		return jie_lun
+	if jie_lun.size() >= SAN_ZHANG:
+		jie_lun[jie_lun.size() - 1] = ti_huan
+	else:
+		jie_lun.append(ti_huan)
+	return jie_lun
 
 
 static func _xi_pai(shu_zu: Array[NengLi], rng: RandomNumberGenerator) -> void:

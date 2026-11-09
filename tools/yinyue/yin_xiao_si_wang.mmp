@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE lmms-project>
+<lmms-project type="song" version="1.0" creator="LMMS" creatorversion="1.2.0">
+  <head timesig_numerator="4" timesig_denominator="4" bpm="120" mastervol="28" masterpitch="0"/>
+  <song>
+    <trackcontainer type="song" visible="1" width="900" height="600" x="0" y="0" maximized="0" minimized="0">
+      <track type="0" muted="0" name="下潜" solo="0">
+        <instrumenttrack pitch="0" vol="80" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="tripleoscillator"><tripleoscillator vol0="100" wavetype0="0" coarse0="0" finel0="0" finer0="0" pan0="0" vol1="14" wavetype1="2" coarse1="0" finel1="0" finer1="0" pan1="0" vol2="0" wavetype2="0" coarse2="0" finel2="0" finer2="0" pan2="0" modalgo1="0" modalgo2="0" modalgo3="0" stphdetun0="0" stphdetun1="0" stphdetun2="0" phoffset0="0" phoffset1="90" phoffset2="180" userwavefile0="" userwavefile1="" userwavefile2=""/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="1" att="0.01" dec="0.3" sustain="0.7" rel="0.05" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="1" att="0.01" dec="0.3" sustain="0.7" rel="0.05" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="1" att="0.01" dec="0.3" sustain="0.7" rel="0.05" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="0" enabled="0"/>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="下潜" pos="0" len="192">
+          <note key="45" vol="100" pos="0" pan="0" len="3"/>
+          <note key="44" vol="100" pos="2" pan="0" len="3"/>
+          <note key="44" vol="100" pos="4" pan="0" len="3"/>
+          <note key="43" vol="100" pos="6" pan="0" len="3"/>
+          <note key="43" vol="100" pos="8" pan="0" len="3"/>
+          <note key="42" vol="100" pos="10" pan="0" len="3"/>
+          <note key="42" vol="100" pos="12" pan="0" len="3"/>
+          <note key="41" vol="100" pos="14" pan="0" len="3"/>
+          <note key="41" vol="100" pos="16" pan="0" len="3"/>
+          <note key="40" vol="100" pos="18" pan="0" len="3"/>
+          <note key="39" vol="100" pos="20" pan="0" len="3"/>
+          <note key="39" vol="100" pos="22" pan="0" len="3"/>
+          <note key="38" vol="100" pos="24" pan="0" len="3"/>
+          <note key="38" vol="100" pos="26" pan="0" len="3"/>
+          <note key="37" vol="100" pos="28" pan="0" len="3"/>
+          <note key="37" vol="100" pos="30" pan="0" len="3"/>
+          <note key="36" vol="100" pos="32" pan="0" len="3"/>
+          <note key="36" vol="100" pos="34" pan="0" len="3"/>
+          <note key="35" vol="100" pos="36" pan="0" len="3"/>
+          <note key="34" vol="100" pos="38" pan="0" len="3"/>
+          <note key="34" vol="100" pos="40" pan="0" len="3"/>
+          <note key="33" vol="100" pos="42" pan="0" len="3"/>
+          <note key="33" vol="100" pos="44" pan="0" len="3"/>
+          <note key="32" vol="100" pos="46" pan="0" len="3"/>
+          <note key="32" vol="100" pos="48" pan="0" len="3"/>
+          <note key="31" vol="100" pos="50" pan="0" len="3"/>
+          <note key="31" vol="100" pos="52" pan="0" len="3"/>
+          <note key="30" vol="100" pos="54" pan="0" len="3"/>
+          <note key="30" vol="100" pos="56" pan="0" len="3"/>
+          <note key="29" vol="100" pos="58" pan="0" len="3"/>
+          <note key="28" vol="100" pos="60" pan="0" len="3"/>
+          <note key="28" vol="100" pos="62" pan="0" len="3"/>
+          <note key="27" vol="100" pos="64" pan="0" len="3"/>
+          <note key="27" vol="100" pos="66" pan="0" len="3"/>
+          <note key="26" vol="100" pos="68" pan="0" len="3"/>
+          <note key="26" vol="100" pos="70" pan="0" len="3"/>
+          <note key="25" vol="100" pos="72" pan="0" len="3"/>
+          <note key="25" vol="100" pos="74" pan="0" len="3"/>
+          <note key="24" vol="100" pos="76" pan="0" len="3"/>
+        </pattern>
+      </track>
+      <track type="0" muted="0" name="下潜重击" solo="0">
+        <instrumenttrack pitch="0" vol="90" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="kicker"><kicker decay_syncmode="0" startnote="1" version="1" endfreq="40" env="0.163" noise="0.03" decay_denominator="4" dist="0.7" endnote="0" decay_numerator="4" distend="0.7" gain="1" slope="0.06" decay="500" startfreq="200" click="0.3"/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="0" enabled="0"/>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="下潜重击" pos="0" len="192">
+          <note key="57" vol="100" pos="0" pan="0" len="48"/>
+        </pattern>
+      </track>
+      <track type="0" muted="0" name="收尾闷响" solo="0">
+        <instrumenttrack pitch="0" vol="85" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="kicker"><kicker decay_syncmode="0" startnote="1" version="1" endfreq="35" env="0.163" noise="0.02" decay_denominator="4" dist="0.7" endnote="0" decay_numerator="4" distend="0.7" gain="1" slope="0.06" decay="250" startfreq="90" click="0.15"/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="0" att="0" dec="0" sustain="1" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="0" enabled="0"/>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="收尾闷响" pos="0" len="192">
+          <note key="57" vol="90" pos="65" pan="0" len="29"/>
+        </pattern>
+      </track>
+      <track type="0" muted="0" name="死亡回声" solo="0">
+        <instrumenttrack pitch="0" vol="90" fxch="0" pan="0" basenote="57" usemasterpitch="1" pitchrange="1">
+          <instrument name="tripleoscillator"><tripleoscillator vol0="100" wavetype0="0" coarse0="0" finel0="0" finer0="0" pan0="0" vol1="0" wavetype1="2" coarse1="0" finel1="0" finer1="0" pan1="0" vol2="0" wavetype2="0" coarse2="0" finel2="0" finer2="0" pan2="0" modalgo1="0" modalgo2="0" modalgo3="0" stphdetun0="0" stphdetun1="0" stphdetun2="0" phoffset0="0" phoffset1="90" phoffset2="180" userwavefile0="" userwavefile1="" userwavefile2=""/></instrument>
+          <eldata fwet="0" ftype="0" fcut="14000" fres="0.5"><elvol amt="1" att="0.002" dec="0.25" sustain="0" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elcut amt="1" att="0.002" dec="0.25" sustain="0" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/><elres amt="1" att="0.002" dec="0.25" sustain="0" rel="0.1" hold="0" ctlenvamt="0" lspd="0.1" lspd_denominator="4" lspd_numerator="4" lshp="0" lamt="0" latt="0" pdel="0" lpdel="0" syncmode="0" userwavefile="" x100="0"/></eldata>
+          <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+          <arpeggiator arp="0" arptime_numerator="1" arptime_denominator="1" arprange="1" arpmode="0" arptime="100" arpdir="0" arpgate="100" syncmode="0" arp-enabled="0"/>
+          <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
+          <fxchain numofeffects="1" enabled="1"><effect name="reverbsc" on="1" wet="0.8"><reverbsc input_gain="1" size="0.8" color="0.6" output_gain="1"/></effect></fxchain>
+        </instrumenttrack>
+        <pattern type="1" muted="0" steps="16" name="死亡回声" pos="0" len="192">
+          <note key="57" vol="100" pos="136" pan="0" len="10"/>
+        </pattern>
+      </track>
+    </trackcontainer>
+    <fxmixer visible="1" width="647" height="332" x="0" y="0" maximized="0" minimized="0">
+      <fxchannel num="0" muted="0" volume="1" name="Master" soloed="0">
+        <fxchain numofeffects="0" enabled="0"/>
+      </fxchannel>
+    </fxmixer>
+  </song>
+</lmms-project>

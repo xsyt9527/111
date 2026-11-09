@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://idptdwcrbh72"
-path="res://.godot/imported/qian_yan_lei_po_yu_6zhen.png-3055e9d8106fb6b0e145bca29e63b364.ctex"
+uid="uid://cushnpakl5gph"
+path="res://.godot/imported/qian_yan_lei_po_yu_6zhen.png-ab23722290222bad4b7014ef271be3d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sucai/jinhua/qian_yan_lei_po_yu_6zhen.png"
-dest_files=["res://.godot/imported/qian_yan_lei_po_yu_6zhen.png-3055e9d8106fb6b0e145bca29e63b364.ctex"]
+source_file="res://assets/sucai_classic/jinhua/qian_yan_lei_po_yu_6zhen.png"
+dest_files=["res://.godot/imported/qian_yan_lei_po_yu_6zhen.png-ab23722290222bad4b7014ef271be3d0.ctex"]
 
 [params]
 

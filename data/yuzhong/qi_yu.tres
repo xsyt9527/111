@@ -1,13 +1,15 @@
 [gd_resource type="Resource" script_class="YuZhong" load_steps=6 format=3]
 
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="1_yu_zhong"]
-[ext_resource type="Texture2D" uid="uid://drvjifg65v77" path="res://assets/sucai/shenhai_yu/qi_yu.png" id="2_tie_tu"]
+[ext_resource type="Texture2D" uid="uid://djoymee2f2g18" path="res://assets/sucai/shenhai_yu/qi_yu.png" id="2_tie_tu"]
 [ext_resource type="Resource" path="res://data/nengli/ji_su_tu_jin.tres" id="3_neng_li"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/qi_yu_4zhen.tres" id="9_dong_hua"]
 [ext_resource type="SpriteFrames" path="res://data/donghua/qi_yu_gong_4zhen.tres" id="10_gong"]
 
 [resource]
 script = ExtResource("1_yu_zhong")
+bian_hao = &"qi_yu"
+ming_zi = "旗鱼"
 dengji = 6
 fan_ying_shi_jian = 1
 fenzhi = 3

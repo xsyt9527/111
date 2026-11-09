@@ -24,18 +24,20 @@ enum JieDuan { ZHENG_CHANG, REN_LEI_ZHAN, JIE_SHU }  # 阶段：正常生态 / �
 enum JieJu { WEI_DING, SHENG_LI, SHI_BAI, SI_WANG }  # 结局：未定 / 胜利 / 超时失败 / 死亡
 
 var ju_nei_shi_jian := 0.0  # 局内时钟（秒）：只统计活着且未结算的时间
+var ren_lei_yan_chi := 0.0  # C 首局节奏脚本：人类战整体推迟（秒）；0 = 标准 8:00 降临
 var jie_duan := JieDuan.ZHENG_CHANG  # 当前阶段
 var jie_ju := JieJu.WEI_DING          # 本局结局：只写一次，结算页读它选文案
 
 const KAI_JU_DENG_JI := 0    # 开局等级：从最底层的小鱼开始，先吃海草珊瑚再吃鱼
 const MO_REN_XING_TAI := preload("res://data/xingtai/ao_tu_wo_niu_yu.tres")  # 默认主角形态：直接启动 Main 也认它
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表（2026-11-08）：可调参数集中管理
 const TI_XING_XI_SHU := 0.32  # 体型→像素缩放系数（贴图基准高 100px，1 点体型≈32px）
 const TI_XING_QU_XIAN := 0.7  # 体型→像素的曲线指数：等级无上限，线性增长会在高等级把鱼撑爆
 const JI_CHU_TI_XING := 1.0   # Lv.0 的基础体型（血量）：没有它 0 级就没法玩了
 const MEI_CI_SHANG_HAI := 1.0 # 每次受伤扣 1 点体型单位（= 1 级的分量）
-const JI_E_SHANG_XIAN := 100.0   # 饥饿条上限：一条 100 点的条
-const JI_E_XIA_JIANG_LV := 5.0  # 饥饿每秒下降：2026-11-02 实机反馈"压力不足"，2.5 → 5.0 加倍，约 20 秒见底
-const JI_E_E_SI_KOU_XUE := 0.1  # 饥饿归零后每秒扣多少当前体型：Lv.0 约 10 秒死
+const JI_E_SHANG_XIAN := SHU_ZHI.JI_E_SHANG_XIAN  # A5：饥饿条上限 100
+const JI_E_XIA_JIANG_LV := SHU_ZHI.JI_E_XIA_JIANG_MEI_MIAO  # A5：每秒 -0.6（旧 5.0 已废弃）
+const JI_E_E_SI_KOU_XUE := 0.1  # 旧字段保留（A6 改为按自身体型百分比扣，见 xia_jiang_ji_e）
 const HUI_TI_CHU_SHU := 1.5  # 体型恢复除数：吃进肚子的体型 ÷1.5 才是回血（策划案 8.6.2）
 const KONG_ZHI_SHANG_XIAN := 100.0  # 电麻条/毒晕条上限：任一条满 → 失控（策划案 8.6.3）
 const KONG_ZHI_XIA_JIANG := 20.0    # 控制条每秒自然消退：离开危险源约 5 秒清空
@@ -68,6 +70,17 @@ var jin_hua_dan_chuang_zai_chang := false  # 进化弹窗在 _ready/_exit_tree �
 var jin_hua_zan_huan := false  # 进化「稍后再选」：暂缓期间升级三选一不再让位（策划案 v0.18 8.6）
 var jin_hua_yan_chu_zhong := false  # 进化演出中：玩家免伤，升级三选一等演出结束再弹
 var jin_hua_yan_chu_shi_chang := 1.7  # 进化演出时长（秒）：策划案 1.5~2 秒，实机可调
+# ---- 本局战绩（B2 死亡/胜利结算：战斗账本直接读，chong_zhi 必须同步复位）----
+var ben_ju_tun_chi_shu := 0  # 吞噬数：吞掉的 NPC 鱼条数
+var ben_ju_ji_sha_shu := 0  # 击杀数：吞鱼 + 打沉机器船（结算公式按击杀计分）
+var ben_ju_diao_rou_liang := 0.0  # 造成的掉肉总量：玩家对敌人累计造成的咬击伤害
+var ben_ju_tun_chi_yu_zhong: Array[StringName] = []  # 本局吞过的鱼种 id（去重）
+var ben_ju_tun_chi_yu_zhong_ming: Array[String] = []  # 与上一行一一对应的显示名（B2 首次吞噬提示用）
+var ben_ju_sha_shou_ming := ""  # 死亡瞬间的击杀者显示名（B2「差一点」）
+var ben_ju_sha_shou_ti_xing := 0.0  # 击杀者当前体型
+var ben_ju_sha_shou_chu_shi := 0.0  # 击杀者初始体型（算「它还剩 X%」）
+var ben_ju_fan_sha_kou := 0  # 再咬几口就能反杀（按 3%/口 逐口推演）
+var ben_ju_qiang_du := 0  # E1 当局强度评分（结算时算一次）
 
 
 func _ready() -> void:
@@ -138,10 +151,15 @@ func shou_shang(liang: float = MEI_CI_SHANG_HAI) -> void:
 	ti_xing_bian_hua.emit(dang_qian_ti_xing, ti_xing_shang_xian())
 	if dang_qian_ti_xing <= 0.0:
 		sheng_cun_zhong = false  # 先停饥饿时钟，再广播：si_wang 的接收者会切场景
-		if jie_ju == JieJu.WEI_DING:
+		var gang_si := jie_ju == JieJu.WEI_DING
+		if gang_si:
 			jie_ju = JieJu.SI_WANG  # 死亡也是一种结局；已经结算过就不再改写
 			jie_duan = JieDuan.JIE_SHU
 		si_wang.emit()
+		# B2 死亡钩子（2026-11-08）：死亡也要走结算广播——CunDang 据此入账成就值、
+		# JieSuan 页据此展示「本局战绩/差一点/进度钩」。只在本函数把结局写成 SI_WANG 时发一次。
+		if gang_si:
+			ju_jie_shu.emit(jie_ju)
 
 
 func hui_ti_xing(liang: float) -> void:
@@ -154,7 +172,7 @@ func hui_ti_xing(liang: float) -> void:
 
 
 func xia_jiang_ji_e(delta: float) -> void:
-	# 饥饿唯一时钟：活着才走；有饥饿就扣饥饿，归零后每秒扣 0.1 当前体型
+	# 饥饿唯一时钟：活着才走；A5 每秒 -0.6；归零后 A6 每秒掉「自身体型 0.5%」
 	# 拆成公开函数是为了可测：_process 只是调用者，测试可喂确定的 delta
 	if not sheng_cun_zhong:
 		return
@@ -166,7 +184,9 @@ func xia_jiang_ji_e(delta: float) -> void:
 	_e_si_lei_ji += delta
 	while _e_si_lei_ji >= 1.0:
 		_e_si_lei_ji -= 1.0
-		shou_shang(JI_E_E_SI_KOU_XUE)  # 饿死走的仍是受伤通道：归零时账本广播 si_wang
+		# A6：按当前体型百分比扣，并加绝对底值——纯百分比是指数衰减，永远到不了 0
+		var kou := maxf(dang_qian_ti_xing * SHU_ZHI.E_SI_TI_XING_BI, SHU_ZHI.E_SI_ZUI_DI_MEI_MIAO)
+		shou_shang(kou)  # 饿死走的仍是受伤通道：归零时账本广播 si_wang + ju_jie_shu
 
 
 func hui_ji_e(liang: float) -> void:
@@ -183,22 +203,29 @@ func hui_ji_e(liang: float) -> void:
 	_e_si_lei_ji = 0.0  # 吃了东西就脱离饥饿：饿死计时重新从 0 攒，不留残数提前扣血
 
 
-func chi_yu_hui_ji_e(dui_fang_ti_xing: float) -> float:
-	# 吃鱼回多少饥饿：路人鱼（1 级）最顶饱，普通鱼 8，鲸鲨 30
-	# 与 8.6.2 食物收益表一一对应；改数值只改这里
-	# 参数是 float：NPC 体型会被咬小，按当前体型分档才合理
-	if dui_fang_ti_xing >= 10:
-		return 30.0
-	if dui_fang_ti_xing <= 1:
-		return 10.0
-	return 8.0
+func chi_yu_hui_ji_e(_dui_fang_ti_xing: float) -> float:
+	# A7：吞一条鱼固定回 25 点饥饿（2026-11-08 拍板，不再按鱼体型分 10/8/30）
+	# 参数保留：调用方仍按「被吃鱼的体型」传，方便后续按体型分档回填
+	return SHU_ZHI.TUN_YU_HUI_JI_E
 
 
 func chi_wu_hui_ti_xing(wu_ti_xing: float) -> float:
-	# 吃进肚子的体型 → 回多少血：一律 ÷1.5（策划案 8.6.2），吃得越大回得越多
-	# 植物没有体型值（0）→ 只给经验和饥饿，不回体型——体型只能从鱼/肉身上来
-	# 贪食回复：每层 +15% 回血量；满层附加把恢复系数 1.5 → 1.3（dang_biao.xi_shu，质变）
-	var hui := maxf(0.0, wu_ti_xing) / HUI_TI_CHU_SHU
+	# A7：鱼肉块回复 = 自身体型上限 ×1.5%（植物没有体型值 → 只给经验/饥饿）
+	# 保留 ÷1.5 恢复系数（贪食满层改为 ÷1.3）；参数只用于判断是不是「肉」
+	if wu_ti_xing <= 0.0:
+		return 0.0
+	return _hui_ti_xi_shu(ti_xing_shang_xian() * SHU_ZHI.ROU_HUI_TI_XING_BI)
+
+
+func chi_yu_hui_ti_xing(_dui_fang_ti_xing: float) -> float:
+	# A7：吞一条鱼回复 = 自身体型上限 ×4%，再走 ÷1.5 恢复系数（贪食满层 ÷1.3）
+	# 旧实现按「被吃鱼的体型 ÷1.5」算，与 A7 的 +4% 口径不同，2026-11-08 起切换
+	return _hui_ti_xi_shu(ti_xing_shang_xian() * SHU_ZHI.TUN_YU_HUI_TI_XING_BI)
+
+
+func _hui_ti_xi_shu(ji_chu: float) -> float:
+	# 进食回体型统一折算：÷1.5；贪食按层数加量，满层附加把恢复系数 1.5 → 1.3
+	var hui := maxf(0.0, ji_chu) / HUI_TI_CHU_SHU
 	var jia := bei_dong_zhi(&"tan_shi_hui_fu")
 	if jia > 0.0:
 		hui *= 1.0 + jia
@@ -208,13 +235,73 @@ func chi_wu_hui_ti_xing(wu_ti_xing: float) -> float:
 	return hui
 
 
+# ---- 本局战绩记账（B1/B2 结算用：只增不减，chong_zhi 复位）----
+
+func ji_tun_chi(yu_zhong_bian_hao: StringName = &"", yu_zhong_ming := "") -> void:
+	# 吞掉一条 NPC：吞噬数 +1、击杀数 +1、记录鱼种/显示名（B1「首次吞噬新鱼种」按鱼种去重）
+	ben_ju_tun_chi_shu += 1
+	ben_ju_ji_sha_shu += 1
+	if yu_zhong_bian_hao != &"" and not ben_ju_tun_chi_yu_zhong.has(yu_zhong_bian_hao):
+		ben_ju_tun_chi_yu_zhong.append(yu_zhong_bian_hao)
+		ben_ju_tun_chi_yu_zhong_ming.append(yu_zhong_ming if yu_zhong_ming != "" else String(yu_zhong_bian_hao))
+
+
+func ji_ji_sha() -> void:
+	# 非吞噬类击杀（机器船沉没）：只加击杀数
+	ben_ju_ji_sha_shu += 1
+
+
+func ji_zao_cheng_diao_rou(liang: float) -> void:
+	# 玩家对敌人造成的掉肉总量（B2 战绩②）：所有咬击/冲撞/直伤入口都调这里
+	if liang > 0.0:
+		ben_ju_diao_rou_liang += liang
+
+
+func ji_lu_sha_shou(sha_shou, wan_jia_ti_xing: float) -> void:
+	# 死亡瞬间记录击杀者（B2「差一点」）：只记第一次，避免连击重复覆盖
+	if ben_ju_sha_shou_ming != "" or sha_shou == null or not is_instance_valid(sha_shou):
+		return
+	var ming := "未知鱼种"
+	var yu_zhong = sha_shou.get("yu_zhong")
+	if yu_zhong != null:
+		ming = str(yu_zhong.ming_zi)
+	ben_ju_sha_shou_ming = ming
+	ben_ju_sha_shou_ti_xing = float(sha_shou.get("tixing"))
+	var chu_shi = sha_shou.get("tixing_chu_shi")
+	if chu_shi != null and float(chu_shi) > 0.0:
+		ben_ju_sha_shou_chu_shi = float(chu_shi)
+	else:
+		ben_ju_sha_shou_chu_shi = ben_ju_sha_shou_ti_xing
+	ben_ju_fan_sha_kou = ji_suan_fan_sha_kou(wan_jia_ti_xing, ben_ju_sha_shou_ti_xing)
+
+
+func ji_suan_fan_sha_kou(wan_jia_ti_xing: float, sha_shou_ti_xing: float) -> int:
+	# 再咬几口就能反杀：按 A2 的 3%/口 逐口推演（NPC 最小体型夹到 0.5）
+	# 反杀口径 = 把它咬到「我 ×1.1 门槛」以下，下一口就能整吞
+	var yao_dao := wan_jia_ti_xing / SHU_ZHI.TUN_CHI_BEI_LV
+	var ti_xing := sha_shou_ti_xing
+	var kou := 0
+	while ti_xing > yao_dao and kou < 200:
+		ti_xing = maxf(0.5, ti_xing - maxf(SHU_ZHI.YAO_JI_ZUI_DI_SHANG_HAI,
+				ti_xing * SHU_ZHI.YAO_JI_SHANG_HAI_BI))
+		kou += 1
+	return kou
+
+
+func ben_ju_sha_shou_sheng_yu_bi() -> float:
+	# 击杀者「还剩多少体型」的百分比（相对它出场时的体型）：B2 文案 X%
+	if ben_ju_sha_shou_chu_shi <= 0.0:
+		return 0.0
+	return clampf(ben_ju_sha_shou_ti_xing / ben_ju_sha_shou_chu_shi, 0.0, 1.0)
+
+
 func jia_dian_ma(liang: float) -> void:
 	# 电麻条唯一入口：叠满 → 失控 2 秒（条清零，避免醒来立刻又被同一下触发）
 	if not sheng_cun_zhong or yun_xuan_ji_shi > 0.0:
 		return  # 死了 / 已经失控：不再叠条
 	dian_ma = minf(KONG_ZHI_SHANG_XIAN, dian_ma + liang)
 	if dian_ma >= KONG_ZHI_SHANG_XIAN:
-		_chu_fa_yun_xuan()
+		_chu_fa_yun_xuan(&"dian_xi")  # F7 电麻失控：电击颗粒音
 
 
 func qing_dian_ma() -> void:
@@ -228,7 +315,7 @@ func jia_du_yun(liang: float) -> void:
 		return
 	du_yun = minf(KONG_ZHI_SHANG_XIAN, du_yun + liang)
 	if du_yun >= KONG_ZHI_SHANG_XIAN:
-		_chu_fa_yun_xuan()
+		_chu_fa_yun_xuan(&"du_xi")  # F8 毒晕失控：气泡破裂音
 
 
 func zai_kong_zhi() -> bool:
@@ -248,12 +335,13 @@ func geng_xin_kong_zhi(delta: float) -> void:
 	du_yun = maxf(0.0, du_yun - KONG_ZHI_XIA_JIANG * delta)
 
 
-func _chu_fa_yun_xuan() -> void:
+func _chu_fa_yun_xuan(yuan: StringName = &"shi_kong") -> void:
 	# 任一条满：两条一起清零并进入失控——只罚一次，不做“电麻条一直满着反复晕”
+	# F7/F8：按来源播电击/毒音；来源不明（外部强制）仍用旧的失控音兜底
 	yun_xuan_ji_shi = YUN_XUAN_SHI_CHANG
 	dian_ma = 0.0
 	du_yun = 0.0
-	YinXiang.fang(&"shi_kong")  # 失控音在这里发：电麻/毒晕/渔网三个来源共用一声
+	YinXiang.fang(yuan)
 
 
 func qiang_zhi_kong_zhi(shi_chang: float) -> void:
@@ -270,7 +358,7 @@ func zou_ju_shi_jian(delta: float) -> void:
 	if not sheng_cun_zhong or jie_ju != JieJu.WEI_DING:
 		return
 	ju_nei_shi_jian += delta
-	if jie_duan == JieDuan.ZHENG_CHANG and ju_nei_shi_jian >= REN_LEI_ZHAN_QI_DIAN:
+	if jie_duan == JieDuan.ZHENG_CHANG and ju_nei_shi_jian >= REN_LEI_ZHAN_QI_DIAN + ren_lei_yan_chi:
 		kai_shi_ren_lei_zhan()
 	if ju_nei_shi_jian >= JU_SHI_CHANG:
 		ding_jie_suan(JieJu.SHI_BAI)
@@ -337,6 +425,7 @@ func chong_zhi() -> void:
 	yun_xuan_ji_shi = 0.0
 	sheng_cun_zhong = true  # 重开复活：饥饿时钟重新走
 	ju_nei_shi_jian = 0.0  # 局内时钟归零
+	ren_lei_yan_chi = 0.0  # C 首局脚本的推迟不跨局
 	jie_duan = JieDuan.ZHENG_CHANG  # 阶段回到正常生态
 	jie_ju = JieJu.WEI_DING  # 结局清空：上一局的胜负不能带进新局
 	dang_qian_xing_tai = null  # 形态属于“上一局开局”，纯复位必须清掉
@@ -345,6 +434,17 @@ func chong_zhi() -> void:
 	jin_hua_ti_xing_bei = 1.0
 	jin_hua_zan_huan = false  # 暂缓状态不跨局
 	jin_hua_yan_chu_zhong = false  # 演出标志不跨局（防止免伤残留）
+	# 本局战绩：重开一局从零开始（B1 结算公式读这些字段）
+	ben_ju_tun_chi_shu = 0
+	ben_ju_ji_sha_shu = 0
+	ben_ju_diao_rou_liang = 0.0
+	ben_ju_tun_chi_yu_zhong.clear()
+	ben_ju_tun_chi_yu_zhong_ming.clear()
+	ben_ju_sha_shou_ming = ""
+	ben_ju_sha_shou_ti_xing = 0.0
+	ben_ju_sha_shou_chu_shi = 0.0
+	ben_ju_fan_sha_kou = 0
+	ben_ju_qiang_du = 0
 
 
 func kai_ju_xing_tai(xing_tai: XingTai) -> bool:
@@ -483,6 +583,21 @@ func zai_ru_zhong_tu(shu_ju: Dictionary, xing_tai: XingTai) -> bool:
 	dang_qian_ti_xing = clampf(float(shu_ju.get("dang_qian_ti_xing", shang_xian)), 0.0, shang_xian)
 	ji_e = clampf(float(shu_ju.get("ji_e", JI_E_SHANG_XIAN)), 0.0, JI_E_SHANG_XIAN)
 	ju_nei_shi_jian = maxf(0.0, float(shu_ju.get("ju_nei_shi_jian", 0.0)))
+	# B1 局内战绩恢复：继续游戏后结算仍按本局真实吞噬/击杀/掉肉/首杀信息算（旧档缺键按 0）
+	ben_ju_tun_chi_shu = maxi(0, int(shu_ju.get("ben_ju_tun_chi_shu", 0)))
+	ben_ju_ji_sha_shu = maxi(0, int(shu_ju.get("ben_ju_ji_sha_shu", 0)))
+	ben_ju_diao_rou_liang = maxf(0.0, float(shu_ju.get("ben_ju_diao_rou_liang", 0.0)))
+	for id_wen in shu_ju.get("ben_ju_tun_chi_yu_zhong", []):
+		if id_wen is String:
+			var yz_id := StringName(id_wen)
+			if yz_id != &"" and not ben_ju_tun_chi_yu_zhong.has(yz_id):
+				ben_ju_tun_chi_yu_zhong.append(yz_id)
+	for ming_wen in shu_ju.get("ben_ju_tun_chi_yu_zhong_ming", []):
+		ben_ju_tun_chi_yu_zhong_ming.append(String(ming_wen))
+	ben_ju_sha_shou_ming = String(shu_ju.get("ben_ju_sha_shou_ming", ""))
+	ben_ju_sha_shou_ti_xing = maxf(0.0, float(shu_ju.get("ben_ju_sha_shou_ti_xing", 0.0)))
+	ben_ju_sha_shou_chu_shi = maxf(0.0, float(shu_ju.get("ben_ju_sha_shou_chu_shi", 0.0)))
+	ben_ju_fan_sha_kou = maxi(0, int(shu_ju.get("ben_ju_fan_sha_kou", 0)))
 	# 能力恢复：按 id 从能力池载入资源（load 有缓存：同 id 同实例，装备组与历史天然同源）
 	for id_wen in shu_ju.get("yi_xuan", []):
 		var li_shi_neng: NengLi = load("res://data/nengli/%s.tres" % String(id_wen))

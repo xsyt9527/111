@@ -12,6 +12,7 @@ const TIE_TU_ZU: Array[Texture2D] = [
 ]  # 五种外观随机抽，避免一地鱼肉长得一模一样
 const KE_CHI_YAN_CHI := 0.4  # 掉落后 0.4 秒才可被吃：防止掉落者原地瞬间吃回
 const SHOU_MING := 12.0  # 存活 12 秒，最后 1 秒淡出
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
 
 var piao_su := Vector2.ZERO  # 漂浮速度（像素/秒）
 var yi_cun_huo := 0.0  # 已存活时长（秒）
@@ -22,7 +23,7 @@ var _you_er_guang_shi := 0.0  # 诱饵发光呼吸相位（秒）
 
 func _ready() -> void:
 	add_to_group("rou_kuai")  # 测试/清场按组找，不靠节点名
-	ji_e = 5.0  # 鱼肉回饥饿：比植物低一档，一场伤要靠鱼来补
+	ji_e = SHU_ZHI.ROU_HUI_JI_E  # A7：鱼肉回饥饿 8（原来硬编码 5）
 	$Sprite2D.texture = TIE_TU_ZU.pick_random()
 	# 随机方向漂出去：别让鱼肉叠在受伤者身上
 	var jiao := randf_range(0.0, TAU)

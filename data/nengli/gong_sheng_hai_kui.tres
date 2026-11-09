@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"gong_sheng_hai_kui"
+ming_zi = "共生海葵"
+miao_shu = "每4s自动对3身位内最近敌人放毒雾：毒晕20%+每秒掉肉0.1级×3s。"
+lai_yuan = "蓑鲉"
+suoshu_xing_tai = &"shan_hu_ji_guan_shou"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 3.0
+ban_jing = 3.0
+shu_zhi = 20.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.1
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 4.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([&"du_xi"])
+ban_jing_shen_wei = true

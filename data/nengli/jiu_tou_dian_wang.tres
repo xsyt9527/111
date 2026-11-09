@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"jiu_tou_dian_wang"
+ming_zi = "九头电网"
+miao_shu = "8向放电成电网，每向4身位持续2s；穿越者掉肉0.5级+电麻50%，施放站桩，被硬直即中断。"
+lai_yuan = "电鳗"
+suoshu_xing_tai = &"lei_ting_hai_de_la"
+lei_xing = 0
+leng_que = 26.0
+chi_xu = 2.0
+ban_jing = 4.0
+shu_zhi = 0.5
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([&"dian_xi"])
+ban_jing_shen_wei = true
