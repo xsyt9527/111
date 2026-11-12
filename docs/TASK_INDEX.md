@@ -21,4 +21,4 @@
 
 TASK-021 产物：新增 `scripts/xiao_di_tu.gd`；改动 `scenes/Main.tscn`、`scripts/main.gd`、`scripts/yu_npc.gd`、`scripts/ji_qi_chuan.gd`、`scripts/yu_qun.gd`、`tests/ce_panding.gd`；实现报告 `docs/development_tasks/TASK-021_shang_di_shi_jiao/IMPLEMENTATION_REPORT.md`。
 TASK-021 门禁：2026-11-12 首领房修复后完整八步门禁全绿（232 / 25 / 1422 / 8 / 20 / 144 / 1101 passed，0 failed，无 ERROR，单轮合计 2952 断言，脚本输出「全绿：可以交付」）；`validate_task.py` VALID；实现完成时 `check_task_scope.py` 10 allowed / 278 unchanged pre-existing / 0 violation。文档收尾后复跑为 14 allowed / 275 unchanged / 1 violation（`project.godot` 外部工作区改动，非本任务产生，详见实现报告第三节）。
-TASK-021 浏览器实测（2026-11-12）：Chrome/Playwright 1280×720、本地 `http://127.0.0.1:8765` 新包通过主菜单→选角→局内、小地图四色与换房同步、换房黑场淡入、音频输出；控制台仅 Godot UID 回退 WARNING，无 `pageerror`；白闪逐帧截图未单独捕获。未 commit/push，Pages 未部署、线上未复测。
+TASK-021 浏览器实测（2026-11-12）：Chrome/Playwright 1280×720、本地 `http://127.0.0.1:8765` 新包通过主菜单→选角→局内、小地图四色与换房同步、换房黑场淡入、音频输出；控制台仅 Godot UID 回退 WARNING，无 `pageerror`；白闪逐帧截图未单独捕获。已发布 commit `42df5f1` 并 push `main`；Pages workflow `43160662448` success，线上空缓存复测通过（加载 28.15s→主菜单、33.80s→局内、换房 diff 44.91）。

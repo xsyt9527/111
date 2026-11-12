@@ -6,8 +6,8 @@
 - 审批：用户确认小地图四色标记、受击闪白、换房刷新改进；manifest `approved` / `delivery_status=approved`
 - 实现基线：`8363e533f9195228621466b45b58fdfb808b4d7b`
 - 当前状态：`delivery_status=review`、`handoff_status=pending`、`learning_status=not_started`、`current_step=step-04`、`current_checkpoint=orientation`
-- `last_verified_commit=null`；未 commit、未 push。
-- 2026-11-12：首领房追击修复完成，Chrome/Playwright 浏览器实测通过；仍未 commit/push，Pages 未部署、线上未复测。
+- `last_verified_commit=42df5f1114b95e8bc29cd622c0a9b99e1839fd60`；已 commit 并 push 到 `main`（未强制推送）。
+- 2026-11-12：首领房追击修复完成，Chrome/Playwright 浏览器实测通过；随后发布 Web（commit `42df5f1`），Pages workflow 成功，线上空缓存复测通过。
 - `TASK_STATE.json` 的 `implementation_baseline.preexisting_changes` 保持 285 项原样；另补 `implementation_notes` / `verification` 两个附加记录字段（`validate_task.py` 只做必需键检查，未禁止附加字段）。
 
 ## 一、生产改动
@@ -107,7 +107,7 @@
 ### 4. 仍未验证
 
 - 受击白闪的浏览器逐帧视觉捕获未单独截到；`ce_panding` 已断言船根节点 `modulate` RGB>2，鱼/Boss 闪白逻辑同路径。
-- 发布 commit/push、GitHub Pages 部署、线上空缓存复测均未执行；当前仍未 commit/push。
+- 发布 commit/push、GitHub Pages 部署、线上空缓存复测已完成（详见第七节）；线上包已确认含本任务脚本。
 
 ## 五、未完成/需用户参与
 
@@ -119,7 +119,7 @@
    - 人类战九图演出时 `XiaoDiTuUI` 随 HUD 隐藏（浏览器未覆盖此演出项）。
 3. **红测未执行**：可临时把 `DI_TU_QU` 改错、把 `HUAN_FANG_AN_QUAN_JIAN_JU` 改成 0、或删掉闪白 `kill()`，确认用例 0b3 会变红；复原后再跑门禁。建议用户在学习检查点做一次。
 4. **学习检查点仍未开始**：`orientation` / `godot-inspection` / `verification-handoff` 均为 `not_started`；本报告不把 AI 实现当学习证据。
-5. **发布未执行**：本任务仍未 commit / 未 push；GitHub Pages 未部署，线上空缓存复测未执行，发布等用户授权。
+5. **发布已完成**：commit `42df5f1` 已推送 `main`；Pages workflow run `43160662448` 成功；线上空缓存复测通过（详见第七节）。
 
 ## 六、回退方法
 
@@ -131,9 +131,11 @@
 - 删除 `tests/ce_panding.gd` 用例 0b3；不要覆盖 TASK-019/020 的既有断言与改动。
 - 回退后重跑 `tests/pao_pi.bat`、`validate_task.py`、`check_task_scope.py`；不 commit / 不 push。
 
-## 七、Web 发布待办
+## 七、Web 发布与线上复测（已完成）
 
-- 现有 `.github/workflows/deploy-web.yml` 在 `push` 到 `main` 或手动 `workflow_dispatch` 时构建并部署 GitHub Pages；Web 导出预设为 `build/web/index.html`。
-- 已完成：本地 Web 包（`http://127.0.0.1:8765`）浏览器实测，覆盖小地图、单次换房与音频输出。
-- 待办顺序：用户授权 → commit/push `main` → 等 Pages 部署完成 → 线上空缓存复测；白闪逐帧视觉与人类战演出隐藏项留待 F5/补充浏览器检查。
-- 本任务当前未 commit/push，因此 Web 发布尚未发生；不要对外宣称功能已上线。
+- `.github/workflows/deploy-web.yml` 在 push 到 `main` 后自动构建并部署 GitHub Pages。
+- 发布提交：`42df5f1114b95e8bc29cd622c0a9b99e1839fd60`（`main`，普通 push，未强制）；GitHub Actions run `43160662448` 结论 `success`。
+- 线上 PCK：`https://xsyt9527.github.io/111/index.pck`，59,555,260 B，目录 2559 项；已确认含 `scripts/xiao_di_tu.gdc`（3996 B）、`scripts/yu_npc.gdc`（28381 B，含首领房限制）、`scripts/main.gdc`（12253 B）。
+- 线上空缓存复测（Chrome/Playwright 1280×720、全新 context、禁用缓存）：加载 28.15 秒到主菜单；29.99 秒进入选择页；33.80 秒进入局内（选择页→局内 diff 46.02）；右移 8 秒换房 diff 44.91、亮度 86.9（存活）；小地图九格/四色/当前房框在换房前后同步；控制台 0 个错误。
+- APK 重导（含首领房修复）：`build/shenhaishiji-debug.apk` 87,563,926 B，md5 `858a5f73473dcb43129866c5789ae786`；APK 内 `assets/scripts/yu_npc.gdc` 28381 B、`xiao_di_tu.gdc` 3996 B。
+- 仍待用户 F5 目检（白闪逐帧截图）与红测；人类战九图演出时小地图隐藏项未在浏览器覆盖。

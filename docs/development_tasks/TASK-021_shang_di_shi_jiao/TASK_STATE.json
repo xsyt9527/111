@@ -7,7 +7,7 @@
   "handoff_status": "pending",
   "current_step": "step-04",
   "current_checkpoint": "orientation",
-  "next_action": "浏览器实测已通过；发布 commit/push、Pages 部署与线上复测待用户授权；F5 补充目检（含白闪逐帧截图）、红测、学习检查点待用户",
+  "next_action": "Web 已发布并线上复测通过（commit 42df5f1 / Pages run 43160662448 success）；F5 补充目检（含白闪逐帧截图）、红测、学习检查点待用户",
   "implementation_baseline": {
     "captured_at": "2026-11-11T01:53:27.453332Z",
     "commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
@@ -2096,7 +2096,7 @@
     "code_review": "available"
   },
   "implementation_notes": {
-    "summary": "TASK-021 实现完成：上帝视角小地图、NPC/首领/机械船受击过曝白、换房欢迎小鱼与安全入口、入场 0.9 秒免伤；2026-11-12 首领房追击限制修复后，浏览器实测通过。",
+    "summary": "TASK-021 实现完成：上帝视角小地图、NPC/首领/机械船受击过曝白、换房欢迎小鱼与安全入口、入场 0.9 秒免伤；2026-11-12 首领房追击限制修复后浏览器实测通过，并已发布 GitHub Pages、线上空缓存复测通过。",
     "key_files": [
       "scripts/xiao_di_tu.gd",
       "scenes/Main.tscn",
@@ -2134,9 +2134,13 @@
     "f5_manual": "pending_user",
     "red_test": "pending_user",
     "learning_checkpoints": "not_started",
-    "commit": "not_committed",
-    "push": "not_pushed",
-    "web_publish": "not_published（未 commit/push，GitHub Pages 未部署，线上未复测）",
+    "commit": "committed（42df5f1114b95e8bc29cd622c0a9b99e1839fd60）",
+    "push": "pushed（origin/main，未强制推送）",
+    "web_publish": "published（Pages workflow run 43160662448 success；线上空缓存复测通过；PCK 59,555,260 B，含 xiao_di_tu.gdc 3996 B / yu_npc.gdc 28381 B）",
+    "web_publish_commit": "42df5f1114b95e8bc29cd622c0a9b99e1839fd60",
+    "web_publish_workflow": "43160662448 success",
+    "web_publish_online_retest": "菜单 28.15s / 选择页 29.99s / 局内 33.80s；右移 8s 换房 diff 44.91、亮度 86.9；控制台 0 错误",
+    "apk_reexport": "build/shenhaishiji-debug.apk 87,563,926 B，md5 858a5f73473dcb43129866c5789ae786；内含 yu_npc.gdc 28381 B",
     "scope_check_post_docs": "文档收尾后复跑 check_task_scope.py：14 allowed, 275 unchanged pre-existing, 1 violation(s)；VIOLATION existing: project.godot（外部工作区改动，非本任务产生，未回退，详见实现报告）"
   }
 }
