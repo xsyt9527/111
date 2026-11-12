@@ -6,7 +6,7 @@ class_name KeChiWu
 # 红光：玩家靠近 + 此刻能吃 → 亮一圈红晕，提示“这个能吃”（细节见 _geng_xin_hong_guang）
 
 const HONG_GUANG_BAN_JING := 190.0  # 玩家进这个距离才亮：远处不亮，免得满屏红光
-const HONG_GUANG_BEICHENG := 1.55   # 红光层比本体大 55%：贴图外露出的一圈才是可见的“红光”
+const HONG_GUANG_BEICHENG := 1.8    # 红光层比本体大 80%：TASK-019 放大可吃提示，判定圈不变
 
 var ke_chi := false  # 是否能被吃：子类自己决定何时翻真/翻假
 var jing_yan := 1    # 吃到的经验（玩家独享；NPC 只清场不加经验）

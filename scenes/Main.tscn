@@ -24,6 +24,7 @@
 [ext_resource type="Script" path="res://scripts/qi_pao_ceng.gd" id="22_qipao"]
 [ext_resource type="PackedScene" path="res://scenes/JinHuaDanChuang.tscn" id="23_jinhua"]
 [ext_resource type="PackedScene" path="res://scenes/JinHuaYanChu.tscn" id="24_yanchu"]
+[ext_resource type="Script" path="res://scripts/xiao_di_tu.gd" id="25_xiaoditu"]
 
 [node name="Main" type="Node2D" unique_id=1332066333]
 script = ExtResource("1_main")
@@ -239,6 +240,36 @@ theme_override_colors/font_color = Color(1, 0.9, 0.55, 1)
 theme_override_font_sizes/font_size = 18
 text = "测试升级 +1"
 tooltip_text = "仅调试构建显示：立刻升 1 级"
+
+[node name="XiaoDiTuUI" type="CanvasLayer" parent="."]
+
+[node name="XiaoDiTu" type="Control" parent="XiaoDiTuUI"]
+offset_left = 24.0
+offset_top = 210.0
+offset_right = 264.0
+offset_bottom = 386.0
+mouse_filter = 0
+script = ExtResource("25_xiaoditu")
+
+[node name="BiaoTi" type="Label" parent="XiaoDiTuUI/XiaoDiTu"]
+offset_left = 8.0
+offset_top = 0.0
+offset_right = 240.0
+offset_bottom = 18.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.55, 0.95, 1, 0.96)
+theme_override_font_sizes/font_size = 14
+text = "上帝视角（永久被动）"
+
+[node name="TuLi" type="Label" parent="XiaoDiTuUI/XiaoDiTu"]
+offset_left = 8.0
+offset_top = 156.0
+offset_right = 240.0
+offset_bottom = 176.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.82, 0.92, 1, 0.85)
+theme_override_font_sizes/font_size = 10
+text = "黑 首领 · 蓝 玩家 · 红 鱼 · 绿 植物"
 
 [node name="JinHuaDanChuang" parent="." instance=ExtResource("23_jinhua")]
 

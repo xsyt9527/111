@@ -50,7 +50,12 @@ func _ying_yong(xin: String) -> void:
 		var lu_jing := XIANG_SU_GEN + rel  # 游戏内统一从这个路径取图
 		# 先记下缓存里现在的实例（被各处引用的旧纹理），再换缓存
 		var jiu := ResourceLoader.load(lu_jing, "Texture2D", ResourceLoader.CACHE_MODE_REUSE)
-		var t := ResourceLoader.load(mu_biao_gen + rel, "Texture2D", ResourceLoader.CACHE_MODE_REPLACE)
+		# 新素材可能暂时只有一套（如 2026-11-10 新增的专属主动图标）：目标画风缺图就保留原图继续，
+		# 不能直接 load——缺文件会打 ERROR，八步门禁见到 ERROR 一律判红
+		var mu_biao_lu := mu_biao_gen + rel
+		if not ResourceLoader.exists(mu_biao_lu):
+			continue
+		var t := ResourceLoader.load(mu_biao_lu, "Texture2D", ResourceLoader.CACHE_MODE_REPLACE)
 		if t == null:
 			continue
 		if t.resource_path != lu_jing:

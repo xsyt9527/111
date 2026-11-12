@@ -1,7 +1,7 @@
 extends SceneTree
 # 数据全键校验测试（TASK-014：能力池 + 坏能力红测 + 鱼种映射 + 三选一抽样）
 # TASK-018：新增形态池校验 + 形态数据库红测
-# 用例 1 能力池 65 个全过校验（DirAccess 遍历——通用能力池插课 21 个新能力自动被守护）
+# 用例 1 能力池 101 个全过校验（DirAccess 遍历——通用能力池插课 21 个新能力自动被守护）
 # 用例 2 红测×3：数值为负的坏能力 + 代码内空 bian_hao + 最大档位越界，校验器必须都抓到
 # 用例 3 鱼种表字段校验 + 11 鱼种的能力映射（6 挂载 / 5 不挂载）
 # 用例 4 三选一算法（档位版）：满档排除 / 未满档保留（升档）/ 满层被动排除 / 200 轮抽样 / 强制包含 / 不足 3 个 / 0 个 / 50% 概率
@@ -23,7 +23,7 @@ var quan_bu_neng_li: Array[NengLi] = []  # 能力池（用例 1 装载，用例 
 
 
 func _initialize() -> void:
-	# ---- 用例 1：能力池 65 个全过校验（35 通用 + 30 进化专属）----
+	# ---- 用例 1：能力池 101 个全过校验（35 通用 + 66 进化专属）----
 	var neng_wen_jian := DirAccess.get_files_at("res://data/nengli")
 	var neng_shu := 0  # .tres 实际个数（跳过杂项文件）
 	var bian_hao_ji := {}  # 能力 id 查重集合
@@ -36,10 +36,10 @@ func _initialize() -> void:
 		if neng != null:
 			bian_hao_ji[neng.bian_hao] = true
 			quan_bu_neng_li.append(neng)
-	assert_eq(neng_shu, 65, "能力池应恰好 65 个（35 通用/鱼种 + 30 进化专属）")
-	assert_eq(bian_hao_ji.size(), 65, "65 个能力的 bian_hao 应互不重复")
-	# 图标挂载契约（2026-11-02 全量接入）：35 个通用能力全部有图；
-	# 30 条进化专属技暂用纯文字卡面（美术未出，交接文档口径：图标随形态绑定，后续补齐）
+	assert_eq(neng_shu, 101, "能力池应恰好 101 个（35 通用/鱼种 + 66 进化专属）")
+	assert_eq(bian_hao_ji.size(), 101, "101 个能力的 bian_hao 应互不重复")
+	# 图标挂载契约（2026-11-10 更新）：35 个通用能力 + 33 条进化专属主动 = 68 条有图；
+	# 33 条进化专属被动的美术尚未交付，暂用纯文字卡面（图标随形态绑定，后续补齐）
 	var you_tu_biao := {
 		&"ruan_lin": true, &"ling_min_wei_qi": true, &"shen_shang_xian": true,
 		&"da_wei_wang": true, &"ji_e_nai_shou": true, &"yin_ni_qi_xi": true,
@@ -53,6 +53,18 @@ func _initialize() -> void:
 		&"ying_ke_hu_ti": true, &"dian_mai_chong": true, &"you_er_qi_pao": true,
 		&"xue_xing_kuang_re": true, &"bei_ci_zhi_jue": true, &"jue_jing_fan_yao": true,
 		&"xiu_lin": true, &"fu_rou_you_er": true,
+		# 2026-11-10 P0 第一批：33 条进化专属主动图标接入
+		&"chao_ya_shui_dao": true, &"ci_chang_hu_bi": true, &"deng_li_zi_qi_she": true,
+		&"feng_kuang_guang_xian": true, &"guan_xing": true, &"gui_huo_yin_lu": true,
+		&"huan_feng": true, &"ji_guan_fan_jia": true, &"ji_guang_ju_zhen": true,
+		&"jiu_tou_dian_wang": true, &"ju_du_tu_ci": true, &"kong_jian_lie_feng": true,
+		&"kong_que_huan_ying": true, &"kun_tun_tian_di": true, &"lei_bao_zhao_huan": true,
+		&"lie_kou_xian_jing": true, &"lin_guang_bao_shan": true, &"liu_xing_yue": true,
+		&"luo_xuan_zuan_tu": true, &"po_kong_fu_chong": true, &"qian_yan_qi_she": true,
+		&"qiang_suan_pen_tu": true, &"she_hun": true, &"shen_ju_chong_feng": true,
+		&"shen_yuan_xuan_wo": true, &"shi_hua_zhi_tong": true, &"tai_sui_ge_rou": true,
+		&"tao_tie_ju_tun": true, &"tun_xing": true, &"xing_chen_yin_xing": true,
+		&"ying_ju_cheng_long": true, &"you_ling_qi_she": true, &"zu_zhou_bao_zi": true,
 	}
 	var tu_biao_shu := 0
 	for neng in quan_bu_neng_li:
@@ -60,7 +72,7 @@ func _initialize() -> void:
 			continue
 		tu_biao_shu += 1
 		assert_guo("图标: " + String(neng.bian_hao), "" if neng.tu_biao != null else "缺少 tu_biao")
-	assert_eq(tu_biao_shu, 35, "图标应恰好挂到全部 35 个通用能力上")
+	assert_eq(tu_biao_shu, 68, "图标应恰好挂到 68 条（35 通用 + 33 进化专属主动）")
 
 	# ---- 用例 2：红测——已知坏数据必须被校验器抓到 ----
 	var huai: NengLi = load("res://tests/huai_neng_li.tres")  # 键合法、数值为负
@@ -160,7 +172,7 @@ func _initialize() -> void:
 			assert_eq(1 if yz.gong_ji_dong_hua.get_frame_texture(&"gong", 0) != null else 0, 1,
 					"鱼种 %s 攻击帧有贴图" % wen_jian)
 	assert_eq(1 if ye_deng.gong_ji_dong_hua == null else 0, 1, "未配攻击帧的鱼种保持 null（回退游动帧）")
-	assert_eq(NengLiKu.quan_bu().size(), 65, "能力总表 65 个（31 主动 + 34 被动：含 30 进化专属）")
+	assert_eq(NengLiKu.quan_bu().size(), 101, "能力总表 101 个（49 主动 + 52 被动：含 66 进化专属）")
 	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池仍是 35 个：专属技永不流入三选一/成就")
 	var zhu_dong_shu := 0
 	var bei_dong_shu := 0
@@ -172,17 +184,17 @@ func _initialize() -> void:
 			bei_dong_shu += 1
 		if neng.shi_zhuan_shu():
 			zhuan_shu_shu += 1
-	assert_eq(zhu_dong_shu, 31, "主动能力 31 个（16 通用 + 15 专属）")
-	assert_eq(bei_dong_shu, 34, "被动能力 34 个（19 通用 + 15 专属）")
-	assert_eq(zhuan_shu_shu, 30, "进化专属能力 30 条（P0 6 + T1 24）")
+	assert_eq(zhu_dong_shu, 49, "主动能力 49 个（16 通用 + 33 专属）")
+	assert_eq(bei_dong_shu, 52, "被动能力 52 个（19 通用 + 33 专属）")
+	assert_eq(zhuan_shu_shu, 66, "进化专属能力 66 条（P0 6 + T1 24 + H 系列 36）")
 
 	# ---- 用例 4：三选一算法（注入固定种子，可复现；档位版规则）----
 	# 候选池 = 未满档能力：满档主动排除、未满档主动保留（可升档）、满层被动排除、未满层被动保留
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20261030
 	var quan_bu: Array[NengLi] = NengLiChou.ke_xuan_chi(quan_bu_neng_li, {}, {})
-	assert_eq(quan_bu.size(), 35, "无装备时候选池 35 个（16 主动 + 19 被动；30 专属被过滤）")
-	# 进化专属：带归属形态、永不进三选一（P0 6 条 + G T1 24 条）
+	assert_eq(quan_bu.size(), 35, "无装备时候选池 35 个（16 主动 + 19 被动；66 专属被过滤）")
+	# 进化专属：带归属形态、永不进三选一（P0 6 条 + G T1 24 条 + H 系列 36 条）
 	var zhuan_shu_id := [&"tai_sui_ge_rou", &"ning_jiao_tan_fu", &"qiang_suan_pen_tu",
 			&"ji_yin_she_lu", &"chao_ya_shui_dao", &"xie_ya_ji_dong",
 			&"lei_bao_zhao_huan", &"ming_lei_lin", &"jiu_tou_dian_wang", &"duo_tou_rong_cuo",
@@ -190,8 +202,26 @@ func _initialize() -> void:
 			&"you_ling_qi_she", &"you_ling_chuan_hai", &"po_kong_fu_chong", &"hua_xiang_yi",
 			&"luo_xuan_zuan_tu", &"po_jia_long_lin", &"ju_du_tu_ci", &"wang_ling_gu_qu",
 			&"kong_jian_lie_feng", &"lie_kong_bu", &"kong_que_huan_ying", &"jin_shen_ji_ma",
-			&"shi_hua_zhi_tong", &"she_fa_pen_du", &"ji_guan_fan_jia", &"gong_sheng_hai_kui"]
-	assert_eq(zhuan_shu_id.size(), 30, "专属能力 id 清单应补全 30 条")
+			&"shi_hua_zhi_tong", &"she_fa_pen_du", &"ji_guan_fan_jia", &"gong_sheng_hai_kui",
+			# H 系列（2026-11-09）：大眼金枪鱼
+			&"liu_xing_yue", &"shun_feng_yi", &"shen_ju_chong_feng", &"gu_zhi_zhong_jia",
+			&"qian_yan_qi_she", &"lei_yan_suo_ding",
+			# 灯笼鱼
+			&"gui_huo_yin_lu", &"you_ming_ti", &"xing_chen_yin_xing", &"xing_zuo_yu_hui",
+			&"lin_guang_bao_shan", &"bao_lie_ti_zhi",
+			# 鲸鲨
+			&"kun_tun_tian_di", &"xian_shan_zhi_bei", &"shen_yuan_xuan_wo", &"shen_yuan_zhuang_jia",
+			&"tun_xing", &"xing_yu_ling_yu",
+			# 巨口鱼
+			&"tao_tie_ju_tun", &"gang_tie_liao_ya", &"lie_kou_xian_jing", &"ji_ci_kou_nei",
+			&"she_hun", &"kong_ju_zhi_kou",
+			# 铜眼鱼
+			&"guan_xing", &"xian_jian_zhi_ming", &"feng_kuang_guang_xian", &"xie_shen_zhu_shi",
+			&"ji_guang_ju_zhen", &"chong_neng_yan",
+			# 钻光鱼
+			&"ying_ju_cheng_long", &"ju_qun", &"zu_zhou_bao_zi", &"xing_chuan_bo_san",
+			&"deng_li_zi_qi_she", &"ji_guang_gui_ji"]
+	assert_eq(zhuan_shu_id.size(), 66, "专属能力 id 清单应补全 66 条")
 	for id in zhuan_shu_id:
 		var zhuan := NengLiKu.zhao(id)
 		assert_eq(1 if zhuan != null else 0, 1, "专属能力必须注册: " + String(id))
@@ -199,7 +229,7 @@ func _initialize() -> void:
 			assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "专属能力必须带归属形态: " + String(id))
 			assert_eq(1 if zhuan.suoshu_xing_tai != &"" else 0, 1, "专属归属不能为空: " + String(id))
 			assert_eq(zhuan.zui_da_dang, 1, "专属技单档不可升级: " + String(id))
-	assert_eq(quan_bu.size(), 35, "专属技不参与三选一（候选池不因新增 30 条而变大）")
+	assert_eq(quan_bu.size(), 35, "专属技不参与三选一（候选池不因新增 66 条而变大）")
 	# 满档排除：放电麻痹 1 档即满——装上就从候选池消失
 	var fang_dian := _zhao_neng(&"fang_dian_ma_bi")
 	var ke_xuan := NengLiChou.ke_xuan_chi(quan_bu, {&"fang_dian_ma_bi": 1}, {})
@@ -443,7 +473,7 @@ func _initialize() -> void:
 	var jin_hua_quan := JinHuaKu.quan_bu()
 	assert_eq(jin_hua_quan.size(), 33, "进化形态应恰好 33 个（11 鱼种 × 3 分支）")
 	var jin_hua_id_ji := {}
-	var zhuan_shu_cao := 0  # 已填的专属槽总数（15 分支 × 2 = 30）
+	var zhuan_shu_cao := 0  # 已填的专属槽总数（33 分支 × 2 = 66）
 	for jin_hua in jin_hua_quan:
 		assert_eq(1 if jin_hua != null else 0, 1, "进化注册表不能有空项")
 		if jin_hua == null:
@@ -479,7 +509,7 @@ func _initialize() -> void:
 				"进化分支必须对玩家开放: " + String(jin_hua.bian_hao))
 		assert_eq(1 if JinHuaKu.zhao(jin_hua.bian_hao) == jin_hua else 0, 1,
 				"按 id 反查必须命中同一个实例: " + String(jin_hua.bian_hao))
-		# 专属技能/被动槽位：允许为空（T2/T3 待填）；填了就必须是能力池里的合法能力且归属本分支
+		# 专属技能/被动槽位：遗留给后续新分支的条目允许为空；填了就必须是能力池里的合法能力且归属本分支
 		for zhuan_shu in [jin_hua.zhuan_shu_zhu_dong, jin_hua.zhuan_shu_bei_dong]:
 			if zhuan_shu != null:
 				zhuan_shu_cao += 1
@@ -488,7 +518,7 @@ func _initialize() -> void:
 				assert_string(String(zhuan_shu.suoshu_xing_tai), String(jin_hua.bian_hao),
 						"专属能力归属必须匹配分支: " + String(zhuan_shu.bian_hao))
 	assert_eq(jin_hua_id_ji.size(), 33, "33 个进化 id 应互不重复")
-	assert_eq(zhuan_shu_cao, 30, "专属技能/被动槽应填满 30 条（P0 6 + T1 24）")
+	assert_eq(zhuan_shu_cao, 66, "专属技能/被动槽应填满 66 条（P0 6 + T1 24 + H 系列 36）")
 
 	# 分组：11 组 × 每组 3 条，且每组正好覆盖东方/西方/异化各一条
 	var jin_hua_zu := JinHuaKu.an_ji_yu()

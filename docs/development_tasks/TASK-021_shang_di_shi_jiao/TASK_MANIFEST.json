@@ -1,0 +1,339 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-021",
+  "task_spec_version": 1,
+  "slug": "shang-di-shi-jiao",
+  "title": "上帝视角小地图、受击闪白与换房安全入场",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+  "objective": "把整张 4128×2304 九宫格海图缩成左上角常驻小地图「上帝视角（永久被动）」：黑点首领、蓝点玩家、红点 NPC 鱼、绿点珊瑚海草；所有 NPC 鱼/首领/机械船受击时明显闪白；换房时提供安全入场鱼群与短暂免伤，避免清空小鱼后大鱼贴脸。",
+  "audit_freshness": {
+    "audited_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+    "environment_checked_at": "2026-11-11T01:45:53Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "Main.tscn HUD 层级或新增小地图 CanvasLayer",
+      "YuNpc 受击闪白/染色与死亡淡出逻辑变化",
+      "JiQiChuan 船体受击反馈变化",
+      "YuQun 换房清鱼、刷新位置或数量规则变化",
+      "Main 换房过渡与玩家入场保护变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "上帝视角小地图",
+      "NPC/首领/机械船受击闪白",
+      "换房安全入场与鱼群刷新"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/main.gd",
+      "res://scripts/yu_qun.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/ji_qi_chuan.gd",
+      "res://scripts/xiao_di_tu.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-020（九宫格房间与换房）",
+      "TASK-019（体型/伤害/范围）",
+      "TASK-017（人类机器船战）"
+    ],
+    "consumed_interfaces": [
+      "Main.DI_TU_MEI_GE / DI_TU_CHI_CUN / fang_jian_qu() / dang_qian_fang_jian",
+      "Main.ji_qi_chuan / yu / yu_qun",
+      "YuNpc.add_to_group(\"yu_npc\") / shi_boss / si_le / global_position",
+      "ZhiWu.add_to_group(\"zhi_wu\") / ke_chi / dong_hua.visible",
+      "Yu.add_to_group(\"player\") / jin_ru_wudi()",
+      "YuQun.fang_jian_qu / qie_huan_fang_jian() / _sheng_yu()",
+      "beijing_3x3.webp（4128×2304 整图，不重切美术）"
+    ],
+    "provided_interfaces": [
+      "XiaoDiTu 节点：只读扫描 player / yu_npc / zhi_wu 组并绘制 9 宫格全图",
+      "YuQun.qie_huan_fang_jian(qu)：安全入场小鱼 + 安全距离刷新",
+      "YuNpc._shan_hong() / JiQiChuan._shan_guang()：白色受击闪光",
+      "Main._qie_huan_fang_jian()：入场短暂免伤"
+    ],
+    "emitted_signals": [
+      "无新增信号：小地图每帧只读世界状态"
+    ],
+    "received_signals": [
+      "ZhangBen 局内时钟（沿用）",
+      "房间切换流程（沿用）"
+    ],
+    "shared_state": [
+      "小地图不写任何 gameplay 状态，只读组与 Main 引用",
+      "受击闪白只改 modulate，不改进血/伤害数值",
+      "换房安全入场只改生成位置与顺序，不改刷怪上限/等级分布"
+    ],
+    "registered_shared_changes": [
+      "Main.tscn 新增 XiaoDiTuUI CanvasLayer + XiaoDiTu Control（不改现有 HUD 节点）",
+      "Main.HUD_CENG_MING 追加 \"XiaoDiTuUI\"，九图演出时一并隐藏",
+      "不新增 Autoload、不改 project.godot、不改存档 schema"
+    ],
+    "conflict_hotspots": [
+      "scripts/main.gd：只追加小地图隐藏名单和入场免伤，不改房间/相机常量",
+      "scripts/yu_qun.gd：保留原刷新档位概率，只改换房补屏与生成位置",
+      "scripts/yu_npc.gd：闪白必须复用根节点 modulate，不能覆盖 $AnimatedSprite2D 的状态染色",
+      "scripts/ji_qi_chuan.gd：闪白只动 _chuan_ti.modulate",
+      "tests/ce_panding.gd：只追加新用例，不改 TASK-019/020 既有断言"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/ce_panding.gd 全部 passed",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "Web 导出后浏览器实测小地图/闪白/换房"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/main.gd",
+    "scripts/yu_qun.gd",
+    "scripts/yu_npc.gd",
+    "scripts/ji_qi_chuan.gd",
+    "scenes/Main.tscn",
+    "tests/ce_panding.gd",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-021_shang_di_shi_jiao/**",
+    "scripts/xiao_di_tu.gd",
+    "scripts/xiao_di_tu.gd.uid",
+    "docs/development_tasks/TASK-019_ti_xing_zhan_dou_fan_wei/**",
+    "docs/development_tasks/TASK-020_jiu_gong_ge_fang_jian/**"
+  ],
+  "forbidden_systems": [
+    "TASK-019 体型/伤害/范围数值与 TASK-020 房间尺寸/相机 limit",
+    "Boss 出生点与巡逻规则、人类战流程、九图拼合演出",
+    "存档 schema、Autoload、project.godot、主场景顶层节点类型",
+    "修改 .agents/skills/**（只读）",
+    "删除 tests/ 既有文件或改写既有断言",
+    "commit / push（本任务不提交，发布由用户另行授权）"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "上帝视角小地图",
+      "behavior": "新增 XiaoDiTu Control，读取整图纹理缩放绘制 9 宫格；每帧从组读取玩家/首领/NPC/植物位置画点，黑=首领、蓝=玩家、红=NPC、绿=植物；标题写「上帝视角（永久被动）」；Main.tscn 新增独立 CanvasLayer 并在演出隐藏名单登记。",
+      "main_concept": "小地图是世界坐标到 UI 矩形的仿射缩放；节点不复制游戏状态，只读组与引用。",
+      "files": [
+        "scripts/xiao_di_tu.gd",
+        "scenes/Main.tscn",
+        "scripts/main.gd"
+      ],
+      "automated_checks": [
+        "Godot --check-only 语法通过",
+        "tests/ce_panding.gd 全部 passed"
+      ],
+      "manual_checks": [
+        "F5：小地图同时显示 9 张图，四类标记颜色/位置正确"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "受击闪白",
+      "behavior": "YuNpc._shan_hong() 把根节点 modulate 提到过曝白再回白；JiQiChuan._shan_guang() 对 _chuan_ti.modulate 做同样闪光；玩家自身保持原受伤红闪。",
+      "main_concept": "CanvasItem.modulate 是乘法染色，>1 的分量把彩色贴图推向白色；根节点与子精灵染色分层互不覆盖。",
+      "files": [
+        "scripts/yu_npc.gd",
+        "scripts/ji_qi_chuan.gd"
+      ],
+      "automated_checks": [
+        "Godot --check-only 语法通过",
+        "tests/ce_panding.gd 全部 passed"
+      ],
+      "manual_checks": [
+        "F5：咬 NPC/首领/机械船时肉眼可见白色闪光"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "换房安全入场",
+      "behavior": "YuQun 换房时先放 8~10 条玩家可吃的小鱼在离玩家至少 240px 的房内位置；常规补屏从远离玩家的一侧进入，大鱼入口距离玩家至少 480px；Main 换房后给玩家 0.9 秒免伤。",
+      "main_concept": "随机采样必须带约束：生成位置要同时满足房间边界、玩家安全距离和可吃比例；黑场期间完成补屏，淡入即见鱼。",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scripts/main.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全部 passed"
+      ],
+      "manual_checks": [
+        "F5 连续换房 9 格：淡入后有小鱼可吃，无大鱼贴脸，无 ERROR"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "测试、门禁与文档收尾",
+      "behavior": "追加小地图标记映射/安全入场纯函数断言；跑两轮八步门禁；更新引擎词表、任务索引、学习路线、docx 与实现报告；清理临时文件。",
+      "main_concept": "表现层功能也要有可测纯函数边界；门禁两轮一致才算稳定。",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 两轮八步全绿",
+        "validate_task.py 退出码 0",
+        "check_task_scope.py check 零违规"
+      ],
+      "manual_checks": [
+        "浏览器 Web 试玩走查小地图/闪白/换房"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释世界坐标 → 小地图坐标的缩放换算",
+      "能说清 modulate 乘法染色为什么能做过曝白闪",
+      "能指出换房安全距离与可吃比例各由哪个函数负责",
+      "能解释为什么小地图只读组、不复制游戏状态"
+    ],
+    "concepts": [
+      "Control._draw 与 draw_texture_rect",
+      "CanvasItem.modulate 乘法染色",
+      "组查询 get_nodes_in_group",
+      "Rect2 与 Vector2 映射",
+      "随机采样约束"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "小地图作为常驻 HUD 需要独立 CanvasLayer，随 Main 生命周期创建/销毁；不引入 Autoload，避免跨场景残留。",
+    "current_tree": "Main.tscn (Node2D) -> Haodi / Camera2D / Yu / YuQun / ZhiWuQun / HUD CanvasLayers / JinHuaDanChuang / SheZhi",
+    "target_tree": "Main.tscn 顶层不变，新增 XiaoDiTuUI (CanvasLayer) -> XiaoDiTu (Control, 240×134) 位于左上 KongZhiUI 下方；其余 HUD 节点原样。",
+    "ownership": [
+      "XiaoDiTu 拥有绘制，只读世界状态",
+      "Main 拥有 HUD 隐藏名单与入场免伤",
+      "YuQun 拥有安全生成位置",
+      "YuNpc/JiQiChuan 拥有自身受击闪光"
+    ],
+    "signal_contracts": [
+      "不新增信号；小地图每帧轮询组"
+    ],
+    "loading_policy": "整图纹理已在 Haodi 使用，直接 preload beijing_3x3.webp；无额外磁盘 IO。",
+    "state_persistence": [
+      "小地图不写存档；dang_qian_fang_jian 仍只存在内存"
+    ],
+    "animation_dependencies": [
+      "九图演出期间 XiaoDiTuUI 随 HUD 隐藏",
+      "受击闪白用 Tween，不加 AnimationPlayer"
+    ],
+    "lifecycle_checks": [
+      "F6 从 Main 启动无 ERROR",
+      "换房/暂停/演出后小地图仍正确",
+      "退出场景无残留 CanvasLayer"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0",
+    "tests/ce_panding.gd 全部 passed",
+    "tests/pao_pi.bat 两轮八步全绿",
+    "check_task_scope.py check 零违规"
+  ],
+  "required_manual_checks": [
+    "F5/Web：小地图显示 9 宫格与四色标记",
+    "F5/Web：NPC/首领/机械船受击闪白",
+    "F5/Web：连续换房无小鱼真空、无大鱼贴脸",
+    "F5/Web：九图演出时小地图隐藏",
+    "F5/Web：无 ERROR"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "小地图用整图缩放而非九张独立贴图",
+      "小地图作为 HUD 永久被动，不改 ZhangBen 账本",
+      "换房补屏改为安全采样，但保持原等级分布与上限"
+    ],
+    "unknowns": [
+      "240×134 是否足够辨认 1px 植物点，需实机确认",
+      "大鱼安全距离 480px 在高体型玩家下是否合适"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要九张独立小地图贴图",
+    "需要把上帝视角写入存档/账本",
+    "需要改变刷怪等级分布或上限",
+    "需要改 TASK-019/020 数值",
+    "需要新增 Autoload"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-11T00:00:00+08:00",
+    "exact_user_text": "把小地图加回来，并且加入黑色点标记为boss，蓝色标点是玩家，红色点标记为npc鱼，绿色点标记为珊瑚，海草什么的，对了，地图是同时显示9张图的...给所有鱼加一个受击闪白...这个鱼的切场景刷新有一点麻烦...切完场景小鱼全部没了，突然一堆大鱼贴脸，很难受！...小地图可以视为玩家所有的开局永久被动，名字就叫：上帝视角",
+    "canonical_example": "用户最新玩后反馈：加回小地图（上帝视角）、受击闪白、换房刷新改进"
+  }
+}

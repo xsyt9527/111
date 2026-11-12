@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"xing_chuan_bo_san"
+ming_zi = "星传播散"
+miao_shu = "被诅咒孢子吸死的敌人原地留下孢子云4s，半径1.5身位内每秒+20%毒晕条。"
+lai_yuan = "钻光鱼"
+suoshu_xing_tai = &"zu_zhou_xing_chen_chong"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 4.0
+ban_jing = 1.5
+shu_zhi = 10.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.5
+mei_ju_ci_shu = 0
+ban_jing_shen_wei = true

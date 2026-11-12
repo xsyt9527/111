@@ -14,7 +14,7 @@ enum LeiXing { ZHU_DONG, BEI_DONG }  # 主动 / 被动
 @export var lei_xing := LeiXing.ZHU_DONG  # 主动（占唯一技能槽）/ 被动（可叠层）
 @export var leng_que := 0.0  # 主动冷却（秒）；被动为 0
 @export var chi_xu := 0.0  # 主动持续（秒）；0 = 瞬发
-@export var ban_jing := 0.0  # 放电半径 / NPC 突进触发半径（世界像素）
+@export var ban_jing := 0.0  # 主动作用半径（世界像素基准）；单位由 ban_jing_shen_wei 决定，见下
 @export var shu_zhi := 0.0  # 主数值：电麻量 / 反毒量 / 速度倍率 / 伤害倍率
 @export var npc_shu_zhi := 0.0  # NPC 覆写主数值；0 = 回退 shu_zhi（电鳗 55 就是靠它）
 @export var fu_shu_zhi := 0.0  # 副数值：冲撞的冲刺速度倍率
@@ -27,6 +27,9 @@ enum LeiXing { ZHU_DONG, BEI_DONG }  # 主动 / 被动
 @export var mei_ju_ci_shu := 0  # 每局可用次数：0 = 不限（亡灵骨躯等「每局 N 次」用）
 @export var lei_bie: Array[StringName] = []  # 分类标签：dian_xi/dan_dao/zhao_huan/wei_yi/yin_shen
 @export var ban_jing_shen_wei := false  # true = ban_jing 以「身位」计（1 身位 = 本体贴图基准身长）
+# TASK-019 单位口径：false 时 ban_jing 是世界像素基准，随玩家 scale 线性放大；
+# true 时 ban_jing 是身位（×100×scale）；两者最终都在 Yu.ji_neng_ban_jing() 换算并套体长下限。
+# 被动不参与这套技能范围换算，保持各自原有口径。
 
 
 func shi_zhu_dong() -> bool:

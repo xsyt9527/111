@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/shen_yuan_xuan_wo.png" id="2_tu_biao"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"shen_yuan_xuan_wo"
+ming_zi = "深渊漩涡"
+tu_biao = ExtResource("2_tu_biao")
+miao_shu = "5秒漩涡：8身位内所有鱼每秒被拉向你1身位；反方向满速可维持距离（首领只拉不吞）。"
+lai_yuan = "鲸鲨"
+suoshu_xing_tai = &"yuan_chu_li_wei_tan"
+lei_xing = 0
+leng_que = 24.0
+chi_xu = 5.0
+ban_jing = 8.0
+shu_zhi = 1.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([])
+ban_jing_shen_wei = true

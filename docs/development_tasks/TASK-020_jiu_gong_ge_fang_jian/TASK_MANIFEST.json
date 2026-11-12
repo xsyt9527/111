@@ -1,0 +1,340 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-020",
+  "task_spec_version": 1,
+  "slug": "jiu-gong-ge-fang-jian",
+  "title": "九宫格房间化：相机边界、换房过渡、刷怪归属与 Boss 房",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+  "objective": "复用现有 4128×2304 九宫格背景的 9 个 1376×768 区域，把探索切成九个可玩房间：当前房间锁定 Camera2D limit，玩家越界时全屏淡入淡出切房并夹回新房，YuQun 按当前房间刷怪/回收，Boss 收进东南房间 8；人类战前九图拼合演出与全图相机保持原行为。",
+  "audit_freshness": {
+    "audited_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+    "environment_checked_at": "2026-11-10T07:58:51Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "Main.tscn 顶层节点、Camera2D limit、HUD 层级变化",
+      "DiTuPinJieYanChu 九格切片纯函数/演出流程变化",
+      "YuQun 生成/回收边界或刷新停止逻辑变化",
+      "Boss 出生/巡逻点或人类战触发流程变化",
+      "TASK-019 相机固定 1.0 常量变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "当前房间状态与房间矩形",
+      "Camera2D 房间 limit 与换房过渡",
+      "YuQun 房间刷怪/回收归属",
+      "Boss 房出生/巡逻",
+      "人类战全图相机特例"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/main.gd",
+      "res://scripts/yu_qun.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-019（固定 1.0 镜头常量、范围/伤害收口）",
+      "TASK-018（人类战前九图拼合演出）",
+      "TASK-017（机器船战）",
+      "TASK-008（结算流程）"
+    ],
+    "consumed_interfaces": [
+      "DiTuPinJieYanChu.DI_TU_CHI_CUN / MEI_GE_CHI_CUN / GE_SHU / ge_zi_qu() / ge_zi_zhong_xin() / wan_jia_pian()",
+      "Main.DI_TU_MEI_GE / DI_TU_MING / qu_yu_ming() / _xian_shi_xiao_xi() / camera / _shi_jiao_bei()",
+      "Main._bo_fang_ren_lei_yan_chu() / yan_chu_zhong / ji_qi_chuan",
+      "Yu.global_position / _xian_zhi_zai_di_tu_nei()",
+      "YuQun._shi_jiao_fan_wei() / shua_xin_tong_zhi / yu_qun 子节点",
+      "Boss 出生/巡逻常量"
+    ],
+    "provided_interfaces": [
+      "Main.dang_qian_fang_jian",
+      "Main.fang_jian_qu(pian) -> Rect2",
+      "Main.qu_yu_pian(shijie_wei) -> int",
+      "Main.qie_huan_fang_jian(pian)（淡入淡出 + limit + 夹玩家）",
+      "YuQun.fang_jian_qu / YuQun.qie_huan_fang_jian(rect)"
+    ],
+    "emitted_signals": [
+      "不新增信号；换房由 Main 直接调用 YuQun.qie_huan_fang_jian"
+    ],
+    "received_signals": [
+      "沿用现有机器船/结算/九图演出回调，不新增连接"
+    ],
+    "shared_state": [
+      "Main 是当前房间唯一所有者；dang_qian_fang_jian 只存内存，不写存档",
+      "YuQun 只持有当前房间矩形并据此刷怪/回收",
+      "Boss 不是 YuQun 子节点；换房清理不得删除 Boss",
+      "人类战期间 Main 临时接管全图 camera limit，结束后恢复房间 limit"
+    ],
+    "registered_shared_changes": [
+      "Main.tscn 的 Camera2D limit 由 Main 运行时设置，不再固定 0..4128 / 0..2304",
+      "不新增 Autoload、不修改 project.godot、不改存档 schema、不改主场景顶层节点类型"
+    ],
+    "conflict_hotspots": [
+      "scripts/main.gd 与 TASK-019 共享：TASK-019 先固定相机 1.0；TASK-020 只在其后加房间逻辑，不改 SHI_JIAO_MEI_JI",
+      "tests/ce_panding.gd 与 TASK-019 共享：TASK-020 只追加房间用例，不覆盖相机/船战/Boss 断言",
+      "DiTuPinJieYanChu 的九图演出与全图相机不能改；房间限制只在普通探索生效",
+      "人类战机器船在玩家上方 600px；房间 limit 会裁掉，必须临时恢复全图 limit + offset/zoom",
+      "YuQun 换房清鱼不能清 Boss/JingYanQiu/植物等非 YuQun 子节点",
+      "玩家越界后先切房再夹回新房 6px，否则会反复触发"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/ce_panding.gd 房间纯函数用例全 passed",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 无违例",
+      "F5：九格换房/房间名/刷怪/Boss 房/人类战前动画与船战相机"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/main.gd",
+    "scenes/Main.tscn",
+    "scripts/yu_qun.gd",
+    "tests/ce_panding.gd",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-020_jiu_gong_ge_fang_jian/**",
+    "docs/development_tasks/TASK-019_ti_xing_zhan_dou_fan_wei/**"
+  ],
+  "forbidden_systems": [
+    "TASK-019 的体型/Boss 咬伤/技能范围/船战伤害/红光/相机常量实现",
+    "九图拼合演出的视觉与动画流程",
+    "房间门锁、钥匙、顺序封印、地图重切美术",
+    "新增 Autoload、修改存档 schema、修改主场景顶层节点类型",
+    "修改 .agents/skills/**（只读）",
+    "删除 tests/ 既有文件（可改断言）",
+    "commit / push"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "房间数据与相机边界",
+      "behavior": "Main 增加 dang_qian_fang_jian=4、fang_jian_qu(pian)、qu_yu_pian(pos)；普通探索期 Camera2D limit 锁当前 1376×768 房间；ce_panding 增加房间纯函数断言。",
+      "main_concept": "九宫格不是九张图，而是同一张 4128×2304 背景上的 9 个逻辑矩形；房间边界只是相机/刷怪的坐标约束",
+      "files": [
+        "scripts/main.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：在房间 4 内相机不再越过 1376×768 边界；四角无黑边（视口 1280×720）"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "换房淡入淡出与玩家夹回",
+      "behavior": "玩家越过格边界时 0.12 秒淡出；黑场时更新房间、limit、reset_smoothing、夹玩家到新房 6px 内、调用 YuQun.qie_huan_fang_jian，再 0.12 秒淡入；换房期间锁输入并显示房间名。",
+      "main_concept": "一屏跳变必须被黑场遮住；玩家位置与相机平滑必须在新房重置，避免拖影和反复越界",
+      "files": [
+        "scripts/main.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：左右/上下/对角越界都只触发一次；黑场约 0.24 秒；房间名提示正确；无 ERROR"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "按房间刷怪、Boss 房与人类战特例",
+      "behavior": "YuQun 增加 fang_jian_qu 与 qie_huan_fang_jian(rect)，刷怪/回收按当前房间；换房清掉旧房普通鱼并重置刷怪；Boss 出生/巡逻收进东南房间 8；人类战期间恢复全图 limit、offset/zoom 保证机器船可见。",
+      "main_concept": "房间归属影响生成与回收；Boss 作为独立节点不随普通鱼清理；人类战是房间规则的唯一全图例外",
+      "files": [
+        "scripts/main.gd",
+        "scripts/yu_qun.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：换房后旧房普通鱼消失、新房正常刷鱼；Boss 固定在东南房间 8；人类战前九图动画与船战相机正常"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "全量验证、文档与清理",
+      "behavior": "八步门禁连续两轮全绿；F5 手测九格；更新 TASK_INDEX/引擎词总表/学习路线/docx；清理临时文件；回填任务包报告；不 commit/push。",
+      "main_concept": "交付门禁：房间纯函数、场景生命周期、门禁 ERROR、范围检查、文档同步一起收口",
+      "files": [
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "check_task_scope.py check 无违例",
+        "validate_task.py 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 全流程：九格换房、房间名、刷怪、Boss 房、人类战演出/船战"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释九宫格房间只是同一张背景上的 9 个逻辑矩形，而不是九张独立贴图",
+      "能指出 Camera2D limit、玩家 position、YuQun 刷怪边界各自由谁拥有",
+      "能解释为什么换房要在黑场时更新房间并 reset_smoothing",
+      "能说出 Boss 为什么不是 YuQun 子节点、换房清鱼为什么不能清 Boss",
+      "能解释人类战为什么必须暂时恢复全图 limit"
+    ],
+    "concepts": [
+      "Camera2D limit 与视口/zoom 的关系",
+      "逻辑房间矩形 Rect2",
+      "场景切换中的位置夹取与平滑重置",
+      "生成/回收边界的所有权",
+      "全屏淡入淡出过渡",
+      "房间规则的例外：Boss 战/人类战演出"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "Main 继续作为唯一局内场景；只增加当前房间状态、Camera2D limit 运行时切换和 YuQun 房间边界。不新增场景/Autoload，不改主场景顶层节点类型。人类战由现有演出流程临时接管全图相机。",
+    "current_tree": "Main.tscn (Node2D) -> Haodi (Sprite2D, 4128×2304, z=-10) / Camera2D (limit 0..4128, 0..2304, smoothing) / Yu (player) / YuQun / ZhiWuQun / HUD / DiTuPinJieYanChu / JiQiChuan（人类战生成）",
+    "target_tree": "Main.tscn 顶层不变；Main 新增 dang_qian_fang_jian 与房间过渡状态；Camera2D limit 在普通探索时锁当前房间，人类战/九图演出时恢复全图；YuQun 新增当前房间矩形；淡入淡出层挂在现有 HUD/CanvasLayer 下，不新增顶层节点类型",
+    "ownership": [
+      "Main 拥有当前房间、Camera2D limit、换房过渡和玩家夹回",
+      "YuQun 拥有当前房间普通鱼的生成/回收边界",
+      "Boss 仍由 Main 生成/管理，不属于 YuQun",
+      "DiTuPinJieYanChu 仍拥有九图拼合演出",
+      "JiQiChuan/人类战流程仍拥有全图相机特例"
+    ],
+    "signal_contracts": [
+      "不新增信号；Main 直接调用 YuQun.qie_huan_fang_jian(rect)",
+      "沿用 DiTuPinJieYanChu 结束回调恢复背景/鱼群/植物/相机"
+    ],
+    "loading_policy": "不新增场景加载；房间状态运行时计算，不写存档；读档/重开仍从中心房间 4 出生。",
+    "state_persistence": [
+      "dang_qian_fang_jian 只存内存，每次新局重置为 4",
+      "不修改 user:// 存档 schema",
+      "Boss 房固定为房间 8，不持久化"
+    ],
+    "animation_dependencies": [
+      "DiTuPinJieYanChu 的九片飞入/镜头俯冲/机器船降临流程保持原样",
+      "换房淡入淡出使用 Tween/ColorRect，不依赖 AnimationPlayer"
+    ],
+    "lifecycle_checks": [
+      "普通探索才检查越界；yan_chu_zhong 或 ji_qi_chuan 有效时不换房",
+      "换房黑场时先更新房间/limit 再 reset_smoothing 再夹玩家",
+      "人类战结束后相机恢复当前房间 limit（或全图直到切场景）",
+      "Boss 死亡/切场景时 YuNpc 离树保护不回退",
+      "F6 直接跑 Main 从房间 4 开始且无 ERROR"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0",
+    "headless --import 退出码 0",
+    "tests/ce_panding.gd 全 passed（含房间纯函数用例）",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 无违例"
+  ],
+  "required_manual_checks": [
+    "F5：九个房间逐格进入，相机 limit 正确、无黑边",
+    "F5：换房淡入淡出约 0.24 秒、房间名正确、只触发一次",
+    "F5：换房清旧房普通鱼、新房正常刷鱼；Boss 固定在东南房间 8",
+    "F5：人类战前九图拼合动画与船战相机不被房间 limit 裁切",
+    "F5：Boss 死亡/结算/重开无 ERROR"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "不做门锁/钥匙/顺序封印；九个房间可直接进入",
+      "不做无缝滚动；换房用 0.12+0.12 秒淡入淡出遮住一屏跳变",
+      "Boss 从全图巡逻改为东南房间 8 固定房",
+      "人类战临时恢复全图相机，保留用户认可的九图前动画"
+    ],
+    "unknowns": [
+      "高等级体型（体型 10）在 1376×768 房间内的活动空间是否足够，需要 F5",
+      "换房淡入淡出时长是否影响追逐手感，需要试玩",
+      "Boss 固定在房间 8 后，6 分钟提示的引导是否足够清晰"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要门锁/钥匙/顺序封印/房间小地图（新任务）",
+    "需要无缝滚动或预加载相邻房间（新任务）",
+    "需要重切背景美术或新增房间资源（新任务）",
+    "需要把房间状态写入存档（重新审计 schema）",
+    "需要改 TASK-019 的相机常量/体型/范围/船战（回归 TASK-019）"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-10T16:36:46+08:00",
+    "exact_user_text": "两个都确认（推荐）",
+    "canonical_example": "确认 TASK-020 v1 进入开发"
+  }
+}

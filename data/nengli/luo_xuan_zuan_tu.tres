@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/luo_xuan_zuan_tu.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"luo_xuan_zuan_tu"
 ming_zi = "螺旋钻突"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "钻头冲刺5身位穿透所有路径目标：每者掉肉0.8级+击退1.5身位，最多串4条，第3条起每条-20%。"
 lai_yuan = "剑鱼"
 suoshu_xing_tai = &"po_lang_du_jiao_jiao"

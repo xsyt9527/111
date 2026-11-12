@@ -31,6 +31,18 @@ func _initialize() -> void:
 	assert_xiang_deng(ZD.zhi_ming_shang_hai(3.0, 10.0), 0.9,
 			"A4 致命区按目标体型：10×3%×3 = 0.9")
 
+	# ---- 用例 1c：人类船战伤害（TASK-019：体型系数 0.24 + 基础值 0.08）----
+	assert_xiang_deng(ZD.JIU_SHANG_HAI_XI_SHU, 0.24, "船战体型系数 0.15→0.24")
+	assert_xiang_deng(ZD.JIU_SHANG_HAI_JI_CHU, 0.08, "船战基础值 0.05→0.08")
+	assert_xiang_deng(ZD.jiu_yao_ji_shang_hai(9.0, 1.0), 2.24,
+			"体型 9、嘴巴 1：0.24×9+0.08 = 2.24（旧公式 1.4）")
+	assert_xiang_deng(ZD.jiu_yao_ji_shang_hai(10.0, 1.0), 2.48,
+			"体型 10、嘴巴 1：0.24×10+0.08 = 2.48")
+	assert_xiang_deng(ZD.jiu_yao_ji_shang_hai(0.0, 1.0), 0.08,
+			"体型 0 仍有基础值 0.08：不会出现 0 伤害")
+	assert_xiang_deng(ZD.jiu_yao_ji_shang_hai(9.0, 2.0), 4.48,
+			"嘴巴系数照常乘：2.24×2 = 4.48")
+
 	# ---- 用例 2：致命区 —— 攻击者体型 ≥ 目标（策划案 8.1）----
 	assert_eq(1 if ZD.zhi_ming_ke_sha(11.0, 10.0) else 0, 1, "11 对 10：更大，可一击必杀")
 	assert_eq(1 if ZD.zhi_ming_ke_sha(10.0, 10.0) else 0, 1, "10 对 10：同级咬头也致命")

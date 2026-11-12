@@ -93,9 +93,9 @@ func _initialize() -> void:
 	cd2.free()
 
 	# ---- 用例 4b：成就值购买永久开局技能 ----
-	assert_eq(NengLiKu.quan_bu().size(), 65, "能力总表 65 个（35 通用 + 30 专属）")
-	assert_eq(NengLiKu.quan_bu().size() - NengLiKu.tong_yong_chi().size(), 30,
-			"专属技 30 个（65 总表 − 35 通用池）")
+	assert_eq(NengLiKu.quan_bu().size(), 101, "能力总表 101 个（35 通用 + 66 专属）")
+	assert_eq(NengLiKu.quan_bu().size() - NengLiKu.tong_yong_chi().size(), 66,
+			"专属技 66 个（101 总表 − 35 通用池）")
 	assert_bool(NengLiKu.zhao(&"yu_lei_chong_ci") != null, true, "按 id 反查主动能力")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"yu_lei_chong_ci")), 30, "主动永久解锁 30 成就值")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"ruan_lin")), 20, "被动永久解锁 20 成就值")

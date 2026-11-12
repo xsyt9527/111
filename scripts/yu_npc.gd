@@ -4,7 +4,7 @@ class_name YuNpc
 # 优先级：复仇目标 > 感知范围内最大的小鱼 > 玩家；打不过就逃
 
 @export var bianju := 80.0  # 屏幕外多远才算离开（像素）
-const HONG_GUANG_FANG_DA := 1.5  # 红光层比本体大 50%：露在贴图外的部分才是那圈“红光”
+const HONG_GUANG_FANG_DA := 2.1  # 红光层比本体大约 110%：TASK-019 放大可吃提示，判定圈不变
 const SI_KAO_JIAN_GE := 0.3  # 思考间隔（秒）：不每帧扫全场的性能闸
 const YAO_JI_LENG_QUE := 0.5  # 咬击冷却（秒，策划案 8.6.3）
 const TAO_PAO_SHI_CHANG := 2.0  # 受击逃跑持续（秒）
@@ -19,7 +19,9 @@ const BOOS_SHENG_JI_JIAN_GE := 30.0  # 首领每 30 秒长一次（想改成长�
 const BOOS_MEI_CI_JIA_DENG_JI := 2.0  # ★首领每次加多少等级（体型 +N）：想改成长速度就改这一行
 const BOOS_ZHUI_JI_SHI_CHANG := 8.0  # 首领看见玩家后追多久（秒）
 const BOOS_ZHUI_JI_LENG_QUE := 5.0  # 追完歇多久才能再次上头（秒）：给玩家脱战窗口
-const BOOS_ZHUI_JI_SU_DU := 170.0  # 首领追击速度（像素/秒）：巡逻仍用鱼种表 sudu
+const BOOS_ZHUI_JI_SU_DU := 240.0  # 首领追击速度（像素/秒）：巡逻仍用鱼种表 sudu；比玩家 300 慢一点，但贴着身体咬时跑不掉
+const BOOS_YAO_SHANG_HAI_BEI := 15.0  # 首领“咬中”玩家的痛感倍率：A2 的 3% × 嘴巴 2.0 × 15 = 90%/口，一口几乎见底
+const BOOS_PENG_ZHUANG_HAI_BEI := 3.0  # 首领“身体蹭到”玩家的痛感倍率：保持旧版 18%/次，蹭一下很痛但不秒杀
 const BOOS_TING_LIU_SHI_CHANG := 2.0  # 到巡逻点后停留几秒
 const BOOS_DAO_DIAN_BAN_JING := 80.0  # 离巡逻点多近算“到点”
 const FAN_MIAN_SI_QU := 20.0  # 翻面死区（像素）：横向差小于它就不转头，防止正上方追人时疯狂摆头
@@ -31,6 +33,7 @@ const ROU_KUAI_CHANGJING := preload("res://scenes/RouKuai.tscn")  # 鱼肉块蓝
 const MEI_KUAI_ROU_TI_XING := 0.5  # 每块鱼肉默认携带的体型量（撕裂齿不传量时的兜底）
 const TUN_SHI_JIAN_GE := 0.3  # 首领吞食检查间隔（秒）：与思考间隔同量级，不逐帧扫组
 const SHENG_JI_BIAO := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级曲线参数：与玩家同表，改表两边同步
+const ZHUAN_SHU := preload("res://scripts/zhuan_shu_ku.gd")  # 进化专属技模块分派（2026-11-09）：只问玩家侧被动
 
 enum ZhuangTai { YOU_DANG, ZHUI_ZHU, TAO_PAO }  # 巡游 / 追击 / 逃跑
 
@@ -57,6 +60,7 @@ var dian_ma := 0.0  # 电麻条（0~100）：被电鳗电到会涨，满了失�
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉毒到会涨，满了失控
 var shi_boss := false  # 首领：不参与普通鱼群刷新；不逃跑，被咬到残血才算击败（TASK-017）
 var xun_luo_dian: Array[Vector2] = []  # 首领巡逻点（世界坐标）：Main 注入 4 个，循环游荡
+var xian_ding_qu := Rect2()  # 首领房限制矩形（世界坐标）：size=0 不限制；Main 给鲸鲨注入所在房间
 
 var _hong_guang: AnimatedSprite2D  # 红光层：玩家吃得下我时亮，提示“这个是猎物”
 var _wan_jia: Yu = null  # 玩家（靠 player 组找）：没有玩家（测试场景）就不亮
@@ -69,7 +73,7 @@ var _mu_biao = null  # 当前目标（YuNpc 或 Yu）
 var _chou_hen = null  # 仇人：谁咬过我（复仇优先）
 var _fan_ying_ji_shi := 0.0  # 反应延迟剩余（秒）：>0 时不记仇、不转头
 var _dai_chou_hen = null  # 反应延迟结束后才记账的偷袭者
-var _yan_se_tween: Tween
+var _yan_se_tween: Tween  # 受击闪白补间：只写根节点 modulate，不碰子精灵的状态染色层
 var _yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时不动、不咬、不吃
 var _kong_zhi_shi_jian := 0.0  # 失控累计时间（驱动抽搐表现）
 var _dian_ji_ji_shi := 0.0  # 电鳗放电倒计时
@@ -536,7 +540,12 @@ func _wan_jia_gan_zhi() -> float:
 		if yu_ni_wu != null and yu_ni_wu.wan_jia_yin_bi > 0.0 \
 				and global_position.distance_to(yu_ni_wu.global_position) <= yu_ni_wu.ban_jing:
 			gan *= yu_ni_wu.wan_jia_yin_bi
-	return gan * ZhangBen.wan_jia_yin_bi_xi_shu()
+	gan *= ZhangBen.wan_jia_yin_bi_xi_shu()
+	# 2026-11-09 专属技模块：隐匿类被动让玩家更晚被发现（默认 ×1，旧数值完全不变）
+	var wan := _zhao_wan_jia()
+	if wan != null:
+		gan *= ZHUAN_SHU.wen(wan, &"gan_zhi_bei", {})
+	return gan
 
 
 func ding_zhu(shi_chang: float) -> void:
@@ -690,6 +699,16 @@ func diao_rou(shu: int, mei_kuai_ti_xing := MEI_KUAI_ROU_TI_XING,
 			get_parent().add_child(rou)
 
 
+static func boos_yao_shang_hai(shou_ti: float, zui_ba: float, gong_ti := -1.0) -> float:
+	# 首领“咬中”玩家一口的伤害：A2 的 3% × 嘴巴 × 15 倍痛感（boss 口径唯一出口，测试可直算）
+	# TASK-019：可选第三参传入攻击者（首领）当前体型；按「目标体型、攻击者体型」取小结算。
+	# 这样小体型 Boss 咬大体型玩家时，不会再按玩家的大体型咬出 90%；两参旧调用保持原结果。
+	var you_xiao_ti_xing := shou_ti
+	if gong_ti > 0.0:
+		you_xiao_ti_xing = minf(shou_ti, gong_ti)
+	return ZhanDou.yao_ji_shang_hai(0.0, you_xiao_ti_xing, zui_ba) * BOOS_YAO_SHANG_HAI_BEI
+
+
 func _yao(mu) -> void:
 	if _yao_ji_leng_que > 0.0:
 		return
@@ -699,6 +718,9 @@ func _yao(mu) -> void:
 	var shou_ti := float(mu.get("tixing")) if mu.get("tixing") != null else 0.0
 	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, shou_ti, zui_ba) if shou_ti > 0.0 \
 			else ZhanDou.jiu_yao_ji_shang_hai(tixing, zui_ba)
+	# 首领咬玩家走 boss 口径：×15 痛感（2026-11-10 难度修正：一口 90%，普通鱼保持 A2 的 3%）
+	if shi_boss and mu is Yu:
+		shang_hai = boos_yao_shang_hai(shou_ti, zui_ba, tixing)
 	if _qian_fu_zhun_bei:
 		shang_hai *= _neng_li.shu_zhi  # 巨口鱼潜伏：下一口 ×2
 		_jie_chu_yin_shen_npc()
@@ -805,7 +827,10 @@ func zou_boos_sheng_ji(delta: float) -> void:
 func _tui_kai_zhou_wei(delta: float) -> void:
 	# 首领推挤层：BossPengZhuangQu 只开在首领身上，把重叠的 NPC 沿远离方向挤出去
 	# NPC 是纯 Node2D、没有物理刚体——这里直接改对方位置，效果等价于“被大鲸鲨顶开”
-	for qu in $BossPengZhuangQu.get_overlapping_areas():
+	var tui_qu := $BossPengZhuangQu as Area2D
+	if not tui_qu.monitoring:
+		return  # 测试可能先 add_child 再设 shi_boss：_ready 时监控已按旧值关闭，查重叠会刷 ERROR
+	for qu in tui_qu.get_overlapping_areas():
 		var yu := qu.get_parent() as YuNpc
 		if yu == null or yu == self or yu.si_le:
 			continue
@@ -840,19 +865,31 @@ func _tun_shen_bian_yu(delta: float) -> void:
 		_tun_diao(mu)  # 吃 NPC 管道现成：隐藏经验自动挂上
 
 
+func zai_xian_ding_qu(dian: Vector2) -> bool:
+	# 首领房限制：true = 允许在该点索敌/追击；空矩形（size=0）表示不限制，普通鱼与旧夹具照旧
+	return xian_ding_qu.size == Vector2.ZERO or xian_ding_qu.has_point(dian)
+
+
 func _boos_xing_dong(delta: float) -> void:
 	# 首领两态：看见玩家 → 优先追 8 秒；平时在 4 个巡逻点之间游荡
 	# 同食两态都吃（策划案：巡游路上碰到的小鱼照吞不误）
+	# TASK-021：只在本房间内索敌/追击——玩家不在首领房就安心巡逻，禁止跨房贴脸
 	_tun_shen_bian_yu(delta)
 	var wan := _zhao_wan_jia()
 	if is_instance_valid(wan) and wan.yin_shen:
 		# 潜伏中的玩家：首领也看不见——立刻放弃追击回巡逻（潜伏是首领战的脱战手段）
 		_boos_zhu_ji_ji_shi = 0.0
 		wan = null
-	if _boos_zhu_ji_ji_shi <= 0.0 and _boos_leng_que_ji_shi <= 0.0 and wan != null \
+	var wan_zai_qu := is_instance_valid(wan) and zai_xian_ding_qu(wan.global_position)
+	if _boos_zhu_ji_ji_shi <= 0.0 and _boos_leng_que_ji_shi <= 0.0 and wan_zai_qu \
 			and global_position.distance_to(wan.global_position) <= _wan_jia_gan_zhi():
 		_boos_zhu_ji_ji_shi = BOOS_ZHUI_JI_SHI_CHANG  # 看见玩家：开始 8 秒追击
 		zhuang_tai = ZhuangTai.ZHUI_ZHU
+	# 追击中玩家跑出首领房：立即断追击并进冷却，回巡逻，不在房边干站
+	if _boos_zhu_ji_ji_shi > 0.0 and not wan_zai_qu:
+		_boos_zhu_ji_ji_shi = 0.0
+		_boos_leng_que_ji_shi = BOOS_ZHUI_JI_LENG_QUE
+		zhuang_tai = ZhuangTai.YOU_DANG
 	if _boos_zhu_ji_ji_shi > 0.0:
 		_boos_zhu_ji_ji_shi = maxf(0.0, _boos_zhu_ji_ji_shi - delta)
 		_boos_zhui_ji(wan, delta)
@@ -872,8 +909,21 @@ func _boos_zhui_ji(wan, delta: float) -> void:
 	if cha.length() > 1.0:
 		position += cha.normalized() * BOOS_ZHUI_JI_SU_DU * delta
 		_chao_xiang(cha)
-	if global_position.distance_to(wan.global_position) <= _yao_ji_ju_li():
+	# TASK-021：追击位移夹在首领房内（四周留 8px），防止贴边抖动/越界
+	if xian_ding_qu.size != Vector2.ZERO:
+		position.x = clampf(position.x, xian_ding_qu.position.x + 8.0, xian_ding_qu.end.x - 8.0)
+		position.y = clampf(position.y, xian_ding_qu.position.y + 8.0, xian_ding_qu.end.y - 8.0)
+	if _neng_yao_dao(wan):
 		_yao(wan)
+
+
+func _neng_yao_dao(mu: Node2D) -> bool:
+	# 咬到判定的唯一口径：本体判定圈 + 目标自己的咬击圈。玩家能咬首领的边缘，首领也能咬到玩家。
+	# 旧版只比本体圈（85px）对玩家咬圈边缘（≈111px）——中间那条 26px “安全带”就是白嫖的根因
+	var ban_jing := _yao_ji_ju_li()
+	if mu is Yu:
+		ban_jing += mu.yao_ji_ban_jing()
+	return global_position.distance_to(mu.global_position) <= ban_jing
 
 
 func _boos_xun_luo(delta: float) -> void:
@@ -1015,6 +1065,11 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, bu := "shen") -> void:
 		_bei_ji_bai()
 		return
 	if shi_boss:
+		# 被玩家咬就回头：歇战窗口只在“玩家也停手”时成立，不能站着白挨 5 秒
+		# 只认玩家（NPC 互咬不会给玩家创造白嫖窗口）
+		if lai_yuan != null and is_instance_valid(lai_yuan) and lai_yuan.is_in_group("player"):
+			_boos_leng_que_ji_shi = 0.0
+			_boos_zhu_ji_ji_shi = BOOS_ZHUI_JI_SHI_CHANG
 		return  # 首领不逃跑：站着挨咬才打得动
 	# 反应时间：偷袭身体/头 → 先懵一会儿；正面咬嘴（zui）算当面咬，立刻反应
 	# 延迟中再挨咬不刷新计时——否则玩家连咬就能把鱼永远定住
@@ -1072,11 +1127,15 @@ func _ying_she_ti_xing() -> void:
 
 
 func _shan_hong() -> void:
+	# 受击闪白：过曝白——modulate 分量 >1，彩色贴图被乘法推向白色，比淡红染色更显眼
+	# 只染根节点 modulate：石化发灰/声呐泛黄/潜伏半透明等状态色染在子精灵 $AnimatedSprite2D.modulate，
+	# 根与子精灵是两层乘法染色、互不覆盖；若把白闪改到子精灵上，就会盖掉状态染色
 	if _yan_se_tween != null and _yan_se_tween.is_valid():
-		_yan_se_tween.kill()
-	modulate = Color(1.0, 0.35, 0.35)
+		_yan_se_tween.kill()  # 连续受击：先杀旧 Tween，后一下重新起闪，不叠成多份补间
+	modulate = Color(2.8, 2.8, 2.8, 1.0)  # 过曝白起手：2.8 倍亮度，彩色贴图被推向纯白
 	_yan_se_tween = create_tween()
-	_yan_se_tween.tween_property(self, "modulate", Color.WHITE, 0.18)
+	_yan_se_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)  # 缓出：起手最亮，末段减速回落
+	_yan_se_tween.tween_property(self, "modulate", Color.WHITE, 0.14)  # 0.14 秒回到本色
 
 
 func _geng_xin_bu_wei() -> void:

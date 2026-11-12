@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"xing_yu_ling_yu"
+ming_zi = "星域领域"
+miao_shu = "吞星暗场5秒内速度与咬伤+20%；亮区受伤+10%。"
+lai_yuan = "鲸鲨"
+suoshu_xing_tai = &"xing_kong_tun_xing_shou"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 0.0
+ban_jing = 0.0
+shu_zhi = 0.2
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.1
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([])
+ban_jing_shen_wei = false

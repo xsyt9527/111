@@ -1,0 +1,410 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-019",
+  "task_spec_version": 1,
+  "slug": "ti-xing-zhan-dou-fan-wei",
+  "title": "体型战斗手感、技能范围统一与人类船伤害修正",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+  "objective": "修复首领小体型仍按玩家新体型咬出 90% 伤害的 Bug；升级瞬间给予短暂免伤和视觉脉冲；让体型每 5 点出现可见里程碑；把技能范围统一到体型换算并修正范围指示；放大可吃红光；提高人类机器船战的双向伤害；同步测试与文档，不改变既有地图/房间结构。",
+  "audit_freshness": {
+    "audited_commit": "8363e533f9195228621466b45b58fdfb808b4d7b",
+    "environment_checked_at": "2026-11-10T07:58:51Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "ZhangBen 体型上限/显示曲线/经验升级逻辑变化",
+      "Yu.scale、_shen_wei、AnimatedSprite2D 形态帧宽变化",
+      "YuNpc.boos_yao_shang_hai 参数或 Boss 嘴部数值变化",
+      "NengLi.ban_jing / ban_jing_shen_wei 数据语义变化",
+      "JiNengFanWei.xian_shi 调用方或绘制半径变化",
+      "JiQiChuan / ZhanDou 人类船伤害公式变化",
+      "Main 相机缩放常量变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "体型显示曲线与升级免伤/脉冲反馈",
+      "首领咬伤双方体型封顶",
+      "技能范围统一换算与范围指示",
+      "可吃红光表现",
+      "人类机器船双向伤害",
+      "固定 1.0 倍探索镜头（仅相机常量/函数）"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/zhang_ben.gd",
+      "res://scripts/yu.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/zhan_dou.gd",
+      "res://scripts/ji_qi_chuan.gd",
+      "res://scripts/neng_li.gd",
+      "res://scripts/ji_neng_fan_wei.gd",
+      "res://scripts/main.gd",
+      "res://scripts/ke_chi_wu.gd",
+      "res://scripts/zhuan_shu_ku.gd",
+      "res://scripts/zhuan_shu_ku/fen_yu.gd",
+      "res://scripts/zhuan_shu_ku/hong_yu.gd",
+      "res://scripts/zhuan_shu_ku/lan_yu.gd",
+      "res://scripts/zhuan_shu_ku/ju_kou_yu.gd",
+      "res://scripts/zhuan_shu_ku/ye_deng_long_yu.gd",
+      "res://scripts/zhuan_shu_ku/zong_yu.gd"
+    ],
+    "owned_config_tables": [
+      "data/nengli（仅在需要修正半径语义时改字段，不改 schema）"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-005（ZhangBen 经验/体型账本）",
+      "TASK-008（受伤/死亡结算）",
+      "TASK-014（NengLi 能力系统）",
+      "TASK-017（机器船战）",
+      "TASK-018（局外形态与开局装配）"
+    ],
+    "consumed_interfaces": [
+      "ZhangBen.dang_qian_ti_xing / ti_xing_shang_xian() / sheng_ji / shou_shang()",
+      "Yu.scale / _shen_wei() / $AnimatedSprite2D / jin_ru_wudi()",
+      "NengLi.ban_jing / ban_jing_shen_wei / dang_zhi()",
+      "JiNengFanWei.xian_shi()",
+      "JiQiChuan.shou_dao_yao_ji() / 船招常量",
+      "ZhanDou.yao_ji_shang_hai() / jiu_yao_ji_shang_hai()",
+      "Main._shi_jiao_bei() / camera"
+    ],
+    "provided_interfaces": [
+      "ZhangBen.ti_xing_dao_chi_du() 新增每 5 点体型里程碑",
+      "Yu.ti_chang() / ji_neng_ban_jing(neng, dang, zui_xiao_bei) / fan_wei_xiu_zheng(shijie, zui_xiao_bei)",
+      "YuNpc.boos_yao_shang_hai(shou_ti, zui_ba, gong_ti := -1.0)",
+      "JiQiChuan.WAN_JIA_TI_XING_SHANG_HAI_BI / 新船招伤害口径",
+      "JiNengFanWei.xian_shi(..., wan_jia: Yu = null)"
+    ],
+    "emitted_signals": [
+      "不新增信号；沿用 ZhangBen.sheng_ji"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji -> Yu._on_sheng_ji（升级免伤/脉冲）"
+    ],
+    "shared_state": [
+      "ZhangBen 是等级/当前体型/上限的唯一真源",
+      "Yu.scale 是玩家视觉体型；技能范围必须只经 Yu.ti_chang()/ji_neng_ban_jing() 读取",
+      "YuNpc.tixing 是 Boss 当前体型；小体型首领咬人按 min(目标, 攻击者) 结算",
+      "JiQiChuan 的船招伤害读取玩家当前体型，不从主场景缓存"
+    ],
+    "registered_shared_changes": [
+      "Main 相机 SHI_JIAO_MEI_JI 改为 0.0、_shi_jiao_bei() 恒为 1.0；不改主场景顶层结构",
+      "NengLi 只加字段注释，不改数据结构或资源 schema"
+    ],
+    "conflict_hotspots": [
+      "tests/ce_panding.gd 与 TASK-020 共享：本任务先改，房间用例由 TASK-020 后续追加",
+      "scripts/main.gd 与 TASK-020 共享：本任务只改相机常量与 _shi_jiao_bei，房间逻辑留给 TASK-020",
+      "Yu._shen_wei() 仍以 100px 为 1 身位；不要拿它替代实际帧宽 ti_chang()，两者用途不同",
+      "升级免伤必须只给玩家，不给 YuNpc",
+      "Boss 两参旧调用必须保持 0.9 结果，避免旧测试/旧调用回归",
+      "进化模块可能已有 _shen_wei() 乘法，二次乘身位是已知风险；必须用 fan_wei_xiu_zheng 收口而非再乘一次"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/ce_zhang_ben.gd / ce_zhan_dou.gd / ce_panding.gd 全 passed",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 无违例",
+      "F5：同体型 Boss / 小体型 Boss / 升级瞬间三种咬伤；6 身位技能圈；船战伤害"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/zhang_ben.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/ji_neng_fan_wei.gd",
+    "scripts/main.gd",
+    "scripts/ke_chi_wu.gd",
+    "scripts/zhan_dou.gd",
+    "scripts/ji_qi_chuan.gd",
+    "scripts/neng_li.gd",
+    "tests/ce_zhang_ben.gd",
+    "tests/ce_panding.gd",
+    "tests/ce_zhan_dou.gd",
+    "tools/yinyue/shengcheng_yinyue.py",
+    "data/nengli/**",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**",
+    "scripts/yu_qun.gd"
+  ],
+  "allowed_new_files": [
+    "scripts/zhuan_shu_ku.gd",
+    "scripts/zhuan_shu_ku/fen_yu.gd",
+    "scripts/zhuan_shu_ku/hong_yu.gd",
+    "scripts/zhuan_shu_ku/lan_yu.gd",
+    "scripts/zhuan_shu_ku/ju_kou_yu.gd",
+    "scripts/zhuan_shu_ku/ye_deng_long_yu.gd",
+    "scripts/zhuan_shu_ku/zong_yu.gd",
+    "tests/ce_zhan_dou.gd",
+    "tests/ce_zhuanshu_fen_yu.gd",
+    "tests/ce_zhuanshu_hong_yu.gd",
+    "tests/ce_zhuanshu_lan_yu.gd",
+    "tests/ce_zhuanshu_ju_kou_yu.gd",
+    "tests/ce_zhuanshu_ye_deng_long_yu.gd",
+    "tests/ce_zhuanshu_zong_yu.gd",
+    "data/nengli/**",
+    "docs/development_tasks/TASK-019_ti_xing_zhan_dou_fan_wei/**",
+    "tools/yinyue/bgm_jing_sha.mmp",
+    "docs/音乐试听_鲸鲨首领战_2026-11-10.md",
+    "docs/技能图标与特效需求_Gemini_2026-11-10.md",
+    "docs/development_tasks/TASK-020_jiu_gong_ge_fang_jian/**"
+  ],
+  "forbidden_systems": [
+    "TASK-019 自身不得实现 TASK-020 房间/Camera2D limit/刷怪边界；TASK-020 在独立任务包与独立范围内实现",
+    "BGM_QU_MU 接线、把试听 WAV 放进 assets/（计划 D 的离线试听生成是并行交付，不属本任务 gameplay）",
+    "Gemini 特效需求文档改写（计划 E 是并行 docs 交付，不属本任务实现）",
+    "新增 Autoload、修改存档 schema、修改主场景顶层结构",
+    "删除 tests/ 既有文件（可改断言）",
+    "修改 .agents/skills/**（只读）",
+    "commit / push"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "体型曲线、Boss 咬伤与升级反馈",
+      "behavior": "ZhangBen 显示缩放加入每 5 点体型 ×1.06 里程碑；Boss 咬伤新增第三参 gong_ti，按 min(目标, 攻击者) 结算；Yu 监听升级信号，给 0.6 秒无敌和精灵脉冲；NPC/食物红光放大；ce_zhang_ben/ce_panding 增加断言。",
+      "main_concept": "同一个当前体型既是血量也是尺寸：攻击伤害必须同时受攻击者与目标限制，升级回满不能变成被小 Boss 秒杀的新入口",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd",
+        "scripts/ke_chi_wu.gd",
+        "tests/ce_zhang_ben.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_zhang_ben.gd 全 passed",
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：同体型 Boss 咬一口仍是 90%，小体型 Boss 咬 10 体型玩家约 18%，升级瞬间不掉血"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "人类机器船双向伤害",
+      "behavior": "ZhanDou 旧咬击系数 0.15/0.05 改为 0.24/0.08；JiQiChuan 三种船招改为固定值 + 玩家当前体型 4%；ce_zhan_dou/ce_panding 更新断言。",
+      "main_concept": "玩家体型要同时进入攻防公式：咬船随体型增长，船招也要随玩家体型增长，否则后期船战只剩磨血",
+      "files": [
+        "scripts/zhan_dou.gd",
+        "scripts/ji_qi_chuan.gd",
+        "tests/ce_zhan_dou.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_zhan_dou.gd 全 passed",
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：Lv.8 咬船弱点约 6.72/口、船体约 1.568/口；船招伤害随体型上升"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "技能范围统一入口与指示修复",
+      "behavior": "Yu 新增 ti_chang/ji_neng_ban_jing/fan_wei_xiu_zheng；JiNengFanWei 接收玩家实例并走同一入口；8 处基础固定像素主动与六份进化模块主动半径改用统一口径；六身位技能不再画成 6px。",
+      "main_concept": "世界像素半径与身位半径是两套单位，必须先换算再套视觉下限；范围指示与实际命中必须调用同一个函数",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/neng_li.gd",
+        "scripts/ji_neng_fan_wei.gd",
+        "scripts/zhuan_shu_ku.gd",
+        "scripts/zhuan_shu_ku/fen_yu.gd",
+        "scripts/zhuan_shu_ku/hong_yu.gd",
+        "scripts/zhuan_shu_ku/lan_yu.gd",
+        "scripts/zhuan_shu_ku/ju_kou_yu.gd",
+        "scripts/zhuan_shu_ku/ye_deng_long_yu.gd",
+        "scripts/zhuan_shu_ku/zong_yu.gd",
+        "data/nengli/**",
+        "tests/ce_panding.gd",
+        "tests/ce_zhuanshu_fen_yu.gd",
+        "tests/ce_zhuanshu_hong_yu.gd",
+        "tests/ce_zhuanshu_lan_yu.gd",
+        "tests/ce_zhuanshu_ju_kou_yu.gd",
+        "tests/ce_zhuanshu_ye_deng_long_yu.gd",
+        "tests/ce_zhuanshu_zong_yu.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全 passed",
+        "六份 ce_zhuanshu_*.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：长按 6 身位技能看范围圈；固定 90px 技能在高体型下不小于半条鱼；进化主动范围不二次乘身位"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "固定 1.0 倍探索镜头",
+      "behavior": "Main.SHI_JIAO_MEI_JI 改为 0.0，_shi_jiao_bei() 恒为 1.0；ce_panding 相机断言改为 Lv0/5/10/20 全 1.0。",
+      "main_concept": "镜头拉远会抵消体型成长；固定 1.0 让同一世界尺寸在屏幕上稳定放大，并与后续 1376×768 房间兼容",
+      "files": [
+        "scripts/main.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/ce_panding.gd 全 passed"
+      ],
+      "manual_checks": [
+        "F5：Lv.1 与 Lv.10 体型屏幕占比明显变大；无黑边"
+      ]
+    },
+    {
+      "step_id": "step-05",
+      "title": "全量验证、文档与清理",
+      "behavior": "八步门禁连续两轮全绿；更新 TASK_INDEX/引擎词总表/学习路线/docx；清理临时文件；回填任务包报告。",
+      "main_concept": "交付门禁：断言、ERROR 筛查、范围检查、文档同步、手测记录一起收口",
+      "files": [
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "check_task_scope.py check 无违例",
+        "validate_task.py 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 全流程手测",
+        "红测：把 Boss 第三参传 0 或把范围下限去掉，确认测试能抓住，复原复绿"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释为什么 Boss 咬伤要同时受攻击者体型和目标体型限制",
+      "能指出当前体型、显示缩放、技能半径三者分别在哪个函数换算",
+      "能区分 ban_jing_shen_wei=true/false 两种单位，并说明为什么范围指示必须和命中用同一入口",
+      "能解释镜头固定 1.0 对体型可见性的作用，以及它与房间尺寸的关系",
+      "能说出人类船战两个方向的伤害各自读取什么"
+    ],
+    "concepts": [
+      "当前体型 = 血量真值，等级只决定上限",
+      "显示缩放幂曲线与里程碑乘数",
+      "世界像素半径 vs 身位半径",
+      "视觉下限与实际命中半径同源",
+      "信号驱动的升级免伤窗口",
+      "镜头缩放与世界坐标的屏幕占比"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "只改 Main 相机常量/函数、玩家/首领脚本数值与 UI 指示；不新增节点、Autoload、主场景入口或存档结构，生命周期不变。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 对本任务包校验退出码 0",
+    "headless --import 退出码 0",
+    "tests/ce_zhang_ben.gd 全 passed",
+    "tests/ce_zhan_dou.gd 全 passed",
+    "tests/ce_panding.gd 全 passed",
+    "tests/ce_zhuanshu_*.gd 全 passed",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 无违例"
+  ],
+  "required_manual_checks": [
+    "F5：同体型 Boss 一口 90%，升级后小体型 Boss 不再一口 90%",
+    "F5：升级瞬间 0.6 秒无敌和精灵脉冲可见",
+    "F5：Lv.1 vs Lv.10 屏幕体型占比明显",
+    "F5：6 身位技能圈与固定像素技能下限正确",
+    "F5：可吃红光明显变大；船战伤害提高"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [
+      "不新增对照项目；依据用户本轮反馈、策划案 v0.27 与现有测试契约",
+      "固定 1.0 镜头是对策划案每级拉远 10% 的主动偏离，服务体型可见性与房间尺寸",
+      "Boss 咬伤保留 15 倍痛感，仅对小体型 Boss 封顶；同体型仍是高危 90%"
+    ],
+    "unknowns": [
+      "Lv.9 后体型是否仍会超出单房间视野（当前上限定为 10 体型）",
+      "红光 2.1 倍是否会和食物光效重叠，需要 F5 观察",
+      "船招 +4% 玩家体型是否足够，需要试玩确认"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要改变 Boss 90% 同体型口径或 15 倍痛感常量（新任务）",
+    "需要把技能范围改成全数据驱动或新增 NengLi 字段（重新审计 schema）",
+    "需要恢复逐级镜头拉远或做极端体型镜头（新任务）",
+    "需要改房间/Camera2D limit（移交 TASK-020）",
+    "需要新增特效资源或视频/音效（新任务）"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-10T16:36:46+08:00",
+    "exact_user_text": "两个都确认（推荐）",
+    "canonical_example": "确认 TASK-019 v1 进入开发"
+  }
+}

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/lie_kou_xian_jing.png" id="2_tu_biao"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"lie_kou_xian_jing"
+ming_zi = "裂口陷阱"
+tu_biao = ExtResource("2_tu_biao")
+miao_shu = "原地张口4秒：1身位内NPC被咬住束缚2秒；张口期间自身游速降为70%。"
+lai_yuan = "巨口鱼"
+suoshu_xing_tai = &"shen_yuan_lie_kou_guai"
+lei_xing = 0
+leng_que = 22.0
+chi_xu = 4.0
+ban_jing = 1.0
+shu_zhi = 2.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.7
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([])
+ban_jing_shen_wei = true

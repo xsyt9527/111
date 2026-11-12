@@ -9,6 +9,9 @@
 中间产物：
   tools/yinyue/*.mmp               LMMS 工程（可复现，正式产物，别删）
   tools/yinyue/render/*.wav        LMMS 原始渲染（临时，处理后删除）
+试听独立 job（只写 build/音乐试听，不进 assets）：
+  python -I tools/yinyue/shengcheng_yinyue.py bgm_jing_sha
+  → build/音乐试听/bgm_jing_sha.wav  鲸鲨首领战，84 BPM，24 小节 ≈ 68.6 秒
 用法：python -I tools/yinyue/shengcheng_yinyue.py
 """
 import os
@@ -21,6 +24,7 @@ import numpy as np
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 LMMS = r"D:\LMMS\lmms.exe"
 OUT_DIR = os.path.join(ROOT, "assets", "yinxiao")
+SHI_TING_DIR = os.path.join(ROOT, "build", "音乐试听")  # 试听稿只写 build，不进 assets
 RENDER_DIR = os.path.join(os.path.dirname(__file__), "render")
 BARS_PER_MIN = 4.0 / 1.0  # 4/4 拍：每小节 4 拍
 
@@ -449,14 +453,210 @@ def qu_jue_zhan():
     return bpm, total, tracks
 
 
+# ---------------------------------------------------------------- 曲 4：鲸鲨首领战（试听）
+def qu_jing_sha():
+    """D 弗里吉亚 · 84 BPM · 24 小节 ≈ 68.6 秒 · 无缝循环试听稿。
+
+    结构：
+      0~3   下潜 drone + 声呐 ping（先用高音碎片露出“巨影”动机）
+      4~11  心跳低鼓 + 鲸歌（动机完整陈述、上行模进）
+      12~19 铜管式低音 + 不谐弦乐高潮（动机在四个低音区移位）
+      20~23 回环收束（高八度鲸歌回归、开放五度、声呐余响折回开头）
+
+    动机“巨影”：D–F–Eb–D（1–3–b2–1），节奏 2+1+1+4 拍。
+    参考气质只取“Subnautica 利维坦压迫 + Shadow of the Colossus 巨兽战”，
+    旋律与和声全部原创，不采样、不引用原曲。
+    """
+    bpm = 84
+    bars = 24
+    total = bars * TICKS
+    tracks = []
+
+    # ---- 巨兽 Sub：D1/D2 长音，全曲最低频的“体重”
+    sub = [
+        n(0, 0, 64, 26, 82), n(0, 0, 64, 38, 52),
+        n(4, 0, 64, 26, 82), n(4, 0, 64, 38, 52),
+        n(8, 0, 32, 33, 74), n(8, 0, 32, 45, 48),
+        n(10, 0, 16, 34, 78), n(10, 0, 16, 46, 50),
+        n(11, 0, 16, 33, 74), n(11, 0, 16, 45, 48),
+        n(12, 0, 32, 26, 82), n(12, 0, 32, 38, 52),
+        n(14, 0, 32, 34, 82), n(14, 0, 32, 46, 52),
+        n(16, 0, 32, 31, 82), n(16, 0, 32, 43, 52),
+        n(18, 0, 32, 33, 82), n(18, 0, 32, 45, 52),
+        n(20, 0, 64, 26, 82), n(20, 0, 64, 38, 52),
+    ]
+    tracks.append(inst_track(
+        "巨兽Sub", inst_triple(wave0=0, vol0=100, vol1=0, vol2=0),
+        eldata(fcut=120, fres=0.2, att=0.8, dec=0.5, sustain=0.95, rel=2.0, env_amt=1.0),
+        vol=40, pan=0, total_len=total, notes=sub))
+
+    # ---- 下潜 Drone：A 段 D–C–Bb–A 逐小节下沉，B/C/D 段变成和声底座
+    drone = [
+        n(0, 0, 16, 50, 52), n(0, 0, 16, 57, 38),
+        n(1, 0, 16, 48, 52), n(1, 0, 16, 55, 36),
+        n(2, 0, 16, 46, 52), n(2, 0, 16, 53, 36),
+        n(3, 0, 16, 45, 52), n(3, 0, 16, 46, 32),
+        n(4, 0, 32, 50, 50), n(4, 0, 32, 57, 36),
+        n(6, 0, 32, 50, 50), n(6, 0, 32, 53, 36),
+        n(8, 0, 32, 45, 50), n(8, 0, 32, 48, 36),
+        n(10, 0, 16, 46, 50), n(10, 0, 16, 53, 36),
+        n(11, 0, 16, 45, 50), n(11, 0, 16, 48, 36),
+        n(12, 0, 32, 38, 50), n(12, 0, 32, 45, 34),
+        n(14, 0, 32, 34, 50), n(14, 0, 32, 41, 34),
+        n(16, 0, 32, 31, 50), n(16, 0, 32, 38, 34),
+        n(18, 0, 32, 33, 50), n(18, 0, 32, 36, 34),
+        n(20, 0, 32, 38, 50), n(20, 0, 32, 45, 34),
+        n(22, 0, 32, 38, 50), n(22, 0, 32, 45, 34), n(22, 0, 32, 50, 24),
+    ]
+    tracks.append(inst_track(
+        "下潜Drone",
+        inst_triple(wave0=2, vol0=100, vol1=42, wave1=1, fine1=6,
+                    coarse2=-12, wave2=0, vol2=16),
+        eldata(fcut=760, fres=0.3, att=0.9, dec=0.6, sustain=0.9, rel=2.2, env_amt=1.0),
+        vol=38, pan=0, total_len=total, notes=drone))
+
+    # ---- 声呐 Ping：正弦长衰减；A/D 段用 D–F–Eb–D 的高音碎片暗示动机
+    ping = [
+        n(2, 8, 2, 74, 56, -22), n(2, 12, 2, 77, 42, 22),
+        n(3, 4, 2, 75, 38, -18), n(3, 8, 2, 74, 50, 18), n(3, 14, 2, 69, 24, 0),
+        n(8, 8, 2, 74, 36, -20), n(11, 12, 2, 69, 24, 20),
+        n(22, 8, 2, 74, 48, -20), n(22, 12, 2, 77, 34, 20),
+        n(23, 4, 2, 75, 26, -18), n(23, 8, 2, 74, 38, 18), n(23, 14, 2, 69, 20, 0),
+    ]
+    tracks.append(inst_track(
+        "声呐Ping", inst_triple(wave0=0, vol0=100, vol1=0, vol2=0),
+        eldata(fcut=8000, fres=0.2, att=0.005, dec=1.2, sustain=0.12, rel=2.5, env_amt=1.0),
+        vol=40, pan=0, total_len=total, notes=ping))
+
+    # ---- 心跳低鼓：B 段每小节 lub-dub；C 段加密成战斗心跳；D 段只留两下
+    kick = []
+    for b in range(4, 12):
+        v1 = 100 if b in (4, 6, 8, 10) else 92
+        kick += [n(b, 0, 1.2, 57, v1), n(b, 3, 1.0, 57, 58)]
+        if b >= 10:
+            kick += [n(b, 8, 1.2, 57, 84), n(b, 11, 1.0, 57, 50)]
+    for b in range(12, 20):
+        kick += [n(b, 0, 1.2, 57, 100), n(b, 3, 1.0, 57, 62),
+                 n(b, 8, 1.2, 57, 94), n(b, 11, 1.0, 57, 56)]
+    kick += [n(20, 0, 1.4, 57, 100), n(20, 3, 1.0, 57, 58), n(21, 0, 1.2, 57, 70)]
+    tracks.append(inst_track(
+        "心跳低鼓", inst_afp("drums/kick_soft01.ogg"), eldata(fcut=260, fres=0.2),
+        vol=90, pan=0, total_len=total, notes=kick))
+
+    # ---- 战鼓低频：C 段加入错位低通鼓，模仿巨兽脚步
+    tom = []
+    for b in range(12, 20):
+        if b % 2 == 0:
+            tom += [n(b, 6, 1.0, 57, 72, -10), n(b, 14, 1.0, 57, 60, 12)]
+        else:
+            tom += [n(b, 10, 1.0, 57, 64, -12)]
+    tracks.append(inst_track(
+        "战鼓低频", inst_afp("drums/tom_low01.ogg"), eldata(fcut=350, fres=0.2),
+        vol=170, pan=0, total_len=total, notes=tom))
+
+    # ---- 鲸歌：B 段完整陈述动机 + 两次模进；D 段高八度回归
+    whale = [
+        n(4, 0, 8, 62, 72, -8), n(4, 8, 4, 65, 62, 8),
+        n(4, 12, 4, 63, 58, -8), n(5, 0, 16, 62, 66, 8),
+        n(6, 0, 8, 65, 70, -8), n(6, 8, 4, 69, 60, 8),
+        n(6, 12, 4, 67, 56, -8), n(7, 0, 16, 65, 64, 8),
+        n(8, 0, 8, 57, 66, -8), n(8, 8, 4, 60, 58, 8),
+        n(8, 12, 4, 58, 54, -8), n(9, 0, 16, 57, 62, 8),
+        n(10, 0, 8, 62, 70, -8), n(10, 8, 4, 65, 62, 8),
+        n(10, 12, 4, 67, 58, -8), n(11, 0, 16, 69, 66, 8),
+        n(20, 0, 8, 74, 64, -8), n(20, 8, 4, 77, 54, 8),
+        n(20, 12, 4, 75, 50, -8), n(21, 0, 16, 74, 58, 8),
+        n(22, 0, 32, 62, 46, -8),
+    ]
+    # 低八度影子，给鲸歌加一层胸腔共鸣
+    for (p, ln, k, v, pa) in list(whale):
+        whale.append((p, ln, k - 12, int(v * 0.38), -pa))
+    tracks.append(inst_track(
+        "鲸歌",
+        inst_triple(wave0=1, vol0=100, vol1=18, wave1=0, fine1=0,
+                    coarse2=0, wave2=0, vol2=0),
+        eldata(fcut=2500, fres=0.3, att=0.45, dec=0.5, sustain=0.85, rel=2.4, env_amt=1.0),
+        vol=32, pan=0, total_len=total, notes=whale))
+
+    # ---- 铜管式低音：C 段四个两小节块，每块把“巨影”动机移到新根音
+    brass = []
+    for (b0, r, k2, k3, fifth) in [
+        (12, 38, 41, 39, 45),   # Dm：D–F–Eb–D
+        (14, 34, 38, 36, 41),   # Bb：Bb–D–C–Bb
+        (16, 31, 34, 33, 38),   # Gm：G–Bb–A–G
+        (18, 33, 36, 34, 36),   # Am：A–C–Bb–A（C 作小三度叠加）
+    ]:
+        brass += [n(b0, 0, 8, r, 100, -4), n(b0, 8, 4, k2, 82, 4),
+                  n(b0, 12, 4, k3, 76, -4), n(b0, 16, 16, r, 94, 4)]
+        brass += [n(b0, 0, 8, r + 12, 42, -10), n(b0, 16, 16, r + 12, 48, 10)]
+        brass += [n(b0, 0, 8, fifth, 34, 10), n(b0, 16, 16, fifth, 40, -10)]
+    tracks.append(inst_track(
+        "铜管低音",
+        inst_triple(wave0=2, vol0=100, vol1=52, wave1=3, fine1=9,
+                    coarse2=-12, wave2=2, vol2=26),
+        eldata(fcut=1400, fres=0.4, att=0.035, dec=0.22, sustain=0.62, rel=0.55, env_amt=1.0),
+        vol=110, pan=0, total_len=total, notes=brass))
+
+    # ---- 铜管持续：C 段每块的根音 + 五度长音，撑住低频铜管墙体
+    brass_pad = []
+    for (b0, r, fifth) in [(12, 38, 45), (14, 34, 41), (16, 31, 38), (18, 33, 36)]:
+        brass_pad += [n(b0, 0, 32, r, 44, -12), n(b0, 0, 32, fifth, 38, 12)]
+    tracks.append(inst_track(
+        "铜管持续",
+        inst_triple(wave0=2, vol0=100, vol1=40, wave1=2, fine1=7,
+                    coarse2=-12, wave2=2, vol2=20),
+        eldata(fcut=900, fres=0.35, att=0.6, dec=0.6, sustain=0.88, rel=1.6, env_amt=1.0),
+        vol=48, pan=0, total_len=total, notes=brass_pad))
+
+    # ---- 不谐弦乐：C 段小二度/大二度音簇；D 段解决到 Dm 与开放五度
+    strings = [
+        n(12, 0, 32, 62, 58, -14), n(12, 0, 32, 63, 52, 10), n(12, 0, 32, 65, 46, -8),
+        n(14, 0, 32, 58, 58, 10), n(14, 0, 32, 60, 52, -12), n(14, 0, 32, 62, 46, 8),
+        n(16, 0, 32, 55, 58, -12), n(16, 0, 32, 57, 52, 10), n(16, 0, 32, 58, 46, -8),
+        n(18, 0, 32, 57, 58, 8), n(18, 0, 32, 58, 52, -10), n(18, 0, 32, 60, 46, 12),
+        n(20, 0, 32, 50, 50, -12), n(20, 0, 32, 53, 44, 10), n(20, 0, 32, 57, 38, -8),
+        n(22, 0, 32, 38, 46, 10), n(22, 0, 32, 45, 42, -12), n(22, 0, 32, 50, 36, 8),
+    ]
+    tracks.append(inst_track(
+        "不谐弦乐",
+        inst_triple(wave0=2, vol0=100, vol1=45, wave1=2, fine1=12,
+                    coarse2=0, wave2=0, vol2=18),
+        eldata(fcut=2200, fres=0.4, att=0.9, dec=0.6, sustain=0.88, rel=2.5, env_amt=1.0),
+        vol=66, pan=0, total_len=total, notes=strings))
+
+    # ---- 高音弦乐：C 段高八度音簇，只在高潮出现，音量压住避免刺耳
+    strings_hi = [
+        n(12, 0, 32, 74, 44, -18), n(12, 0, 32, 75, 38, 16), n(12, 0, 32, 77, 32, -12),
+        n(14, 0, 32, 70, 44, 16), n(14, 0, 32, 72, 38, -16), n(14, 0, 32, 74, 32, 12),
+        n(16, 0, 32, 67, 44, -16), n(16, 0, 32, 69, 38, 16), n(16, 0, 32, 70, 32, -12),
+        n(18, 0, 32, 69, 44, 12), n(18, 0, 32, 70, 38, -16), n(18, 0, 32, 72, 32, 16),
+    ]
+    tracks.append(inst_track(
+        "高音弦乐",
+        inst_triple(wave0=2, vol0=100, vol1=40, wave1=1, fine1=14,
+                    coarse2=12, wave2=0, vol2=12),
+        eldata(fcut=3200, fres=0.35, att=1.0, dec=0.6, sustain=0.85, rel=2.5, env_amt=1.0),
+        vol=36, pan=-16, total_len=total, notes=strings_hi))
+
+    # ---- 高潮冲击：12/16/20 小节块头的低频重击，给结构加锚点
+    hit = [n(12, 0, 2.0, 57, 100, 0), n(16, 0, 2.0, 57, 96, 0),
+           n(20, 0, 2.0, 57, 90, 0)]
+    tracks.append(inst_track(
+        "高潮冲击", inst_afp("drums/kick_hard01.ogg"), eldata(fcut=220, fres=0.2),
+        vol=92, pan=0, total_len=total, notes=hit))
+
+    return bpm, total, tracks
+
+
 # 每首的归一化峰值：主界面曲刻意压低（用户反馈太吵），局内/决战保持满一些
 PEAK_DB = {"bgm_shen_hai": -6.0}
 
 
 # ---------------------------------------------------------------- 渲染与后处理
-def render(name, bpm, total, tracks):
+def render(name, bpm, total, tracks, out_dir=None, peak_db=-1.0, dc_block=False):
+    out_dir = out_dir or OUT_DIR
     os.makedirs(RENDER_DIR, exist_ok=True)
-    os.makedirs(OUT_DIR, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
     mmp = os.path.join(os.path.dirname(__file__), name + ".mmp")
     raw = os.path.join(RENDER_DIR, name + ".wav")
     with open(mmp, "w", encoding="utf-8") as f:
@@ -469,12 +669,11 @@ def render(name, bpm, total, tracks):
         print(r.stdout[-2000:])
         print(r.stderr[-2000:])
         raise SystemExit("渲染失败：" + name)
-    loop_wav(raw, os.path.join(OUT_DIR, name + ".wav"), bpm, total,
-             PEAK_DB.get(name, -1.0))
+    loop_wav(raw, os.path.join(out_dir, name + ".wav"), bpm, total, peak_db, dc_block)
     os.remove(raw)
 
 
-def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0):
+def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0, dc_block=False):
     """取整段循环长度，把超出部分的尾音折回开头，再按 peak_db 归一化单声道。"""
     with wave.open(src, "rb") as w:
         sr = w.getframerate()
@@ -493,6 +692,12 @@ def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0):
     if len(tail) > 0:
         m = min(len(tail), loop_len)
         head[:m] += tail[:m]
+    if dc_block:
+        # 循环滑动均值去直流/次低频：tripleoscillator 的三角/锯齿层会带一点 DC，
+        # 滑动窗按循环信号计算，去完仍保持首尾周期连续。
+        wlen = max(1, int(sr * 0.2))
+        cs = np.concatenate([[0.0], np.cumsum(np.concatenate([head, head[:wlen - 1]]))])
+        head -= (cs[wlen:] - cs[:-wlen]) / wlen
     peak = float(np.max(np.abs(head))) or 1.0
     gain = 10 ** (peak_db / 20.0)
     head *= gain * 32767.0 / peak   # 先归一化到浮点满幅，再转 int16
@@ -513,14 +718,21 @@ def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0):
 
 
 def main():
-    jobs = [
-        ("bgm_shen_hai", qu_shen_hai),
-        ("bgm_tan_suo", qu_tan_suo),
-        ("bgm_jue_zhan", qu_jue_zhan),
-    ]
-    for name, fn in jobs:
+    jobs = {
+        "bgm_shen_hai": (qu_shen_hai, OUT_DIR, PEAK_DB.get("bgm_shen_hai", -1.0), False),
+        "bgm_tan_suo": (qu_tan_suo, OUT_DIR, -1.0, False),
+        "bgm_jue_zhan": (qu_jue_zhan, OUT_DIR, -1.0, False),
+        # 试听独立 job：只写 build/音乐试听，不碰 assets，也不进 YinXiang.BGM_QU_MU
+        "bgm_jing_sha": (qu_jing_sha, SHI_TING_DIR, -1.5, True),
+    }
+    # 不带参数时保持原行为：只渲染三首正式曲；试听稿必须显式点名
+    names = sys.argv[1:] or ["bgm_shen_hai", "bgm_tan_suo", "bgm_jue_zhan"]
+    for name in names:
+        if name not in jobs:
+            raise SystemExit("未知 job：%s（可选：%s）" % (name, ", ".join(jobs)))
+        fn, out_dir, peak_db, dc_block = jobs[name]
         bpm, total, tracks = fn()
-        render(name, bpm, total, tracks)
+        render(name, bpm, total, tracks, out_dir, peak_db, dc_block)
     print("全部完成。")
 
 

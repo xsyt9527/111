@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/kong_que_huan_ying.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"kong_que_huan_ying"
 ming_zi = "孔雀幻影"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "生成2个独立游动幻影5s：攻击幻影的NPC中毒（毒晕40%+掉肉0.2级）；真身混入同速开局。"
 lai_yuan = "蓑鲉"
 suoshu_xing_tai = &"jiu_wei_du_yu_yao"

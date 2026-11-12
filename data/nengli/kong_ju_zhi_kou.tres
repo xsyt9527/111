@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+
+[resource]
+script = ExtResource("1_neng_li")
+bian_hao = &"kong_ju_zhi_kou"
+ming_zi = "恐惧之口"
+miao_shu = "被你命中的目标恐惧2秒，反向逃窜；首领免疫。"
+lai_yuan = "巨口鱼"
+suoshu_xing_tai = &"ling_hun_xi_shi_zhe"
+lei_xing = 1
+leng_que = 0.0
+chi_xu = 0.0
+ban_jing = 0.0
+shu_zhi = 2.0
+npc_shu_zhi = 0.0
+fu_shu_zhi = 0.0
+npc_jian_ge = 0.0
+ceng_jia = 0.0
+zui_da_dang = 1
+nei_bu_leng_que = 0.0
+mei_ju_ci_shu = 0
+lei_bie = Array[StringName]([])
+ban_jing_shen_wei = false

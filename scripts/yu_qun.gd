@@ -15,6 +15,18 @@ const ZUI_DA_JIAN_GE := 1.8  # 最长刷新间隔（秒）
 const LU_REN_JIAN_SHUAI := 0.8  # 每过一档，最低等级鱼占比 ×0.8
 const LU_REN_ZUI_DI := 0.2  # 最低等级鱼占比下限：局末再凶，垫底档也得留口饭吃
 const DA_YU_QUAN_ZHONG_ZHI_SHU := 2.0  # 非小孩鱼的权重 =（体型 / 当前上限）^2
+const HUAN_FANG_HUAN_YING_XIAO_YU := 10  # 换房欢迎小鱼目标数量：淡入后立刻有食物/生态
+const HUAN_FANG_AN_QUAN_JIAN_JU := 240.0  # 欢迎小鱼与玩家的最小距离：保证不贴脸
+const HUAN_FANG_NEI_BIAN_JU := 40.0  # 欢迎小鱼落点距房间四边的最小边距
+const HUAN_FANG_WAI_BIAN_JU := 60.0  # 安全入口 y 距房间上下边的最小边距
+const HUAN_FANG_PAI_DUI_RONG_YU := 5  # 补屏去重余量：鱼数已接近上限就不再叠加
+const HUI_SHOU_YU_LIANG_YU := 8.0  # 生成点距 NPC 回收线留下的安全余量（像素）
+const HUAN_FANG_PIAN_YI: Array[Vector2] = [
+	Vector2(-70.0, -50.0),
+	Vector2(70.0, -50.0),
+	Vector2(-70.0, 50.0),
+	Vector2(70.0, 50.0),
+]  # 欢迎小鱼在安全落点周围的 4 个确定性散开偏移（≤90px，按序号循环）
 
 @export var zuida_shuliang := 35   # 同屏 NPC 鱼数量上限（v0.4 上调 20→35：密度与吞食机会↑；性能靠 0.3 秒思考节流扛）
 @export var yu_zhong_zu: Array[YuZhong]  # 鱼种注册表：检查器拖入 .tres——加新鱼不改代码
@@ -25,6 +37,7 @@ var shua_xin_ting_zhi := false  # 决战期停刷开关：机器船降临后置 
 var ya_li_xiu_zheng := 0  # E 隐藏压力修正（-2~+2）：Main 开战前从存档写回；负值=对玩家更宽松
 var _da_yu_ji_shi := 0.0  # A11 大体型专刷计时器
 var _hu_chi_ji_shi := 0.0  # A14 NPC 互吃判定的全局节拍
+var fang_jian_qu := Rect2(0.0, 0.0, 4128.0, 2304.0)  # 当前房间矩形：默认整图，Main 会收窄
 
 @onready var dingshi: Timer = $Dingshi  # 定时器子节点（one_shot：每刷一条重新排程）
 
@@ -144,6 +157,130 @@ func ting_zhi_shua_xin() -> void:
 		dingshi.stop()
 
 
+func qie_huan_fang_jian(qu: Rect2) -> void:
+	# 换房：更新房间、清掉旧房普通鱼、重置计时；Boss 不是 YuQun 子节点，不受影响
+	fang_jian_qu = qu
+	for zi in get_children():
+		if zi is YuNpc and not zi.shi_boss:
+			remove_child(zi)  # 先摘树：queue_free 本帧仍算在 get_children 里，先摘才能让补屏看到空房
+			zi.queue_free()
+	_da_yu_ji_shi = 0.0
+	_hu_chi_ji_shi = 0.0
+	if shua_xin_ting_zhi:
+		return
+	var wan_jia_wei := _zhao_wan_jia_wei()  # 换房前先记玩家位置：安全入口与欢迎小鱼都按它算
+	_chong_tian_an_quan.call_deferred(wan_jia_wei)
+	_kai_xia_yi_lun()  # Timer.start 会重排当前等待，不会叠出第二个刷新循环
+
+
+func _zhao_wan_jia_wei() -> Vector2:
+	# 玩家当前位置：换房补屏的安全距离都以它为基准；取不到就用房间中心兜底
+	if is_inside_tree():
+		var wan := get_tree().get_first_node_in_group("player") as Node2D
+		if wan != null:
+			return wan.global_position
+	return fang_jian_qu.get_center()
+
+
+func _wan_jia_ti_xing() -> float:
+	# 玩家当前体型：欢迎小鱼与安全入口都按它判断“能不能一口吞”
+	if is_inside_tree():
+		var wan := get_tree().get_first_node_in_group("player")
+		if wan != null:
+			var ti = wan.get("tixing")  # 鸭子类型：测试夹具没有 tixing 时回退账本等级
+			if ti != null:
+				return float(ti)
+	return maxf(1.0, float(ZhangBen.deng_ji + 1))
+
+
+func ru_chang_xiao_yu_deng_ji(wan_jia_ti: float, zui_da := 3) -> int:
+	# 换房欢迎小鱼等级：玩家可整吞（tixing >= 对方 × 1.1）且不超过 zui_da
+	# 开局体型 1 时无鱼可吞，保底 1 级小鱼（至少不是贴脸大鱼）
+	return clampi(int(floor(wan_jia_ti / 1.1)), 1, zui_da)
+
+
+func an_quan_fang_nei_dian(qu: Rect2, wan_jia_wei: Vector2) -> Vector2:
+	# 房内四个象限中心里离玩家最远的一个：欢迎小鱼落点，保证不贴脸
+	# 1376×768 房间下，即使玩家在正中，最近象限中心也在约 394px 外
+	var si_ge: Array[Vector2] = [
+		Vector2(qu.position.x + qu.size.x * 0.25, qu.position.y + qu.size.y * 0.25),  # 左上
+		Vector2(qu.position.x + qu.size.x * 0.75, qu.position.y + qu.size.y * 0.25),  # 右上
+		Vector2(qu.position.x + qu.size.x * 0.25, qu.position.y + qu.size.y * 0.75),  # 左下
+		Vector2(qu.position.x + qu.size.x * 0.75, qu.position.y + qu.size.y * 0.75),  # 右下
+	]
+	for i in si_ge.size():
+		# 再夹进 40px 边距：任意房间尺寸下都保证落点在房内
+		var dian := si_ge[i]
+		dian.x = clampf(dian.x, qu.position.x + HUAN_FANG_NEI_BIAN_JU, qu.end.x - HUAN_FANG_NEI_BIAN_JU)
+		dian.y = clampf(dian.y, qu.position.y + HUAN_FANG_NEI_BIAN_JU, qu.end.y - HUAN_FANG_NEI_BIAN_JU)
+		si_ge[i] = dian
+	var zui_yuan := si_ge[0]
+	var zui_da := -1.0
+	for dian in si_ge:
+		var ju := dian.distance_squared_to(wan_jia_wei)
+		if ju > zui_da:
+			zui_da = ju
+			zui_yuan = dian
+	return zui_yuan
+
+
+func an_quan_chu_kou(qu: Rect2, wan_jia_wei: Vector2, bianju: float = 80.0) -> Vector2:
+	# 常规鱼安全入口：从玩家所在半场的对侧房间边缘外进入
+	# 返回点 x 必在房外；y 取玩家 y 下方 180px，再夹到房内 60px 边距
+	var zhong := qu.get_center()
+	var y := clampf(wan_jia_wei.y + 180.0, qu.position.y + HUAN_FANG_WAI_BIAN_JU,
+			qu.end.y - HUAN_FANG_WAI_BIAN_JU)
+	if wan_jia_wei.x <= zhong.x:
+		# 玩家在左半场（含正中）：从右边缘外进，水平距离 ≥ 半房宽 + bianju
+		return Vector2(qu.end.x + bianju, y)
+	# 玩家在右半场：从左边缘外进
+	return Vector2(qu.position.x - bianju, y)
+
+
+func _chong_tian_an_quan(wan_jia_wei: Vector2) -> void:
+	# 换房黑场补屏：先放离玩家远的可吃小鱼，再从安全入口补常规鱼
+	if shua_xin_ting_zhi:
+		return
+	var shang_xian := dang_qian_shang_xian()
+	# 防重复：开局 YuQun._ready 已排了 _chong_tian_yu_qun，两个 deferred 不能叠加超上限
+	if _dangqian_yu_shu() >= maxi(1, shang_xian - HUAN_FANG_PAI_DUI_RONG_YU):
+		return
+	var qu := fang_jian_qu
+	var wan_jia_ti := _wan_jia_ti_xing()
+	var xiao_yu_deng_ji := ru_chang_xiao_yu_deng_ji(wan_jia_ti)
+	var luo_dian := an_quan_fang_nei_dian(qu, wan_jia_wei)
+	var huan_ying_shu := mini(HUAN_FANG_HUAN_YING_XIAO_YU, shang_xian - _dangqian_yu_shu())
+	for i in huan_ying_shu:
+		var zhong: YuZhong = _chou_xiao_yu_zhong(xiao_yu_deng_ji)
+		if zhong == null:
+			break
+		var dian := luo_dian + HUAN_FANG_PIAN_YI[i % HUAN_FANG_PIAN_YI.size()]
+		if dian.distance_to(wan_jia_wei) < HUAN_FANG_AN_QUAN_JIAN_JU:
+			# 离玩家太近：沿远离玩家的方向推回安全距离，再夹回房内 40px 边距
+			var tui := dian - wan_jia_wei
+			if tui.length_squared() < 0.001:
+				tui = Vector2.RIGHT
+			dian = wan_jia_wei + tui.normalized() * HUAN_FANG_AN_QUAN_JIAN_JU
+		dian.x = clampf(dian.x, qu.position.x + HUAN_FANG_NEI_BIAN_JU, qu.end.x - HUAN_FANG_NEI_BIAN_JU)
+		dian.y = clampf(dian.y, qu.position.y + HUAN_FANG_NEI_BIAN_JU, qu.end.y - HUAN_FANG_NEI_BIAN_JU)
+		_fang_huan_ying_xiao_yu(zhong, dian, qu.get_center())
+	var bao_xian := 0
+	while _dangqian_yu_shu() < dang_qian_shang_xian() and bao_xian < 35:
+		if not _shengcheng_yi_tiao(true):
+			break
+		bao_xian += 1
+
+
+func _fang_huan_ying_xiao_yu(zhong: YuZhong, dian: Vector2, zhong_xin: Vector2) -> void:
+	# 欢迎小鱼直接落在房内安全点：不进房外排队，淡入后立刻有食物/生态
+	var xin_yu: YuNpc = YU_NPC_CHANGJING.instantiate()
+	xin_yu.yu_zhong = zhong
+	xin_yu.sudu = randf_range(zhong.sudu_fanwei.x, zhong.sudu_fanwei.y)
+	xin_yu.position = dian
+	xin_yu.fangxiang = 1.0 if dian.x <= zhong_xin.x else -1.0  # 朝房间中心游
+	add_child(xin_yu)
+
+
 func _on_dingshi_timeout() -> void:
 	# 停刷后不再补鱼，也不重新排程：让定时器彻底安静下来
 	if shua_xin_ting_zhi:
@@ -191,15 +328,16 @@ func _dangqian_yu_shu() -> int:
 	return shu
 
 
-func _shengcheng_yi_tiao() -> bool:
+func _shengcheng_yi_tiao(an_quan := false) -> bool:
 	# 生成一条鱼；没有符合当前刷新上限的鱼种时返回 false（调用方据此收手）
+	# an_quan=true：换房补屏，不能整吞的鱼改走对侧安全入口
 	# 停刷后这里是最后一道闸：任何调用路径都不会再新增鱼
 	if shua_xin_ting_zhi:
 		return false
 	var zhong: YuZhong = _chou_yu_zhong()
 	if zhong == null:
 		return false
-	_sheng_yu(zhong)
+	_sheng_yu(zhong, an_quan)
 	return true
 
 
@@ -214,24 +352,53 @@ func _shengcheng_da_yu() -> bool:
 	return true
 
 
-func _sheng_yu(zhong: YuZhong) -> void:
+func huan_chong_hui_shou_xian(qu: Rect2) -> Vector2:
+	# 普通补鱼可安全停留的 x 范围：NPC 在相机视野边 ±240px 外回收，这里内收 8px 留余量。
+	# 相机被房间 limit 夹住后，视野边相对房边会内缩 0~96px；必须用真实视野而不是房边，
+	# 否则从房外排队进场的鱼会一出生就落在回收线外、下一帧被删。
+	# 无相机（测试/异常路径）按房边兜底，返回的仍是“房外 232px”的保守范围。
+	if is_inside_tree():
+		var jiao := get_viewport().get_camera_2d()
+		if jiao != null:
+			var ban := get_viewport_rect().size.x * 0.5
+			var zhong := jiao.get_screen_center_position().x
+			return Vector2(zhong - ban - YuNpc.SHOU_HUI_YU_LIANG + HUI_SHOU_YU_LIANG_YU,
+					zhong + ban + YuNpc.SHOU_HUI_YU_LIANG - HUI_SHOU_YU_LIANG_YU)
+	return Vector2(qu.position.x - YuNpc.SHOU_HUI_YU_LIANG + HUI_SHOU_YU_LIANG_YU,
+			qu.end.x + YuNpc.SHOU_HUI_YU_LIANG - HUI_SHOU_YU_LIANG_YU)
+
+
+func _sheng_yu(zhong: YuZhong, an_quan := false) -> void:
 	# 生成一条指定鱼种的 NPC：普通刷新与大体型专刷共用
 	var xin_yu: YuNpc = YU_NPC_CHANGJING.instantiate()
 	xin_yu.yu_zhong = zhong  # 数据注入必须在 add_child 前：_ready 要读它
 	xin_yu.sudu = randf_range(zhong.sudu_fanwei.x, zhong.sudu_fanwei.y)
 
-	# 从当前镜头左右两侧外进入；有相机时按相机视野算，没有相机时退回视口
-	var fan_wei := _shi_jiao_fan_wei()
-	var gao := randf_range(fan_wei.position.y + 60.0, fan_wei.end.y - 60.0)  # 上下留 60 像素边距
-	# 屏外再退 0~160 像素增加纵深：一次补一屏鱼时不会全叠在同一条竖线上
-	# （NPC 的回收阈值是 bianju + SHOU_HUI_YU_LIANG，正好容得下这段排队距离）
-	var tui := randf_range(0.0, 160.0)
+	var qu := fang_jian_qu
+	if an_quan and zhong.dengji >= int(floor(_wan_jia_ti_xing())):
+		# 换房安全入口：不能整吞/同级或更大的鱼，从玩家所在半场的对侧房间边缘外进
+		# 水平距离 ≥ 半房宽（1376 房间约 688px），玩家贴边时更大：不给大鱼贴脸机会
+		var wan_jia_wei := _zhao_wan_jia_wei()
+		xin_yu.position = an_quan_chu_kou(qu, wan_jia_wei, xin_yu.bianju)
+		xin_yu.fangxiang = 1.0 if xin_yu.position.x <= qu.get_center().x else -1.0  # 左入口→1，右入口→-1
+		add_child(xin_yu)  # 进树：触发 NPC 的 _ready
+		return
+	# 从当前房间左右两侧外进入：相机 limit 会裁掉房外部分，画面上仍是“从屏幕边游入”
+	var gao := randf_range(qu.position.y + 60.0, qu.end.y - 60.0)  # 上下留 60 像素边距
+	# 房外再退 0~160 像素增加纵深：一次补一屏鱼时不会全叠在同一条竖线上。
+	# 纵深上限取“出生点到 NPC 回收线”的余量：相机靠房间一侧时视野内缩 96px，
+	# 仍退满 160px 会让约六成新鱼在下一帧被 _process 回收；这里动态压上限并夹取。
+	var hui_shou := huan_chong_hui_shou_xian(qu)
+	var tui_shang := minf(160.0, maxf(0.0, minf(
+			qu.position.x - xin_yu.bianju - hui_shou.x,
+			hui_shou.y - qu.end.x - xin_yu.bianju)))
+	var tui := randf_range(0.0, tui_shang)
 	if randf() < 0.5:
 		xin_yu.fangxiang = 1.0  # 从左边进，向右游
-		xin_yu.position = Vector2(fan_wei.position.x - xin_yu.bianju - tui, gao)
+		xin_yu.position = Vector2(clampf(qu.position.x - xin_yu.bianju - tui, hui_shou.x, hui_shou.y), gao)
 	else:
 		xin_yu.fangxiang = -1.0  # 从右边进，向左游
-		xin_yu.position = Vector2(fan_wei.end.x + xin_yu.bianju + tui, gao)
+		xin_yu.position = Vector2(clampf(qu.end.x + xin_yu.bianju + tui, hui_shou.x, hui_shou.y), gao)
 
 	add_child(xin_yu)  # 进树：触发 NPC 的 _ready
 
@@ -290,6 +457,23 @@ func _hu_chi_ju_ding() -> void:
 		if randf() >= SHU_ZHI.NPC_HU_CHI_GAI_LV:
 			continue
 		chi_zhe._tun_diao(zui_jin)
+
+
+func _chou_xiao_yu_zhong(zui_gao_deng_ji: int) -> YuZhong:
+	# 换房欢迎小鱼专用：只从 1..最高可吃等级里挑，优先最高级（同等级多条随机）
+	var ke_xuan: Array[YuZhong] = []
+	var zui_gao := 0
+	for z in yu_zhong_zu:
+		if z == null or z.dengji < 1 or z.dengji > zui_gao_deng_ji:
+			continue
+		if z.dengji > zui_gao:
+			zui_gao = z.dengji
+			ke_xuan.clear()
+		if z.dengji == zui_gao:
+			ke_xuan.append(z)
+	if ke_xuan.is_empty():
+		return null
+	return ke_xuan[randi() % ke_xuan.size()]
 
 
 func _chou_yu_zhong() -> YuZhong:

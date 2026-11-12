@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/chao_ya_shui_dao.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"chao_ya_shui_dao"
 ming_zi = "超压水刀"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "蓄力 0.8 秒后直线水刃 6 身位：无视减伤直扣当前体型 12%（首领减半）。"
 lai_yuan = "超压凝胶炮"
 suoshu_xing_tai = &"chao_ya_ning_jiao_pao"

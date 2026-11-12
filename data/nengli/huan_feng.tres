@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/huan_feng.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"huan_feng"
 ming_zi = "唤风"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "展开骨帆5s：全场形成顺你朝向的洋流，同向者速度+30%，逆向NPC减速25%。"
 lai_yuan = "旗鱼"
 suoshu_xing_tai = &"feng_fan_xun_hai_ye_cha"

@@ -205,9 +205,27 @@ func _initialize() -> void:
 
 	# ---- 用例 11：体型→像素曲线（等级无上限：高等级不能再线性放大）----
 	var zb11: Node = load("res://scripts/zhang_ben.gd").new()
+	assert_float(zb11.ti_xing_dao_chi_du(0.0), 0.0, "体型 0：显示缩放 0（未开局的空账本）")
 	assert_float(zb11.ti_xing_dao_chi_du(1.0), 0.32, "Lv.0（体型 1）显示缩放仍是 0.32")
+	assert_float(zb11.TI_XING_QU_XIAN, 0.7, "TASK-019：曲线指数保持 0.7，不改成线性")
 	assert_eq(1 if zb11.ti_xing_dao_chi_du(9.0) < 9.0 * 0.32 else 0, 1, "高等级显示增长必须小于线性（否则 8 级撑爆屏幕）")
 	assert_eq(1 if zb11.ti_xing_dao_chi_du(9.0) > zb11.ti_xing_dao_chi_du(8.0) else 0, 1, "曲线仍单调：体型越大看起来越大")
+	# TASK-019：每满 5 点体型 ×1.06 里程碑（Lv.5/Lv.10/Lv.15 有可见跳变）
+	var ji_5: float = zb11.ti_xing_dao_chi_du(5.0)
+	var ji_10: float = zb11.ti_xing_dao_chi_du(10.0)
+	var ji_15: float = zb11.ti_xing_dao_chi_du(15.0)
+	assert_float(ji_5, 0.32 * pow(5.0, 0.7) * 1.06, "体型 5：基础曲线 ×1.06（第一个里程碑）")
+	assert_float(ji_10, 0.32 * pow(10.0, 0.7) * pow(1.06, 2), "体型 10：基础曲线 ×1.06²")
+	assert_float(ji_15, 0.32 * pow(15.0, 0.7) * pow(1.06, 3), "体型 15：基础曲线 ×1.06³")
+	assert_eq(1 if ji_5 > 0.32 * pow(5.0, 0.7) * 1.05 else 0, 1,
+			"体型 5 有可见跳变：比未乘里程碑高 6%")
+	assert_eq(1 if ji_10 > 0.32 * pow(10.0, 0.7) * 1.10 else 0, 1,
+			"体型 10 有可见跳变：比未乘里程碑高约 12.36%")
+	assert_eq(1 if ji_15 > 0.32 * pow(15.0, 0.7) * 1.15 else 0, 1,
+			"体型 15 有可见跳变：比未乘里程碑高约 19.1%")
+	assert_eq(1 if zb11.ti_xing_dao_chi_du(4.999) < ji_5 else 0, 1,
+			"跨过 5 点体型时发生跳变（4.999 仍按 0 个里程碑，5.0 起 ×1.06）")
+	assert_float(zb11.MEI_CI_SHANG_HAI, 1.0, "TASK-019：普通接触伤害 1.0 保持不变")
 	zb11.free()
 
 	# ---- 用例 12：局内时钟与阶段切换（480 秒人类战）----

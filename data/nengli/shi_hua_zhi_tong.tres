@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/shi_hua_zhi_tong.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"shi_hua_zhi_tong"
 ming_zi = "石化之瞳"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "前方60°扇形4身位凝视，石化2s（boss免疫）；石化期间受你伤害+25%，施法0.6s。"
 lai_yuan = "蓑鲉"
 suoshu_xing_tai = &"mei_du_sha_du_guan"

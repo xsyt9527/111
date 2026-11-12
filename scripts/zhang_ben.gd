@@ -108,7 +108,9 @@ func ti_xing_shang_xian() -> float:
 func ti_xing_dao_chi_du(ti_xing_zhi: float) -> float:
 	# 体型→像素的唯一换算入口：玩家与 NPC 共用，保证「看起来谁大」与判定一致
 	# 指数 0.7 < 1：每升一级的视觉增量递减；Lv.0 仍约 32px，Lv.8 约 149px（线性会是 288px）
-	return TI_XING_XI_SHU * pow(maxf(ti_xing_zhi, 0.0), TI_XING_QU_XIAN)
+	# TASK-019：每满 5 点体型额外 ×1.06（Lv.5/Lv.10/Lv.15 有可见跳变）；Lv.1 仍恰好 0.32
+	var li_cheng_bei := pow(1.06, floor(maxf(ti_xing_zhi, 0.0) / 5.0))
+	return TI_XING_XI_SHU * pow(maxf(ti_xing_zhi, 0.0), TI_XING_QU_XIAN) * li_cheng_bei
 
 
 func jia_jing_yan(fen: int) -> void:

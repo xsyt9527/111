@@ -7,8 +7,9 @@ class_name ZhanDou
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")
 const ZHI_MING_BEI_LV := 1.0  # 致命区一击必杀：攻击者体型 ≥ 被攻击者（策划案 8.1 原文）
 # 旧公式只保留给「拿不到防御方体型」的调用方（机器船/测试兜底），船战节奏沿用旧口径
-const JIU_SHANG_HAI_XI_SHU := 0.15
-const JIU_SHANG_HAI_JI_CHU := 0.05
+# TASK-019 人类船战：玩家咬船改为 0.24 × 体型 + 0.08（Lv.8/体型 9 → 2.24/口）
+const JIU_SHANG_HAI_XI_SHU := 0.24
+const JIU_SHANG_HAI_JI_CHU := 0.08
 
 
 static func yao_ji_shang_hai(gong_ji_ti_xing: float, shou_ji_ti_xing := 0.0,

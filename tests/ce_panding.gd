@@ -12,6 +12,9 @@ var passed := 0  # 通过计数（收卷用）
 var failed := 0  # 失败计数（退出码的依据）
 var ji_bai_ci := 0  # 机器船 bei_ji_bai 广播计数（信号接收器只能改成员变量）
 var jing_sha_ci := 0  # 鲸鲨 bei_ji_bai 广播计数
+const ZHUAN_SHU_KU := preload("res://scripts/zhuan_shu_ku.gd")  # 专属技模块分派框架（2026-11-09）
+const SHU_ZHI_CE := preload("res://scripts/shu_zhi.gd")  # A 核心数值表：空载倍率断言的基准
+const XIAO_DI_TU_CE := preload("res://scripts/xiao_di_tu.gd")  # TASK-021 上帝视角小地图：整图映射与九宫格契约
 
 
 func _ready() -> void:
@@ -63,17 +66,244 @@ func _ready() -> void:
 	assert_eq_ming(zhu.qu_yu_ming(Vector2(2064, 1152)), "正中 · 核心海山交汇大殿", "地图中心应映射正中")
 	assert_eq_ming(zhu.qu_yu_ming(Vector2(1376, 768)), "正中 · 核心海山交汇大殿", "格边界应归入右下格")
 	assert_eq_ming(zhu.qu_yu_ming(Vector2(-10, -10)), "西北 · 沉船锚链悬崖", "越界坐标应夹到边缘格")
-	# ---- 用例 0a：镜头视野倍率（每级 +10%，Lv.10 封顶 2.0×）----
+	# ---- 用例 0a：镜头视野倍率（TASK-019：关闭随等级拉远，始终 1.0×）----
 	ZhangBen.deng_ji = 0
 	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 1.0), 1, "Lv.0 视野 1.0×（开局不拉远）")
 	ZhangBen.deng_ji = 5
-	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 1.5), 1, "Lv.5 视野 1.5×（每级 +10%）")
+	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 1.0), 1, "Lv.5 仍 1.0×（TASK-019 关闭镜头拉远）")
 	ZhangBen.deng_ji = 10
-	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 2.0), 1, "Lv.10 视野 2.0×")
+	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 1.0), 1, "Lv.10 仍 1.0×：视野不随等级变化")
 	ZhangBen.deng_ji = 20
-	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 2.0), 1, "Lv.20 仍 2.0×：等级无上限，镜头必须封顶")
+	assert_eq(_xiang_deng(zhu._shi_jiao_bei(), 1.0), 1, "Lv.20 仍 1.0×：高等级也不再拉远")
 	ZhangBen.deng_ji = 0
 	zhu.free()
+	# ---- 用例 0b：人类战九图拼合演出（1A+2A 纯函数）----
+	# 演出本身要开窗看；这里锁“源矩形/玩家格/拼合顺序/全图缩放”这些可计算的契约，
+	# 防止以后改地图尺寸或拼合顺序时静默错位。
+	assert_eq(DiTuPinJieYanChu.GE_SHU, 9, "拼合演出固定九块图")
+	assert_eq(int(DiTuPinJieYanChu.DI_TU_CHI_CUN.x), 4128, "整图宽 4128")
+	assert_eq(int(DiTuPinJieYanChu.DI_TU_CHI_CUN.y), 2304, "整图高 2304")
+	assert_eq(int(DiTuPinJieYanChu.MEI_GE_CHI_CUN.x), 1376, "单格宽 1376（与 Main.DI_TU_MEI_GE 同源）")
+	assert_eq(int(DiTuPinJieYanChu.MEI_GE_CHI_CUN.y), 768, "单格高 768")
+	assert_eq(_xiang_deng(DiTuPinJieYanChu.quan_tu_zoom(Vector2(1280, 720)), 1280.0 / 4128.0), 1,
+			"全图 zoom = 1280/4128（整图横向铺满）")
+	assert_eq(_xiang_deng(DiTuPinJieYanChu.quan_tu_zoom(Vector2(1920, 1080)), 1920.0 / 4128.0), 1,
+			"换分辨率仍按同比例算全图")
+	var qu_0: Rect2 = DiTuPinJieYanChu.ge_zi_qu(0)
+	assert_eq(int(qu_0.position.x), 0, "第 0 块在左上")
+	assert_eq(int(qu_0.position.y), 0, "第 0 块 y=0")
+	assert_eq(int(qu_0.size.x), 1376, "第 0 块宽 1376")
+	var qu_8: Rect2 = DiTuPinJieYanChu.ge_zi_qu(8)
+	assert_eq(int(qu_8.position.x), 2752, "第 8 块 x=2752")
+	assert_eq(int(qu_8.position.y), 1536, "第 8 块 y=1536")
+	assert_eq(int(DiTuPinJieYanChu.ge_zi_zhong_xin(4).x), 2064, "中心格中心 x=2064")
+	assert_eq(int(DiTuPinJieYanChu.ge_zi_zhong_xin(4).y), 1152, "中心格中心 y=1152")
+	assert_eq(DiTuPinJieYanChu.wan_jia_pian(Vector2(2064, 1152)), 4, "地图中心归玩家格 4")
+	assert_eq(DiTuPinJieYanChu.wan_jia_pian(Vector2(1376, 768)), 4, "格边界归右下格（与 qu_yu_ming 同规则）")
+	assert_eq(DiTuPinJieYanChu.wan_jia_pian(Vector2(-10, -10)), 0, "越界夹到左上")
+	assert_eq(DiTuPinJieYanChu.wan_jia_pian(Vector2(4127, 2303)), 8, "右下角归格 8")
+	var shun_4: Array[int] = DiTuPinJieYanChu.pin_jie_shun_xu(4)
+	assert_eq(shun_4.size(), 9, "拼合顺序恰好九块")
+	assert_eq(shun_4[8], 4, "玩家所在格最后落位")
+	var shun_0: Array[int] = DiTuPinJieYanChu.pin_jie_shun_xu(0)
+	assert_eq(shun_0.size(), 9, "换玩家格仍是九块")
+	assert_eq(shun_0[8], 0, "玩家在左上时，左上仍最后落位")
+	var qu_wei := {}
+	for pian in shun_4:
+		qu_wei[pian] = true
+	assert_eq(qu_wei.size(), 9, "拼合顺序无重复格")
+	var qi_0: Vector2 = DiTuPinJieYanChu.fei_ru_qi_dian(0)
+	var luo_0: Vector2 = DiTuPinJieYanChu.ge_zi_zhong_xin(0)
+	assert_eq(1 if qi_0.distance_to(luo_0) >= 1000.0 else 0, 1, "飞入起点离落点 ≥1000px（从画面外飞入）")
+	assert_eq(_xiang_deng(DiTuPinJieYanChu.WAN_JIA_JU_JIAO, 0.88), 1, "玩家特写 zoom=0.88（一格约铺满屏）")
+	assert_eq(1 if DiTuPinJieYanChu.YAN_CHU_SHI_CHANG >= 7.0 else 0, 1, "完整演出 ≥7 秒（留给用户看）")
+	# ---- 用例 0b2：TASK-020 九宫格房间（纯函数 + 运行时 limit 函数）----
+	# 九宫格不是九张图：同一张 4128×2304 背景切 9 个 1376×768 逻辑房间，行优先 0..8。
+	# 这里只锁坐标契约，换房协程/淡入淡出靠 F5；不把 Main 拉进测试树，避免启动整局。
+	var fang_zhu: Node2D = load("res://scripts/main.gd").new()
+	assert_eq(fang_zhu.dang_qian_fang_jian, 4, "开局默认房间 4（正中）")
+	assert_eq(1 if fang_zhu.fang_jian_qu(4) == Rect2(1376, 768, 1376, 768) else 0, 1, "正中房间矩形")
+	assert_eq(1 if fang_zhu.fang_jian_qu(8) == Rect2(2752, 1536, 1376, 768) else 0, 1, "东南 Boss 房矩形")
+	assert_eq(1 if fang_zhu.fang_jian_qu(-3) == Rect2(0, 0, 1376, 768) else 0, 1, "越界房间号夹到 0")
+	assert_eq(1 if fang_zhu.fang_jian_qu(99) == Rect2(2752, 1536, 1376, 768) else 0, 1, "越界房间号夹到 8")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(2752, 1536)), 8, "格边界归右下格")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(1375.9, 767.9)), 0, "左上格右下角仍在 0")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(4127, 2303)), 8, "右下角归 8")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(-10, -10)), 0, "越界坐标夹到 0")
+	# 换房目标：玩家进入哪格就该切到哪格
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(1376 + 68, 768 + 68)), 4, "从房间 3 跨到 4：落在房间 4 内部")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(1375, 1152)), 3, "向左跨一格到 3")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(2753, 1152)), 5, "向右跨一格到 5")
+	assert_eq(fang_zhu.qu_yu_pian(Vector2(2064, 1537)), 7, "向下跨一格到 7")
+	# Boss 房边界（任务包 step-03）：首领固定在东南格内
+	assert_eq(_xiang_deng(fang_zhu.fang_jian_qu(8).position.x, 2752.0), 1, "Boss 房左边界 2752")
+	assert_eq(_xiang_deng(fang_zhu.fang_jian_qu(8).end.y, 2304.0), 1, "Boss 房下边界 2304")
+	# 换房硬参数：夹回距离与单程淡入淡出时长（防止以后调参时静默漂移）
+	assert_eq(_xiang_deng(fang_zhu.FANG_JIAN_JIN_BIAO_LIU, 6.0), 1, "换房夹回新房内 6px")
+	assert_eq(_xiang_deng(fang_zhu.FANG_JIAN_HUAN_CHU_SHI_JIAN, 0.12), 1, "单程淡入/淡出 0.12 秒")
+	# 运行时相机 limit：给游离实例塞一个假 Camera2D，只测 _suo_fang_jian/_suo_quan_tu 的写入值
+	var jia_xiang_ji := Camera2D.new()
+	fang_zhu.camera = jia_xiang_ji
+	fang_zhu._suo_fang_jian(4)
+	assert_eq(jia_xiang_ji.limit_left, 1376, "房间 4 limit 左 1376")
+	assert_eq(jia_xiang_ji.limit_top, 768, "房间 4 limit 上 768")
+	assert_eq(jia_xiang_ji.limit_right, 2752, "房间 4 limit 右 2752")
+	assert_eq(jia_xiang_ji.limit_bottom, 1536, "房间 4 limit 下 1536")
+	fang_zhu._suo_fang_jian(8)
+	assert_eq(jia_xiang_ji.limit_left, 2752, "房间 8 limit 左 2752")
+	assert_eq(jia_xiang_ji.limit_top, 1536, "房间 8 limit 上 1536")
+	assert_eq(jia_xiang_ji.limit_bottom, 2304, "房间 8 limit 下 2304")
+	fang_zhu._suo_quan_tu()
+	assert_eq(jia_xiang_ji.limit_left, 0, "人类战全图 limit 左 0")
+	assert_eq(jia_xiang_ji.limit_top, 0, "人类战全图 limit 上 0")
+	assert_eq(jia_xiang_ji.limit_right, 4128, "人类战全图 limit 右 4128")
+	assert_eq(jia_xiang_ji.limit_bottom, 2304, "人类战全图 limit 下 2304")
+	jia_xiang_ji.free()
+	fang_zhu.free()
+	# ---- 用例 0b3：TASK-021 上帝视角小地图 / 受击闪白 / 换房安全入场（纯函数）----
+	# 小地图是开局永久被动「上帝视角」：整张 4128×2304 海图缩到 240×134，一眼看到九房与四类点。
+	assert_eq(1 if XIAO_DI_TU_CE.DI_TU_QU == Rect2(0, 20, 240, 134) else 0, 1,
+			"小地图整图区域 240×134（标题下 20px）")
+	assert_eq(XIAO_DI_TU_CE.GE_SHU, 3, "小地图同时显示九张图（3×3 整图）")
+	assert_eq(XIAO_DI_TU_CE.MO_REN_FANG_JIAN, 4, "小地图默认高亮正中房 4")
+	var xdt = XIAO_DI_TU_CE.new()
+	assert_eq(1 if xdt._dao_di_tu(Vector2(0, 0)) == Vector2(0, 20) else 0, 1,
+			"世界左上角映射到地图左上角")
+	assert_eq(1 if xdt._dao_di_tu(Vector2(4128, 2304)) == Vector2(240, 154) else 0, 1,
+			"世界右下角映射到地图右下角")
+	var xdt_zhong: Vector2 = xdt._dao_di_tu(Vector2(2064, 1152))
+	assert_eq(_xiang_deng(xdt_zhong.x, 120.0), 1, "世界中心 x 映射到地图 120")
+	assert_eq(_xiang_deng(xdt_zhong.y, 87.0), 1, "世界中心 y 映射到地图 87")
+	xdt.free()
+	# 小地图必须吃掉触摸：地图矩形底部落在左下摇杆按下容差圈内，IGNORE 会穿透过去
+	var xdt_shi = XIAO_DI_TU_CE.new()
+	add_child(xdt_shi)  # 进树触发 _ready：运行时设置以脚本为准
+	assert_eq(1 if xdt_shi.mouse_filter == Control.MOUSE_FILTER_STOP else 0, 1,
+			"小地图 mouse_filter=STOP：点地图/图例不会误触摇杆")
+	xdt_shi.free()
+	# 小地图层必须进 HUD 隐藏名单：人类战九图演出期间不能露出读数
+	var xtu_zhu: Node2D = load("res://scripts/main.gd").new()
+	assert_eq(1 if xtu_zhu.HUD_CENG_MING.has("XiaoDiTuUI") else 0, 1,
+			"HUD 层名单包含 XiaoDiTuUI（演出时一起隐藏）")
+	assert_eq(1 if xtu_zhu.xu_yao_huan_fang_wu_di(false, 0.0) else 0, 1,
+			"换房免伤：当前无无敌时开启 0.9 秒保护")
+	assert_eq(1 if xtu_zhu.xu_yao_huan_fang_wu_di(true, 0.3) else 0, 1,
+			"换房免伤：无敌只剩 0.3 秒时补到 0.9 秒")
+	assert_eq(1 if xtu_zhu.xu_yao_huan_fang_wu_di(true, 2.0) else 0, 0,
+			"换房免伤：已有 2.0 秒无敌不被截短")
+	xtu_zhu.free()
+	# 受击闪白：所有鱼共用同一入口；2.8 倍过曝白保证在彩色贴图/状态染色上都看得见
+	var shan_yu := _zao_yu(1)
+	shan_yu._shan_hong()
+	assert_eq(1 if shan_yu.modulate.r > 2.0 and shan_yu.modulate.g > 2.0 \
+			and shan_yu.modulate.b > 2.0 else 0, 1, "NPC 受击闪白：RGB 同时 >2（过曝白）")
+	var jiu_shan_tween: Tween = shan_yu._yan_se_tween
+	shan_yu._shan_hong()  # 连续受击：旧补间必须先 kill，不能叠加成更亮的白
+	assert_eq(1 if not jiu_shan_tween.is_valid() else 0, 1,
+			"连续受击：旧闪白 Tween 已被 kill()")
+	assert_eq(1 if shan_yu.modulate.r > 2.0 and shan_yu.modulate.r < 3.0 else 0, 1,
+			"连续受击仍停留在 2.8 倍附近，不叠加")
+	shan_yu.free()
+	# 换房欢迎小鱼的等级：可整吞（玩家体型 ≥ 对方 ×1.1），1..3 级封顶
+	var qun_an: YuQun = load("res://scripts/yu_qun.gd").new()
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(0.5), 1, "体型 0.5：保底 1 级（至少不是贴脸大鱼）")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(1.0), 1, "开局体型 1.0：欢迎 1 级鱼")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(2.2), 2, "体型 2.2：欢迎 2 级鱼（2.2 ≥ 2×1.1）")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(3.4), 3, "体型 3.4：欢迎 3 级鱼")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(4.4), 3, "默认封顶 3 级：再大也不放 4 级贴脸")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(8.0), 3, "体型 8.0 仍按默认封顶 3 级")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(4.4, 10), 4, "显式上限 10：体型 4.4 欢迎 4 级")
+	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(8.0, 5), 5, "显式上限 5：体型 8.0 欢迎 5 级")
+	# 房内安全落点：四个象限中心取离玩家最远者；1376×768 房间对中心玩家仍有约 394px
+	var fang_qu := Rect2(1376, 768, 1376, 768)
+	# 普通补鱼的安全 x 范围：无相机兜底按房边 ±240px 内收 8px，房外排队鱼不会一出生就被回收
+	var hui_shou := qun_an.huan_chong_hui_shou_xian(fang_qu)
+	assert_eq(1 if hui_shou == Vector2(1144, 2984) else 0, 1,
+			"普通补鱼回收线：无相机时房外 232px（1376-240+8 / 2752+240-8）")
+	assert_eq(1 if qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(2064, 1152)) == Vector2(1720, 960) else 0, 1,
+			"玩家在房心：安全落点是左上象限中心（距离约 394px）")
+	assert_eq(1 if qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(1416, 808)) == Vector2(2408, 1344) else 0, 1,
+			"玩家在左上角：安全落点翻到右下象限中心")
+	var an_ju_zhong := qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(2064, 1152)).distance_to(Vector2(2064, 1152))
+	assert_eq(1 if an_ju_zhong >= 240.0 else 0, 1, "房心玩家到安全落点 ≥240px（不贴脸）")
+	var an_ju_bian := qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(1416, 808)).distance_to(Vector2(1416, 808))
+	assert_eq(1 if an_ju_bian >= 240.0 else 0, 1, "角落玩家到安全落点 ≥240px")
+	var an_qu_bian := fang_qu.grow(-40.0)
+	for wan_dian in [Vector2(1376, 768), Vector2(2064, 1152), Vector2(2752, 1536),
+			Vector2(1376, 1152), Vector2(2752, 1152), Vector2(2064, 768), Vector2(2064, 1536),
+			Vector2(1500, 900), Vector2(2600, 1400)]:
+		var an_dian: Vector2 = qun_an.an_quan_fang_nei_dian(fang_qu, wan_dian)
+		assert_eq(1 if an_qu_bian.has_point(an_dian) else 0, 1, "安全落点必须留在房内 40px 边距")
+		assert_eq(1 if an_dian.distance_to(wan_dian) >= 240.0 else 0, 1, "任意采样点安全落点距离 ≥240px")
+	# 常规鱼安全入口：从玩家所在半场的对侧房外进入，水平距离 ≥ 半房宽
+	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1676, 1068)) == Vector2(2832, 1248) else 0, 1,
+			"玩家在左半场：大鱼从右边缘外进")
+	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(2400, 1268)) == Vector2(1296, 1448) else 0, 1,
+			"玩家在右半场：大鱼从左边缘外进")
+	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(2064, 1152)) == Vector2(2832, 1332) else 0, 1,
+			"玩家在正中（含正中归左半场）：从右侧进")
+	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1500, 1500)) == Vector2(2832, 1476) else 0, 1,
+			"入口 y 夹到房间下边距 60px")
+	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1500, 600)) == Vector2(2832, 828) else 0, 1,
+			"入口 y 夹到房间上边距 60px")
+	for wan_dian in [Vector2(1376, 800), Vector2(2064, 1152), Vector2(2752, 1500), Vector2(1500, 1500)]:
+		var ru_dian: Vector2 = qun_an.an_quan_chu_kou(fang_qu, wan_dian)
+		assert_eq(1 if ru_dian.x < fang_qu.position.x or ru_dian.x > fang_qu.end.x else 0, 1,
+				"安全入口 x 必须在房间外")
+		assert_eq(1 if absf(ru_dian.x - wan_dian.x) >= 688.0 else 0, 1,
+				"安全入口与玩家水平距离 ≥ 半房宽 688px")
+	# 欢迎小鱼等级抽取：只从 1..上限里挑最高级，同级随机；没有可选时返回 null
+	var qun_an_zhong: Array[YuZhong] = []
+	qun_an_zhong.append(load("res://data/yuzhong/lan_yu.tres") as YuZhong)
+	qun_an_zhong.append(load("res://data/yuzhong/hong_yu.tres") as YuZhong)
+	qun_an_zhong.append(load("res://data/yuzhong/cheng_yu.tres") as YuZhong)
+	qun_an_zhong.append(load("res://data/yuzhong/lv_yu.tres") as YuZhong)
+	qun_an_zhong.append(load("res://data/yuzhong/zong_yu.tres") as YuZhong)
+	qun_an.yu_zhong_zu = qun_an_zhong
+	assert_eq(qun_an._chou_xiao_yu_zhong(3).dengji, 3, "上限 3：优先抽最高可吃 3 级鱼")
+	assert_eq(qun_an._chou_xiao_yu_zhong(1).dengji, 1, "上限 1：只抽 1 级鱼")
+	assert_eq(qun_an._chou_xiao_yu_zhong(10).dengji, 5, "上限 10：抽当前鱼种表最高 5 级")
+	assert_eq(1 if qun_an._chou_xiao_yu_zhong(0) == null else 0, 1, "上限 0：没有可吃鱼种返回 null")
+	# 换房补屏：10 条欢迎小鱼先落在离玩家最远的象限，其余不能整吞的鱼从对侧入口进
+	qun_an.fang_jian_qu = fang_qu
+	ZhangBen.ju_nei_shi_jian = 0.0
+	qun_an._chong_tian_an_quan(Vector2(2064, 1152))
+	var an_zong := qun_an._dangqian_yu_shu()
+	assert_eq(an_zong, qun_an.dang_qian_shang_xian(), "换房补屏后同屏鱼数补到上限 35")
+	var fang_nei_shu := 0
+	var fang_nei_zui_jin := 1e9
+	var fang_wai_shu := 0
+	var wan_wu_ti := maxf(1.0, float(ZhangBen.deng_ji + 1))
+	var yuan_deng := clampi(int(floor(wan_wu_ti / 1.1)), 1, 3)
+	for zi in qun_an.get_children():
+		var yu_zi := zi as YuNpc
+		if yu_zi == null:
+			continue
+		var yu_wei: Vector2 = yu_zi.position
+		if fang_qu.grow(-40.0).has_point(yu_wei):
+			fang_nei_shu += 1
+			fang_nei_zui_jin = minf(fang_nei_zui_jin, yu_wei.distance_to(Vector2(2064, 1152)))
+			assert_eq(yu_zi.yu_zhong.dengji if yu_zi.yu_zhong != null else -1, yuan_deng,
+					"欢迎小鱼等级统一按玩家可整吞等级抽取")
+		else:
+			fang_wai_shu += 1
+			assert_eq(1 if yu_wei.x < fang_qu.position.x or yu_wei.x > fang_qu.end.x else 0, 1,
+					"常规补鱼从房间左右边缘外进入（不直接落房内）")
+			assert_eq(1 if absf(yu_wei.x - fang_qu.get_center().x) >= 688.0 else 0, 1,
+					"常规补鱼与房心水平距离 ≥ 半房宽（对侧入口）")
+	assert_eq(fang_nei_shu, 10, "欢迎小鱼恰好 10 条落在房内安全点")
+	assert_eq(fang_nei_shu + fang_wai_shu, an_zong, "房内欢迎鱼与房外入口鱼合计 = 同屏鱼数")
+	assert_eq(1 if fang_nei_zui_jin >= 240.0 else 0, 1, "欢迎小鱼离玩家都 ≥240px（不会贴脸）")
+	# 重复补屏：鱼数已接近上限时直接跳过，不能叠加超上限
+	qun_an._chong_tian_an_quan(Vector2(2064, 1152))
+	assert_eq(qun_an._dangqian_yu_shu(), an_zong, "重复补屏不叠加鱼数")
+	# 换房清理：旧房普通鱼全部摘树（Boss 不归 YuQun 管，不受影响）
+	qun_an.shua_xin_ting_zhi = true  # 跳过 dingshi/再补屏：这里只验证清场与房间切换
+	var xin_fang := Rect2(2752, 1536, 1376, 768)
+	qun_an.qie_huan_fang_jian(xin_fang)
+	assert_eq(qun_an.get_child_count(), 0, "换房清掉旧房普通鱼")
+	assert_eq(1 if qun_an.fang_jian_qu == xin_fang else 0, 1, "换房更新当前房间矩形")
+	qun_an.free()
 	# ---- 用例 0c：刷新节奏（持续刷新；每 20 秒上一档，体型分布右移，低等级鱼逐档退场）----
 	# 放场景模式测：--script 模式不注册 Autoload，加载 YuQun 会连带编译依赖 ZhangBen 的 yu_npc.gd
 	var qun: YuQun = load("res://scripts/yu_qun.gd").new()
@@ -157,6 +387,53 @@ func _ready() -> void:
 	assert_eq(1 if yu.get_node("AnimatedSprite2D").sprite_frames == load("res://data/donghua/ao_tu_wo_niu_yu_4zhen.tres") else 0,
 			1, "玩家默认外观是凹凸蜗牛鱼 4 帧动画")
 	assert_eq(_xiang_deng(zhang_ben_tixing(yu), 2.0), 1, "开局统一 Lv.1：当前体型（血量）应为 2.0")
+	# ---- 用例 0e：TASK-019 升级免伤 0.6 秒 + AnimatedSprite2D 1→1.16→1 脉冲 ----
+	ZhangBen.sheng_ji.emit(ZhangBen.deng_ji + 1)  # 只监听账本升级信号：直接发信号验证连接
+	assert_eq(1 if yu.wudi else 0, 1, "升级信号：玩家立即进入无敌")
+	assert_eq(1 if yu.wudi_dingshi.time_left > 0.5 else 0, 1, "升级免伤 0.6 秒（刚触发时计时未过半）")
+	assert_eq(1 if yu._sheng_ji_tui != null else 0, 1, "升级信号：已建立子精灵脉冲补间")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var sheng_ji_jing := yu.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	assert_eq(1 if sheng_ji_jing.scale.x > 1.0 else 0, 1,
+			"升级脉冲：子精灵从 1 开始放大（1 → 1.16）")
+	if yu._sheng_ji_tui != null:
+		yu._sheng_ji_tui.kill()  # 收尾：别让脉冲补间影响后续动画用例
+	sheng_ji_jing.scale = Vector2.ONE
+	yu.wudi = false
+	yu.wudi_dingshi.stop()
+	# ---- 用例 0f：TASK-019 技能范围唯一入口（玩家兄弟节点兜底 + 0.5 体长下限）----
+	var yuan_scale := yu.scale
+	yu.scale = Vector2.ONE
+	var n_shen: NengLi = NengLi.new()
+	n_shen.bian_hao = &"ce_shen_wei"
+	n_shen.zui_da_dang = 1
+	n_shen.ban_jing_shen_wei = true
+	n_shen.ban_jing = 6.0
+	var zhi_shi2 = load("res://scripts/ji_neng_fan_wei.gd").new()
+	add_child(zhi_shi2)
+	zhi_shi2.xian_shi(n_shen, Vector2.ZERO, Vector2.RIGHT)  # 不传玩家：走父节点兄弟兜底
+	assert_eq(1 if zhi_shi2._ban_jing > 100.0 else 0, 1,
+			"6 身位技能指示半径必须 >100px，不能仍按 6px 显示")
+	assert_eq(_xiang_deng(zhi_shi2._ban_jing, 6.0 * yu._shen_wei()), 1,
+			"6 身位技能指示半径 = 6×当前身位（无玩家参数也能取到兄弟节点 Yu）")
+	# 固定 90px 技能在高体型下走 0.5 体长下限：显示与命中同一入口
+	yu.scale = Vector2.ONE * 2.0
+	var n_gu_ding: NengLi = NengLi.new()
+	n_gu_ding.bian_hao = &"ce_gu_ding"
+	n_gu_ding.zui_da_dang = 1
+	n_gu_ding.ban_jing = 90.0
+	var gu_ding_ban := yu.ji_neng_ban_jing(n_gu_ding, 1, 0.5)
+	assert_eq(1 if gu_ding_ban >= 0.5 * yu.ti_chang() else 0, 1,
+			"固定 90px 技能在高体型下不小于 0.5 体长（实际命中半径）")
+	assert_eq(_xiang_deng(gu_ding_ban, maxf(90.0 * 2.0, 0.5 * yu.ti_chang())), 1,
+			"固定像素半径只按体型缩放一次，再取体长下限")
+	zhi_shi2.xian_shi(n_gu_ding, Vector2.ZERO, Vector2.RIGHT)
+	assert_eq(_xiang_deng(zhi_shi2._ban_jing, gu_ding_ban), 1,
+			"范围指示与命中半径走同一入口（显示圈 = 判定圈）")
+	zhi_shi2.free()
+	yu.scale = yuan_scale
+	await get_tree().physics_frame  # 等玩家判定圈按恢复后的体型重新同步，别让后续吃鱼用例晚一帧
 	_she_deng_ji(3)  # 测试从 Lv.3 开始：血 4.0，方便做“吃小鱼 / 挨大鱼”两类用例
 
 	# ---- 用例 0b：朝向死区（纯上下时 cos≈0，浮点符号不该把鱼头甩向左边）----
@@ -603,6 +880,16 @@ func _ready() -> void:
 	assert_eq(_xiang_deng(JiQiChuan.MAO_WAI_BAN_JING, 480.0), 1, "船锚外径 480（240 × 2）")
 	assert_eq(_xiang_deng(JiQiChuan.TAN_ZHAO_CHANG, 1120.0), 1, "探照灯长度 1120（560 × 2）")
 	assert_eq(_xiang_deng(JiQiChuan.YU_CHA_SHE_CHENG, 1300.0), 1, "鱼叉射程 1300（650 × 2）")
+	# TASK-019 人类船战：三招基础值 + 玩家当前体型 ×0.04
+	assert_eq(_xiang_deng(ZhanDou.JIU_SHANG_HAI_XI_SHU, 0.24), 1, "船招体型系数 0.15→0.24")
+	assert_eq(_xiang_deng(ZhanDou.JIU_SHANG_HAI_JI_CHU, 0.08), 1, "船招基础值 0.05→0.08")
+	assert_eq(_xiang_deng(JiQiChuan.WAN_JIA_TI_XING_SHANG_HAI_BI, 0.04), 1, "船招附加：玩家体型 ×0.04")
+	assert_eq(_xiang_deng(JiQiChuan.ZHA_DAN_SHANG_HAI + 10.0 * JiQiChuan.WAN_JIA_TI_XING_SHANG_HAI_BI, 1.4),
+			1, "体型 10：深水炸弹 1.0 + 0.4 = 1.4")
+	assert_eq(_xiang_deng(JiQiChuan.MAO_SHANG_HAI + 10.0 * JiQiChuan.WAN_JIA_TI_XING_SHANG_HAI_BI, 1.1),
+			1, "体型 10：船锚 0.7 + 0.4 = 1.1")
+	assert_eq(_xiang_deng(JiQiChuan.YU_CHA_SHANG_HAI + 10.0 * JiQiChuan.WAN_JIA_TI_XING_SHANG_HAI_BI, 1.0),
+			1, "体型 10：鱼叉 0.6 + 0.4 = 1.0")
 	assert_eq(JiQiChuan.ZHAO_QUAN_BU.size(), 4, "机器船四招齐备：探照灯/船锚/深水炸弹/鱼叉")
 	assert_eq(1 if JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_TAN_ZHAO) \
 			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_CHUAN_MAO) \
@@ -625,8 +912,17 @@ func _ready() -> void:
 	yu._yao_ji_leng_que = 0.0
 	yu._chang_shi_yao_ji()
 	var chuan_yao_shang := ZhanDou.jiu_yao_ji_shang_hai(9.0, yu.zui_ba)
+	assert_eq(_xiang_deng(chuan_yao_shang, 2.24), 1,
+			"船战普通咬：0.24×9+0.08=2.24（此前 1.4）")
+	assert_eq(int(ceil(360.0 / (chuan_yao_shang * 3.0))), 54,
+			"满血船：弱点每口 2.24×3=6.72，54 口咬沉（53.57 向上取整）")
 	assert_eq(_xiang_deng(chuan.xue, 360.0 - chuan_yao_shang * 0.7), 1,
-			"A13：咬船体 0.15×9+0.05=1.4，再吃 30% 护甲减伤（1.4×0.7=0.98，360 → 359.02）")
+			"A13：咬船体 0.24×9+0.08=2.24，再吃 30% 护甲减伤（2.24×0.7=1.568，360 → 358.432）")
+	# 机械船受击闪白必须染根节点：出招动画期间 _chuan_ti 被隐藏、_zhao_ti 可见，
+	# 只染船体会让玩家在 0.7~1.0 秒的出招期完全看不到受击反馈
+	assert_eq(1 if chuan.modulate.r > 2.0 and chuan.modulate.g > 2.0 \
+			and chuan.modulate.b > 2.0 else 0, 1,
+			"机械船受击闪白：根节点 RGB>2，出招动画期间也可见")
 	# 绕到正面咬玻璃舱：弱点 ×3，且无视护甲
 	yu.position = chuan.position + Vector2(0, -10)
 	await get_tree().physics_frame
@@ -635,7 +931,7 @@ func _ready() -> void:
 	yu._chang_shi_yao_ji()
 	assert_eq(_xiang_deng(chuan.xue,
 			360.0 - chuan_yao_shang * 0.7 - chuan_yao_shang * 3.0), 1,
-			"咬玻璃舱（弱点）：1.4×3=4.2 且跳过护甲（359.02 → 354.82）")
+			"咬玻璃舱（弱点）：2.24×3=6.72 且跳过护甲（358.432 → 351.712）")
 	assert_eq(_xiang_deng(chuan.tixing, 99.0), 1, "机器船体型 99：玩家永远吞不掉，只能咬沉")
 	# 失控保护：1 秒节拍 + 控制会接成「控住→下一招必中」，失控期间整拍必须跳过
 	ZhangBen.yun_xuan_ji_shi = 1.5
@@ -646,22 +942,24 @@ func _ready() -> void:
 	assert_eq(1 if chuan._zui_jin.is_empty() else 0, 1, "失控保护不会偷偷出招")
 	ZhangBen.yun_xuan_ji_shi = 0.0  # 放开，别影响后面的用例
 	chuan._gong_ji_dingshi.stop()  # 失控保护测试启动过定时器：停掉，避免 1 秒后自动出招干扰后续步骤
-	# 深水炸弹：预警后落在目标位置，范围内玩家吃 1.0 伤害
+	# 深水炸弹：预警后落在目标位置，范围内玩家吃 1.0 + 体型×0.04 伤害
 	ZhangBen.dang_qian_ti_xing = 9.0
 	yu.wudi = false
 	yu._ni_liu_sheng_yu = 0.0
 	yu._ying_ke_sheng_yu = 0.0
 	chuan._kai_shi_shen_zha_dan()
 	chuan._jie_suan_zha_dan()
-	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.0), 1, "深水炸弹命中：掉 1.0 当前体型（9.0 → 8.0）")
-	# 船锚横扫：300 像素处在内径 100 / 外径 480 之间 → 吃 0.7 并被击退
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 7.64), 1,
+			"深水炸弹命中：1.0+9×0.04=1.36（9.0 → 7.64）")
+	# 船锚横扫：300 像素处在内径 100 / 外径 480 之间 → 吃 0.7+体型×0.04 并被击退
 	ZhangBen.dang_qian_ti_xing = 9.0
 	yu.wudi = false
 	yu._ni_liu_sheng_yu = 0.0
 	yu.position = chuan.position + Vector2(300, 0)
 	chuan._kai_shi_chuan_mao()
 	chuan._jie_suan_chuan_mao()
-	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.3), 1, "船锚命中：掉 0.7 当前体型（9.0 → 8.3）")
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 7.94), 1,
+			"船锚命中：0.7+9×0.04=1.06（9.0 → 7.94）")
 	assert_eq(_xiang_deng(yu._tui_kai_sheng_yu, 0.25), 1, "船锚击退：持续 0.25 秒")
 	assert_eq(_xiang_deng(yu._tui_kai_su_du, 1760.0), 1, "船锚击退：440 像素 ÷ 0.25 秒 = 1760 像素/秒")
 	assert_eq(1 if chuan._mao_ming_zhong else 0, 1, "船锚命中标记：下一拍不出炸弹")
@@ -671,7 +969,7 @@ func _ready() -> void:
 	chuan._geng_xin_tan_zhao(0.1)
 	assert_eq(_xiang_deng(yu._wai_bu_jian_su_bei, 0.55), 1, "探照灯照到：移速 ×0.55")
 	assert_eq(_xiang_deng(yu._wai_bu_jian_su_sheng_yu, 0.4), 1, "探照灯减速残留 0.4 秒")
-	# 鱼叉：单发命中 0.6，并标记“下一拍不出船锚”
+	# 鱼叉：单发命中 0.6+体型×0.04，并标记“下一拍不出船锚”
 	ZhangBen.dang_qian_ti_xing = 9.0
 	yu.wudi = false
 	yu._ni_liu_sheng_yu = 0.0
@@ -679,7 +977,8 @@ func _ready() -> void:
 	yu.position = chuan.position + Vector2(400, 0)
 	chuan._yu_chas.append({"pos": yu.global_position - Vector2(10, 0), "fang": Vector2.RIGHT, "fei": 0.0})
 	chuan._geng_xin_yu_chas(0.01)
-	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.4), 1, "鱼叉命中：掉 0.6 当前体型（9.0 → 8.4）")
+	assert_eq(_xiang_deng(ZhangBen.dang_qian_ti_xing, 8.04), 1,
+			"鱼叉命中：0.6+9×0.04=0.96（9.0 → 8.04）")
 	assert_eq(1 if chuan._cha_ming_zhong else 0, 1, "鱼叉命中标记：下一拍不出船锚")
 	# 开局优先打鲸鲨：有鲸鲨且窗口未清零 → 目标切到鲸鲨，且只出炸弹/鱼叉
 	var sha: YuNpc = load("res://scenes/YuNpc.tscn").instantiate()
@@ -790,6 +1089,10 @@ func _ready() -> void:
 	add_child(jing_sha)
 	jing_sha.bei_ji_bai.connect(_shu_jing_sha_bai)
 	assert_eq(1 if jing_sha.shi_boss else 0, 1, "鱼种表 shi_boss = true：鲸鲨是首领")
+	# TASK-021：默认空矩形不限制——普通鱼/旧测试夹具保持原行为
+	assert_eq(1 if jing_sha.xian_ding_qu.size == Vector2.ZERO else 0, 1, "首领默认 xian_ding_qu 为空矩形")
+	assert_eq(1 if jing_sha.zai_xian_ding_qu(Vector2(2064, 1152)) else 0, 1,
+			"空矩形不限制任意点（普通鱼/旧夹具兼容）")
 	# 4 帧美术：NPC 本体与红光层都用鱼种表里的 SpriteFrames，不再是一张静态图
 	var boss_ti: AnimatedSprite2D = jing_sha.get_node("AnimatedSprite2D")
 	assert_eq(1 if boss_ti.sprite_frames != null and boss_ti.sprite_frames.has_animation(&"you") else 0, 1,
@@ -821,6 +1124,36 @@ func _ready() -> void:
 			"首领咬击判定走玩家曲线（55×体型像素）")
 	assert_eq(1 if kai_ju_yao_ju < 55.0 + 14.0 * 10.0 else 0, 1,
 			"开局判定区小于旧线性公式（195px）：路过祭坛不再被隔空咬死")
+	# 2026-11-09 难度修正：咬到判定 = 本体圈 + 目标的咬击圈（对称口径）
+	# 玩家能在 111px 咬到首领身体，首领也必须够得着——旧版只比本体圈（85px），
+	# 中间那条 26px “安全带”就是玩家白嫖首领的根因
+	var boos_gou_ju := kai_ju_yao_ju + yu.yao_ji_ban_jing()
+	jing_sha.position = Vector2(3440, 1920)
+	yu.position = Vector2(3440, 1920 - (boos_gou_ju - 2.0))
+	assert_eq(1 if jing_sha._neng_yao_dao(yu) else 0, 1, "对称咬距：在 本体圈+玩家咬圈 以内，首领够得着")
+	yu.position = Vector2(3440, 1920 - (boos_gou_ju + 2.0))
+	assert_eq(1 if jing_sha._neng_yao_dao(yu) else 0, 0, "对称咬距：超出 2 像素就够不着（边界不虚）")
+	# 首领口径伤害：A2 的 3% × 嘴巴 × 15 倍痛感（体型 1、嘴巴 2 → 0.9/口，近乎一口致命）
+	assert_eq(_xiang_deng(YuNpc.boos_yao_shang_hai(1.0, 2.0), 0.9), 1,
+			"首领咬玩家：3%×嘴巴×15 = 0.9/口（体型 1）；两参旧调用不传攻击者，仍按目标体型")
+	# TASK-019 三参：首领咬伤按 min(目标体型, 攻击者体型) 结算，避免鲸鲨 15 倍痛感无视玩家体型
+	assert_eq(_xiang_deng(YuNpc.boos_yao_shang_hai(10.0, 2.0), 9.0), 1,
+			"两参旧调用：目标 10、嘴巴 2 → 10×3%×2×15 = 9.0")
+	assert_eq(_xiang_deng(YuNpc.boos_yao_shang_hai(10.0, 2.0, 2.0), 1.8), 1,
+			"三参：目标 10、攻击者 2 → min=2，伤害 1.8（玩家能扛住首领一口）")
+	assert_eq(_xiang_deng(YuNpc.boos_yao_shang_hai(2.0, 2.0, 10.0), 1.8), 1,
+			"三参：目标 2、攻击者 10 → min=2，伤害 1.8（体型仍是上限）")
+	assert_eq(_xiang_deng(YuNpc.boos_yao_shang_hai(10.0, 2.0, 10.0), 9.0), 1,
+			"三参：目标 10、攻击者 10 → min=10，伤害 9.0（同级仍致命）")
+	# 2026-11-10 难度修正：Lv.5 前普通咬击咬不动鲸鲨；身体碰撞仍只按 ×3（0.18）
+	var jiu_deng := ZhangBen.deng_ji
+	ZhangBen.deng_ji = 4
+	assert_eq(1 if yu.ke_yao_mu_biao(jing_sha) else 0, 0, "Lv.4 普通咬击咬不动鲸鲨")
+	ZhangBen.deng_ji = ZhangBen.TIQIAN_DENG_JI
+	assert_eq(1 if yu.ke_yao_mu_biao(jing_sha) else 0, 1, "Lv.5 起普通咬击可咬鲸鲨")
+	assert_eq(1 if yu.ke_yao_mu_biao(null) else 0, 0, "空目标不可咬")
+	ZhangBen.deng_ji = jiu_deng
+	yu.position = Vector2(3440, 1420)
 	jing_sha.bei_chi(true, yu)
 	assert_eq(1 if is_instance_valid(jing_sha) else 0, 1, "首领不可整吞：bei_chi 直接拒绝")
 	# 巡逻：到点 → 停 2 秒 → 换下一个点；没到点就朝它游
@@ -831,6 +1164,32 @@ func _ready() -> void:
 	jing_sha._boos_xun_luo(2.1)  # 停留结束
 	jing_sha._boos_xun_luo(1.0)
 	assert_eq(1 if jing_sha.position.x > 3440.0 else 0, 1, "停留结束后朝下一个巡逻点游")
+	# TASK-021：首领房限制——注入房间 8 矩形后，只在本房索敌/追击，禁止跨房贴脸
+	jing_sha.xian_ding_qu = Rect2(2752, 1536, 1376, 768)
+	assert_eq(1 if jing_sha.xian_ding_qu == Rect2(2752, 1536, 1376, 768) else 0, 1,
+			"首领注入房间 8 矩形（2752,1536,1376,768）")
+	assert_eq(1 if jing_sha.zai_xian_ding_qu(Vector2(3440, 1920)) else 0, 1,
+			"首领房内祭坛点允许索敌/追击")
+	assert_eq(1 if jing_sha.zai_xian_ding_qu(Vector2(2064, 1152)) else 0, 0,
+			"房间 4 开局点不在首领房：禁止索敌/追击")
+	jing_sha.gan_zhi = 3000.0  # 放大感知：只让房限制决定是否上头
+	jing_sha.position = Vector2(3440, 1920)
+	jing_sha._boos_zhu_ji_ji_shi = 0.0
+	jing_sha._boos_leng_que_ji_shi = 0.0
+	yu.position = Vector2(2064, 1152)  # 玩家在房间 4，距离仍在感知内
+	jing_sha._boos_xing_dong(0.1)
+	assert_eq(_xiang_deng(jing_sha._boos_zhu_ji_ji_shi, 0.0), 1, "玩家不在首领房：不进入追击")
+	assert_eq(1 if jing_sha.zhuang_tai == YuNpc.ZhuangTai.YOU_DANG else 0, 1,
+			"玩家不在首领房：首领保持巡游")
+	jing_sha._boos_zhu_ji_ji_shi = 5.0  # 模拟已在追击
+	jing_sha._boos_leng_que_ji_shi = 0.0
+	jing_sha._boos_xing_dong(0.1)
+	assert_eq(_xiang_deng(jing_sha._boos_zhu_ji_ji_shi, 0.0), 1, "玩家跑出首领房：立即断追击")
+	assert_eq(1 if jing_sha._boos_leng_que_ji_shi > 4.5 else 0, 1, "断追击后进入冷却（给脱战窗口）")
+	assert_eq(1 if jing_sha.zhuang_tai == YuNpc.ZhuangTai.YOU_DANG else 0, 1,
+			"断追击后回巡游（不在房边干站）")
+	jing_sha.xian_ding_qu = Rect2()  # 还原空限制：下面旧追击用例按无房间限制设计
+	jing_sha._boos_leng_que_ji_shi = 0.0  # 清掉本用例冷却：旧追击用例仍从零开始
 	# 看见玩家：追 8 秒；玩家在正上方时不能左右疯狂摆头
 	jing_sha.gan_zhi = 800.0
 	jing_sha.position = Vector2(3440, 1920)
@@ -846,6 +1205,12 @@ func _ready() -> void:
 	assert_eq(1 if jing_sha._boos_leng_que_ji_shi > 0.0 else 0, 1, "追击结束后进入冷却（给玩家脱战窗口）")
 	jing_sha._boos_xing_dong(0.1)
 	assert_eq(_xiang_deng(jing_sha._boos_zhu_ji_ji_shi, 0.0), 1, "冷却期间玩家还在附近也不重新上头")
+	# 2026-11-09 难度修正：被玩家咬 → 立刻取消歇战重新追，不能站着白挨 5 秒
+	jing_sha.shou_dao_yao_ji(0.5, yu)
+	assert_eq(1 if jing_sha._boos_zhu_ji_ji_shi > 7.0 else 0, 1, "被玩家咬：首领立刻重新上头 8 秒")
+	assert_eq(_xiang_deng(jing_sha._boos_leng_que_ji_shi, 0.0), 1, "被咬即清零歇战窗口（不能站着白挨）")
+	jing_sha.tixing = 10.0  # 还原体型：后面的升级用例按 10 → 2.5 设计
+	jing_sha._ying_she_ti_xing()
 	# 升级：每 30 秒长 2 级（体型=血量，升级会回血）
 	jing_sha.position = Vector2(3440, 1920)
 	jing_sha.shou_dao_yao_ji(7.5, yu)  # 10 → 2.5
@@ -1256,12 +1621,14 @@ func _ready() -> void:
 	yu._qu_xiao_shi_fang()
 	assert_eq(1 if yu.shi_fang_zhu_dong(xuan_wo) else 0, 1, "漩涡释放成功")
 	assert_eq(_xiang_deng(yu._xuan_wo_sheng_yu, 1.5), 1, "漩涡持续 1.5 秒")
-	assert_eq(_xiang_deng(yu._xuan_wo_ban_jing, 180.0), 1, "漩涡 1 档半径 180")
+	assert_eq(_xiang_deng(yu._xuan_wo_ban_jing, 180.0 * maxf(1.0, yu.scale.x)), 1,
+			"漩涡 1 档半径 180（固定像素，按体型缩放一次）")
 	ZhangBen.xuan_neng_li(xuan_wo)
 	yu.zhu_dong_leng_que.clear()
 	yu._qu_xiao_shi_fang()
 	assert_eq(1 if yu.shi_fang_zhu_dong(xuan_wo) else 0, 1, "漩涡 2 档再释放")
-	assert_eq(_xiang_deng(yu._xuan_wo_ban_jing, 270.0), 1, "漩涡 2 档半径扩到 270（档位门控）")
+	assert_eq(_xiang_deng(yu._xuan_wo_ban_jing, 270.0 * maxf(1.0, yu.scale.x)), 1,
+			"漩涡 2 档半径扩到 270（固定像素，档位门控）")
 	# 淤泥弹：朝前方丢一团雾（YuNiWu 入 "yu_ni_wu" 组，雾里 NPC 感知打折）
 	var yu_ni: NengLi = _zhuang_bei(&"yu_ni_dan")
 	var wu_qian := get_tree().get_nodes_in_group("yu_ni_wu").size()
@@ -1501,7 +1868,8 @@ func _ready() -> void:
 	assert_eq(get_tree().get_nodes_in_group("you_er_qi_pao").size() - pao_qian, 1, "应生成 1 颗诱饵气泡")
 	var qi_pao: YouErQiPao = get_tree().get_nodes_in_group("you_er_qi_pao")[pao_qian]
 	assert_eq(_xiang_deng(qi_pao.chi_xu, 3.0), 1, "气泡 1 档存在 3 秒")
-	assert_eq(_xiang_deng(qi_pao.ban_jing, 360.0), 1, "气泡吸引半径 360")
+	assert_eq(1 if absf(qi_pao.ban_jing - 360.0 * maxf(1.0, yu.scale.x)) <= 2.0 else 0, 1,
+			"气泡吸引半径 360（固定像素，按体型缩放一次；允许体型补间的一帧漂移）")
 	assert_eq(1 if qi_pao.zha_yun else 0, 0, "气泡 1 档咬破不炸晕")
 	assert_eq(_xiang_deng(qi_pao.position.x, yu.position.x + 110.0), 1, "气泡吐在朝向前方 110 像素")
 	var mi_yu: YuNpc = _zao_yu(2)
@@ -2254,7 +2622,7 @@ func _ready() -> void:
 	# ---- 用例 6zc：进化专属技 P0（凹凸蜗牛鱼 3 分支 6 条）----
 	# 交接文档《进化专属技能被动》：专属技进库但不进通用池，只有进化到绑定形态才装配生效
 	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "专属技不入通用池：通用池仍是 35 条")
-	assert_eq(NengLiKu.quan_bu().size(), 65, "能力总表 65 条 = 35 通用 + 30 专属")
+	assert_eq(NengLiKu.quan_bu().size(), 101, "能力总表 101 条 = 35 通用 + 66 专属")
 	ZhangBen.chong_zhi()
 	_she_deng_ji(6)
 	yu.wudi = false
@@ -2854,6 +3222,26 @@ func _ready() -> void:
 	_t1_qing_chi(yu)
 	ZhangBen.chong_zhi()
 	CunDang.yong_jiu_neng_li.assign(t1_yong_jiu)
+
+	# ---- 用例 6ze：专属技模块框架空载（2026-11-09）----
+	# 6 个鱼种模块在「未装备任何专属技」时必须完全不改变主流程数值/事件。
+	# 这是框架接入的最低保证；36 条技能内容由各鱼种自测覆盖。
+	for zs_jian in [&"leng_que_bei", &"yao_shang_bei", &"shou_shang_bei", \
+			&"su_du_bei", &"tun_men_kan", &"gan_zhi_bei"]:
+		assert_eq(_xiang_deng(ZHUAN_SHU_KU.wen(yu, zs_jian, {}), 1.0), 1,
+				"专属技框架空载：%s 倍率必须是 1.0" % String(zs_jian))
+	assert_eq(1 if ZHUAN_SHU_KU.shi_jian(yu, &"bei_yao",
+			{"lai_yuan": null, "shang_hai": 1.0}) else 0, 0,
+			"专属技框架空载：受击事件不被吃掉")
+	var zs_lei_bao: NengLi = load("res://data/nengli/lei_bao_zhao_huan.tres")
+	assert_eq(1 if ZHUAN_SHU_KU.shi_fang(yu, zs_lei_bao, 1) else 0, 0,
+			"框架只接 6 鱼种模块：T1 主动不走模块分派")
+	ZHUAN_SHU_KU.geng_xin(yu, 0.01)  # 空载每帧更新：不炸即可（模块清单为空时安全返回）
+	var zs_su_du_qi_wang := maxf(SHU_ZHI_CE.SU_DU_ZUI_DI_BI,
+			1.0 - SHU_ZHI_CE.MEI_JI_JIAN_SU * float(maxi(ZhangBen.deng_ji, 0)))
+	assert_eq(_xiang_deng(yu._ti_xing_su_du_bi(), zs_su_du_qi_wang), 1,
+			"专属技框架空载：游速倍率与接入前完全一致")
+
 
 	# ---- 用例 7：血量归零 → 死亡（放最后：切场景会拆掉本测试）----
 	yu.wudi = false  # 清无敌，确保受伤入口真的执行

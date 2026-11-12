@@ -66,14 +66,15 @@ func _process(_delta: float) -> void:
 		yin_cang()
 
 
-func xian_shi(neng: NengLi, zhong_xin: Vector2, fang_xiang: Vector2) -> void:
+func xian_shi(neng: NengLi, zhong_xin: Vector2, fang_xiang: Vector2, wan_jia: Yu = null) -> void:
 	# 显示某个主动技能的作用范围：圆心=玩家当前位置，朝向=玩家当前朝向
+	# TASK-019：优先用玩家实例的 ji_neng_ban_jing，保证「显示圈」与「实际命中半径」同一入口
 	if neng == null:
 		yin_cang()
 		return
 	_neng = neng
 	_lei_xing = _pan_lei_xing(neng.bian_hao)
-	_ban_jing = _qu_ban_jing(neng)
+	_ban_jing = _qu_ban_jing(neng, wan_jia)
 	if fang_xiang.length_squared() > 0.0001:
 		_fang_xiang = fang_xiang.normalized()
 	else:
@@ -103,9 +104,19 @@ func _pan_lei_xing(bian_hao: StringName) -> FanWeiLeiXing:
 	return FanWeiLeiXing.ZI_SHEN
 
 
-func _qu_ban_jing(neng: NengLi) -> float:
-	# 取当前档位的 ban_jing（漩涡升档会从 180 变 270）；没写档位就回退基础值
+func _qu_ban_jing(neng: NengLi, wan_jia: Yu = null) -> float:
+	# 取当前档位的实际半径；TASK-019 起优先走玩家唯一入口（身位/固定像素/体长下限全在里面）
+	# 兜底：本节点由 neng_li_ui 懒创建并挂在玩家父节点（Main）下，父节点里有兄弟节点 "Yu"。
+	# 这样旧调用不传 wan_jia 也能取到玩家；纯逻辑测试没有玩家时仍退回旧 ban_jing 口径。
 	var dang := maxi(ZhangBen.dang_qian_zhu_dong_dang(neng.bian_hao), 1)
+	var zui_xiao_bei := 1.5 if _lei_xing == FanWeiLeiXing.TU_JIN else 0.5
+	var wan := wan_jia
+	if wan == null:
+		var fu := get_parent()
+		if fu != null:
+			wan = fu.get_node_or_null("Yu") as Yu
+	if wan != null:
+		return wan.ji_neng_ban_jing(neng, dang, zui_xiao_bei)
 	var ban := neng.dang_zhi(&"ban_jing", dang)
 	if ban <= 0.0:
 		ban = neng.ban_jing

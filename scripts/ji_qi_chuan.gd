@@ -52,6 +52,7 @@ const YU_CHA_SHANG_HAI := 0.6
 const YU_CHA_ZHUAN_BEI := 0.15    # 预判玩家 0.15 秒后的位置
 const YU_CHA_PIAN_JIAO := 10.0    # 三发 ±10°
 const YU_CHA_LENG_QUE := 4.0
+const WAN_JIA_TI_XING_SHANG_HAI_BI := 0.04  # TASK-019 船招伤害附加：玩家当前体型 ×4%/招
 # —— 开局先打鲸鲨 ——
 const XIAN_DA_JING_SHA_SHI_CHANG := 9.0  # 降临后 8~10 秒内优先攻击鲸鲨
 
@@ -82,6 +83,7 @@ var jing_sha: YuNpc = null  # 鲸鲨引用：开局 8~10 秒优先打它；Main 
 
 var _chuan_ti: AnimatedSprite2D
 var _zhao_ti: AnimatedSprite2D
+var _shan_guang_tween: Tween  # 受击闪白补间：连续受击先杀旧的，避免多个 Tween 同时抢根节点 modulate
 var _gong_ji_dingshi: Timer
 var _gong_ji_lun := 0  # 攻击轮次：只用于测试与日志，出招由权重选择
 var _zheng_zai_chu_zhao := false  # 防重叠：上一招还在前摇/结算时，本轮定时器直接跳过
@@ -198,10 +200,15 @@ func shou_dao_yao_ji(shang_hai: float, _lai_yuan = null, bu := "shen") -> void:
 
 
 func _shan_guang() -> void:
-	# 受击反馈：贴图闪一下暖白，玩家能确认“咬中了”
-	_chuan_ti.modulate = Color(1.6, 1.3, 1.0)
-	var bu_jian := create_tween()
-	bu_jian.tween_property(_chuan_ti, "modulate", Color.WHITE, 0.15)
+	# 受击反馈：过曝白闪光——modulate 分量 >1，彩色贴图被乘法推向白色，玩家能确认“咬中了”
+	# 染根节点而不是 _chuan_ti：出招动画期间 _chuan_ti 被隐藏、_zhao_ti 可见，
+	# 只染船体会让 0.7~1.0 秒的出招期完全看不到受击白闪；根节点两层贴图一起闪。
+	# 死亡淡出仍写 _chuan_ti.modulate:a，与根节点的白闪互不抢属性。
+	if _shan_guang_tween != null and _shan_guang_tween.is_valid():
+		_shan_guang_tween.kill()
+	modulate = Color(2.8, 2.8, 2.8, 1.0)  # 过曝白起手：2.8 倍亮度
+	_shan_guang_tween = create_tween()
+	_shan_guang_tween.tween_property(self, "modulate", Color.WHITE, 0.13)  # 0.13 秒回到本色
 
 
 func _chen_mo() -> void:
@@ -428,7 +435,10 @@ func _jie_suan_zha_dan() -> void:
 		# G 玩家侧：磁场护壁 → 深水炸弹偏转失效；金属斥力 → 船伤 -30%
 		if not wan_jia.zhuan_shu_pi_bi_dan_dao(_zha_dan_dian):
 			# 磁场只罩半径内：炸弹落点在圈外照样炸（不再全屏免弹道）
-			wan_jia.shou_dao_yao_ji(ZHA_DAN_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
+			var shang := (ZHA_DAN_SHANG_HAI \
+					+ wan_jia.tixing * WAN_JIA_TI_XING_SHANG_HAI_BI) \
+					* wan_jia.zhuan_shu_chuan_shang_hai_bei()
+			wan_jia.shou_dao_yao_ji(shang, self)
 	for npc in get_tree().get_nodes_in_group("yu_npc"):
 		if npc == self or not is_instance_valid(npc) or bool(npc.get("si_le")):
 			continue
@@ -473,7 +483,9 @@ func _jie_suan_chuan_mao() -> void:
 		return
 	if absf(rad_to_deg(wrapf(cha.angle() - _mao_fang.angle(), -PI, PI))) > MAO_JIAO_DU * 0.5:
 		return
-	wan_jia.shou_dao_yao_ji(MAO_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
+	var shang := (MAO_SHANG_HAI + wan_jia.tixing * WAN_JIA_TI_XING_SHANG_HAI_BI) \
+			* wan_jia.zhuan_shu_chuan_shang_hai_bei()
+	wan_jia.shou_dao_yao_ji(shang, self)
 	wan_jia.tui_kai(cha, MAO_TUI_KAI, MAO_TUI_KAI_SHI_CHANG)
 	_mao_ming_zhong = true
 
@@ -563,7 +575,9 @@ func _geng_xin_yu_chas(delta: float) -> void:
 			continue
 		if wan_jia != null and is_instance_valid(wan_jia) \
 				and pos.distance_to(wan_jia.global_position) <= YU_CHA_BAN_JING:
-			wan_jia.shou_dao_yao_ji(YU_CHA_SHANG_HAI * wan_jia.zhuan_shu_chuan_shang_hai_bei(), self)
+			var shang := (YU_CHA_SHANG_HAI + wan_jia.tixing * WAN_JIA_TI_XING_SHANG_HAI_BI) \
+					* wan_jia.zhuan_shu_chuan_shang_hai_bei()
+			wan_jia.shou_dao_yao_ji(shang, self)
 			_cha_ming_zhong = true
 			continue
 		if _jing_sha_huo() and pos.distance_to(jing_sha.global_position) <= YU_CHA_BAN_JING * 2.0:
