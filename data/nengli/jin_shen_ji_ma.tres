@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/jin_shen_ji_ma.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"jin_shen_ji_ma"
 ming_zi = "近身即麻"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "1.5身位内NPC每秒+15%毒晕，你主动咬击+10%。"
 lai_yuan = "蓑鲉"
 suoshu_xing_tai = &"jiu_wei_du_yu_yao"

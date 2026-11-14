@@ -87,7 +87,7 @@ var _lie_shou_ji_shi := 0.0  # 猎手直觉扫描节拍（每 0.5 秒扫一圈�
 var _yu_jing_sheng_yu := 0.0  # 电感受器预警剩余（秒）：头顶"!"
 var _dian_gan_fx_ji_shi := -1000  # 电感受器特效上次播放时刻（毫秒）：多条鱼反复预警时节流，默认 -1000 保证首次触发必定播
 var _yu_jing_biao: Label = null  # 预警标记（懒创建：第一次预警才 new，死后随节点释放）
-var _ruo_dian_mu_biao: YuNpc = null  # 弱点洞察锁定目标：视野内体型最大的鱼（可空）
+var _ruo_dian_mu_biao: Node2D = null  # 弱点洞察锁定目标：视野内体型最大的敌人（普通鱼或机械船，可空）
 var _ruo_dian_sheng_yu := 0.0  # 锁定剩余（秒）：>0 时对锁定目标加伤
 var _ruo_dian_bei_lv := 1.0  # 对锁定目标的伤害倍率（施放时按档读表）
 var _ying_ke_sheng_yu := 0.0  # 硬壳护体剩余（秒）
@@ -447,14 +447,13 @@ func _zeng_yi_shi_chang(delta: float) -> void:
 		_xuan_wo_ji_shi -= delta
 		if _xuan_wo_ji_shi <= 0.0:
 			_xuan_wo_ji_shi = 0.1  # 每 0.1 秒拉一把：10 像素/拍 ≈ 100 像素/秒的向心流速
-			for node in get_tree().get_nodes_in_group("yu_npc"):
-				var yu_npc := node as YuNpc
-				if yu_npc == null or yu_npc.si_le:
-					continue
-				var cha := global_position - yu_npc.global_position
+			for mu in di_ren_lie():
+				var cha := global_position - mu.global_position
 				if cha.length() <= _xuan_wo_ban_jing:
-					yu_npc.tui_kai(cha.normalized(), 10.0 * _xuan_wo_la_li)
-					yu_npc.ding_zhu(0.4)  # 被卷住：反应延迟拉满，不索敌、不转头
+					if mu.has_method("tui_kai"):
+						mu.call("tui_kai", cha.normalized(), 10.0 * _xuan_wo_la_li)  # 船：no-op
+					if mu.has_method("ding_zhu"):
+						mu.call("ding_zhu", 0.4)  # 被卷住：反应延迟拉满（船有单次上限/抗性）
 	if _kuang_bao_sheng_yu > 0.0:
 		_kuang_bao_sheng_yu = maxf(0.0, _kuang_bao_sheng_yu - delta)
 		if _kuang_bao_sheng_yu <= 0.0:
@@ -470,7 +469,8 @@ func _zeng_yi_shi_chang(delta: float) -> void:
 	if _ruo_dian_sheng_yu > 0.0:
 		# 弱点洞察：锁定到期 / 目标被吃 / 目标已死，都立刻解除——加伤不留到下一个目标身上
 		_ruo_dian_sheng_yu = maxf(0.0, _ruo_dian_sheng_yu - delta)
-		if _ruo_dian_sheng_yu <= 0.0 or not is_instance_valid(_ruo_dian_mu_biao) or _ruo_dian_mu_biao.si_le:
+		if _ruo_dian_sheng_yu <= 0.0 or _ruo_dian_mu_biao == null \
+				or not is_instance_valid(_ruo_dian_mu_biao) or bool(_ruo_dian_mu_biao.get("si_le")):
 			_ruo_dian_mu_biao = null
 			_ruo_dian_bei_lv = 1.0
 	if _ying_ke_sheng_yu > 0.0:
@@ -495,14 +495,20 @@ func _ruo_dian_bei(mu: Node) -> float:
 
 func _bei_ci_bei(mu: Node) -> float:
 	# 背刺直觉：从目标背后下口才加伤（目标朝右 → 我在它左侧算背后）
-	# 判定只看水平朝向：鱼的贴图默认朝右，flip_h 表示朝左，和玩家侧完全同一条规则
+	# 判定只看水平朝向：鱼读贴图 flip_h，机械船走鸭子接口 mian_chao_fang()
 	var jia := ZhangBen.bei_dong_zhi(&"bei_ci_zhi_jue")
-	if jia <= 0.0 or not mu is YuNpc:
+	if jia <= 0.0 or mu == null or not is_instance_valid(mu):
 		return 1.0
-	var ti := mu.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-	if ti == null:
+	var chao := 1.0
+	if mu is YuNpc:
+		var ti := mu.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+		if ti == null:
+			return 1.0
+		chao = -1.0 if ti.flip_h else 1.0  # 目标面朝方向（水平单位向量）
+	elif mu.has_method("mian_chao_fang"):
+		chao = float(mu.call("mian_chao_fang"))
+	else:
 		return 1.0
-	var chao := -1.0 if ti.flip_h else 1.0  # 目标面朝方向（水平单位向量）
 	var cha: Vector2 = global_position - mu.global_position
 	if cha.length_squared() < 0.001:
 		return 1.0
@@ -513,10 +519,14 @@ func _bei_ci_bei(mu: Node) -> float:
 func _jue_jing_bei(mu: Node) -> float:
 	# 绝境反咬：目标体型比我大才触发；加成随“大多少”线性涨，到 2 倍体型吃满
 	# 例：满档 +60%，咬 1.5 倍体型的鱼 → +30%；咬 2 倍及以上 → +60%
+	# 机械船 tixing=99，鸭子读属性即可触发，不要求它是 YuNpc
 	var zui_da := ZhangBen.bei_dong_zhi(&"jue_jing_fan_yao")
-	if zui_da <= 0.0 or not mu is YuNpc:
+	if zui_da <= 0.0 or mu == null or not is_instance_valid(mu):
 		return 1.0
-	var mu_ti := maxf(0.0, float(mu.get("tixing")))
+	var ti_bi = mu.get("tixing")
+	if ti_bi == null:
+		return 1.0
+	var mu_ti := maxf(0.0, float(ti_bi))
 	if mu_ti <= tixing:
 		return 1.0
 	var cha_bi := clampf(mu_ti / maxf(tixing, 0.01) - 1.0, 0.0, 1.0)
@@ -534,11 +544,9 @@ func _lie_shou_sao_miao(delta: float) -> void:
 	if jia <= 0.0:
 		return
 	var ju := 260.0 * (1.0 + jia)
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc != null and not yu_npc.si_le \
-				and global_position.distance_to(yu_npc.global_position) <= ju:
-			yu_npc.shi_fang_gao_liang(0.6)
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) <= ju and mu.has_method("shi_fang_gao_liang"):
+			mu.call("shi_fang_gao_liang", 0.6)
 
 
 func _qu_xiao_shi_fang() -> void:
@@ -757,18 +765,62 @@ func _xu_ying_tie_tu(neng: NengLi) -> Texture2D:
 	return null
 
 
+func di_ren_lie() -> Array[Node2D]:
+	# 统一敌人列表：普通鱼（"yu_npc"）+ 机械船（"ji_qi_chuan"）
+	# 船单独成组、绝不混入 "yu_npc"，避免 NPC 吞噬/刷怪/同类逻辑把它当鱼；
+	# 这里用鸭子过滤（只要求 Node2D 且有 si_le），去重后供玩家技能与被动扫描。
+	var lie: Array[Node2D] = []
+	if not is_inside_tree():
+		return lie
+	var yi_lie := {}
+	for zu in [&"yu_npc", &"ji_qi_chuan"]:
+		for node in get_tree().get_nodes_in_group(zu):
+			var mu := node as Node2D
+			if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
+				continue
+			var jian := mu.get_instance_id()
+			if yi_lie.has(jian):
+				continue
+			yi_lie[jian] = true
+			lie.append(mu)
+	return lie
+
+
+func _ji_neng_dui_bi_ti(mu) -> float:
+	# 技能公式里的「对方体型」：机械船 tixing=99 不能直接进 3% 咬伤公式，
+	# 由船提供 ji_neng_dui_bi_ti_xing()（用玩家体型作参照）；普通鱼仍返回真实体型。
+	if mu == null or not is_instance_valid(mu):
+		return 0.0
+	if not mu is YuNpc and mu.has_method("ji_neng_dui_bi_ti_xing"):
+		return float(mu.call("ji_neng_dui_bi_ti_xing"))
+	var ti = mu.get("tixing")
+	return float(ti) if ti != null else 0.0
+
+
+func zhan_dou_bai_fen_shang(mu, bai_fen: float) -> void:
+	# 百分比直伤统一入口：鱼保留原公式（tixing×百分比，首领减半）；
+	# 机械船走 shou_dao_ji_neng_bai_fen（max(xue)×百分比×0.5），绝不用船 tixing=99 爆表。
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")) or bai_fen <= 0.0:
+		return
+	if not mu is YuNpc and mu.has_method("shou_dao_ji_neng_bai_fen"):
+		mu.call("shou_dao_ji_neng_bai_fen", bai_fen, self)
+		return
+	if not mu.has_method("shou_zhi_jie_shang"):
+		return
+	var bi := 0.5 if bool(mu.get("shi_boss")) else 1.0
+	var ti = mu.get("tixing")
+	mu.call("shou_zhi_jie_shang", (float(ti) if ti != null else 0.0) * bai_fen / 100.0 * bi)
+
+
 func _shi_fang_fang_dian(neng: NengLi, dang: int) -> void:
-	# 放电麻痹：以玩家为圆心，半径内所有 NPC 叠电麻条；主值 100 = 一次满条 → 失控 2 秒
+	# 放电麻痹：以玩家为圆心，半径内所有敌人叠电麻条；主值 100 = 一次满条 → 失控 2 秒
 	# 只打别人，不电自己——玩家的电鳗能力是猎人技能
 	# 鸣雷鳞：范围 +30%、电麻 +25%（两条都只在这张被动持有生效）
 	var ban := ji_neng_ban_jing(neng, dang, 0.5) * _dian_xi_fan_bei()
 	var liang := neng.shu_zhi * _dian_xi_ji_bei()
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		if global_position.distance_to(yu_npc.global_position) <= ban:
-			yu_npc.jia_dian_ma(liang)
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) <= ban and mu.has_method("jia_dian_ma"):
+			mu.call("jia_dian_ma", liang)
 	_dian_ma_biao_xian = 0.15  # 闪蓝 0.15 秒（表现层，_process 里读）
 	TE_XIAO.fang_dian(get_parent(), global_position, 1.3)  # 范围型技能放大 30%：手机上一眼能看见电圈
 
@@ -800,24 +852,28 @@ func _shi_fang_chong_zhuang(neng: NengLi) -> void:
 
 
 func _shi_fang_ruo_dian(neng: NengLi, dang: int) -> bool:
-	# 弱点洞察：锁定视野半径内体型最大的鱼（含首领），亮出它的等级；持续期对它加伤
-	# 返回 false = 视野里没有鱼：调用方不扣冷却（空放不罚）
-	var mu: YuNpc = null
+	# 弱点洞察：锁定视野半径内体型最大的敌人（含首领/机械船），亮出它的等级；持续期对它加伤
+	# 返回 false = 视野里没有敌人：调用方不扣冷却（空放不罚）
+	var mu: Node2D = null
 	var ban := ji_neng_ban_jing(neng, dang, 0.5)
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
+	for lie_mu in di_ren_lie():
+		if global_position.distance_to(lie_mu.global_position) > ban:
 			continue
-		if global_position.distance_to(yu_npc.global_position) > ban:
-			continue
-		if mu == null or yu_npc.tixing > mu.tixing:
-			mu = yu_npc
+		var ti = lie_mu.get("tixing")
+		var mu_ti := float(ti) if ti != null else 0.0
+		if mu == null:
+			mu = lie_mu
+		else:
+			var dang_ti = mu.get("tixing")
+			if mu_ti > (float(dang_ti) if dang_ti != null else 0.0):
+				mu = lie_mu
 	if mu == null:
 		return false
 	_ruo_dian_mu_biao = mu
 	_ruo_dian_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
 	_ruo_dian_bei_lv = maxf(1.0, neng.dang_zhi(&"shu_zhi", dang))
-	mu.xian_shi_deng_ji(_ruo_dian_sheng_yu)  # 头顶亮 Lv.N：看穿目标的分量
+	if mu.has_method("xian_shi_deng_ji"):
+		mu.call("xian_shi_deng_ji", _ruo_dian_sheng_yu)  # 头顶亮 Lv.N：看穿目标的分量
 	return true
 
 
@@ -835,16 +891,14 @@ func _shi_fang_ni_liu(neng: NengLi, dang: int) -> void:
 	TE_XIAO.ni_liu(get_parent(), global_position)  # 无敌窗开启瞬间的闪身特效
 	if neng.dang_zhi(&"shu_zhi", dang) >= 1.0:
 		var ban := ji_neng_ban_jing(neng, dang, 0.5)
-		for node in get_tree().get_nodes_in_group("yu_npc"):
-			var yu_npc := node as YuNpc
-			if yu_npc == null or yu_npc.si_le:
-				continue
-			var cha := yu_npc.global_position - global_position
+		for mu in di_ren_lie():
+			var cha := mu.global_position - global_position
 			if cha.length() > ban:
 				continue
 			if cha.length_squared() < 0.001:
 				cha = Vector2.RIGHT.rotated(randf() * TAU)  # 完全重叠：随机方向弹开
-			yu_npc.tui_kai(cha.normalized(), 130.0)
+			if mu.has_method("tui_kai"):
+				mu.call("tui_kai", cha.normalized(), 130.0)  # 船：no-op，不推 boss
 
 
 func _shi_fang_xuan_wo(neng: NengLi, dang: int) -> void:
@@ -885,15 +939,13 @@ func _shi_fang_sheng_na(neng: NengLi, dang: int) -> void:
 	# 声呐脉冲：半径内 NPC 全部泛黄高亮（简化版：不做致命区单独描边）；
 	# 档 3 起附赠定身 1 秒（复用 NPC 反应延迟通道——定身里不索敌、不转头）
 	var ban := ji_neng_ban_jing(neng, dang, 0.5)
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) > ban:
 			continue
-		if global_position.distance_to(yu_npc.global_position) > ban:
-			continue
-		yu_npc.shi_fang_gao_liang(neng.dang_zhi(&"chi_xu", dang))
-		if dang >= 3:
-			yu_npc.ding_zhu(neng.dang_zhi(&"shu_zhi", dang))
+		if mu.has_method("shi_fang_gao_liang"):
+			mu.call("shi_fang_gao_liang", neng.dang_zhi(&"chi_xu", dang))
+		if dang >= 3 and mu.has_method("ding_zhu"):
+			mu.call("ding_zhu", neng.dang_zhi(&"shu_zhi", dang))
 	TE_XIAO.sheng_na(get_parent(), global_position)  # 专属声呐波纹：以玩家为圆心扩散
 
 
@@ -914,16 +966,15 @@ func _shi_fang_dian_mai(neng: NengLi, dang: int) -> void:
 	var ban_jing := ji_neng_ban_jing(neng, dang, 0.5) * _dian_xi_fan_bei()
 	var liang := maxf(0.0, neng.dang_zhi(&"shu_zhi", dang)) * _dian_xi_ji_bei()
 	var diao_rou := dang >= 3 and neng.dang_zhi(&"diao_rou", dang) > 0.0
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) > ban_jing:
 			continue
-		if global_position.distance_to(yu_npc.global_position) > ban_jing:
-			continue
-		var yi_kong := yu_npc.zai_kong_zhi()
-		yu_npc.jia_dian_ma(liang)
-		if diao_rou and not yi_kong and yu_npc.zai_kong_zhi():
-			yu_npc.diao_rou(1, 0.3)  # 刚被这一发电晕的才掉肉：不重复收割
+		var yi_kong := bool(mu.call("zai_kong_zhi")) if mu.has_method("zai_kong_zhi") else false
+		if mu.has_method("jia_dian_ma"):
+			mu.call("jia_dian_ma", liang)
+		var xian_kong := bool(mu.call("zai_kong_zhi")) if mu.has_method("zai_kong_zhi") else false
+		if diao_rou and not yi_kong and xian_kong and mu.has_method("diao_rou"):
+			mu.call("diao_rou", 1, 0.3)  # 刚被这一发电晕的才掉肉/掉 HP：不重复收割
 	var bi := clampf(ban_jing / 220.0, 0.9, 2.0)
 	TE_XIAO.dian_mai_chong(get_parent(), global_position, bi)  # 电环爆发：范围一眼可见
 
@@ -1095,16 +1146,14 @@ func _shi_fang_qiang_suan_pen_tu(neng: NengLi, dang: int) -> void:
 	dang_qian_jiao = yuan_jiao
 	if absf(fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = fang.x < 0.0
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var cha := yu_npc.global_position - global_position
+	for mu in di_ren_lie():
+		var cha := mu.global_position - global_position
 		if cha.length() > ban_jing:
 			continue
 		if absf(wrapf(cha.angle() - yuan_jiao, -PI, PI)) > ban_jiao:
 			continue
-		yu_npc.jia_qiang_suan(shi_chang, mei_miao)
+		if mu.has_method("jia_qiang_suan"):
+			mu.call("jia_qiang_suan", shi_chang, mei_miao)  # 船：酸蚀折算 HP/s
 	TE_XIAO.zhong_du(get_parent(), global_position + fang * ban_jing * 0.5, 1.6)  # 锥心处的酸雾团
 
 
@@ -1132,19 +1181,15 @@ func _fang_shui_dao() -> void:
 	if fang.length_squared() < 0.001:
 		fang = Vector2.RIGHT.rotated(dang_qian_jiao)
 	var ce_fang := Vector2(-fang.y, fang.x)
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var cha := yu_npc.global_position - global_position
+	for mu in di_ren_lie():
+		var cha := mu.global_position - global_position
 		var qian := cha.dot(fang)
 		if qian < 0.0 or qian > ju_li:
 			continue
 		if absf(cha.dot(ce_fang)) > kuan * 0.5:
 			continue
-		# 首领减半（boss 口径）：直扣当前体型，不走受伤通道（无视减伤/反甲/反毒）
-		var bi := 0.5 if yu_npc.shi_boss else 1.0
-		yu_npc.shou_zhi_jie_shang(yu_npc.tixing * bai_fen / 100.0 * bi)
+		# 首领减半（boss 口径）：普通鱼直扣当前体型；机械船按 max(xue)×百分比×0.5
+		zhan_dou_bai_fen_shang(mu, bai_fen)
 	TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.45, 1.8)  # 水刃轨迹：复用冲刺水花
 	# 泄压机动：水刀放出后自动后座 1 身位，弹开途中 0.3 秒无敌（无独立冷却）
 	var bei_dong := ZhangBen.zhao_bei_dong(&"xie_ya_ji_dong")
@@ -1183,9 +1228,18 @@ func _zhuan_shu_npc_ju(mu, ban_jing: float) -> bool:
 
 
 func _zhuan_shu_shang_npc(mu, liang: float, dian_ma := 0.0, du_yun := 0.0) -> void:
-	# 专属技对 NPC 的统一结算入口：走咬击通道（记仇/反毒/酸蚀×2 全部照常），再补电麻/毒晕
+	# 专属技统一结算入口：普通鱼走咬击通道（记仇/反毒/酸蚀×2 全部照常），再补电麻/毒晕
 	# 伤害口径是「掉多少级体型」，不是百分比——和自动咬击同一把尺子
+	# 机械船优先走船自己的换算入口（等级→HP）；它的 shou_dao_yao_ji 是 HP 通道，不能混用。
 	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
+		return
+	if not mu is YuNpc and mu.has_method("shou_dao_ji_neng"):
+		if liang > 0.0:
+			mu.call("shou_dao_ji_neng", liang, self)
+		if dian_ma > 0.0 and mu.has_method("jia_dian_ma"):
+			mu.call("jia_dian_ma", dian_ma)
+		if du_yun > 0.0 and mu.has_method("jia_du_yun"):
+			mu.call("jia_du_yun", du_yun)
 		return
 	if not mu.has_method("shou_dao_yao_ji"):
 		return
@@ -1194,9 +1248,9 @@ func _zhuan_shu_shang_npc(mu, liang: float, dian_ma := 0.0, du_yun := 0.0) -> vo
 		if mu is YuNpc:
 			ZhangBen.ji_zao_cheng_diao_rou(liang)  # B2 战绩：专属技造成的掉肉也计入玩家输出
 	if dian_ma > 0.0 and mu.has_method("jia_dian_ma"):
-		mu.jia_dian_ma(dian_ma)
+		mu.call("jia_dian_ma", dian_ma)
 	if du_yun > 0.0 and mu.has_method("jia_du_yun"):
-		mu.jia_du_yun(du_yun)
+		mu.call("jia_du_yun", du_yun)
 
 
 func _shi_fang_lei_bao(neng: NengLi, dang: int) -> void:
@@ -1231,12 +1285,9 @@ func _luo_lei() -> void:
 	var wei := global_position + Vector2.RIGHT.rotated(randf() * TAU) * randf_range(0.0, _lei_bao_ban_jing)
 	TE_XIAO.fang_dian(get_parent(), wei, 0.9)
 	var ban := SHU_ZHI.LEI_BAO_LUO_LEI_BAN_JING * maxf(1.0, scale.x) * _dian_xi_fan_bei()
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		if wei.distance_to(yu_npc.global_position) <= ban:
-			_zhuan_shu_shang_npc(yu_npc, shang, dian)
+	for mu in di_ren_lie():
+		if wei.distance_to(mu.global_position) <= ban:
+			_zhuan_shu_shang_npc(mu, shang, dian)
 
 
 func _shi_fang_dian_wang(neng: NengLi, dang: int) -> void:
@@ -1262,25 +1313,23 @@ func _geng_xin_dian_wang(delta: float) -> void:
 	var shang := _zhuan_shu_zhi(neng, &"shu_zhi", dang)
 	var dian := SHU_ZHI.JIU_TOU_DIAN_WANG_DIAN_MA * _dian_xi_ji_bei()
 	var kuan := SHU_ZHI.JIU_TOU_DIAN_WANG_KUAN * maxf(1.0, scale.x)
-	# 8 向射线：点到线段的距离判定 = 前向投影 + 侧向偏移；同一条 NPC 整场电网只结算一次
+	# 8 向射线：点到线段的距离判定 = 前向投影 + 侧向偏移；同一个敌人整场电网只结算一次
+	var di_ren := di_ren_lie()
 	for i in 8:
 		var fang := Vector2.RIGHT.rotated(TAU * float(i) / 8.0)
 		var ce := Vector2(-fang.y, fang.x)
-		for node in get_tree().get_nodes_in_group("yu_npc"):
-			var yu_npc := node as YuNpc
-			if yu_npc == null or yu_npc.si_le:
-				continue
-			var jian := yu_npc.get_instance_id()
+		for mu in di_ren:
+			var jian := mu.get_instance_id()
 			if _dian_wang_ming_zhong.has(jian):
 				continue
-			var cha := yu_npc.global_position - _dian_wang_qi_dian
+			var cha := mu.global_position - _dian_wang_qi_dian
 			var qian := cha.dot(fang)
 			if qian < 0.0 or qian > _dian_wang_ban_jing:
 				continue
 			if absf(cha.dot(ce)) > kuan:
 				continue
 			_dian_wang_ming_zhong[jian] = true
-			_zhuan_shu_shang_npc(yu_npc, shang, dian)
+			_zhuan_shu_shang_npc(mu, shang, dian)
 
 
 func _shi_fang_ci_chang(neng: NengLi, dang: int) -> void:
@@ -1338,39 +1387,34 @@ func _zuan_tu(delta: float) -> void:
 	if _zuan_tu_shu >= _zuan_tu_zui_duo:
 		return
 	var ban := 0.9 * _shen_wei()
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var jian := yu_npc.get_instance_id()
+	for mu in di_ren_lie():
+		var jian := mu.get_instance_id()
 		if _zuan_tu_ming_zhong.has(jian):
 			continue
-		if global_position.distance_to(yu_npc.global_position) > ban:
+		if global_position.distance_to(mu.global_position) > ban:
 			continue
 		_zuan_tu_ming_zhong[jian] = true
 		_zuan_tu_shu += 1
 		var bei := 1.0
 		if _zuan_tu_shu >= 3:
 			bei = 1.0 - SHU_ZHI.ZUAN_TU_DI_SAN_JIAN  # 第 3 条起每条 -20%
-		_zhuan_shu_shang_npc(yu_npc, _zuan_tu_shang_hai * bei)
-		var cha := yu_npc.global_position - global_position
+		_zhuan_shu_shang_npc(mu, _zuan_tu_shang_hai * bei)
+		var cha := mu.global_position - global_position
 		if cha.length_squared() < 0.001:
 			cha = _zuan_tu_fang
-		yu_npc.tui_kai(cha.normalized(), _zuan_tu_ji_tui)
-		TE_XIAO.yu_lei(get_parent(), yu_npc.global_position, 0.8)
+		if mu.has_method("tui_kai"):
+			mu.call("tui_kai", cha.normalized(), _zuan_tu_ji_tui)  # 船：no-op
+		TE_XIAO.yu_lei(get_parent(), mu.global_position, 0.8)
 		if _zuan_tu_shu >= _zuan_tu_zui_duo:
 			return
 
 
-func _zhao_zhui_jin_fan_wei(fang: Vector2, ju_li: float, ban_jiao: float) -> YuNpc:
-	# 前方扇形里最近的 NPC：剧毒突刺/石化之瞳共用（空放判定也靠它）
-	var zui: YuNpc = null
+func _zhao_zhui_jin_fan_wei(fang: Vector2, ju_li: float, ban_jiao: float) -> Node2D:
+	# 前方扇形里最近的敌人：剧毒突刺/石化之瞳共用（空放判定也靠它）；机械船同样可被瞄准
+	var zui: Node2D = null
 	var zui_ju := INF
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var cha := yu_npc.global_position - global_position
+	for mu in di_ren_lie():
+		var cha := mu.global_position - global_position
 		if cha.length() > ju_li:
 			continue
 		if absf(wrapf(cha.angle() - fang.angle(), -PI, PI)) > ban_jiao:
@@ -1378,7 +1422,7 @@ func _zhao_zhui_jin_fan_wei(fang: Vector2, ju_li: float, ban_jiao: float) -> YuN
 		var ju := cha.length_squared()
 		if ju < zui_ju:
 			zui_ju = ju
-			zui = yu_npc
+			zui = mu
 	return zui
 
 
@@ -1392,7 +1436,8 @@ func _shi_fang_ju_du(neng: NengLi, dang: int) -> bool:
 	dang_qian_jiao = fang.angle()
 	if absf(fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = fang.x < 0.0
-	var shang := ZhanDou.yao_ji_shang_hai(tixing, mu.tixing, zui_ba) * SHU_ZHI.JU_DU_TU_CI_BEI_LV
+	# 机械船 tixing=99 会爆表：走船的参照体型（玩家当前体型），再由 _zhuan_shu_shang_npc 换 HP
+	var shang := ZhanDou.yao_ji_shang_hai(tixing, _ji_neng_dui_bi_ti(mu), zui_ba) * SHU_ZHI.JU_DU_TU_CI_BEI_LV
 	_zhuan_shu_shang_npc(mu, shang, 0.0, _zhuan_shu_zhi(neng, &"shu_zhi", dang))
 	TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
 	return true
@@ -1405,19 +1450,15 @@ func _shi_fang_kong_jian(neng: NengLi, dang: int) -> void:
 	var kuan := SHU_ZHI.KONG_JIAN_KUAN * _shen_wei()
 	var bai_fen := _zhuan_shu_zhi(neng, &"shu_zhi", dang)
 	var ce := Vector2(-fang.y, fang.x)
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var cha := yu_npc.global_position - global_position
+	for mu in di_ren_lie():
+		var cha := mu.global_position - global_position
 		var qian := cha.dot(fang)
 		if qian < 0.0 or qian > ju_li:
 			continue
 		if absf(cha.dot(ce)) > kuan * 0.5:
 			continue
-		# 直扣体型：走 shou_zhi_jie_shang，不吃防御/反甲/反毒（真空刃的定位）
-		var bi := 0.5 if yu_npc.shi_boss else 1.0
-		yu_npc.shou_zhi_jie_shang(yu_npc.tixing * bai_fen / 100.0 * bi)
+		# 普通鱼直扣体型；机械船按 max(xue)×百分比×0.5（都是无视防御通道）
+		zhan_dou_bai_fen_shang(mu, bai_fen)
 	TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.5, 2.0)
 
 
@@ -1489,17 +1530,15 @@ func _bao_you_ling_dan(dan: Dictionary) -> void:
 	var shang := float(dan["shang"])
 	var ji_tui := SHU_ZHI.YOU_LING_QI_SHE_JI_TUI * _shen_wei()
 	TE_XIAO.xuan_wo(get_parent(), dian, maxf(0.8, ban / 110.0))
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
+	for mu in di_ren_lie():
+		if dian.distance_to(mu.global_position) > ban:
 			continue
-		if dian.distance_to(yu_npc.global_position) > ban:
-			continue
-		_zhuan_shu_shang_npc(yu_npc, shang)
-		var cha := yu_npc.global_position - dian
+		_zhuan_shu_shang_npc(mu, shang)
+		var cha := mu.global_position - dian
 		if cha.length_squared() < 0.001:
 			cha = Vector2.RIGHT.rotated(randf() * TAU)
-		yu_npc.tui_kai(cha.normalized(), ji_tui)
+		if mu.has_method("tui_kai"):
+			mu.call("tui_kai", cha.normalized(), ji_tui)  # 船：no-op
 
 
 func _shi_fang_fu_chong(neng: NengLi, dang: int) -> void:
@@ -1522,14 +1561,12 @@ func _luo_di_fu_chong() -> void:
 	var ban := _fu_chong_ban_jing
 	var shang := _fu_chong_shang_hai
 	TE_XIAO.xuan_wo(get_parent(), global_position, maxf(1.0, ban / 110.0))
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) > ban:
 			continue
-		if global_position.distance_to(yu_npc.global_position) > ban:
-			continue
-		_zhuan_shu_shang_npc(yu_npc, shang)
-		yu_npc.ding_zhu(SHU_ZHI.PO_KONG_FU_CHONG_DING_ZHU)
+		_zhuan_shu_shang_npc(mu, shang)
+		if mu.has_method("ding_zhu"):
+			mu.call("ding_zhu", SHU_ZHI.PO_KONG_FU_CHONG_DING_ZHU)  # 船：限时硬控
 	_fu_chong_ban_jing = 0.0
 	_fu_chong_shang_hai = 0.0
 
@@ -1580,21 +1617,18 @@ func _geng_xin_kong_que(delta: float) -> void:
 			continue
 		var jiao := float(i) * PI + _kong_que_xiang * 0.7
 		ying.global_position = global_position + Vector2(cos(jiao), sin(jiao)) * 2.2 * _shen_wei()
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
+	for mu in di_ren_lie():
 		for ying in _kong_que_ying:
-			if is_instance_valid(ying) and ying.global_position.distance_to(yu_npc.global_position) <= ban:
-				_kong_que_ying_bei_yao(yu_npc, du, shang)
+			if is_instance_valid(ying) and ying.global_position.distance_to(mu.global_position) <= ban:
+				_kong_que_ying_bei_yao(mu, du, shang)
 				break
 	if _kong_que_sheng_yu <= 0.0:
 		_qing_kong_que_ying()
 
 
-func _kong_que_ying_bei_yao(yu_npc: YuNpc, du: float, shang: float) -> void:
+func _kong_que_ying_bei_yao(yu_npc: Node2D, du: float, shang: float) -> void:
 	# 幻影被「攻击」的统一结算口：主动贴脸 / NPC 真咬幻影都走这里，同一目标只吃一次
-	if yu_npc == null or not is_instance_valid(yu_npc) or yu_npc.si_le:
+	if yu_npc == null or not is_instance_valid(yu_npc) or bool(yu_npc.get("si_le")):
 		return
 	var jian := yu_npc.get_instance_id()
 	if _kong_que_ming_zhong.has(jian):
@@ -1634,18 +1668,16 @@ func _fang_shi_hua() -> void:
 	var ju := _zhuan_shu_zhi(neng, &"ban_jing", dang) * _shen_wei()
 	var shi := _zhuan_shu_zhi(neng, &"chi_xu", dang)
 	var yuan_jiao := fang.angle()
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var cha := yu_npc.global_position - global_position
+	for mu in di_ren_lie():
+		var cha := mu.global_position - global_position
 		if cha.length() > ju:
 			continue
 		if absf(wrapf(cha.angle() - yuan_jiao, -PI, PI)) > deg_to_rad(SHU_ZHI.SHI_HUA_BAN_JIAO):
 			continue
-		if yu_npc.jia_zhuang_tai(&"shi_hua", shi):
-			yu_npc.shi_hua_shou_shang_bei = 1.0 + _zhuan_shu_zhi(neng, &"shu_zhi", dang) / 100.0
-			TE_XIAO.dian_gan(get_parent(), yu_npc.global_position, 0.9)
+		if mu.has_method("jia_zhuang_tai") and bool(mu.call("jia_zhuang_tai", &"shi_hua", shi)):
+			# 船：状态限时（1.2 秒上限 + 抗性），受击倍率只对玩家来源生效
+			mu.set("shi_hua_shou_shang_bei", 1.0 + _zhuan_shu_zhi(neng, &"shu_zhi", dang) / 100.0)
+			TE_XIAO.dian_gan(get_parent(), mu.global_position, 0.9)
 
 
 func _shi_fang_ji_guan(neng: NengLi, dang: int) -> void:
@@ -1698,12 +1730,9 @@ func _jin_shen_ji_ma_ji(delta: float) -> void:
 	_jin_shen_ji_shi -= SHU_ZHI.JIN_SHEN_JI_MA_MIAO
 	var ban := neng.dang_zhi(&"ban_jing", 1) * _shen_wei()
 	var du := ZhangBen.bei_dong_zhi(&"jin_shen_ji_ma")
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		if global_position.distance_to(yu_npc.global_position) <= ban:
-			yu_npc.jia_du_yun(du)
+	for mu in di_ren_lie():
+		if global_position.distance_to(mu.global_position) <= ban and mu.has_method("jia_du_yun"):
+			mu.call("jia_du_yun", du)  # 船：毒晕条满后短失控，受抗性约束
 
 
 func _gong_sheng_hai_kui_ji(delta: float) -> void:
@@ -1717,23 +1746,22 @@ func _gong_sheng_hai_kui_ji(delta: float) -> void:
 		return
 	_gong_sheng_ji_shi -= jian_ge
 	var ban := neng.dang_zhi(&"ban_jing", 1) * _shen_wei()
-	var mu: YuNpc = null
+	var mu: Node2D = null
 	var zui_ju := INF
-	for node in get_tree().get_nodes_in_group("yu_npc"):
-		var yu_npc := node as YuNpc
-		if yu_npc == null or yu_npc.si_le:
-			continue
-		var ju := global_position.distance_squared_to(yu_npc.global_position)
+	for lie_mu in di_ren_lie():
+		var ju := global_position.distance_squared_to(lie_mu.global_position)
 		if ju <= ban * ban and ju < zui_ju:
 			zui_ju = ju
-			mu = yu_npc
+			mu = lie_mu
 	if mu == null:
 		return
-	mu.jia_du_yun(neng.dang_zhi(&"shu_zhi", 1))
+	if mu.has_method("jia_du_yun"):
+		mu.call("jia_du_yun", neng.dang_zhi(&"shu_zhi", 1))
 	var shi := neng.dang_zhi(&"chi_xu", 1)
 	if shi <= 0.0:
 		shi = SHU_ZHI.GONG_SHENG_HAI_KUI_SHI_CHANG
-	mu.jia_qiang_suan(shi, neng.dang_zhi(&"fu_shu_zhi", 1), false)  # 毒雾的酸蚀不带「被咬 ×2」
+	if mu.has_method("jia_qiang_suan"):
+		mu.call("jia_qiang_suan", shi, neng.dang_zhi(&"fu_shu_zhi", 1), false)  # 毒雾的酸蚀不带「被咬 ×2」
 	TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
 
 
@@ -1775,14 +1803,20 @@ func _chong_zhuang(delta: float) -> void:
 			continue  # 同一目标冲撞期间只结算一次
 		_chong_zhuang_ming_zhong[jian] = true
 		# A2：冲撞也按目标当前体型 3% 结算（拿不到体型的对象沿用旧公式）
+		# 机械船 tixing=99 只表示“吞不下”，冲撞公式改用玩家参照体型，避免单次爆表
 		var shou_ti := float(mu.get("tixing")) if mu.get("tixing") != null else 0.0
+		if not mu is YuNpc:
+			shou_ti = _ji_neng_dui_bi_ti(mu)
 		var yi_ji := ZhanDou.yao_ji_shang_hai(tixing, shou_ti, zui_ba) if shou_ti > 0.0 \
 				else ZhanDou.jiu_yao_ji_shang_hai(tixing, zui_ba)
 		yi_ji *= _chong_zhuang_shang_hai
 		var zui_zhong := yi_ji * _ruo_dian_bei(mu)  # 洞察加伤只给锁定目标
 		if mu is YuNpc:
 			ZhangBen.ji_zao_cheng_diao_rou(zui_zhong)
-		mu.call("shou_dao_yao_ji", zui_zhong, self, "shen")
+			mu.call("shou_dao_yao_ji", zui_zhong, self, "shen")
+		else:
+			# 机械船：等级伤害走船的换算入口（1 级 ≈ 8 HP），不混用 HP 咬击通道
+			_zhuan_shu_shang_npc(mu, zui_zhong)
 
 
 func _zhao_bei_dong(bian_hao: StringName) -> NengLi:
@@ -1840,10 +1874,12 @@ func _ti_xing_zhuan_xiang_bi() -> float:
 
 
 func _xian_zhi_zai_di_tu_nei() -> void:
-	# 别游出九宫格大地图：留 30 像素边距（约半个鱼身），相机 limit 会跟着夹住视野
-	var bian_ju := 30.0
-	position.x = clampf(position.x, bian_ju, DI_TU_DA_XIAO.x - bian_ju)
-	position.y = clampf(position.y, bian_ju, DI_TU_DA_XIAO.y - bian_ju)
+	# 别游出九宫格大地图：边距至少 30px，并按当前体长留半个鱼身。
+	# TASK-022：后期鱼身很大，固定 30px 会让鱼在地图上下边缘被屏幕切掉半个身子；
+	# 动态边距保证整条鱼仍在地图内，决战镜头贴到地图边时能看到完整鱼身（也不会露出灰区）。
+	var ban_ti_chang := maxf(30.0, ti_chang() * 0.5)
+	position.x = clampf(position.x, ban_ti_chang, DI_TU_DA_XIAO.x - ban_ti_chang)
+	position.y = clampf(position.y, ban_ti_chang, DI_TU_DA_XIAO.y - ban_ti_chang)
 
 
 func _on_zui_qu_entered(_qu: Area2D) -> void:
@@ -1966,9 +2002,9 @@ func _chang_shi_yao_ji() -> void:
 	shang_hai *= _jue_jing_bei(mu_biao)  # 绝境反咬：目标比我大得越多，这一口越狠
 	if _xue_xing_sheng_yu > 0.0:
 		shang_hai *= 1.0 + _xue_xing_yao_shang  # 血腥狂热满档：窗口内咬伤加成
-	# G T1 被动：破甲龙鳞——对体型比我大的鱼咬伤 +30%
+	# G T1 被动：破甲龙鳞——对体型比我大的敌人咬伤 +30%（机械船 tixing=99 同样触发）
 	var po_jia := ZhangBen.bei_dong_zhi(&"po_jia_long_lin")
-	if po_jia > 0.0 and shi_yu and mu_ti_xing > tixing:
+	if po_jia > 0.0 and mu_ti_xing > tixing:
 		shang_hai *= 1.0 + po_jia / 100.0
 	# 2026-11-09 专属技模块：咬伤倍率（默认 ×1）；模块可读 mu/bu 做条件判定（如只对某鱼种生效）
 	shang_hai *= ZHUAN_SHU.wen(self, &"yao_shang_bei", {"mu": mu_biao, "bu": bu})
@@ -1982,7 +2018,10 @@ func _chang_shi_yao_ji() -> void:
 
 
 func _yao_ji_lian_dong(mu_biao: Node2D, shang_hai: float) -> void:
-	# 咬击结算后的被动联动：只对 NPC 生效（咬机器船不掉肉、不上毒）
+	# 咬击结算后的被动联动：普通鱼走掉肉/上毒；机械船另走 HP 折算分支（不掉肉块）
+	if not mu_biao is YuNpc:
+		_yao_ji_lian_dong_chuan(mu_biao, shang_hai)
+		return
 	var yu_npc := mu_biao as YuNpc
 	if yu_npc == null or yu_npc.si_le:
 		return
@@ -2011,6 +2050,28 @@ func _yao_ji_lian_dong(mu_biao: Node2D, shang_hai: float) -> void:
 	var jin := ZhangBen.zhao_bei_dong(&"jin_shen_ji_ma")
 	if jin != null:
 		yu_npc.jia_du_yun(jin.dang_zhi(&"fu_shu_zhi", 1))
+
+
+func _yao_ji_lian_dong_chuan(mu_biao: Node2D, shang_hai: float) -> void:
+	# 机械船版咬击联动：不掉肉块，把「撕裂齿/腐肉诱饵」折算成少量船体 HP；
+	# 毒腺/近身即麻照常灌毒晕条（船满条后短失控，受内部抗性限制）。
+	if mu_biao == null or not is_instance_valid(mu_biao) or bool(mu_biao.get("si_le")):
+		return
+	var du_ceng := ZhangBen.dang_qian_bei_dong_ceng(&"du_xian")
+	if du_ceng > 0 and mu_biao.has_method("jia_du_yun"):
+		mu_biao.call("jia_du_yun", ZhangBen.bei_dong_zhi(&"du_xian"))
+		TE_XIAO.zhong_du(get_parent(), mu_biao.global_position, 0.4)
+	var lie_ceng := ZhangBen.dang_qian_bei_dong_ceng(&"si_lie_chi")
+	if lie_ceng > 0 and mu_biao.has_method("shou_dao_ji_neng_hp"):
+		# 船不产生可拾取的肉块：按这一口实际 HP 的 50% 追加“撕裂”伤害
+		mu_biao.call("shou_dao_ji_neng_hp", maxf(0.05, shang_hai * 0.5), self)
+	var fu_ceng := ZhangBen.dang_qian_bei_dong_ceng(&"fu_rou_you_er")
+	if fu_ceng > 0 and mu_biao.has_method("shou_dao_ji_neng_hp"):
+		# 腐肉诱饵对船不生成诱饵肉，只折算这一口 HP 的 25%
+		mu_biao.call("shou_dao_ji_neng_hp", maxf(0.05, shang_hai * 0.25), self)
+	var jin := ZhangBen.zhao_bei_dong(&"jin_shen_ji_ma")
+	if jin != null and mu_biao.has_method("jia_du_yun"):
+		mu_biao.call("jia_du_yun", jin.dang_zhi(&"fu_shu_zhi", 1))
 
 
 func _shen_shang_xian_jia_su() -> float:

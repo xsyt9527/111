@@ -125,18 +125,23 @@ static func _luo_di_liu_xing_yue(yu, neng: NengLi) -> void:
 	var ban_jing: float = yu.fan_wei_xiu_zheng(_ban_jing_shen_wei(neng, dang, yu), 0.5)
 	var shang_hai := maxf(0.0, float(neng.dang_zhi(&"shu_zhi", dang)))
 	var tui_ju := maxf(0.0, float(neng.dang_zhi(&"npc_shu_zhi", dang))) * _shen_wei(yu)
-	for n in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := n as YuNpc
+	for n in _di_ren(yu):
+		var npc := n as Node2D
 		if not _ke_yong_mu_biao(npc):
 			continue
 		if yu.global_position.distance_to(npc.global_position) > ban_jing:
 			continue
-		npc.shou_dao_yao_ji(shang_hai, yu)
-		if tui_ju > 0.0 and is_instance_valid(npc) and not npc.si_le:
+		# 机械船走技能伤害换算入口（1 级≈8 HP）；普通鱼保持原来的“级”直扣
+		if npc.has_method("shou_dao_ji_neng") and not npc is YuNpc:
+			npc.call("shou_dao_ji_neng", shang_hai, yu)
+		elif npc.has_method("shou_dao_yao_ji"):
+			npc.call("shou_dao_yao_ji", shang_hai, yu)
+		if tui_ju > 0.0 and _ke_yong_mu_biao(npc):
 			var fang: Vector2 = npc.global_position - yu.global_position
 			if fang.length_squared() < 0.001:
 				fang = Vector2.RIGHT.rotated(randf() * TAU)
-			npc.tui_kai(fang.normalized(), tui_ju)
+			if npc.has_method("tui_kai"):
+				npc.call("tui_kai", fang.normalized(), tui_ju)  # 船内部会压成极轻位移
 	yu.set_meta(M_LIU_YAO, LIU_XING_YAO_MIAO)
 	TE_XIAO.xuan_wo(yu.get_parent(), yu.global_position, 1.5)
 	_guan_wu_di(yu)
@@ -194,14 +199,18 @@ static func _geng_xin_shen_ju_chong_feng(yu, neng: NengLi, delta: float) -> void
 		_guan_wu_di(yu)
 
 
-static func _ming_zhong_shen_ju_chong_feng(yu, neng: NengLi, mu: YuNpc) -> void:
-	# 首目标结算：1.5 级等效伤害 + 1 秒束缚（boss 只吃伤害，jia_zhuang_tai 内部挡状态）
+static func _ming_zhong_shen_ju_chong_feng(yu, neng: NengLi, mu: Node2D) -> void:
+	# 首目标结算：1.5 级等效伤害 + 1 秒束缚（boss 只吃伤害，jia_zhuang_tai 内部挡状态；
+	# 机械船走 shou_dao_ji_neng 级→HP 换算，束缚由船内部限时+抗性）
 	var dang := _dang_zhu_dong(neng)
 	var shang_hai := maxf(0.0, float(neng.dang_zhi(&"shu_zhi", dang)))
 	var shu_fu_miao := maxf(0.0, float(neng.dang_zhi(&"fu_shu_zhi", dang)))
-	mu.shou_dao_yao_ji(shang_hai, yu)
-	if shu_fu_miao > 0.0 and is_instance_valid(mu) and not mu.si_le:
-		mu.jia_zhuang_tai(&"shu_fu", shu_fu_miao)
+	if mu.has_method("shou_dao_ji_neng") and not mu is YuNpc:
+		mu.call("shou_dao_ji_neng", shang_hai, yu)
+	elif mu.has_method("shou_dao_yao_ji"):
+		mu.call("shou_dao_yao_ji", shang_hai, yu)
+	if shu_fu_miao > 0.0 and _ke_yong_mu_biao(mu) and mu.has_method("jia_zhuang_tai"):
+		mu.call("jia_zhuang_tai", &"shu_fu", shu_fu_miao)
 	TE_XIAO.ying_lin(yu.get_parent(), mu.global_position, 1.0)
 
 
@@ -216,11 +225,12 @@ static func _shi_fang_qian_yan_qi_she(yu, neng: NengLi, dang: int) -> bool:
 	var shang_hai := maxf(0.0, float(neng.dang_zhi(&"shu_zhi", dang)))
 	var dian_ma := maxf(0.0, float(neng.dang_zhi(&"fu_shu_zhi", dang)))
 	for npc in mu_lie:
-		if not _ke_yong_mu_biao(npc) or not npc.has_method(&"shou_zhi_jie_shang"):
+		if not _ke_yong_mu_biao(npc) or not npc.has_method("shou_zhi_jie_shang"):
 			continue
-		npc.shou_zhi_jie_shang(shang_hai * (0.5 if npc.shi_boss else 1.0))
-		if is_instance_valid(npc) and not npc.si_le and npc.has_method(&"jia_dian_ma"):
-			npc.jia_dian_ma(dian_ma)
+		# 无视防御直伤对首领减半；机械船由自己的 shou_zhi_jie_shang 把「级」换 HP
+		npc.call("shou_zhi_jie_shang", shang_hai * (0.5 if bool(npc.get("shi_boss")) else 1.0))
+		if _ke_yong_mu_biao(npc) and npc.has_method("jia_dian_ma"):
+			npc.call("jia_dian_ma", dian_ma)
 			TE_XIAO.fang_dian(yu.get_parent(), npc.global_position, 0.6)
 	return true
 
@@ -308,6 +318,15 @@ static func _wen_lei_yan_suo_ding(yu, neng: NengLi, jian: StringName, shu_ju: Di
 
 # ---- 通用小工具 ----
 
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：普通鱼 + 机械船；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group("yu_npc")
+	return []
+
+
 static func _shen_wei(yu) -> float:
 	# 一「身位」像素；下限保护：极端缩放下也按 1 像素算，避免除零
 	return maxf(0.01, float(yu._shen_wei()))
@@ -326,9 +345,10 @@ static func _dang_zhu_dong(neng: NengLi) -> int:
 	return maxi(1, ZhangBen.dang_qian_zhu_dong_dang(neng.bian_hao))
 
 
-static func _ke_yong_mu_biao(npc: YuNpc) -> bool:
-	# 有效 NPC：实例有效、在树内、没死；召唤/视觉/伤害都只对有效目标
-	return npc != null and is_instance_valid(npc) and npc.is_inside_tree() and not npc.si_le
+static func _ke_yong_mu_biao(npc) -> bool:
+	# 有效目标：实例有效、在树内、没死；普通鱼/机械船都走鸭子类型，不硬转 YuNpc
+	return npc != null and is_instance_valid(npc) and npc is Node2D \
+			and npc.is_inside_tree() and not bool(npc.get("si_le"))
 
 
 static func _kai_wu_di(yu, chi_xu: float) -> void:
@@ -346,11 +366,11 @@ static func _guan_wu_di(yu) -> void:
 	yu.wudi = false
 
 
-static func _zhao_zui_jin_mu_biao(yu, ban_jing: float, shu: int) -> Array[YuNpc]:
-	# 半径内最近的 shu 个有效 NPC（插入排序，只保留最近的一小撮）
-	var jie_guo: Array[YuNpc] = []
-	for n in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := n as YuNpc
+static func _zhao_zui_jin_mu_biao(yu, ban_jing: float, shu: int) -> Array[Node2D]:
+	# 半径内最近的 shu 个有效目标（插入排序，只保留最近的一小撮）；机械船也参与
+	var jie_guo: Array[Node2D] = []
+	for n in _di_ren(yu):
+		var npc := n as Node2D
 		if not _ke_yong_mu_biao(npc):
 			continue
 		var ju: float = yu.global_position.distance_to(npc.global_position)
@@ -365,12 +385,12 @@ static func _zhao_zui_jin_mu_biao(yu, ban_jing: float, shu: int) -> Array[YuNpc]
 	return jie_guo
 
 
-static func _zhao_zui_yuan_mu_biao(yu) -> YuNpc:
-	# 全场最远的有效 NPC（雷眼锁定用）；没有目标返回 null
-	var zui: YuNpc = null
+static func _zhao_zui_yuan_mu_biao(yu) -> Node2D:
+	# 全场最远的有效目标（雷眼锁定用）；没有目标返回 null；机械船也可被锁定
+	var zui: Node2D = null
 	var zui_ju := -1.0
-	for n in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := n as YuNpc
+	for n in _di_ren(yu):
+		var npc := n as Node2D
 		if not _ke_yong_mu_biao(npc):
 			continue
 		var ju: float = yu.global_position.distance_to(npc.global_position)
@@ -380,27 +400,27 @@ static func _zhao_zui_yuan_mu_biao(yu) -> YuNpc:
 	return zui
 
 
-static func _zhao_yi_id(yu, id: int) -> YuNpc:
+static func _zhao_yi_id(yu, id: int) -> Node2D:
 	# 按 instance_id 找回锁定目标：死亡/被释放后返回 null（下一帧重新选最远）
 	if id == 0:
 		return null
-	for n in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := n as YuNpc
+	for n in _di_ren(yu):
+		var npc := n as Node2D
 		if _ke_yong_mu_biao(npc) and int(npc.get_instance_id()) == id:
 			return npc
 	return null
 
 
-static func _sao_miao_shou_mu_biao(yu, qi: Vector2, mo: Vector2) -> YuNpc:
+static func _sao_miao_shou_mu_biao(yu, qi: Vector2, mo: Vector2) -> Node2D:
 	# 线段（本帧冲刺路径）上的首目标：命中半径取咬击圈与 0.6 身位的较大者；
-	# 多个目标同时命中时取离起点最近的那个（冲刺“先撞到谁”）
+	# 多个目标同时命中时取离起点最近的那个（冲刺“先撞到谁”）；机械船也可被撞
 	var ban := maxf(float(yu.yao_ji_ban_jing()), SHEN_JU_SAO_MIAO_BI * _shen_wei(yu))
 	var fang := mo - qi
 	var chang_kuan := fang.length_squared()
 	var zui_t := INF
-	var zui: YuNpc = null
-	for n in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := n as YuNpc
+	var zui: Node2D = null
+	for n in _di_ren(yu):
+		var npc := n as Node2D
 		if not _ke_yong_mu_biao(npc):
 			continue
 		var cha: Vector2 = npc.global_position - qi

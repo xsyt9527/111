@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/ji_guang_gui_ji.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"ji_guang_gui_ji"
 ming_zi = "极光轨迹"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "等离子齐射留下极光轨迹3s，穿过路径的敌人每0.5s掉肉0.1级（每秒0.2级）。"
 lai_yuan = "钻光鱼"
 suoshu_xing_tai = &"deng_li_zi_chuan_jia_yu"

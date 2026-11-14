@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/shun_feng_yi.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"shun_feng_yi"
 ming_zi = "顺风翼"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "顺风加速：持续游速+20%；所有主动技能冷却-15%。"
 lai_yuan = "大眼金枪鱼"
 suoshu_xing_tai = &"wen_yao_zhan_wei"

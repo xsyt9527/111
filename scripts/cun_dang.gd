@@ -37,6 +37,7 @@ var yin_xiao_yin_liang := 1.0  # 音效音量 0.0~1.0（线性）；主界面设
 var bgm_yin_liang := 1.0       # BGM 音量 0.0~1.0（线性）
 var yao_gan_ce := "zuo"        # 摇杆在屏幕哪一侧："zuo"=左下（默认）/ "you"=右下；技能按钮跟着换边
 var hua_zhi_feng_ge := "xiang_su"  # 画风："xiang_su"=像素（默认）/ "jing_dian"=经典2D；主界面设置切换
+var xiao_di_tu_tou_ming := 0.85  # 小地图透明度 0.3~1.0（线性）；游戏内设置面板滑条直改
 var sheng_li_ci_shu := 0  # 累计胜利次数（通关次数；D 通关解锁用）
 var cheng_jiu_zhi := 0  # 成就值余额（可花在永久开局技能上）
 var lei_ji_cheng_jiu_zhi := 0  # B1/D：历史累计获得的成就值（只增不减；成就解锁只看它）
@@ -352,6 +353,7 @@ func zai_ru_she_zhi() -> void:
 	bgm_yin_liang = 1.0
 	yao_gan_ce = "zuo"
 	hua_zhi_feng_ge = "xiang_su"
+	xiao_di_tu_tou_ming = 0.85  # 旧档没有该键：保持默认（新增可选键，不动 SHE_ZHI_BAN_BEN）
 	if not FileAccess.file_exists(she_zhi_lu_jing):
 		return
 	var wen_jian := FileAccess.open(she_zhi_lu_jing, FileAccess.READ)
@@ -377,6 +379,9 @@ func zai_ru_she_zhi() -> void:
 		yao_gan_ce = "you"
 	if String(shu_ju.get("hua_zhi", "xiang_su")) == "jing_dian":
 		hua_zhi_feng_ge = "jing_dian"
+	var tou_ming = shu_ju.get("xiao_di_tu_tou_ming", 0.85)
+	if _shi_shu_zi(tou_ming):
+		xiao_di_tu_tou_ming = clampf(float(tou_ming), 0.3, 1.0)  # 手改坏档也夹回合法区间
 
 
 func xie_she_zhi() -> bool:
@@ -391,6 +396,7 @@ func xie_she_zhi() -> bool:
 		"bgm": bgm_yin_liang,
 		"yao_gan_ce": yao_gan_ce,
 		"hua_zhi": hua_zhi_feng_ge,
+		"xiao_di_tu_tou_ming": xiao_di_tu_tou_ming,
 	}))
 	wen_jian.close()
 	return true

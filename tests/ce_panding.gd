@@ -162,19 +162,66 @@ func _ready() -> void:
 	fang_zhu.free()
 	# ---- 用例 0b3：TASK-021 上帝视角小地图 / 受击闪白 / 换房安全入场（纯函数）----
 	# 小地图是开局永久被动「上帝视角」：整张 4128×2304 海图缩到 240×134，一眼看到九房与四类点。
-	assert_eq(1 if XIAO_DI_TU_CE.DI_TU_QU == Rect2(0, 20, 240, 134) else 0, 1,
-			"小地图整图区域 240×134（标题下 20px）")
+	assert_eq(1 if XIAO_DI_TU_CE.DI_TU_QU == Rect2(0, 0, 240, 134) else 0, 1,
+			"小地图整图区域 240×134（标题已移除，从顶部开始）")
 	assert_eq(XIAO_DI_TU_CE.GE_SHU, 3, "小地图同时显示九张图（3×3 整图）")
 	assert_eq(XIAO_DI_TU_CE.MO_REN_FANG_JIAN, 4, "小地图默认高亮正中房 4")
+	assert_eq(1 if XIAO_DI_TU_CE.YAN_SE_DI.r == 0.0 \
+			and XIAO_DI_TU_CE.YAN_SE_DI.g == 0.0 \
+			and XIAO_DI_TU_CE.YAN_SE_DI.b == 0.0 \
+			and XIAO_DI_TU_CE.YAN_SE_DI.a > 0.6 \
+			and XIAO_DI_TU_CE.YAN_SE_DI.a < 1.0 else 0, 1,
+			"TASK-023 雷达底：黑色半透明（0.6 < alpha < 1.0），不再压满不透明")
+	assert_eq(1 if XIAO_DI_TU_CE.YAN_SE_WANG_GE.a <= 0.12 \
+			and XIAO_DI_TU_CE.YAN_SE_LEI_DA.a <= 0.15 else 0, 1,
+			"雷达网格/同心环均为低 alpha，不抢标记点")
+	assert_eq(1 if XIAO_DI_TU_CE.YAN_SE_SHOU_LING.r > 0.9 \
+			and XIAO_DI_TU_CE.YAN_SE_SHOU_LING.g > 0.6 \
+			and XIAO_DI_TU_CE.YAN_SE_SHOU_LING.b < 0.3 else 0, 1,
+			"首领/机械船标记为金色：R>0.9 G>0.6 B<0.3")
 	var xdt = XIAO_DI_TU_CE.new()
-	assert_eq(1 if xdt._dao_di_tu(Vector2(0, 0)) == Vector2(0, 20) else 0, 1,
+	assert_eq(1 if xdt._dao_di_tu(Vector2(0, 0)) == Vector2(0, 0) else 0, 1,
 			"世界左上角映射到地图左上角")
-	assert_eq(1 if xdt._dao_di_tu(Vector2(4128, 2304)) == Vector2(240, 154) else 0, 1,
+	assert_eq(1 if xdt._dao_di_tu(Vector2(4128, 2304)) == Vector2(240, 134) else 0, 1,
 			"世界右下角映射到地图右下角")
 	var xdt_zhong: Vector2 = xdt._dao_di_tu(Vector2(2064, 1152))
 	assert_eq(_xiang_deng(xdt_zhong.x, 120.0), 1, "世界中心 x 映射到地图 120")
-	assert_eq(_xiang_deng(xdt_zhong.y, 87.0), 1, "世界中心 y 映射到地图 87")
+	assert_eq(_xiang_deng(xdt_zhong.y, 67.0), 1, "世界中心 y 映射到地图 67")
+	# TASK-023：透明度接口必须夹在 0.3~1.0，面板色 alpha 跟着缩放，标记点保留 0.55 保底
+	assert_eq(_xiang_deng(xdt.tou_ming_du, 0.85), 1, "小地图透明度默认 0.85")
+	xdt.she_tou_ming_du(0.2)
+	assert_eq(_xiang_deng(xdt.tou_ming_du, 0.3), 1, "透明度低于 0.3 夹到 0.3")
+	xdt.she_tou_ming_du(1.5)
+	assert_eq(_xiang_deng(xdt.tou_ming_du, 1.0), 1, "透明度高于 1.0 夹到 1.0")
+	xdt.she_tou_ming_du(0.85)
+	var di_an := xdt._yan_se_an(XIAO_DI_TU_CE.YAN_SE_DI, xdt.tou_ming_du)
+	assert_eq(_xiang_deng(di_an.a, 0.82 * 0.85), 1, "面板底 alpha = 基础 0.82 × 透明度 0.85")
+	assert_eq(1 if xdt._yan_se_biao_ji(XIAO_DI_TU_CE.YAN_SE_NPC).a >= 0.55 else 0, 1,
+			"低透明度下标记点仍保留 0.55 保底 alpha")
 	xdt.free()
+	# ---- TASK-022：33 个进化专属被动必须都有图标，且两套画风目录同名资源都在 ----
+	var neng_mu := DirAccess.open("res://data/nengli")
+	assert_eq(1 if neng_mu != null else 0, 1, "能打开 data/nengli 目录")
+	var jin_hua_bei_dong_shu := 0
+	if neng_mu != null:
+		neng_mu.list_dir_begin()
+		var wen_jian := neng_mu.get_next()
+		while wen_jian != "":
+			if not neng_mu.current_is_dir() and wen_jian.ends_with(".tres"):
+				var neng := load("res://data/nengli/" + wen_jian) as NengLi
+				if neng != null and not neng.shi_zhu_dong() and String(neng.suoshu_xing_tai) != "":
+					jin_hua_bei_dong_shu += 1
+					assert_eq(1 if neng.tu_biao != null else 0, 1,
+							"进化专属被动 %s 必须有 tu_biao 图标" % String(neng.bian_hao))
+					var tu_lu := "res://assets/sucai/tubiao/%s.png" % String(neng.bian_hao)
+					var jing_lu := "res://assets/sucai_classic/tubiao/%s.png" % String(neng.bian_hao)
+					assert_eq(1 if ResourceLoader.exists(tu_lu) else 0, 1,
+							"像素风目录存在 %s" % tu_lu)
+					assert_eq(1 if ResourceLoader.exists(jing_lu) else 0, 1,
+							"经典风目录存在 %s" % jing_lu)
+			wen_jian = neng_mu.get_next()
+		neng_mu.list_dir_end()
+	assert_eq(jin_hua_bei_dong_shu, 33, "进化专属被动共 33 个，全部已接入图标")
 	# 小地图必须吃掉触摸：地图矩形底部落在左下摇杆按下容差圈内，IGNORE 会穿透过去
 	var xdt_shi = XIAO_DI_TU_CE.new()
 	add_child(xdt_shi)  # 进树触发 _ready：运行时设置以脚本为准
@@ -191,6 +238,55 @@ func _ready() -> void:
 			"换房免伤：无敌只剩 0.3 秒时补到 0.9 秒")
 	assert_eq(1 if xtu_zhu.xu_yao_huan_fang_wu_di(true, 2.0) else 0, 0,
 			"换房免伤：已有 2.0 秒无敌不被截短")
+	# TASK-022 决战取景纯函数：中心按可见矩形夹在地图内，zoom 随玩家体型/船体/距离动态拉远
+	var shi_kou := Vector2(1280.0, 720.0)
+	var chuan_ban_jing := 150.0 * JiQiChuan.CHUAN_TI_BEI_LV
+	var qu_mid: Dictionary = xtu_zhu.ren_lei_qu_zhuang(
+			Vector2(2064, 1152), Vector2(2064, 672), 208.0, chuan_ban_jing, shi_kou)
+	var zhong_mid: Vector2 = qu_mid["zhong_xin"]
+	var zoom_mid: float = qu_mid["zoom"]
+	assert_eq(_xiang_deng(zhong_mid.x, 2064.0), 1, "决战取景：水平居中在玩家与船中点")
+	assert_eq(_xiang_deng(zhong_mid.y, 912.0), 1, "决战取景：纵向取玩家与船中点（不再固定上移 260）")
+	assert_eq(1 if zoom_mid < 0.85 and zoom_mid >= 0.36 else 0, 1,
+			"决战取景：zoom 动态拉远到 0.36~0.85（不是固定 0.85）")
+	var ke_mid := Rect2(zhong_mid - shi_kou / (2.0 * zoom_mid), shi_kou / zoom_mid)
+	assert_eq(1 if ke_mid.position.x >= -0.01 and ke_mid.position.y >= -0.01 \
+			and ke_mid.end.x <= 4128.0 + 0.01 and ke_mid.end.y <= 2304.0 + 0.01 else 0, 1,
+			"决战取景：中部可见矩形不越出地图")
+	# 地图上边缘：船被夹在 y=90，中心必须下压到可见矩形上缘=0，不能露背景外灰区
+	var qu_shang: Dictionary = xtu_zhu.ren_lei_qu_zhuang(
+			Vector2(2064, 20), Vector2(2064, 90), 208.0, chuan_ban_jing, shi_kou)
+	var zhong_shang: Vector2 = qu_shang["zhong_xin"]
+	var zoom_shang: float = qu_shang["zoom"]
+	var ke_shang := Rect2(zhong_shang - shi_kou / (2.0 * zoom_shang), shi_kou / zoom_shang)
+	assert_eq(1 if ke_shang.position.y >= -0.01 else 0, 1,
+			"决战向上：可见矩形上缘不越过地图 0（修复上方灰区）")
+	assert_eq(1 if ke_shang.end.y <= 2304.0 + 0.01 and ke_shang.position.x >= -0.01 \
+			and ke_shang.end.x <= 4128.0 + 0.01 else 0, 1, "决战向上：整块可见矩形都在地图内")
+	# 地图下边缘：鱼游到底时镜头必须跟着下压到 2304，而不是卡在上方房间
+	var qu_xia: Dictionary = xtu_zhu.ren_lei_qu_zhuang(
+			Vector2(2064, 2284), Vector2(2064, 1804), 208.0, chuan_ban_jing, shi_kou)
+	var zhong_xia: Vector2 = qu_xia["zhong_xin"]
+	var zoom_xia: float = qu_xia["zoom"]
+	var ke_xia := Rect2(zhong_xia - shi_kou / (2.0 * zoom_xia), shi_kou / zoom_xia)
+	assert_eq(1 if ke_xia.end.y <= 2304.0 + 0.01 else 0, 1, "决战向下：可见矩形下缘不越过地图 2304")
+	assert_eq(1 if ke_xia.end.y >= 2304.0 - 1.0 else 0, 1,
+			"决战向下：镜头压到地图底边（鱼到底时视角不再卡在上面）")
+	# 左右边缘 + 超大玩家体型：仍然不露灰区
+	var qu_zuo: Dictionary = xtu_zhu.ren_lei_qu_zhuang(
+			Vector2(20, 1152), Vector2(20, 672), 208.0, chuan_ban_jing, shi_kou)
+	var zhong_zuo: Vector2 = qu_zuo["zhong_xin"]
+	var zoom_zuo: float = qu_zuo["zoom"]
+	var ke_zuo := Rect2(zhong_zuo - shi_kou / (2.0 * zoom_zuo), shi_kou / zoom_zuo)
+	assert_eq(1 if ke_zuo.position.x >= -0.01 else 0, 1, "决战靠左：可见矩形左缘不越过地图 0")
+	var qu_da: Dictionary = xtu_zhu.ren_lei_qu_zhuang(
+			Vector2(2064, 1152), Vector2(2064, 672), 1200.0, chuan_ban_jing, shi_kou)
+	var zhong_da: Vector2 = qu_da["zhong_xin"]
+	var zoom_da: float = qu_da["zoom"]
+	var ke_da := Rect2(zhong_da - shi_kou / (2.0 * zoom_da), shi_kou / zoom_da)
+	assert_eq(1 if zoom_da >= 0.36 and ke_da.position.x >= -0.01 and ke_da.position.y >= -0.01 \
+			and ke_da.end.x <= 4128.0 + 0.01 and ke_da.end.y <= 2304.0 + 0.01 else 0, 1,
+			"决战超大玩家：zoom 不低于 0.36，可见矩形仍在地图内")
 	xtu_zhu.free()
 	# 受击闪白：所有鱼共用同一入口；2.8 倍过曝白保证在彩色贴图/状态染色上都看得见
 	var shan_yu := _zao_yu(1)
@@ -204,55 +300,16 @@ func _ready() -> void:
 	assert_eq(1 if shan_yu.modulate.r > 2.0 and shan_yu.modulate.r < 3.0 else 0, 1,
 			"连续受击仍停留在 2.8 倍附近，不叠加")
 	shan_yu.free()
-	# 换房欢迎小鱼的等级：可整吞（玩家体型 ≥ 对方 ×1.1），1..3 级封顶
+	# ---- 用例 0b2：九房预置鱼群（TASK-025：换房不再整批刷新）----
+	# 夹具放进场景树：YuNpc 的 _ready 要真正执行，才能验证恢复载荷不被默认值覆盖；
+	# Dingshi 子节点补齐，_ready 里 $Dingshi 才能就位（场景模式 Autoload 齐全）。
 	var qun_an: YuQun = load("res://scripts/yu_qun.gd").new()
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(0.5), 1, "体型 0.5：保底 1 级（至少不是贴脸大鱼）")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(1.0), 1, "开局体型 1.0：欢迎 1 级鱼")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(2.2), 2, "体型 2.2：欢迎 2 级鱼（2.2 ≥ 2×1.1）")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(3.4), 3, "体型 3.4：欢迎 3 级鱼")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(4.4), 3, "默认封顶 3 级：再大也不放 4 级贴脸")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(8.0), 3, "体型 8.0 仍按默认封顶 3 级")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(4.4, 10), 4, "显式上限 10：体型 4.4 欢迎 4 级")
-	assert_eq(qun_an.ru_chang_xiao_yu_deng_ji(8.0, 5), 5, "显式上限 5：体型 8.0 欢迎 5 级")
-	# 房内安全落点：四个象限中心取离玩家最远者；1376×768 房间对中心玩家仍有约 394px
-	var fang_qu := Rect2(1376, 768, 1376, 768)
-	# 普通补鱼的安全 x 范围：无相机兜底按房边 ±240px 内收 8px，房外排队鱼不会一出生就被回收
-	var hui_shou := qun_an.huan_chong_hui_shou_xian(fang_qu)
-	assert_eq(1 if hui_shou == Vector2(1144, 2984) else 0, 1,
-			"普通补鱼回收线：无相机时房外 232px（1376-240+8 / 2752+240-8）")
-	assert_eq(1 if qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(2064, 1152)) == Vector2(1720, 960) else 0, 1,
-			"玩家在房心：安全落点是左上象限中心（距离约 394px）")
-	assert_eq(1 if qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(1416, 808)) == Vector2(2408, 1344) else 0, 1,
-			"玩家在左上角：安全落点翻到右下象限中心")
-	var an_ju_zhong := qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(2064, 1152)).distance_to(Vector2(2064, 1152))
-	assert_eq(1 if an_ju_zhong >= 240.0 else 0, 1, "房心玩家到安全落点 ≥240px（不贴脸）")
-	var an_ju_bian := qun_an.an_quan_fang_nei_dian(fang_qu, Vector2(1416, 808)).distance_to(Vector2(1416, 808))
-	assert_eq(1 if an_ju_bian >= 240.0 else 0, 1, "角落玩家到安全落点 ≥240px")
-	var an_qu_bian := fang_qu.grow(-40.0)
-	for wan_dian in [Vector2(1376, 768), Vector2(2064, 1152), Vector2(2752, 1536),
-			Vector2(1376, 1152), Vector2(2752, 1152), Vector2(2064, 768), Vector2(2064, 1536),
-			Vector2(1500, 900), Vector2(2600, 1400)]:
-		var an_dian: Vector2 = qun_an.an_quan_fang_nei_dian(fang_qu, wan_dian)
-		assert_eq(1 if an_qu_bian.has_point(an_dian) else 0, 1, "安全落点必须留在房内 40px 边距")
-		assert_eq(1 if an_dian.distance_to(wan_dian) >= 240.0 else 0, 1, "任意采样点安全落点距离 ≥240px")
-	# 常规鱼安全入口：从玩家所在半场的对侧房外进入，水平距离 ≥ 半房宽
-	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1676, 1068)) == Vector2(2832, 1248) else 0, 1,
-			"玩家在左半场：大鱼从右边缘外进")
-	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(2400, 1268)) == Vector2(1296, 1448) else 0, 1,
-			"玩家在右半场：大鱼从左边缘外进")
-	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(2064, 1152)) == Vector2(2832, 1332) else 0, 1,
-			"玩家在正中（含正中归左半场）：从右侧进")
-	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1500, 1500)) == Vector2(2832, 1476) else 0, 1,
-			"入口 y 夹到房间下边距 60px")
-	assert_eq(1 if qun_an.an_quan_chu_kou(fang_qu, Vector2(1500, 600)) == Vector2(2832, 828) else 0, 1,
-			"入口 y 夹到房间上边距 60px")
-	for wan_dian in [Vector2(1376, 800), Vector2(2064, 1152), Vector2(2752, 1500), Vector2(1500, 1500)]:
-		var ru_dian: Vector2 = qun_an.an_quan_chu_kou(fang_qu, wan_dian)
-		assert_eq(1 if ru_dian.x < fang_qu.position.x or ru_dian.x > fang_qu.end.x else 0, 1,
-				"安全入口 x 必须在房间外")
-		assert_eq(1 if absf(ru_dian.x - wan_dian.x) >= 688.0 else 0, 1,
-				"安全入口与玩家水平距离 ≥ 半房宽 688px")
-	# 欢迎小鱼等级抽取：只从 1..上限里挑最高级，同级随机；没有可选时返回 null
+	var qun_an_ds := Timer.new()
+	qun_an_ds.name = "Dingshi"
+	qun_an.add_child(qun_an_ds)
+	add_child(qun_an)  # 进树：@onready dingshi 自动接上，YuQun._ready 排第一轮
+	ZhangBen.deng_ji = 0
+	ZhangBen.ju_nei_shi_jian = 0.0
 	var qun_an_zhong: Array[YuZhong] = []
 	qun_an_zhong.append(load("res://data/yuzhong/lan_yu.tres") as YuZhong)
 	qun_an_zhong.append(load("res://data/yuzhong/hong_yu.tres") as YuZhong)
@@ -260,49 +317,174 @@ func _ready() -> void:
 	qun_an_zhong.append(load("res://data/yuzhong/lv_yu.tres") as YuZhong)
 	qun_an_zhong.append(load("res://data/yuzhong/zong_yu.tres") as YuZhong)
 	qun_an.yu_zhong_zu = qun_an_zhong
-	assert_eq(qun_an._chou_xiao_yu_zhong(3).dengji, 3, "上限 3：优先抽最高可吃 3 级鱼")
-	assert_eq(qun_an._chou_xiao_yu_zhong(1).dengji, 1, "上限 1：只抽 1 级鱼")
-	assert_eq(qun_an._chou_xiao_yu_zhong(10).dengji, 5, "上限 10：抽当前鱼种表最高 5 级")
-	assert_eq(1 if qun_an._chou_xiao_yu_zhong(0) == null else 0, 1, "上限 0：没有可吃鱼种返回 null")
-	# 换房补屏：10 条欢迎小鱼先落在离玩家最远的象限，其余不能整吞的鱼从对侧入口进
-	qun_an.fang_jian_qu = fang_qu
-	ZhangBen.ju_nei_shi_jian = 0.0
-	qun_an._chong_tian_an_quan(Vector2(2064, 1152))
-	var an_zong := qun_an._dangqian_yu_shu()
-	assert_eq(an_zong, qun_an.dang_qian_shang_xian(), "换房补屏后同屏鱼数补到上限 35")
-	var fang_nei_shu := 0
-	var fang_nei_zui_jin := 1e9
-	var fang_wai_shu := 0
-	var wan_wu_ti := maxf(1.0, float(ZhangBen.deng_ji + 1))
-	var yuan_deng := clampi(int(floor(wan_wu_ti / 1.1)), 1, 3)
-	for zi in qun_an.get_children():
-		var yu_zi := zi as YuNpc
-		if yu_zi == null:
-			continue
-		var yu_wei: Vector2 = yu_zi.position
-		if fang_qu.grow(-40.0).has_point(yu_wei):
-			fang_nei_shu += 1
-			fang_nei_zui_jin = minf(fang_nei_zui_jin, yu_wei.distance_to(Vector2(2064, 1152)))
-			assert_eq(yu_zi.yu_zhong.dengji if yu_zi.yu_zhong != null else -1, yuan_deng,
-					"欢迎小鱼等级统一按玩家可整吞等级抽取")
-		else:
-			fang_wai_shu += 1
-			assert_eq(1 if yu_wei.x < fang_qu.position.x or yu_wei.x > fang_qu.end.x else 0, 1,
-					"常规补鱼从房间左右边缘外进入（不直接落房内）")
-			assert_eq(1 if absf(yu_wei.x - fang_qu.get_center().x) >= 688.0 else 0, 1,
-					"常规补鱼与房心水平距离 ≥ 半房宽（对侧入口）")
-	assert_eq(fang_nei_shu, 10, "欢迎小鱼恰好 10 条落在房内安全点")
-	assert_eq(fang_nei_shu + fang_wai_shu, an_zong, "房内欢迎鱼与房外入口鱼合计 = 同屏鱼数")
-	assert_eq(1 if fang_nei_zui_jin >= 240.0 else 0, 1, "欢迎小鱼离玩家都 ≥240px（不会贴脸）")
-	# 重复补屏：鱼数已接近上限时直接跳过，不能叠加超上限
-	qun_an._chong_tian_an_quan(Vector2(2064, 1152))
-	assert_eq(qun_an._dangqian_yu_shu(), an_zong, "重复补屏不叠加鱼数")
-	# 换房清理：旧房普通鱼全部摘树（Boss 不归 YuQun 管，不受影响）
-	qun_an.shua_xin_ting_zhi = true  # 跳过 dingshi/再补屏：这里只验证清场与房间切换
-	var xin_fang := Rect2(2752, 1536, 1376, 768)
-	qun_an.qie_huan_fang_jian(xin_fang)
-	assert_eq(qun_an.get_child_count(), 0, "换房清掉旧房普通鱼")
-	assert_eq(1 if qun_an.fang_jian_qu == xin_fang else 0, 1, "换房更新当前房间矩形")
+	# 房号映射：与 Main 的行优先规则一致；越界夹到边缘格
+	assert_eq(qun_an.qu_pian(Rect2(0, 0, 1376, 768)), 0, "左上矩形 → 房号 0")
+	assert_eq(qun_an.qu_pian(Rect2(1376, 768, 1376, 768)), 4, "正中矩形 → 房号 4")
+	assert_eq(qun_an.qu_pian(Rect2(2752, 1536, 1376, 768)), 8, "右下矩形 → 房号 8")
+	assert_eq(qun_an.qu_pian(Rect2(-10, -10, 100, 100)), 0, "左上越界 → 夹到房号 0")
+	assert_eq(1 if qun_an.fang_jian_qu_an(4) == Rect2(1376, 768, 1376, 768) else 0, 1,
+			"fang_jian_qu_an(4) = 正中房矩形")
+	assert_eq(qun_an.fang_jian_ji_lu(0).size(), 0, "九房未初始化：雷达读到空数组，不崩")
+	# 惰性初始化：9 个房间各预置固定数量记录；只有记录，不建节点
+	qun_an._chu_shi_hua_jiu_fang()
+	assert_eq(qun_an._fang_jian_yu_qun.size(), 9, "初始化后恰好 9 个房间记录")
+	var shang_xian_ce := qun_an.dang_qian_shang_xian()
+	assert_eq(shang_xian_ce, 35, "0 压力上限 35 条")
+	for pian in range(9):
+		var qu_ce := qun_an.fang_jian_qu_an(pian)
+		var ji_lu_ce: Array = qun_an.fang_jian_ji_lu(pian)
+		assert_eq(ji_lu_ce.size(), shang_xian_ce,
+				"第 %d 房开局预置 %d 条记录" % [pian, shang_xian_ce])
+		var bian_ju_he_ge := 1
+		for rec in ji_lu_ce:
+			var wei: Vector2 = rec.get("wei", Vector2.ZERO)
+			if wei.x < qu_ce.position.x + 40.0 or wei.x > qu_ce.end.x - 40.0 \
+					or wei.y < qu_ce.position.y + 40.0 or wei.y > qu_ce.end.y - 40.0:
+				bian_ju_he_ge = 0
+			if rec.get("node") != null:
+				bian_ju_he_ge = 0  # 未加载房只存数据，不建节点
+		assert_eq(bian_ju_he_ge, 1, "第 %d 房记录都在 40px 边距内且未建节点" % pian)
+	assert_eq(qun_an.fang_jian_ji_lu(-1).size(), shang_xian_ce, "fang_jian_ji_lu(-1) 夹到第 0 房")
+	assert_eq(qun_an.fang_jian_ji_lu(99).size(), shang_xian_ce, "fang_jian_ji_lu(99) 夹到第 8 房")
+	# 记下 4/8 两房开局坐标：换房后要按记录原样恢复，不能重新随机
+	var wei_4_chu: Array[Vector2] = []
+	for rec in qun_an.fang_jian_ji_lu(4):
+		wei_4_chu.append(rec.get("wei", Vector2.ZERO))
+	var wei_8_chu: Array[Vector2] = []
+	for rec in qun_an.fang_jian_ji_lu(8):
+		wei_8_chu.append(rec.get("wei", Vector2.ZERO))
+	# 首次换房（旧单参调用）：房号由矩形推算；目标房按记录加载 35 条实体
+	assert_eq(qun_an._dang_qian_fang_jian, -1, "接管前当前房号未知")
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(4))
+	assert_eq(qun_an._dang_qian_fang_jian, 4, "旧单参调用也能从矩形推对房号")
+	assert_eq(1 if qun_an.fang_jian_qu == qun_an.fang_jian_qu_an(4) else 0, 1, "换房更新当前房间矩形")
+	assert_eq(qun_an._dangqian_yu_shu(), shang_xian_ce, "目标房按记录加载出 35 条实体")
+	assert_eq(qun_an.fang_jian_ji_lu(4).size(), shang_xian_ce, "加载后记录数不变")
+	var jia_zai_he_ge := 1
+	for i in range(wei_4_chu.size()):
+		var rec: Dictionary = qun_an.fang_jian_ji_lu(4)[i]
+		var yu = rec.get("node")
+		if yu == null or not is_instance_valid(yu) or yu.position != wei_4_chu[i]:
+			jia_zai_he_ge = 0
+		if yu != null and yu.get("you_yu_qun_guan_li") != true:
+			jia_zai_he_ge = 0
+	assert_eq(jia_zai_he_ge, 1, "加载位置 = 预置记录位置，且实体归鱼群托管")
+	# 换到第 8 房：旧房实体释放、记录保留；目标房按自己的记录加载
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(8), 8)
+	assert_eq(qun_an._dang_qian_fang_jian, 8, "显式房号参数生效")
+	assert_eq(qun_an._dangqian_yu_shu(), shang_xian_ce, "换房后旧房实体已释放、新房 35 条实体")
+	assert_eq(qun_an.fang_jian_ji_lu(4).size(), shang_xian_ce, "旧房记录保留，不整批清空")
+	var jiu_fang_wu_lian_jie := 1
+	for rec in qun_an.fang_jian_ji_lu(4):
+		if rec.get("node") != null:
+			jiu_fang_wu_lian_jie = 0
+	assert_eq(jiu_fang_wu_lian_jie, 1, "旧房记录里的 node 引用已清空")
+	var xin_fang_wei_tong := 1
+	for i in range(wei_8_chu.size()):
+		var rec: Dictionary = qun_an.fang_jian_ji_lu(8)[i]
+		var yu = rec.get("node")
+		if yu == null or not is_instance_valid(yu) or yu.position != wei_8_chu[i]:
+			xin_fang_wei_tong = 0
+	assert_eq(xin_fang_wei_tong, 1, "第 8 房实体落在自己的预置记录位置")
+	# 再换回第 4 房：位置延续，验证“记录是唯一权威”
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(4), 4)
+	var fan_hui_wei_tong := 1
+	for i in range(wei_4_chu.size()):
+		var rec: Dictionary = qun_an.fang_jian_ji_lu(4)[i]
+		var yu = rec.get("node")
+		if yu == null or not is_instance_valid(yu) or yu.position != wei_4_chu[i]:
+			fan_hui_wei_tong = 0
+	assert_eq(fan_hui_wei_tong, 1, "来回换房后鱼仍在原记录位置，跨场景不刷新")
+	# 成长恢复：实体的体型/隐藏等级/隐藏经验写回记录，再加载时覆盖 _ready 默认值
+	var cheng_zhang_rec: Dictionary = qun_an.fang_jian_ji_lu(4)[0]
+	var cheng_zhang_yu: YuNpc = cheng_zhang_rec["node"]
+	cheng_zhang_yu.tixing = 3.0
+	cheng_zhang_yu.deng_ji_nei = 2
+	cheng_zhang_yu.jing_yan_nei = 7
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(8), 8)
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(4), 4)
+	var hui_fu_yu: YuNpc = cheng_zhang_rec["node"]
+	assert_eq(_jin_si(hui_fu_yu.tixing, 3.0), 1, "恢复载荷：体型 3.0 不被鱼种默认覆盖")
+	assert_eq(hui_fu_yu.deng_ji_nei, 2, "恢复载荷：隐藏等级 2 保留")
+	assert_eq(hui_fu_yu.jing_yan_nei, 7, "恢复载荷：隐藏经验 7 保留")
+	# 全局互吃节拍跨房连续：只重置本房 A11 计时，不重置 20 秒 A14 节拍
+	qun_an._hu_chi_ji_shi = 3.0
+	qun_an._da_yu_ji_shi = 4.0
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(8), 8)
+	assert_eq(_jin_si(qun_an._hu_chi_ji_shi, 3.0), 1, "换房不重置全局 20 秒互吃节拍")
+	assert_eq(_jin_si(qun_an._da_yu_ji_shi, 0.0), 1, "换房重置本房 A11 大体型计时")
+	# 贴脸保护：加载点离玩家 <240px 时推开；被房边夹回后仍不够远就退到最远象限
+	var wan_ce := Vector2(2064, 1152)
+	var tie_lian := qun_an._an_quan_jia_zai_dian(4, wan_ce + Vector2(10, 0), wan_ce)
+	assert_eq(1 if tie_lian.distance_to(wan_ce) >= 240.0 else 0, 1, "贴脸记录被推到 ≥240px")
+	var tong_dian := qun_an._an_quan_jia_zai_dian(4, wan_ce, wan_ce)
+	assert_eq(1 if tong_dian.distance_to(wan_ce) >= 240.0 else 0, 1, "加载点与玩家重合也能推开")
+	var jiao_luo := Vector2(1416, 808)
+	var jiao_dian := qun_an._an_quan_jia_zai_dian(4, jiao_luo, jiao_luo)
+	assert_eq(1 if jiao_dian.distance_to(jiao_luo) >= 240.0 else 0, 1, "角落玩家退到最远象限仍 ≥240px")
+	assert_eq(1 if qun_an.fang_jian_qu_an(4).grow(-40.0).has_point(jiao_dian) else 0, 1,
+			"贴脸保护落点仍在房内 40px 边距")
+	# 未加载房虚拟互吃（强制概率 1.0）：优先吃最小鱼，吃方涨隐藏经验
+	var ji_lu_0: Array = qun_an.fang_jian_ji_lu(0)
+	ji_lu_0.clear()
+	var rec_da := qun_an._xin_ji_lu(qun_an_zhong[0], Vector2(200, 200), 1.0, 0.0)
+	rec_da["ti"] = 6.0
+	rec_da["nei_deng"] = 1
+	ji_lu_0.append(rec_da)
+	var rec_zhong := qun_an._xin_ji_lu(qun_an_zhong[0], Vector2(250, 200), 1.0, 0.0)
+	rec_zhong["ti"] = 2.5
+	rec_zhong["nei_deng"] = 1
+	ji_lu_0.append(rec_zhong)
+	var rec_xiao := qun_an._xin_ji_lu(qun_an_zhong[0], Vector2(300, 200), 1.0, 0.0)
+	rec_xiao["ti"] = 1.0
+	rec_xiao["nei_deng"] = 1
+	ji_lu_0.append(rec_xiao)
+	qun_an._xu_ni_hu_chi(1.0)
+	assert_eq(ji_lu_0.size(), 2, "虚拟互吃：1.0 的小鱼被吃，剩 2 条")
+	assert_eq(1 if not ji_lu_0.has(rec_xiao) else 0, 1, "虚拟互吃优先选最小体型（不是最近的）")
+	assert_eq(1 if ji_lu_0.has(rec_zhong) else 0, 1, "更大但较近的中鱼未被优先吃掉")
+	assert_eq(1 if int(rec_da.get("nei_jing_yan", 0)) > 0 else 0, 1,
+			"虚拟吃方的隐藏经验按被吃鱼种分值增加")
+	# 档位刷新：未加载房淘汰最小约 20% 并补当前档；互吃减员时补到保底 60%（最低 8），不会灭绝
+	var ji_lu_1: Array = qun_an.fang_jian_ji_lu(1)
+	ji_lu_1.clear()
+	var rec_ti_0 := qun_an._xin_ji_lu(qun_an_zhong[0], Vector2(200, 200), 1.0, 0.0)
+	rec_ti_0["ti"] = 0.5
+	ji_lu_1.append(rec_ti_0)
+	var rec_ti_1 := qun_an._xin_ji_lu(qun_an_zhong[1], Vector2(200, 300), 1.0, 0.0)
+	rec_ti_1["ti"] = 1.5
+	ji_lu_1.append(rec_ti_1)
+	var rec_ti_2 := qun_an._xin_ji_lu(qun_an_zhong[2], Vector2(200, 400), 1.0, 0.0)
+	rec_ti_2["ti"] = 5.0
+	ji_lu_1.append(rec_ti_2)
+	var ji_lu_2: Array = qun_an.fang_jian_ji_lu(2)
+	ji_lu_2.clear()
+	qun_an._dang = 1
+	qun_an._dang_ti_tao_tai_he_bu_di()
+	ji_lu_1 = qun_an.fang_jian_ji_lu(1)  # 档位刷新会换数组对象：按接口重新取，别抓旧引用
+	ji_lu_2 = qun_an.fang_jian_ji_lu(2)
+	assert_eq(ji_lu_1.size(), 21, "3 条记录淘汰 1 条后补到保底 21（35×0.6）")
+	assert_eq(1 if not ji_lu_1.has(rec_ti_0) else 0, 1, "档位淘汰优先踢掉最小鱼 0.5")
+	assert_eq(ji_lu_2.size(), 21, "空房间也会补到保底 21，不会灭绝")
+	# 停刷冻结：先同步当前房，再冻结未加载房的游动/互吃/档位刷新
+	qun_an.shua_xin_ting_zhi = true
+	ji_lu_0 = qun_an.fang_jian_ji_lu(0)  # 同上：档位刷新后按接口重新取
+	var wei_0_dong_qian: Vector2 = ji_lu_0[0].get("wei", Vector2.ZERO)
+	qun_an._process(1.0)
+	assert_eq(1 if ji_lu_0[0].get("wei", Vector2.ZERO) == wei_0_dong_qian else 0, 1,
+			"停刷后未加载房虚拟游动冻结")
+	assert_eq(_jin_si(qun_an._hu_chi_ji_shi, 0.0), 1, "停刷后互吃节拍清零")
+	assert_eq(1 if qun_an._shengcheng_yi_tiao() else 0, 0, "停刷后生成入口拒绝新增")
+	# 停刷期换房：只保存/释放旧房，不加载目标房；未加载记录不能被同步逻辑当死鱼删掉
+	var ji_lu_3_shu := qun_an.fang_jian_ji_lu(3).size()
+	qun_an.qie_huan_fang_jian(qun_an.fang_jian_qu_an(3), 3)
+	assert_eq(qun_an._dang_qian_fang_jian, 3, "停刷期换房仍更新房号")
+	assert_eq(qun_an._dangqian_yu_shu(), 0, "停刷期换房不加载目标房实体")
+	assert_eq(qun_an.fang_jian_ji_lu(3).size(), ji_lu_3_shu, "目标房记录原样保留")
+	assert_eq(qun_an.fang_jian_ji_lu(8).size(), shang_xian_ce, "旧房记录原样保留")
+	qun_an._process(0.5)
+	assert_eq(qun_an.fang_jian_ji_lu(3).size(), ji_lu_3_shu,
+			"停刷期同步不会把未加载记录当死鱼清空")
 	qun_an.free()
 	# ---- 用例 0c：刷新节奏（持续刷新；每 20 秒上一档，体型分布右移，低等级鱼逐档退场）----
 	# 放场景模式测：--script 模式不注册 Autoload，加载 YuQun 会连带编译依赖 ZhangBen 的 yu_npc.gd
@@ -896,17 +1078,93 @@ func _ready() -> void:
 			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_ZHA_DAN) \
 			and JiQiChuan.ZHAO_QUAN_BU.has(JiQiChuan.ZHAO_YU_CHA) else 0, 1,
 			"四招就是素材包里的四招，不再有渔网/机械臂")
-	assert_eq(_xiang_deng(chuan._chuan_ti.scale.x, 3.0), 1, "整船视觉 ×3")
+	assert_eq(_xiang_deng(chuan._chuan_ti.scale.x, 2.4), 1, "整船视觉 ×2.4（TASK-022：×3 后缩到 0.8）")
 	var she_ding: CollisionShape2D = chuan.get_node("SheDingQu/CollisionShape2D")
 	var chuan_qu: CollisionShape2D = chuan.get_node("ChuanTiQu/CollisionShape2D")
-	assert_eq(_xiang_deng(she_ding.shape.radius, 180.0), 1, "弱点判定半径 ×3（60 → 180）")
-	assert_eq(_xiang_deng(chuan_qu.shape.radius, 450.0), 1, "船体判定半径 ×3（150 → 450）")
+	assert_eq(_xiang_deng(she_ding.shape.radius, 144.0), 1, "弱点判定半径 ×2.4（60 → 144）")
+	assert_eq(_xiang_deng(chuan_qu.shape.radius, 360.0), 1, "船体判定半径 ×2.4（150 → 360）")
+	assert_eq(_xiang_deng(JiQiChuan.CHUAN_TI_BEI_LV, 2.4), 1, "船体视觉/判定倍率 2.4")
+	assert_eq(_xiang_deng(JiQiChuan.ZHAO_TI_BEI_LV, 3.04), 1, "船招式动画倍率 3.04（3.8 ×0.8）")
+	assert_eq(_xiang_deng(JiQiChuan.XUAN_FU_GAO_DU, 480.0), 1, "船悬停高度 480（600 ×0.8）")
+	assert_eq(_xiang_deng(JiQiChuan.GONG_JI_FAN_WEI_BEI_LV, 2.0), 1, "技能范围倍率保持 2.0 不变")
 	assert_eq(1 if chuan._zhao_ti.sprite_frames.has_animation(&"chuan_mao") \
 			and chuan._zhao_ti.sprite_frames.has_animation(&"tan_zhao") \
 			and chuan._zhao_ti.sprite_frames.has_animation(&"shen_zha_dan") \
 			and chuan._zhao_ti.sprite_frames.has_animation(&"yu_cha") else 0, 1,
 			"整船招式动画已接入四条，与四招一一对应")
 	assert_eq(1 if yu._yao_ji_mu_biao() == chuan else 0, 1, "鸭子类型：船没有继承鱼，但玩家咬击照样能锁定它")
+	# ---- TASK-024：主动技能/被动的机械船兼容（鸭子契约）----
+	assert_eq(1 if chuan.is_in_group(&"ji_qi_chuan") else 0, 1,
+			"机械船加入独立组 ji_qi_chuan")
+	assert_eq(1 if not chuan.is_in_group(&"yu_npc") else 0, 1,
+			"机械船不混进 yu_npc 组（不会被刷怪/吞噬当鱼）")
+	assert_eq(1 if chuan.shi_boss else 0, 1, "机械船标记为 Boss")
+	assert_eq(1 if chuan.has_method(&"shou_dao_ji_neng") and chuan.has_method(&"jia_qiang_suan") else 0, 1,
+			"机械船实现鸭子契约：技能伤害/酸蚀入口都存在")
+	assert_eq(_xiang_deng(chuan.ji_neng_dui_bi_ti_xing(), 9.0), 1,
+			"需要『对方体型』的技能以玩家体型 9.0 为参照，而不是船的 99")
+	var xue_ji_neng := chuan.xue
+	chuan.shou_dao_ji_neng(1.0)
+	assert_eq(_xiang_deng(xue_ji_neng - chuan.xue, 8.0), 1, "1『级』技能伤害 = 8 船体 HP")
+	chuan.shou_dao_ji_neng_bai_fen(10.0)
+	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 18.0), 1,
+			"10% 百分比对首领船减半：360×10%×0.5 = 18 HP")
+	chuan.shou_dao_ji_neng_hp(4.0)
+	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 18.0 - 4.0), 1,
+			"已换算 HP 的技能伤害直接扣船体")
+	chuan._ding_zhu_sheng_yu = 0.0
+	chuan._kong_zhi_kang_xing_sheng_yu = 0.0
+	chuan.ding_zhu(2.0)
+	assert_eq(_xiang_deng(chuan.zhuang_tai_sheng_yu(&"ding_zhu"), 1.2), 1,
+			"定身单次上限：2 秒 → 1.2 秒")
+	assert_eq(1 if chuan.zai_kong_zhi() else 0, 1, "定身期间船进入失控状态")
+	chuan._ding_zhu_sheng_yu = 0.0
+	chuan.ding_zhu(2.0)
+	assert_eq(_xiang_deng(chuan.zhuang_tai_sheng_yu(&"ding_zhu"), 0.42), 1,
+			"3 秒抗性窗口内再控：1.2×0.35 = 0.42 秒，不能无限锁船")
+	assert_eq(_xiang_deng(chuan._kong_zhi_kang_xing_sheng_yu, 3.0), 1, "抗性窗口重置为 3 秒")
+	chuan._ding_zhu_sheng_yu = 0.0
+	chuan._kong_zhi_kang_xing_sheng_yu = 0.0
+	chuan._zhuang_tai_sheng_yu.clear()
+	assert_eq(1 if chuan.jia_zhuang_tai(&"shi_hua", 2.0) else 0, 1, "六状态白名单：石化可挂上")
+	assert_eq(1 if chuan.zai_kong_zhi() else 0, 1, "石化属于硬控")
+	assert_eq(1 if chuan.jia_zhuang_tai(&"wei_zhuang_tai", 1.0) else 0, 0,
+			"白名单以外的状态返回 false")
+	chuan._zhuang_tai_sheng_yu.clear()
+	chuan._ding_zhu_sheng_yu = 0.0
+	chuan._yun_xuan_sheng_yu = 0.0
+	chuan._kong_zhi_kang_xing_sheng_yu = 0.0
+	var xue_you := chuan.xue
+	chuan.jia_qiang_suan(2.0, 2.0)
+	chuan._geng_xin_zhuang_tai(1.0)
+	assert_eq(_xiang_deng(xue_you - chuan.xue, 16.0), 1,
+			"酸蚀每秒 2『级』= 16 船体 HP（第一跳）")
+	chuan._geng_xin_zhuang_tai(1.0)
+	assert_eq(_xiang_deng(xue_you - chuan.xue, 32.0), 1, "酸蚀 2 秒共 32 HP")
+	var chuan_wei := chuan.position
+	chuan.tui_kai(Vector2.RIGHT, 1000.0)
+	assert_eq(_xiang_deng(chuan.position.x - chuan_wei.x, 3.0), 1,
+			"机械船太重：单次击退最多 3px")
+	chuan.position = chuan_wei  # 复原坐标：后面还要按固定距离测咬击
+	var huo_zhu := _zao_yu(1)
+	var si_zhu := _zao_yu(1)
+	si_zhu.si_le = true
+	var di_lie := yu.di_ren_lie()
+	assert_eq(1 if di_lie.has(chuan) else 0, 1, "di_ren_lie 扫描包含机械船")
+	assert_eq(1 if di_lie.has(huo_zhu) else 0, 1, "di_ren_lie 包含存活普通鱼")
+	assert_eq(1 if di_lie.has(si_zhu) else 0, 0, "di_ren_lie 过滤 si_le 的鱼")
+	huo_zhu.queue_free()
+	si_zhu.queue_free()
+	# 复原：后面还要按满血 360 测普通咬击
+	chuan.xue = chuan.zui_da_xue
+	chuan._zhuang_tai_sheng_yu.clear()
+	chuan._ding_zhu_sheng_yu = 0.0
+	chuan._yun_xuan_sheng_yu = 0.0
+	chuan._kong_zhi_kang_xing_sheng_yu = 0.0
+	chuan._qiang_suan_sheng_yu = 0.0
+	chuan._qiang_suan_mei_miao = 0.0
+	chuan._qiang_suan_ji_shi = 0.0
+	await get_tree().process_frame
 	# 从下方咬：离船体底部最近 → 普通伤害 ×1，A13 船体护甲 -30%
 	await get_tree().physics_frame
 	yu._yao_ji_leng_que = 0.0
@@ -2152,6 +2410,7 @@ func _ready() -> void:
 	CunDang.lu_jing = ce_lu_jing
 	CunDang.zhong_tu_lu_jing = ce_zhong_tu  # 中途档同样隔离：6y 的胜负回调不许删真实存档
 	CunDang.she_zhi_lu_jing = ce_she_zhi  # 设置文件隔离：断言读写不许碰玩家真实设置
+	CunDang.zai_ru_she_zhi()  # 立刻按隔离路径重读：清掉启动时从玩家真实设置载入的缓存值
 	CunDang.tiao_shi_qing_chu_jin_du()  # 建一份 0 胜临时存档
 	var xuan: CanvasLayer = load("res://scenes/XingTaiXuanZe.tscn").instantiate()
 	add_child(xuan)
@@ -2294,6 +2553,44 @@ func _ready() -> void:
 			"设置面板有返回主界面并保存按钮")
 	assert_eq(1 if mo_ni.get_node("SheZhi").process_mode == Node.PROCESS_MODE_ALWAYS else 0, 1,
 			"设置面板根应是 Always（暂停中可点，与三选一弹窗同一套）")
+	# TASK-022：地图上的永久被动标题已移除，图例改金色首领并对齐到地图下方
+	assert_eq(1 if not mo_ni.has_node("XiaoDiTuUI/XiaoDiTu/BiaoTi") else 0, 1,
+			"小地图不再有「上帝视角（永久被动）」标题 Label")
+	assert_eq_ming(mo_ni.get_node("XiaoDiTuUI/XiaoDiTu/TuLi").text,
+			"金 首领 · 蓝 玩家 · 红 鱼 · 绿 植物", "小地图图例：金色首领 + 蓝玩家 + 红鱼 + 绿植物")
+	# TASK-023：地图移到右上角设置按钮正下方；首领条让到地图下方，进化提示避开右上角
+	var she_zhi_niu: Control = mo_ni.get_node("SheZhi/SheZhiAnNiu") as Control
+	var xdt_kuang: Control = mo_ni.get_node("XiaoDiTuUI/XiaoDiTu") as Control
+	assert_eq(1 if she_zhi_niu != null and xdt_kuang != null else 0, 1,
+			"Main 同时存在设置按钮与小地图")
+	if she_zhi_niu != null and xdt_kuang != null:
+		assert_eq(_xiang_deng(xdt_kuang.offset_left, 1008.0), 1, "小地图左边 1008")
+		assert_eq(_xiang_deng(xdt_kuang.offset_top, 52.0), 1, "小地图顶边 52")
+		assert_eq(_xiang_deng(xdt_kuang.offset_right, 1248.0), 1, "小地图右边 1248（与设置按钮右对齐）")
+		assert_eq(_xiang_deng(xdt_kuang.offset_bottom, 212.0), 1, "小地图底边 212（图例在 140~158 之内）")
+		assert_eq(1 if xdt_kuang.offset_left <= she_zhi_niu.offset_left \
+				and xdt_kuang.offset_right >= she_zhi_niu.offset_right \
+				and xdt_kuang.offset_top > she_zhi_niu.offset_bottom else 0, 1,
+				"小地图落在设置按钮正下方，不与按钮重叠")
+		assert_eq(1 if xdt_kuang.offset_right - xdt_kuang.offset_left == 240.0 \
+				and xdt_kuang.offset_bottom - xdt_kuang.offset_top == 160.0 else 0, 1,
+				"小地图控件 240×160：134 高地图 + 底部图例")
+	var boss_label: Control = mo_ni.get_node("BossUI/BossLabel") as Control
+	var boss_tiao: Control = mo_ni.get_node("BossUI/BossTiao") as Control
+	assert_eq(1 if boss_label != null and boss_label.offset_top >= xdt_kuang.offset_bottom else 0, 1,
+			"首领名称条位于小地图下方，不遮挡雷达")
+	assert_eq(1 if boss_tiao != null and boss_tiao.offset_top > boss_label.offset_top else 0, 1,
+			"首领血条在首领名称条下方")
+	var jin_hua_ti: Control = mo_ni.get_node("NengLiUI/JinHuaTiShi") as Control
+	assert_eq(1 if jin_hua_ti != null and jin_hua_ti.offset_right <= 900.0 else 0, 1,
+			"进化提示移到屏幕中部，避开右上角地图/设置")
+	# 雷达绘制源码必须是“只画点/线”，不能再任何贴图背景（用户反馈小图色彩太杂）
+	var xdt_yuan_wen := FileAccess.get_file_as_string("res://scripts/xiao_di_tu.gd")
+	assert_eq(1 if (not "draw_texture_rect" in xdt_yuan_wen) \
+			and (not "beijing_3x3" in xdt_yuan_wen) and (not "DI_TU_WEN_LI" in xdt_yuan_wen) else 0, 1,
+			"雷达小地图不再绘制背景贴图（beijing_3x3 / draw_texture_rect）")
+	assert_eq(1 if xdt_yuan_wen.contains("_hu_lei_da") and xdt_yuan_wen.contains("_hua_tuo_yuan_huan") else 0, 1,
+			"雷达小地图有同心环/中心十字绘制函数")
 	mo_ni.free()
 	# 暂停/恢复切换：入树面板实例直接走按钮回调（paused 是真树状态）
 	var mian_ban: CanvasLayer = load("res://scenes/SheZhi.tscn").instantiate()
@@ -2310,6 +2607,40 @@ func _ready() -> void:
 		assert_eq_ming(jiao_se_an_niu.text, "角色", "入口按钮文字")
 		assert_eq(1 if jiao_se_an_niu.get_index() < mian_ban.get_node("SheZhiMianBan/MianBanLie/FanHui").get_index() else 0,
 				1, "「角色」应排在「返回主界面」之前")
+	# TASK-023：地图透明度行在设置主菜单里，角色 → 地图透明度 → 返回
+	var tou_ming_lie: HBoxContainer = mian_ban.get_node_or_null(
+			"SheZhiMianBan/MianBanLie/DiTuTouMingLie") as HBoxContainer
+	assert_eq(1 if tou_ming_lie != null else 0, 1, "设置菜单应有「地图透明度」行")
+	if tou_ming_lie != null:
+		assert_eq(1 if tou_ming_lie.get_index() > jiao_se_an_niu.get_index() \
+				and tou_ming_lie.get_index() < mian_ban.get_node("SheZhiMianBan/MianBanLie/FanHui").get_index() else 0, 1,
+				"「地图透明度」排在角色之后、返回之前")
+		var tou_ming_biao: Label = tou_ming_lie.get_node_or_null("DiTuTouMingLabel") as Label
+		var tou_ming_hua: HSlider = tou_ming_lie.get_node_or_null("DiTuTouMingHua") as HSlider
+		var tou_ming_zhi: Label = tou_ming_lie.get_node_or_null("DiTuTouMingZhi") as Label
+		assert_eq(1 if tou_ming_biao != null and tou_ming_hua != null and tou_ming_zhi != null else 0, 1,
+				"透明度行包含标题/滑条/百分比三个子节点")
+		if tou_ming_biao != null:
+			assert_eq_ming(tou_ming_biao.text, "地图透明度", "透明度行标题文案")
+		if tou_ming_hua != null and tou_ming_zhi != null:
+			assert_eq(_xiang_deng(tou_ming_hua.min_value, 0.3), 1, "透明度滑条下限 0.3")
+			assert_eq(_xiang_deng(tou_ming_hua.max_value, 1.0), 1, "透明度滑条上限 1.0")
+			assert_eq(_xiang_deng(tou_ming_hua.step, 0.05), 1, "透明度滑条步进 0.05")
+			assert_eq(_xiang_deng(tou_ming_hua.value, 0.85), 1, "打开设置默认同步 0.85")
+			assert_eq_ming(tou_ming_zhi.text, "85%", "打开设置默认显示 85%")
+			tou_ming_hua.value = 0.5  # 触发 value_changed：写缓存 + 刷百分比
+			assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 0.5), 1,
+					"拖动滑条立即写设置缓存 0.5")
+			assert_eq_ming(tou_ming_zhi.text, "50%", "拖动滑条立即刷新百分比读数")
+			mian_ban._on_di_tu_tou_ming_tuo_dong_jie_shu(false)
+			var tuo_dong_json := FileAccess.open(ce_she_zhi, FileAccess.READ)
+			assert_eq(1 if tuo_dong_json != null else 0, 1, "松手后设置文件存在")
+			if tuo_dong_json != null:
+				var tuo_dong_shu: Variant = JSON.parse_string(tuo_dong_json.get_as_text())
+				tuo_dong_json.close()
+				assert_eq(1 if tuo_dong_shu is Dictionary \
+						and _xiang_deng(float(tuo_dong_shu.get("xiao_di_tu_tou_ming", -1.0)), 0.5) == 1 else 0, 1,
+						"松手落盘小地图透明度 0.5")
 	mian_ban._on_jiao_se_an_niu()
 	assert_eq(1 if mian_ban.get_node("JiaoSeFuCeng").visible else 0, 1, "点「角色」应打开能力一览")
 	assert_eq(1 if mian_ban.has_node("JiaoSeFuCeng/JiaoSeMianBan/WaiLie/GunDong/NeiLie") else 0, 1,
@@ -2318,6 +2649,26 @@ func _ready() -> void:
 			1, "能力页标题为「当前角色」")
 	assert_eq(1 if mian_ban.get_node("JiaoSeFuCeng/JiaoSeMianBan/WaiLie/GunDong/NeiLie").get_child_count() > 0 else 0,
 			1, "能力页打开后必须有内容（能力卡或空状态提示）")
+	# TASK-022：上帝视角从地图标题移到玩家面板，固定卡不占被动层数；空账本也照样显示
+	var nei_lie: VBoxContainer = mian_ban.get_node("JiaoSeFuCeng/JiaoSeMianBan/WaiLie/GunDong/NeiLie")
+	var shang_di_ka: Control = nei_lie.get_node_or_null("ShangDiShiJiaoKa")
+	assert_eq(1 if shang_di_ka != null else 0, 1, "角色面板被动区固定显示「上帝视角」永久卡")
+	if shang_di_ka != null:
+		var ka_ming: Label = shang_di_ka.find_child("MingZi", true, false) as Label
+		var ka_lei: Label = shang_di_ka.find_child("LeiXing", true, false) as Label
+		var ka_miao: Label = shang_di_ka.find_child("MiaoShu", true, false) as Label
+		assert_eq(1 if ka_ming != null else 0, 1, "永久卡有名称 Label")
+		if ka_ming != null:
+			assert_eq_ming(ka_ming.text, "上帝视角", "永久卡名称")
+		assert_eq(1 if ka_lei != null else 0, 1, "永久卡有类型 Label")
+		if ka_lei != null:
+			assert_eq_ming(ka_lei.text, "永久被动", "永久卡类型为「永久被动」")
+		assert_eq(1 if ka_miao != null else 0, 1, "永久卡有描述 Label")
+		if ka_miao != null:
+			assert_eq(1 if "九宫格海图" in ka_miao.text and "实时标记" in ka_miao.text else 0, 1,
+					"永久卡描述说明九宫格海图与实时标记")
+	assert_eq(1 if nei_lie.get_child_count() >= 5 else 0, 1,
+			"空账本下仍有主动/被动分区、永久卡与空状态提示")
 	mian_ban._on_jiao_se_guan_bi()
 	assert_eq(1 if mian_ban.get_node("JiaoSeFuCeng").visible else 0, 0, "关闭能力页只收这一层")
 	assert_eq(1 if shu.paused else 0, 1, "关闭能力页不解除暂停（设置面板仍在）")
@@ -2332,21 +2683,48 @@ func _ready() -> void:
 	CunDang.yin_xiao_yin_liang = 0.7
 	CunDang.bgm_yin_liang = 0.4
 	CunDang.yao_gan_ce = "you"
+	CunDang.xiao_di_tu_tou_ming = 0.6  # TASK-023：透明度也必须落盘
 	assert_eq(1 if CunDang.xie_she_zhi() else 0, 1, "写设置应成功")
 	assert_eq(1 if FileAccess.file_exists(ce_she_zhi) else 0, 1, "设置应落在临时路径")
 	CunDang.yin_xiao_yin_liang = 1.0  # 弄脏缓存：读档必须覆盖回来
 	CunDang.bgm_yin_liang = 1.0
 	CunDang.yao_gan_ce = "zuo"
+	CunDang.xiao_di_tu_tou_ming = 0.3
 	CunDang.zai_ru_she_zhi()
 	assert_eq(_xiang_deng(CunDang.yin_xiao_yin_liang, 0.7), 1, "读设置应恢复音效音量 0.7")
 	assert_eq(_xiang_deng(CunDang.bgm_yin_liang, 0.4), 1, "读设置应恢复音乐音量 0.4")
 	assert_eq_ming(CunDang.yao_gan_ce, "you", "读设置应恢复摇杆右下")
+	assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 0.6), 1, "读设置应恢复小地图透明度 0.6")
+	var she_zhi_json := FileAccess.open(ce_she_zhi, FileAccess.READ)
+	assert_eq(1 if she_zhi_json != null else 0, 1, "设置文件可读")
+	if she_zhi_json != null:
+		var she_zhi_yuan: Variant = JSON.parse_string(she_zhi_json.get_as_text())
+		she_zhi_json.close()
+		assert_eq(1 if she_zhi_yuan is Dictionary \
+				and _xiang_deng(float(she_zhi_yuan.get("xiao_di_tu_tou_ming", -1.0)), 0.6) == 1 else 0, 1,
+				"设置 JSON 的 xiao_di_tu_tou_ming 键 = 0.6")
+		var shou_gai := FileAccess.open(ce_she_zhi, FileAccess.WRITE)
+		shou_gai.store_string("{\"ban_ben\": 1, \"xiao_di_tu_tou_ming\": 1.5}")
+		shou_gai.close()
+		CunDang.zai_ru_she_zhi()
+		assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 1.0), 1, "手改 1.5 读档夹回 1.0")
+		shou_gai = FileAccess.open(ce_she_zhi, FileAccess.WRITE)
+		shou_gai.store_string("{\"ban_ben\": 1, \"xiao_di_tu_tou_ming\": -2.0}")
+		shou_gai.close()
+		CunDang.zai_ru_she_zhi()
+		assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 0.3), 1, "手改 -2.0 读档夹回 0.3")
+		shou_gai = FileAccess.open(ce_she_zhi, FileAccess.WRITE)
+		shou_gai.store_string("{\"ban_ben\": 1, \"xiao_di_tu_tou_ming\": \"huai\"}")
+		shou_gai.close()
+		CunDang.zai_ru_she_zhi()
+		assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 0.85), 1, "非数字透明度回默认 0.85")
 	var huai_she_zhi := FileAccess.open(ce_she_zhi, FileAccess.WRITE)
 	huai_she_zhi.store_string("{\"ban_ben\": 999}")  # 版本不认 → 整体回退默认
 	huai_she_zhi.close()
 	CunDang.zai_ru_she_zhi()
 	assert_eq(_xiang_deng(CunDang.yin_xiao_yin_liang, 1.0), 1, "设置版本不认：音量回默认 1.0")
 	assert_eq_ming(CunDang.yao_gan_ce, "zuo", "设置版本不认：摇杆回默认左下")
+	assert_eq(_xiang_deng(CunDang.xiao_di_tu_tou_ming, 0.85), 1, "设置版本不认：透明度回默认 0.85")
 	# YinXiang 音量属性：线性 0~1，0 = -80dB 全静音；BGM 在 -10dB 基础值上叠加
 	YinXiang.yin_xiao_yin_liang = 0.0
 	assert_eq(_xiang_deng(YinXiang._chi[0].volume_db, -80.0), 1, "音效 0% → 播放器 -80dB 静音")

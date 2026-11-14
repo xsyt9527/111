@@ -98,16 +98,22 @@ static func _zhi(neng: NengLi, jian: StringName, dang: int) -> float:
 	return neng.dang_zhi(jian, dang)
 
 
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：普通鱼 + 机械船；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group(&"yu_npc")
+	return []
+
+
 static func _zui_jin_npc(yu) -> Node2D:
-	# 最近的活 NPC：跳过 si_le / 无效实例；首领也是 NPC（命中后由 jia_zhuang_tai 自己免疫）
+	# 最近的活目标：跳过 si_le / 无效实例；机械船也可被鬼火锁定（魅惑限时）
 	if yu == null or not is_instance_valid(yu) or not yu.is_inside_tree():
 		return null
 	var zui_jin: Node2D = null
 	var zui_jin_ju := INF
-	for node in yu.get_tree().get_nodes_in_group(&"yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or not is_instance_valid(npc) or npc.si_le:
-			continue
+	for npc in _di_ren(yu):
 		var ju: float = yu.global_position.distance_squared_to(npc.global_position)
 		if ju < zui_jin_ju:
 			zui_jin_ju = ju
@@ -167,7 +173,7 @@ static func _geng_gui_huo(yu, neng: NengLi, delta: float) -> void:
 	if huo == null or not is_instance_valid(huo):
 		yu.remove_meta(META_GUI_HUO)
 		return
-	if mu == null or not is_instance_valid(mu) or (mu is YuNpc and (mu as YuNpc).si_le):
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
 		huo.queue_free()  # 目标先死：鬼火散掉，不飞向尸体
 		yu.remove_meta(META_GUI_HUO)
 		return
@@ -347,16 +353,16 @@ static func _geng_lin_guang(yu, neng: NengLi, delta: float) -> void:
 	var dian_ma := maxf(0.0, _zhi(neng, &"shu_zhi", 1))
 	var zhi_shang := maxf(0.0, _zhi(neng, &"fu_shu_zhi", 1))
 	var yuan: Vector2 = yu.global_position
-	for node in yu.get_tree().get_nodes_in_group(&"yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or not is_instance_valid(npc) or npc.si_le:
-			continue
+	for npc in _di_ren(yu):
 		if yuan.distance_to(npc.global_position) > ban_jing:
 			continue
-		npc.jia_zhuang_tai(&"zhi_mang", chi_xu)
-		npc.jia_dian_ma(dian_ma)
-		# 无视防御直伤对首领减半（契约 §2 规则），普通鱼按能力表原值
-		npc.shou_zhi_jie_shang(zhi_shang * (0.5 if npc.shi_boss else 1.0))
+		if npc.has_method("jia_zhuang_tai"):
+			npc.call("jia_zhuang_tai", &"zhi_mang", chi_xu)  # 船：致盲限时，只停攻击
+		if npc.has_method("jia_dian_ma"):
+			npc.call("jia_dian_ma", dian_ma)
+		# 无视防御直伤对首领减半；机械船由自己的入口把「级」换 HP
+		if npc.has_method("shou_zhi_jie_shang"):
+			npc.call("shou_zhi_jie_shang", zhi_shang * (0.5 if bool(npc.get("shi_boss")) else 1.0))
 		if yu.get_parent() != null:
 			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, npc.global_position, 1.0)
 	var fan_zhi := maxf(0.0, _zhi(neng, &"npc_shu_zhi", 1))

@@ -59,6 +59,11 @@ var si_le := false  # 已被吃掉（queue_free 前先立旗）：防止同一�
 var dian_ma := 0.0  # 电麻条（0~100）：被电鳗电到会涨，满了失控
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉毒到会涨，满了失控
 var shi_boss := false  # 首领：不参与普通鱼群刷新；不逃跑，被咬到残血才算击败（TASK-017）
+var you_yu_qun_guan_li := false  # 九房鱼群托管：关闭相机出屏回收，由 YuQun 按房间边界管理
+var _zai_ru_ti_xing := 0.0  # 换房恢复载荷：体型
+var _zai_ru_deng_ji := 1  # 换房恢复载荷：隐藏等级
+var _zai_ru_jing_yan := 0  # 换房恢复载荷：隐藏经验
+var _you_zai_ru_ti_xing := false  # 是否带恢复载荷进树
 var xun_luo_dian: Array[Vector2] = []  # 首领巡逻点（世界坐标）：Main 注入 4 个，循环游荡
 var xian_ding_qu := Rect2()  # 首领房限制矩形（世界坐标）：size=0 不限制；Main 给鲸鲨注入所在房间
 
@@ -149,6 +154,22 @@ func _ready() -> void:
 	# 电鳗错峰放电：一群鱼不会同一帧全开火；间隔读能力表（npc_jian_ge），改表零代码
 	if _neng_li != null and _neng_li.bian_hao == &"fang_dian_ma_bi":
 		_dian_ji_ji_shi = randf_range(0.0, _neng_li.npc_jian_ge if _neng_li.npc_jian_ge > 0.0 else DIAN_JI_JIAN_GE)
+	# 换房恢复载荷放在最后：覆盖上面按鱼种默认值写入的体型/隐藏成长，再重算感知与缩放
+	if _you_zai_ru_ti_xing:
+		tixing = maxf(_zai_ru_ti_xing, ZUI_XIAO_TI_XING)
+		tixing_chu_shi = tixing
+		deng_ji_nei = maxi(_zai_ru_deng_ji, 1)
+		jing_yan_nei = maxi(_zai_ru_jing_yan, 0)
+		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
+		_ying_she_ti_xing()
+
+
+func zai_ru_ti_xing(ti: float, nei_deng: int, nei_jing_yan: int) -> void:
+	# 换房恢复载荷：必须在 add_child 前调用；_ready 末尾应用，避免默认初始化覆盖成长
+	_zai_ru_ti_xing = maxf(ti, ZUI_XIAO_TI_XING)
+	_zai_ru_deng_ji = maxi(nei_deng, 1)
+	_zai_ru_jing_yan = maxi(nei_jing_yan, 0)
+	_you_zai_ru_ti_xing = true
 
 
 func _dan_zhen_dong_hua(tie: Texture2D) -> SpriteFrames:
@@ -235,8 +256,8 @@ func _process(delta: float) -> void:
 	# 以相机可视矩形为边界：相机走到哪，鱼群就在哪一屏生成/回收
 	# 首领例外：它要满地图巡逻，不能被“出屏回收”删掉
 	var fan_wei := _shi_jiao_fan_wei()
-	if not shi_boss and (position.x < fan_wei.position.x - SHOU_HUI_YU_LIANG or position.x > fan_wei.end.x + SHOU_HUI_YU_LIANG):
-		queue_free()  # 游出当前镜头：释放节点，避免越积越多
+	if not shi_boss and not you_yu_qun_guan_li and (position.x < fan_wei.position.x - SHOU_HUI_YU_LIANG or position.x > fan_wei.end.x + SHOU_HUI_YU_LIANG):
+		queue_free()  # 游出当前镜头：释放节点，避免越积越多；托管鱼改由 YuQun 按房间边界管理
 	_chi_rou()
 	_geng_xin_hong_guang(delta)
 

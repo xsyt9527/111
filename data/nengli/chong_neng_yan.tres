@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/chong_neng_yan.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"chong_neng_yan"
 ming_zi = "充能眼"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "静止1s后激光每秒+15%，最多叠4层；移动清零，激光灼烧同步增伤。"
 lai_yuan = "铜眼鱼（桶眼鱼）"
 suoshu_xing_tai = &"ji_guang_ju_zhen_yu"

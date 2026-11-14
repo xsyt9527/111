@@ -1,0 +1,23 @@
+{
+  "task_id": "TASK-024",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "鸭子类型契约",
+    "节点组扫描",
+    "伤害单位换算（体型级→HP）",
+    "控制单次上限与抗性窗口",
+    "自动探针难度评估"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "等级→HP 换算常量 8 的手感是否合适待实机确认",
+    "控制抗性窗口 3 秒/0.35 是否让船战节奏更合理待实机确认"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

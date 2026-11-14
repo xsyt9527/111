@@ -1,0 +1,138 @@
+{
+  "task_id": "TASK-022",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "review",
+  "learning_status": "not_started",
+  "handoff_status": "pending",
+  "current_step": "step-04",
+  "current_checkpoint": "orientation",
+  "next_action": "完整八步门禁全绿 3079 断言、validate_task VALID、scope 0 violation；F5 目检与红测待用户；本轮未 commit、未 push",
+  "implementation_baseline": {
+    "captured_at": "2026-11-12T12:07:20.967637Z",
+    "commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "preexisting_changes": [
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:945f8051fe182cbbeafaadd8cfdfcf30c3c346917bd764f8a7bbb501c92c535e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ba4caf61b85221eff701e35722cc04b37ef68b21d6765b53bf9e5cf375fb22bd"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1ee7ed2deec0a58d440139187453038c3b6af9d95ddc315aff7c926908beda9d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12e462368d3d2f1792af703d1b9354387d94543fd81403f4aa98f5fdbffa8c94"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:01e28b01239697bf3d8654c087e50db047118f30308d0e8349e5ab2ed7f2a033"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:eacf27dc8eee4f76089493c3b47d8b05413c2e5eb4de263a904950f9803fd9d1"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:93860dac04356e8d21fbeb326568c307873bf8ffa2b016f1d5110a3d90f1e2f1"
+      },
+      {
+        "path": "docs/专属技模块_开发契约.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f8e25400f52d6faaadfb07e5680b677172d720db2f6f7438d2e2647d1918d5ef"
+      },
+      {
+        "path": "docs/美术风格更换需求_Gemini_2026-11-09.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:436afb15ae74f53f174390b08e24576d28db8a7930f3904766f8e3fee989fde3"
+      },
+      {
+        "path": "project.godot",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:6a11299eaabccc8c408b61ffe15763223866e9073ad737a6b0ed468539a7aee7"
+      }
+    ]
+  },
+  "last_verified_commit": null,
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "status": "completed"
+    },
+    {
+      "step_id": "step-02",
+      "status": "completed"
+    },
+    {
+      "step_id": "step-03",
+      "status": "completed"
+    },
+    {
+      "step_id": "step-04",
+      "status": "completed"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-11-12T14:05:00+08:00",
+    "exact_user_text": "1.地图改用黑色底，然后boss显示你随便换个颜色并且标明2.地图那个被动要在玩家设置里面那个玩家面板查看，不要写在地图那里3.后期我的身体和机械船占整个屏幕，我感觉需要你摄像机再和体型比例加大点，还有机械船大小（不包括技能范围）*0.8，机械船有点大4.为什么我能在决战时往上面游时能看到背景外面的灰色区域，然后向下时我鱼到底，可是视角卡在了上面，就是怎么说呢，你自己运行测试一下就知道了5.把\"D:\\新游戏001\\美术资源\\P0_进化专属被动技能图标_33张_1024与128真透明PNG\"这个替换进去游戏6.把需要的特效清单列出来，我给ai生成7.你一定要多开子代理，不然太慢了"
+  },
+  "capability_decisions": {
+    "superpowers": "not_needed",
+    "godot_skill": "available",
+    "code_review": "available"
+  },
+  "verification": {
+    "gate": "tests/pao_pi.bat",
+    "gate_at": "2026-11-12",
+    "gate_result": "all_green",
+    "assertions_passed": 3079,
+    "assertions_failed": 0,
+    "steps": {
+      "import": "pass",
+      "ce_zhang_ben": "232 passed",
+      "ce_bian_jie": "25 passed",
+      "ce_shu_ju": "1422 passed",
+      "ce_yao_gan": "8 passed",
+      "ce_zhan_dou": "20 passed",
+      "ce_jie_suo": "144 passed",
+      "ce_panding": "1228 passed"
+    },
+    "validate_task": "VALID: TASK-022 v1 (plan_driven)",
+    "scope_check": "176 allowed, 7 unchanged pre-existing, 0 violation(s)",
+    "visual_probe": "上/下/左/右/中可见矩形均在地图内，无灰区；小地图黑底金首领；机械船变小"
+  },
+  "implementation_notes": "所有改动未 commit、未 push；project.godot 已恢复为 HEAD 状态；66 个新 PNG 已 headless --import；临时探针与 build/_web_test 调试产物已清理。"
+}

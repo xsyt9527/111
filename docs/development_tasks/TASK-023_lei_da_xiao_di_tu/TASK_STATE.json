@@ -1,0 +1,1421 @@
+{
+  "task_id": "TASK-023",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "review",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "current_step": "step-03",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "雷达小地图、设置透明度与断言完成；八步门禁 3138 断言全绿（含 TASK-024 船兼容 21 条）；F5 目检与红测待用户；未 commit、未 push",
+  "implementation_baseline": {
+    "captured_at": "2026-11-13T08:40:36.774974Z",
+    "commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "preexisting_changes": [
+      {
+        "path": "assets/sucai/tubiao/bao_lie_ti_zhi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2c22fbacbe8b54399d3d65465202dea47c458f7dd0ed6172b42c9ab805243465"
+      },
+      {
+        "path": "assets/sucai/tubiao/bao_lie_ti_zhi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d40286b31dfdb4367a0ff3d3793825353c1d0f516939f959d97b53dfbed80eec"
+      },
+      {
+        "path": "assets/sucai/tubiao/chong_neng_yan.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fd370d83de6162049a21720f10fcbad1edf596d5de5b170f8ae98188660ca5de"
+      },
+      {
+        "path": "assets/sucai/tubiao/chong_neng_yan.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6d3a7fd5e61d228e033ee01613f795dd360599c25fd519b5dbff6b144bc4c43c"
+      },
+      {
+        "path": "assets/sucai/tubiao/duo_tou_rong_cuo.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:85894f6c5fb040e3e54bff72c4d8573011ba998aebf99b66938623fe48694311"
+      },
+      {
+        "path": "assets/sucai/tubiao/duo_tou_rong_cuo.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:17006d511caecde2016488b36de0777f5a6fb2e25381c9b360bc3f4b206a42de"
+      },
+      {
+        "path": "assets/sucai/tubiao/gang_tie_liao_ya.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:33c8319ccefb34fe55251995b32821ceaa90303aa801c06807aa335b39126600"
+      },
+      {
+        "path": "assets/sucai/tubiao/gang_tie_liao_ya.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d7afee516366c4fae65a96d4561d9937809c27edaf739473e803e7fba2c332fa"
+      },
+      {
+        "path": "assets/sucai/tubiao/gong_sheng_hai_kui.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b5067f7d65b0024bb31d8d9b3d1b8da063a3ac3069b51f79c6224ba62a189c3b"
+      },
+      {
+        "path": "assets/sucai/tubiao/gong_sheng_hai_kui.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f3679255cfe20dce3aa11595edb7b1514a35843d340681dc42518234aca7eb99"
+      },
+      {
+        "path": "assets/sucai/tubiao/gu_zhi_zhong_jia.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:76632c971f9fbff4bb555fefc0261543b71e037cc3ebe02bfce570a1033602de"
+      },
+      {
+        "path": "assets/sucai/tubiao/gu_zhi_zhong_jia.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5b8dff1860393ebce8cc9c9b9b724eaff37701984d494da59189983192b379fa"
+      },
+      {
+        "path": "assets/sucai/tubiao/hua_xiang_yi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:46bf32cc316e6464f29904f3b5217d9bec6168548b2c053ab26112d5e4b16b1c"
+      },
+      {
+        "path": "assets/sucai/tubiao/hua_xiang_yi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8cdb0e71e929a87a2e839c0faced8d8811fa91a2310ce3351142f36acb525e77"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_ci_kou_nei.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dc3f326461b81261eb64d350e9293c5c77fd549f3a90359f0a1798026f7e45dd"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_ci_kou_nei.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ccfca3cef206d343019bc658cd125bec2ea22fd2ff77bbb8d4777970e886c885"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_guang_gui_ji.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7b8859e02d06f3e59cb91f5526f96ebd1a919f99833e225424dd051d45446d63"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_guang_gui_ji.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:887680cc291667cb5e45ec17322d15a8034df2663822c166bf0c0a5b2d18a67e"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_yin_she_lu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1a49ca27e755a242a0bcb254f7b9cfcd0210a288962acd93e3cac6bd0485f5ae"
+      },
+      {
+        "path": "assets/sucai/tubiao/ji_yin_she_lu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:288f116a1b53db12e27328d822d0d83f618182c467c550c1d882117aeb0a6700"
+      },
+      {
+        "path": "assets/sucai/tubiao/jin_shen_ji_ma.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6bdd46a7db2fc77b299f3b22d419873419069e6f09a34535aa14aec1bb9b9144"
+      },
+      {
+        "path": "assets/sucai/tubiao/jin_shen_ji_ma.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2c020c3894e2f08640b430e80ac31c515085742a8f5636162a9ea791aefa9f3e"
+      },
+      {
+        "path": "assets/sucai/tubiao/jin_shu_chi_li.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f28220ba92dfc749c260cb7fffaec1838e9d98cb367981ff0435c497f6107cc7"
+      },
+      {
+        "path": "assets/sucai/tubiao/jin_shu_chi_li.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:053555ec1bb05a9c1e89e632296cf63506e96d3ee52528323436dfb09d7ab637"
+      },
+      {
+        "path": "assets/sucai/tubiao/ju_qun.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a008b0f97eb6c736bc1380e89e13f1c3207117b0f31855c5151d3fc01ddb3b78"
+      },
+      {
+        "path": "assets/sucai/tubiao/ju_qun.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4e0861c113aee0d7562ebc858a691cf70dc52e3873a61f3ad7a9ed118312fd7f"
+      },
+      {
+        "path": "assets/sucai/tubiao/kong_ju_zhi_kou.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:47748c1461f06b878bd3fdc81c8e0a9c74bb977b56afac70aa465fb3ca4803dc"
+      },
+      {
+        "path": "assets/sucai/tubiao/kong_ju_zhi_kou.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:75db29982753a75bde34b43fa4ae6c38200005385ef2afe2f26cc920b717d30c"
+      },
+      {
+        "path": "assets/sucai/tubiao/lei_yan_suo_ding.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1b75764c6ff451e52fc270c369fd23fa3967750df25b561635ffe43484efa700"
+      },
+      {
+        "path": "assets/sucai/tubiao/lei_yan_suo_ding.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:391550957507fb3c02c6c4bf8ec3594fcd326ea442436c5de2b5e724aab0c3fd"
+      },
+      {
+        "path": "assets/sucai/tubiao/lie_kong_bu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc48cd93b323f8c7e2258c544c645666ca01b37bc3e9dcc330b28c4909021164"
+      },
+      {
+        "path": "assets/sucai/tubiao/lie_kong_bu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1a9f7d6478fcab0fa4a69c273b8324aad398630f37a85115714df1e2cec33d2a"
+      },
+      {
+        "path": "assets/sucai/tubiao/ming_lei_lin.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc58af1afa55248c79690893a61d6e7930b1cc2f8398d1c345522d7d83b19a5b"
+      },
+      {
+        "path": "assets/sucai/tubiao/ming_lei_lin.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5316ac471fe6e1201bb3012494649d6f4910b69c7f0df52db8c0cfe0c72818bd"
+      },
+      {
+        "path": "assets/sucai/tubiao/ning_jiao_tan_fu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:349f484d8f186cbb1508f725c5903b254efa4c4be0707ef080d1e9772c2d75d7"
+      },
+      {
+        "path": "assets/sucai/tubiao/ning_jiao_tan_fu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bdf65a0a1ebc0f19f145dd2797cc7526d19b760e1276115138fe33df9aff26f4"
+      },
+      {
+        "path": "assets/sucai/tubiao/po_jia_long_lin.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a0bfe1e3e726f42bc08f67bc5e15e2ff51671552fa1fc0705249a6722f0451fa"
+      },
+      {
+        "path": "assets/sucai/tubiao/po_jia_long_lin.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7268b4e97c088d693ab8b198a89cab287189274cc6af2fd6d170933eaed5956f"
+      },
+      {
+        "path": "assets/sucai/tubiao/she_fa_pen_du.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9c228cccf685ed67361424e9dea324e2a096611d9b7bd65bf1226952c8116c2f"
+      },
+      {
+        "path": "assets/sucai/tubiao/she_fa_pen_du.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7969c6f0ee3bf9c20e2eaf93f86fcb6ec08db192d10319642863237667697d60"
+      },
+      {
+        "path": "assets/sucai/tubiao/shen_yuan_zhuang_jia.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d0e3b67df2d8c33b196e28281206714fb057e7083bd1e9a34fecf7a218bc2d6b"
+      },
+      {
+        "path": "assets/sucai/tubiao/shen_yuan_zhuang_jia.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:78c90df6ed40e87f96c1cbc31a3b40443e2e3698bdb8de267b694a3b777302f8"
+      },
+      {
+        "path": "assets/sucai/tubiao/shun_feng_yi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12c74db56cd85ff147e7d58cc85a785926e88cead32cc2004dd31f879601c532"
+      },
+      {
+        "path": "assets/sucai/tubiao/shun_feng_yi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:400269ee3a87bdb29b80252606c52aaac4dfb9e6171db4c082cd186b610b9eb2"
+      },
+      {
+        "path": "assets/sucai/tubiao/wang_ling_gu_qu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c0d9791a01df2f35574a0af93a38fb4568e9e7be4d947820cd7c77a0f5462b4c"
+      },
+      {
+        "path": "assets/sucai/tubiao/wang_ling_gu_qu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d0a11bffec894835801dab1aa21862d23611a5870b277c409cf08cde867feb38"
+      },
+      {
+        "path": "assets/sucai/tubiao/xian_jian_zhi_ming.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:53e8cc15753fda9f7fe1e48910838a23b29ac1d0ff84ef3272b873364334f73f"
+      },
+      {
+        "path": "assets/sucai/tubiao/xian_jian_zhi_ming.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3ac575d245fb48c419ed94f82c3eab24a8b4ca531968e5416ec64a9674732fa0"
+      },
+      {
+        "path": "assets/sucai/tubiao/xian_shan_zhi_bei.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d7d0059a14c0001bd20e13bc9fc48bceb934d8e69f57a44f363b4d27256105cc"
+      },
+      {
+        "path": "assets/sucai/tubiao/xian_shan_zhi_bei.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0cc5873e02969dfaf6515301a79d9f01fd45bfddc428c3ebe52df772b683eec8"
+      },
+      {
+        "path": "assets/sucai/tubiao/xie_shen_zhu_shi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6c7bd1e9cf3e8354360f593626eb4b5748e12d200d5d85699d6b37d22b53c153"
+      },
+      {
+        "path": "assets/sucai/tubiao/xie_shen_zhu_shi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a607e0a2bb00ce69df1bf9eb9aa6d5939032b2b15fd029b8df4c6ac6c1774d12"
+      },
+      {
+        "path": "assets/sucai/tubiao/xie_ya_ji_dong.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6669ee56c2cca2b8dc1150be05285e5c0289a11a26e51a31877b8d183f16d7ee"
+      },
+      {
+        "path": "assets/sucai/tubiao/xie_ya_ji_dong.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e03453d1a86c618025c7dd86a54ff948a7d4bb1267dcf02a39cc905d79c6f314"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_chuan_bo_san.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7993a02349f27f057d97f5c75ba8e539efa488081536ffe2ce88f525d4acedb0"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_chuan_bo_san.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6c66bf6c95f6d36e6f39a6369a2caafa3f2c55568c23ee540d722e55176b3d32"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_yu_ling_yu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:45d75a363b44554b6d7d4b87077fbfa6f62c62719bd39b63bc2e9ef206782365"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_yu_ling_yu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:32a3392baee32328549a27aba99e65d45965c32fb441cb05d1702594217f751e"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_zuo_yu_hui.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:45d3479add56b81f64cf054e383a6b8e93a011c2bfe2984df3919cc802d5e786"
+      },
+      {
+        "path": "assets/sucai/tubiao/xing_zuo_yu_hui.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d0a8de420a98d1879fd569279f76480d8031dcb268f1b7aa8a8f1e3f3cfcddce"
+      },
+      {
+        "path": "assets/sucai/tubiao/ye_cha_fan.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e3b8e2298654045b733802f3eb390e2371e3c43e903761e0807462d5dfa9d89c"
+      },
+      {
+        "path": "assets/sucai/tubiao/ye_cha_fan.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4b2e55933a7cfa4c51700bddbfc9c7f7349036f78188fb9dc87f064440a3c294"
+      },
+      {
+        "path": "assets/sucai/tubiao/you_ling_chuan_hai.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b60fc973e60c6f2a4c4ed4e9f55a991cd77eb3a3b34781a7b55cdd0332bd7bc2"
+      },
+      {
+        "path": "assets/sucai/tubiao/you_ling_chuan_hai.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12ddab20c9cfade3fa4a591b35083135ac31b09de3b12749b5d8e759d12e3d13"
+      },
+      {
+        "path": "assets/sucai/tubiao/you_ming_ti.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6f5b972e2380cce9187fa9e352ce3a07345493b421931c50ca46fb28f28717ab"
+      },
+      {
+        "path": "assets/sucai/tubiao/you_ming_ti.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:949b7ea82e78d1c2b36eb2e68b7770e1733c663b20eea81df1cb7fd62ee71e13"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/bao_lie_ti_zhi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2c22fbacbe8b54399d3d65465202dea47c458f7dd0ed6172b42c9ab805243465"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/bao_lie_ti_zhi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:724291f4e16e028e11d596b7266cd2c7e1a183df429b845c3d30d826f681d735"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/chong_neng_yan.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fd370d83de6162049a21720f10fcbad1edf596d5de5b170f8ae98188660ca5de"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/chong_neng_yan.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:56d47daf9cee3c4169de1ae9a9c3b4290694be6ddbf6772537ed35e337c278e3"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/duo_tou_rong_cuo.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:85894f6c5fb040e3e54bff72c4d8573011ba998aebf99b66938623fe48694311"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/duo_tou_rong_cuo.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:21085c9dc6e7078c311a8ff3b003f5e95983830ccf9bf0a1a889697bfce7fab3"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gang_tie_liao_ya.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:33c8319ccefb34fe55251995b32821ceaa90303aa801c06807aa335b39126600"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gang_tie_liao_ya.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:16174ae63bf97fc5552f838f641edc45bd197ffcedc67663ce6b7dee6b73a191"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gong_sheng_hai_kui.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b5067f7d65b0024bb31d8d9b3d1b8da063a3ac3069b51f79c6224ba62a189c3b"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gong_sheng_hai_kui.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e9138bd4136db3b8344305903a86b1efab141dfb22bb74f496f3bd97fceff634"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gu_zhi_zhong_jia.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:76632c971f9fbff4bb555fefc0261543b71e037cc3ebe02bfce570a1033602de"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/gu_zhi_zhong_jia.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:aab5739d5f14a622c860e8190c0497d11df2876a33db306322f6425640e66642"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/hua_xiang_yi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:46bf32cc316e6464f29904f3b5217d9bec6168548b2c053ab26112d5e4b16b1c"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/hua_xiang_yi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7d0b17efdcb99dbca8132633a2d3cd7f4b64233199c633403fe855674e102fd9"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_ci_kou_nei.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dc3f326461b81261eb64d350e9293c5c77fd549f3a90359f0a1798026f7e45dd"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_ci_kou_nei.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0afdda6aa200be42606c6598fbe2afff35fe438ea572deb8e3b7ecfd0e809e22"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_guang_gui_ji.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7b8859e02d06f3e59cb91f5526f96ebd1a919f99833e225424dd051d45446d63"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_guang_gui_ji.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d022e90e2b8254adbdc82b9b5d54dc4dcac59e4b0e7bd2a353f0da9d2cfcb4e4"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_yin_she_lu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1a49ca27e755a242a0bcb254f7b9cfcd0210a288962acd93e3cac6bd0485f5ae"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ji_yin_she_lu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:616a2b26c093811ba335b4737cd84d77521afd1bacb2bdc2fff683442d8c33e7"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/jin_shen_ji_ma.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6bdd46a7db2fc77b299f3b22d419873419069e6f09a34535aa14aec1bb9b9144"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/jin_shen_ji_ma.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7121daa221253a3b45d72a1a70659dba14c9bf6e44011fc3213d09099f7c2e54"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/jin_shu_chi_li.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f28220ba92dfc749c260cb7fffaec1838e9d98cb367981ff0435c497f6107cc7"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/jin_shu_chi_li.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:002567ac435a091edb1126f3328c451012a496cc1ce593550cc4de536fc9547f"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ju_qun.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a008b0f97eb6c736bc1380e89e13f1c3207117b0f31855c5151d3fc01ddb3b78"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ju_qun.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6de67bad0c47f06cf5054ced1d0bd5c24ed0bbfa0c5046483999d647b153d6f8"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/kong_ju_zhi_kou.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:47748c1461f06b878bd3fdc81c8e0a9c74bb977b56afac70aa465fb3ca4803dc"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/kong_ju_zhi_kou.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8c7456a80a4737f6ecb5143f1bc6a84f69e78cd37d073184ea98ff5dd85d328d"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/lei_yan_suo_ding.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1b75764c6ff451e52fc270c369fd23fa3967750df25b561635ffe43484efa700"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/lei_yan_suo_ding.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:db7ec4c10e6727136f45226b110df65f1807ae29e2c8043e36af0e8c2772496f"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/lie_kong_bu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc48cd93b323f8c7e2258c544c645666ca01b37bc3e9dcc330b28c4909021164"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/lie_kong_bu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:572b48b970421eb071b5b2908ccead181f29a60dc045874f2ee189bd2adb8fa8"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ming_lei_lin.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc58af1afa55248c79690893a61d6e7930b1cc2f8398d1c345522d7d83b19a5b"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ming_lei_lin.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:96b52e0bbaea62ba2a4f69653dd1caaee80a3c9bd143500df0eb5f309ed12e30"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ning_jiao_tan_fu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:349f484d8f186cbb1508f725c5903b254efa4c4be0707ef080d1e9772c2d75d7"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ning_jiao_tan_fu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:81c54751891287669ed4301e63bb5d87f73b6a74dbf98650fea20330d168e920"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/po_jia_long_lin.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a0bfe1e3e726f42bc08f67bc5e15e2ff51671552fa1fc0705249a6722f0451fa"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/po_jia_long_lin.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5e8c4c42ae8e600d4ab74be630ac0030b4197f0a2f23ff925217889bce06acde"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/she_fa_pen_du.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9c228cccf685ed67361424e9dea324e2a096611d9b7bd65bf1226952c8116c2f"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/she_fa_pen_du.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4a6b4506b240cdeff6b927e4628e20e4f37e91c4fa867c13e1fcc0c642ed8704"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/shen_yuan_zhuang_jia.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d0e3b67df2d8c33b196e28281206714fb057e7083bd1e9a34fecf7a218bc2d6b"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/shen_yuan_zhuang_jia.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b0e85e5349d16dd3396d4e606588685fc18fc575f94249ba7cd3aa99b9447737"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/shun_feng_yi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12c74db56cd85ff147e7d58cc85a785926e88cead32cc2004dd31f879601c532"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/shun_feng_yi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bf17deb9da4f9c802c3746aa29945809ba6f05af8b42da152286ab1c71781034"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/wang_ling_gu_qu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c0d9791a01df2f35574a0af93a38fb4568e9e7be4d947820cd7c77a0f5462b4c"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/wang_ling_gu_qu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9e74cf39a9bc56e07666f33c0709772245ae7f118da347e29ffdc3ccdea085e1"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xian_jian_zhi_ming.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:53e8cc15753fda9f7fe1e48910838a23b29ac1d0ff84ef3272b873364334f73f"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xian_jian_zhi_ming.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:171ad4894ce824dc63f71eef6936424b8937c00f351e598240673fb1f7c6c323"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xian_shan_zhi_bei.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d7d0059a14c0001bd20e13bc9fc48bceb934d8e69f57a44f363b4d27256105cc"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xian_shan_zhi_bei.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5f135e034630fe1bda1bb93c0d51a17efacf15ff975c78036952e968b0de1161"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xie_shen_zhu_shi.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6c7bd1e9cf3e8354360f593626eb4b5748e12d200d5d85699d6b37d22b53c153"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xie_shen_zhu_shi.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bc40505da8076d98a4ad07aec19a0afec71197ec20ccb12dca0d77e218f74a22"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xie_ya_ji_dong.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6669ee56c2cca2b8dc1150be05285e5c0289a11a26e51a31877b8d183f16d7ee"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xie_ya_ji_dong.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8dd0930aacf18e19bc84bacfa53923386855b35acb0e1ef8b6551e3ac01d6c8d"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_chuan_bo_san.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7993a02349f27f057d97f5c75ba8e539efa488081536ffe2ce88f525d4acedb0"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_chuan_bo_san.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:724694b36e8d3d7775c4c91d8f6fc2398f928c9c9cb291ecfd0103d345a44c91"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_yu_ling_yu.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:45d75a363b44554b6d7d4b87077fbfa6f62c62719bd39b63bc2e9ef206782365"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_yu_ling_yu.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:697556a7d02cc308f8bc4b3b78e50720543fd0fe0d63300a90260c309a9a54bf"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_zuo_yu_hui.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:45d3479add56b81f64cf054e383a6b8e93a011c2bfe2984df3919cc802d5e786"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/xing_zuo_yu_hui.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1f4e7329cf8ad600a4971d8e2c724ca3897b841b9837c8247d5f17c6c5a1f28d"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ye_cha_fan.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e3b8e2298654045b733802f3eb390e2371e3c43e903761e0807462d5dfa9d89c"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/ye_cha_fan.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a8f314b54f4492c493a432a88cf9359d8acf56063a7baa27ca944e0722664ecd"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/you_ling_chuan_hai.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b60fc973e60c6f2a4c4ed4e9f55a991cd77eb3a3b34781a7b55cdd0332bd7bc2"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/you_ling_chuan_hai.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:994e0eafbe1d41c8eaafa79d517e238fa3c48db896571a594b8b7febd032dc7f"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/you_ming_ti.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6f5b972e2380cce9187fa9e352ce3a07345493b421931c50ca46fb28f28717ab"
+      },
+      {
+        "path": "assets/sucai_classic/tubiao/you_ming_ti.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:94455b70dabe20b96623cd59c0ad98483b440b6125ff1ead99f09523c1634ff4"
+      },
+      {
+        "path": "data/nengli/bao_lie_ti_zhi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:bb53715e93e11c729213c0f052df480367e225b2b01a460663173780158cb4ae"
+      },
+      {
+        "path": "data/nengli/chong_neng_yan.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:cde336f11ac90fe55e284fdf9f42bcc8bcfadbed01d2bcad6a55e0af51fc83ac"
+      },
+      {
+        "path": "data/nengli/duo_tou_rong_cuo.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c91ba63e2dc9ee9bddf964ca2932fec0911b06d76f5e8caba15b2879fe003a93"
+      },
+      {
+        "path": "data/nengli/gang_tie_liao_ya.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e84f32f7f561347eabbba5b90dc844c948ed7bd45538555039e0e2160f4ec0c4"
+      },
+      {
+        "path": "data/nengli/gong_sheng_hai_kui.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7d91a56566d4cc4fba96e078fc01b1a67ba3d7858c67eda33e8b3c28cedb9445"
+      },
+      {
+        "path": "data/nengli/gu_zhi_zhong_jia.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:66431361d7a167ce565d8596e49e1520e4557b989999d67e2c1827e1118299b7"
+      },
+      {
+        "path": "data/nengli/hua_xiang_yi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7510a2cc0f3594d426ce0400340ebd9b34ac9f236cdeabe9cf79f178d40941f8"
+      },
+      {
+        "path": "data/nengli/ji_ci_kou_nei.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:bc0708206ae5986836a9f6a083a0e861488b6bf6d91a96cfaa155c38c4979c3a"
+      },
+      {
+        "path": "data/nengli/ji_guang_gui_ji.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b4b31d876c90376e1e2465cfb7ed8fc60e362fcf94049b6aae72be77a9288420"
+      },
+      {
+        "path": "data/nengli/ji_yin_she_lu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c9783e999552d3b26e60720e8e33b6a7befe9dc9b2c8c6456c1164cd522319db"
+      },
+      {
+        "path": "data/nengli/jin_shen_ji_ma.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f848b6fecc17b8f323c949be7a3669718f5b5b85c1e972ebaf1110ea3824c386"
+      },
+      {
+        "path": "data/nengli/jin_shu_chi_li.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:788955addca8a446c362810422c48a525755110b6dc346bf2c2ca43418c6ca92"
+      },
+      {
+        "path": "data/nengli/ju_qun.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3b449a76b12604d0f0b8c09dacefe4e8017494d2322f5617c4a723855c875af5"
+      },
+      {
+        "path": "data/nengli/kong_ju_zhi_kou.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b1247533d6514475d2a09ef3d39ecabd3093e6563db36a3502e887b18feb7165"
+      },
+      {
+        "path": "data/nengli/lei_yan_suo_ding.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7ef118679459d1fa7c7186f072ab3f3307549077807ac0d606f3958669d8bed7"
+      },
+      {
+        "path": "data/nengli/lie_kong_bu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8b7c24961cc33514a04e4ffb71ecafecc8d72ab390bafc97b74a7165c30dc365"
+      },
+      {
+        "path": "data/nengli/ming_lei_lin.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:012c290e8855a381e452251d3a4f71ad464e2524b30f737bd0ba267ea54047b4"
+      },
+      {
+        "path": "data/nengli/ning_jiao_tan_fu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:00983b7e9aed7daec6137af0d48409c8e90bc4a7979054f723f946f539d195b9"
+      },
+      {
+        "path": "data/nengli/po_jia_long_lin.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:db41c0607355e6cc41180a0cff59c81e7dac2ad1f2e91334207bef49fb8187d5"
+      },
+      {
+        "path": "data/nengli/she_fa_pen_du.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:747d6d899354b3a406182dda1ee41897fe7fffd2513552caedb8d22e061f5036"
+      },
+      {
+        "path": "data/nengli/shen_yuan_zhuang_jia.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:1423a037553516ced4690e782a4b240e520cc1f5d8c7856f52a7f9a4d5bfe910"
+      },
+      {
+        "path": "data/nengli/shun_feng_yi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a85c0fda352e9a115ae6adc6e97a84286f9682bd08798619c428723ee28ca1ef"
+      },
+      {
+        "path": "data/nengli/wang_ling_gu_qu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4b4d8f79d5da1d9902b08ea356ab810522a869a5d521a176e31d58e06014ea21"
+      },
+      {
+        "path": "data/nengli/xian_jian_zhi_ming.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3653a2904c275049d638ca6c2f35e1e6e867c7aa59625ea34ad62e8457390ade"
+      },
+      {
+        "path": "data/nengli/xian_shan_zhi_bei.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f68fd41c6ffb07d3ef1688da267aa310cd70b8b803660936755771ecc94a097f"
+      },
+      {
+        "path": "data/nengli/xie_shen_zhu_shi.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:6f106c636e8edb9ec305f355d139a97216e652923c60e639f3a5fad332984670"
+      },
+      {
+        "path": "data/nengli/xie_ya_ji_dong.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b24b81ebd3ecae5587018f95995d700e005fa08fba561f715911063b9a8d8ea9"
+      },
+      {
+        "path": "data/nengli/xing_chuan_bo_san.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b579a6d2a4360d79ff4c8791aa90d5f0371cbff1258d534aa8c6d024efd2414d"
+      },
+      {
+        "path": "data/nengli/xing_yu_ling_yu.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7f30f29eff467e1e52649d98563aae1ae4c1928a962cfab92372c8356d56502d"
+      },
+      {
+        "path": "data/nengli/xing_zuo_yu_hui.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:94d154e62bd43c82c2b68401457a5edf1b7baf99ffb24363541bcc52eee40ddb"
+      },
+      {
+        "path": "data/nengli/ye_cha_fan.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:ddbac4697b4ab374a13c3fd422ccc90a58e899a3211eb6cb7a004108da2a8e0e"
+      },
+      {
+        "path": "data/nengli/you_ling_chuan_hai.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4e61f3eb1c5419ebe083a1e29a40a6fac52b8ef6fc57c1de72ec48f719859dc7"
+      },
+      {
+        "path": "data/nengli/you_ming_ti.tres",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:754da7b6c2c6fdfce41faf895fd01bdd3faeb60dbebe7b9881d5b8ec8e422eba"
+      },
+      {
+        "path": "docs/TASK_INDEX.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f0d991bb3105491f6254172b1a997c524ee378747f4e13fd0ce7d03b7c384d10"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:945f8051fe182cbbeafaadd8cfdfcf30c3c346917bd764f8a7bbb501c92c535e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/IMPLEMENTATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ac05dedabad12b79116f269b1cbf4edda60903ffcc82b7bc1a573c602d7207b6"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ba4caf61b85221eff701e35722cc04b37ef68b21d6765b53bf9e5cf375fb22bd"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1ee7ed2deec0a58d440139187453038c3b6af9d95ddc315aff7c926908beda9d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12e462368d3d2f1792af703d1b9354387d94543fd81403f4aa98f5fdbffa8c94"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:01e28b01239697bf3d8654c087e50db047118f30308d0e8349e5ab2ed7f2a033"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:47d676aebe10b95779a8667c05d8dd8d0321ab836973ca122c633fedc1c99568"
+      },
+      {
+        "path": "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:62058ce5be1a7f28581a5f17a6da8ae235854e627fc052559387d1a0634d6b5b"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7171179c3bf0f5eb0259bf31c8fe5c5cb2564dacd974058cf3e46bdf7fa01bcc"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:83ed64b128fd5cad5b60ecb35110fd8b46b131ac5e93099261748d79de016164"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d25aeb4e09ee666fa5c4d7a20c141b34b578ccbb5ce5a24762737e06b51ab4fd"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6882f4a0c049c3fe806dfe86d5ddba2bd75b4ed2acce2755bc054868e09a81ae"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:db3df553b49cb1c27465540ae2ee606465191e0c02d8cc077ef7152db955f706"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e7a181cdd41b73c17723266bdb600872193eee82adfd89f75bdcb22f26d3e4bc"
+      },
+      {
+        "path": "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e0f5a6289b63c1186a40d57c0eaa45dd777e95762b8929008a7c0f80e4e44007"
+      },
+      {
+        "path": "docs/专属技模块_开发契约.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f8e25400f52d6faaadfb07e5680b677172d720db2f6f7438d2e2647d1918d5ef"
+      },
+      {
+        "path": "docs/技能图标与特效需求_Gemini_2026-11-10.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:d7a6e29b1926893b04d1058f40b41e81c6dec6ac68f55db5e6f54d5f4853b208"
+      },
+      {
+        "path": "docs/特效需求清单_2026-11-12.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3d5475d89fce4e9fbcaf1732ce50f1faabfb2422ebf4b2a07fefd3e32dad5514"
+      },
+      {
+        "path": "docs/美术风格更换需求_Gemini_2026-11-09.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:436afb15ae74f53f174390b08e24576d28db8a7930f3904766f8e3fee989fde3"
+      },
+      {
+        "path": "project.godot",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:6a11299eaabccc8c408b61ffe15763223866e9073ad737a6b0ed468539a7aee7"
+      },
+      {
+        "path": "scenes/Main.tscn",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b7958cf9b9a21df0670c7700bedf6f9edf2fb3375339ab038429d1fddbc52df0"
+      },
+      {
+        "path": "scripts/cun_dang.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:98a699c5c0ec815731b3d6bbeeb470f19b9146b7c936e923136f626b6546fc90"
+      },
+      {
+        "path": "scripts/ji_qi_chuan.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b86a55955cd2529c0de381d0935c675874354fd30f4d2265f2480d7a95ea8ee5"
+      },
+      {
+        "path": "scripts/main.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2817a955e948bd26d855ae5f88aa78707de66fa034ce70ff3bbff4077bdf5a20"
+      },
+      {
+        "path": "scripts/she_zhi.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:5e4884ea4e60d7079b087eb2dbc7f9f9c336caafd1832156798deed002e5af81"
+      },
+      {
+        "path": "scripts/xiao_di_tu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:70e0816cbed8b1a4d9321ab934a728b7961d534b51aa75f9321baeb48409cf29"
+      },
+      {
+        "path": "scripts/yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:dc170cad376796bbb08f02d0e91fa76002fd5b9ffaefd65bf075b81e4fc1651a"
+      },
+      {
+        "path": "tests/ce_panding.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:586bb1e6f3802e2e125f03db5d307cf90c4da725f62c4a4ad237d3ef8d5e0dc9"
+      }
+    ]
+  },
+  "last_verified_commit": null,
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "status": "completed"
+    },
+    {
+      "step_id": "step-02",
+      "status": "completed"
+    },
+    {
+      "step_id": "step-03",
+      "status": "completed"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-11-13T00:00:00+08:00",
+    "exact_user_text": "1.把地图放在设置下面，现在的ui位置怪怪的。2.地图就像个雷达一样，能探测，不需要背景地图的图，不然小小一张地图，色彩太丰富了，玩起来地图看的太难受了，对了，再给他加一个透明度的设置在设置里面，这样方便观看"
+  },
+  "verification": {
+    "gate": "tests/pao_pi.bat",
+    "gate_at": "2026-11-13",
+    "gate_result": "all_green",
+    "assertions_passed": 3138,
+    "assertions_failed": 0,
+    "steps": {
+      "import": "pass",
+      "ce_zhang_ben": "232 passed",
+      "ce_bian_jie": "25 passed",
+      "ce_shu_ju": "1422 passed",
+      "ce_yao_gan": "8 passed",
+      "ce_zhan_dou": "20 passed",
+      "ce_jie_suo": "144 passed",
+      "ce_panding": "1287 passed"
+    },
+    "validate_task": "VALID: TASK-023 v1 (plan_driven)",
+    "scope_check": "0 violation(s)；新增文档均在 TASK-023/TASK-024 允许列表内",
+    "note": "该门禁与 TASK-024 同轮执行，1287 条 ce_panding 含 TASK-024 船兼容 21 条；TASK-023 相对 TASK-022 的 1228 条净增 38 条"
+  },
+  "capability_decisions": {
+    "superpowers": "not_needed",
+    "godot_skill": "available",
+    "code_review": "available"
+  }
+}

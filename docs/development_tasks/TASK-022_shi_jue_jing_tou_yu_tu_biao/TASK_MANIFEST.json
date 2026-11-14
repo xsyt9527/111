@@ -1,0 +1,337 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-022",
+  "task_spec_version": 1,
+  "slug": "shi-jue-jing-tou-yu-tu-biao",
+  "title": "小地图黑底/首领标色、玩家面板被动、动态决战镜头与 33 被动图标",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+  "objective": "按用户 2026-11-12 的七项反馈修正表现与操作：小地图改黑色底、首领换色并在图例标注；把「上帝视角（永久被动）」从地图上移到玩家设置的角色面板；决战镜头随体型/船体动态拉远并消除地图外灰区与底部卡视角；机械船视觉与受击判定 ×0.8（技能范围不变）；替换 33 张进化专属被动图标；整理可供 AI 生成的特效清单。",
+  "audit_freshness": {
+    "audited_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "environment_checked_at": "2026-11-12T06:10:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "Main.tscn HUD 层级或 XiaoDiTu 节点变化",
+      "Main 人类战相机 offset/zoom/limit 逻辑变化",
+      "JiQiChuan 视觉倍率或攻击范围常量变化",
+      "data/nengli 图标字段或 assets/sucai/tubiao 资源变化",
+      "玩家设置角色面板结构变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "上帝视角小地图表现",
+      "玩家设置角色面板",
+      "人类战相机取景",
+      "机械船视觉缩放",
+      "进化专属被动图标"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn"
+    ],
+    "owned_scripts": [
+      "res://scripts/xiao_di_tu.gd",
+      "res://scripts/she_zhi.gd",
+      "res://scripts/main.gd",
+      "res://scripts/ji_qi_chuan.gd"
+    ],
+    "owned_config_tables": [
+      "res://data/nengli/*.tres"
+    ]
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-021（小地图/换房/首领房限制）",
+      "TASK-019（体型/范围）",
+      "TASK-017（人类机器船战）"
+    ],
+    "consumed_interfaces": [
+      "Main.fang_jian_qu/qu_yu_pian/_zai_ren_lei_zhan",
+      "Main.ji_qi_chuan/yu/camera",
+      "ZhangBen.dang_qian_ti_xing/ti_xing_dao_chi_du",
+      "JiQiChuan.CHUAN_TI_BEI_LV/ZHAO_TI_BEI_LV/攻击范围常量",
+      "NengLi.tubiao",
+      "SheZhi 角色面板滚动列"
+    ],
+    "provided_interfaces": [
+      "XiaoDiTu 黑底/金色首领标记",
+      "SheZhi 永久被动「上帝视角」卡片",
+      "Main.ren_lei_qu_zhuang() 纯函数（返回相机中心/zoom）",
+      "JiQiChuan 视觉 ×0.8、判定 ×0.8、范围不变",
+      "33 张被动图标资源"
+    ],
+    "emitted_signals": [
+      "无新增信号"
+    ],
+    "received_signals": [
+      "沿用 ZhangBen.ti_xing_bian_hua / jie_duan_gai_bian"
+    ],
+    "shared_state": [
+      "小地图只读世界状态",
+      "镜头纯函数不写 gameplay 状态"
+    ],
+    "registered_shared_changes": [
+      "Main.tscn 删除 XiaoDiTu 标题 Label 并调整地图矩形",
+      "Main.gd 人类战相机改为动态取景",
+      "JiQiChuan 两个视觉常量 ×0.8"
+    ],
+    "conflict_hotspots": [
+      "main.gd 与 TASK-020/021 房间/相机逻辑",
+      "she_zhi.gd 既有能力卡布局",
+      "ce_panding 既有断言不改，只追加"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py 零违规",
+      "本地 Godot 实测决战上下边界不出现灰区"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/xiao_di_tu.gd",
+    "scenes/Main.tscn",
+    "scripts/she_zhi.gd",
+    "scripts/main.gd",
+    "scripts/ji_qi_chuan.gd",
+    "scripts/yu.gd",
+    "tests/ce_panding.gd",
+    "data/nengli/*.tres",
+    "docs/技能图标与特效需求_Gemini_2026-11-10.md",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-022_shi_jue_jing_tou_yu_tu_biao/**",
+    "assets/sucai/tubiao/*.png",
+    "assets/sucai/tubiao/*.png.import",
+    "assets/sucai_classic/tubiao/*.png",
+    "assets/sucai_classic/tubiao/*.png.import",
+    "docs/特效需求清单_2026-11-12.md"
+  ],
+  "forbidden_systems": [
+    "project.godot / build/** / 美术资源/** 源目录",
+    "TASK-019/020 的体型/伤害/房间数值",
+    "技能攻击范围与伤害数值",
+    "存档 schema/Autoload",
+    "删除或改写 tests/ 既有断言",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "小地图黑底、首领换色与玩家面板被动",
+      "behavior": "XiaoDiTu 面板底改纯黑；首领/机械船标记改金色并更新图例；删除地图上的「上帝视角（永久被动）」标题；在设置-角色面板的被动区固定展示「上帝视角」永久被动卡。",
+      "main_concept": "表现层信息分区：地图只负责空间信息，说明与被动归属放到玩家面板。",
+      "files": [
+        "scripts/xiao_di_tu.gd",
+        "scenes/Main.tscn",
+        "scripts/she_zhi.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 断言新地图矩形/金色常量/永久被动卡"
+      ],
+      "manual_checks": [
+        "F5 查看小地图与设置-角色面板"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "决战动态镜头与机械船 ×0.8",
+      "behavior": "人类战相机不再用固定 offset；按玩家与船中点为相机位置，按双方纵向距离与玩家体型计算 zoom，保证可见矩形落在地图内；船体视觉/受击判定 ×0.8，攻击范围常量不变。",
+      "main_concept": "Camera2D offset 会绕过 limit 导致灰区；用中心点+动态 zoom+limit 夹取保证画面永远在背景内。",
+      "files": [
+        "scripts/main.gd",
+        "scripts/ji_qi_chuan.gd",
+        "scripts/yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "纯函数 ren_lei_qu_zhuang 在四角/高体型用例可见矩形均在地图内"
+      ],
+      "manual_checks": [
+        "F5 触发人类战，上下左右游动观察无灰区、鱼到边界镜头跟随"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "替换 33 张进化专属被动图标",
+      "behavior": "把美术资源 P0 被动图标 128px 真透明版复制到 assets/sucai/tubiao 与 assets/sucai_classic/tubiao，为 33 个原无图标的被动 .tres 增加 ExtResource 图标引用；带底色与 AI 版不接入。",
+      "main_concept": "NengLi.tubiao 只引用资源路径；图标资源由 Godot import 生成 .import 与压缩缓存。",
+      "files": [
+        "data/nengli/*.tres",
+        "assets/sucai/tubiao/*.png",
+        "assets/sucai_classic/tubiao/*.png"
+      ],
+      "automated_checks": [
+        "33 个被动 .tres 均有 tubiao 路径且资源存在",
+        "headless --import 退出码 0"
+      ],
+      "manual_checks": [
+        "F5 升级三选一/角色面板/图鉴查看新图标"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "特效清单、门禁与文档收尾",
+      "behavior": "更新 Gemini 特效需求文档并新增可复制清单；追加测试；跑八步门禁；更新任务索引/引擎词表/实现报告；清理临时探测脚本与截图。",
+      "main_concept": "需求文档要按优先级、尺寸、帧数、命名与交付格式列清楚，AI 才能稳定生成。",
+      "files": [
+        "docs/技能图标与特效需求_Gemini_2026-11-10.md",
+        "docs/特效需求清单_2026-11-12.md",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "validate_task.py 退出码 0",
+        "check_task_scope.py 零违规"
+      ],
+      "manual_checks": [
+        "用户按清单交给 AI 生成特效"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释 Camera2D offset 与 limit 的相互作用",
+      "能说明动态 zoom 如何同时容纳玩家与机器船",
+      "能解释 NengLi.tubiao 资源引用与 Godot import 流程",
+      "能区分视觉缩放与攻击范围缩放"
+    ],
+    "concepts": [
+      "Camera2D limit/offset/zoom",
+      "Rect2 可见区域夹取",
+      "Texture2D 资源导入",
+      "ResourceLoader/ExtResource",
+      "HUD 信息分区"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "小地图仍是 Main 内 HUD 节点，只删除标题 Label 并调整绘制矩形；不新增 Autoload。",
+    "current_tree": "Main.tscn -> XiaoDiTuUI/CanvasLayer -> XiaoDiTu/Control -> BiaoTi/TuLi；SheZhi/CanvasLayer -> 角色面板",
+    "target_tree": "Main.tscn 顶层不变；XiaoDiTu 下仅保留 TuLi，地图矩形上移；SheZhi 角色面板被动区新增永久被动卡。",
+    "ownership": [
+      "XiaoDiTu 拥有地图绘制",
+      "SheZhi 拥有角色面板永久被动展示",
+      "Main 拥有决战相机",
+      "JiQiChuan 拥有船体视觉倍率"
+    ],
+    "signal_contracts": [
+      "无新增信号"
+    ],
+    "loading_policy": [
+      "继续 preload 整图；图标由 ResourceLoader 按路径加载"
+    ],
+    "state_persistence": [
+      "不写存档；上帝视角被动为常驻规则，不占账本层数"
+    ],
+    "animation_dependencies": [
+      "小地图每帧 queue_redraw",
+      "相机 zoom 每帧平滑趋近目标"
+    ],
+    "lifecycle_checks": [
+      "进入/退出 Main 无残留",
+      "暂停设置面板打开后小地图仍正确"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规"
+  ],
+  "required_manual_checks": [
+    "F5 小地图黑底/金色首领/图例",
+    "F5 设置-角色面板看到上帝视角永久被动",
+    "F5 人类战上下边界无灰区、镜头跟随",
+    "F5 机械船变小但技能范围不变",
+    "F5 33 个被动图标显示"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "无外部参考实现；按用户反馈与 Godot Camera2D 文档自行实现",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "用户所说“摄像机再和体型比例加大点”以动态拉远实现，具体倍率需实机确认"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要改 project.godot",
+    "需要新增 Autoload",
+    "需要改攻击范围/伤害数值",
+    "需要改存档 schema"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-12T14:05:00+08:00",
+    "exact_user_text": "1.地图改用黑色底，然后boss显示你随便换个颜色并且标明2.地图那个被动要在玩家设置里面那个玩家面板查看，不要写在地图那里3.后期我的身体和机械船占整个屏幕，我感觉需要你摄像机再和体型比例加大点，还有机械船大小（不包括技能范围）*0.8，机械船有点大4.为什么我能在决战时往上面游时能看到背景外面的灰色区域，然后向下时我鱼到底，可是视角卡在了上面，就是怎么说呢，你自己运行测试一下就知道了5.把\"D:\\新游戏001\\美术资源\\P0_进化专属被动技能图标_33张_1024与128真透明PNG\"这个替换进去游戏6.把需要的特效清单列出来，我给ai生成7.你一定要多开子代理，不然太慢了",
+    "canonical_example": "1.地图改用黑色底，然后boss显示你随便换个颜色并且标明2.地图那个被动要在玩家设置里面那个玩家面板查看，不要写在地图那里3.后期我的身体和机械船占整个屏幕，我感觉需要你摄像机再和体型比例加大点，还有机械船大小（不包括技能范围）*0.8，机械船有点大4.为什么我能在决战时往上面游时能看到背景外面的灰色区域，然后向下时我鱼到底，可是视角卡在了上面，就是怎么说呢，你自己运行测试一下就知道了5.把\"D:\\新游戏001\\美术资源\\P0_进化专属被动技能图标_33张_1024与128真透明PNG\"这个替换进去游戏6.把需要的特效清单列出来，我给ai生成7.你一定要多开子代理，不然太慢了"
+  }
+}

@@ -19,6 +19,15 @@ const JI_GUANG_SHU_LIANG := 3  # 激光矩阵：最多锁定 3 个目标
 const JING_ZHI_SU_DU := 5.0  # 充能眼：当前速度低于 5 像素/秒视为静止
 const GUAN_XING_BEI_JI_SHU := 2.0  # 观星感知倍率的兜底（数据缺 shu_zhi 时用）
 
+
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：普通鱼 + 机械船；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group("yu_npc")
+	return []
+
 # ---- meta 键：每个持续状态一个键，避免跨形态串味 ----
 const META_GUAN_XING_SHENG := &"zs_guan_xing_sheng_yu"
 const META_XIAN_JIAN_SHENG := &"zs_xian_jian_zhi_ming_sheng_yu"
@@ -145,20 +154,19 @@ static func _shi_fang_feng_kuang(yu, neng: NengLi, dang: int) -> bool:
 	var mu := _zhao_she_xian_tou_biao(yu, fang, chang, kuan)
 	if mu == null:
 		return false  # 无目标：空放不扣冷却
-	mu.jia_zhuang_tai(&"feng_kuang", maxf(0.0, float(neng.dang_zhi(&"chi_xu", dang))))
+	if mu.has_method("jia_zhuang_tai"):
+		# 机械船的疯狂状态限时且受硬控抗性约束，不会无限锁
+		mu.call("jia_zhuang_tai", &"feng_kuang", maxf(0.0, float(neng.dang_zhi(&"chi_xu", dang))))
 	TE.dian_gan(yu.get_parent(), mu.global_position, 1.0)
 	_hua_she_xian(yu, fang, chang, kuan)
 	return true  # 命中即消耗冷却；boss 免疫只影响状态本身
 
 
-static func _zhao_she_xian_tou_biao(yu, fang: Vector2, chang: float, kuan: float) -> YuNpc:
-	# 射线命中：前向投影 0~射程，侧向偏移 ≤ 半宽；取投影最近的一个
-	var zui_jin: YuNpc = null
+static func _zhao_she_xian_tou_biao(yu, fang: Vector2, chang: float, kuan: float) -> Node2D:
+	# 射线命中：前向投影 0~射程，侧向偏移 ≤ 半宽；取投影最近的一个（机械船可被命中）
+	var zui_jin: Node2D = null
 	var zui_jin_qian := INF
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le:
-			continue
+	for npc in _di_ren(yu):
 		var cha: Vector2 = npc.global_position - yu.global_position
 		var qian := cha.dot(fang)
 		if qian < 0.0 or qian > chang:
@@ -252,13 +260,15 @@ static func _ji_guang_jie_suan(yu, neng: NengLi, ids: Array) -> void:
 	shang *= 1.0 + _chong_neng_mei_ceng() * float(_chong_neng_ceng(yu))
 	for id_wen in ids:
 		var mu = instance_from_id(int(id_wen))
-		if mu == null or not is_instance_valid(mu) or not (mu is YuNpc):
+		if mu == null or not is_instance_valid(mu):
 			continue
-		var npc := mu as YuNpc
-		if npc.si_le:
+		if bool(mu.get("si_le")):
 			continue
 		# 契约：无视防御的直伤对首领减半（状态免疫只挡状态，不挡伤害）
-		npc.shou_zhi_jie_shang(shang * (0.5 if npc.shi_boss else 1.0))
+		# 普通鱼按「级」直扣；机械船走自己的 shou_zhi_jie_shang（级→HP，同样先减半）
+		var bi := 0.5 if bool(mu.get("shi_boss")) else 1.0
+		if mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", shang * bi)
 
 
 static func _geng_xin_ji_guang_xian(yu, ids: Array) -> void:
@@ -300,15 +310,12 @@ static func _qing_ji_guang_xian(yu) -> void:
 	yu.set_meta(META_JI_GUANG_XIAN, [])
 
 
-static func _zhao_zui_jin_npc(yu, shu_liang: int) -> Array[YuNpc]:
-	# 选择排序取最近 N 个（场上 NPC 数量不大，不引入额外依赖）
-	var dou: Array[YuNpc] = []
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le:
-			continue
+static func _zhao_zui_jin_npc(yu, shu_liang: int) -> Array[Node2D]:
+	# 选择排序取最近 N 个（普通鱼 + 机械船；场上数量不大，不引入额外依赖）
+	var dou: Array[Node2D] = []
+	for npc in _di_ren(yu):
 		dou.append(npc)
-	var jie_guo: Array[YuNpc] = []
+	var jie_guo: Array[Node2D] = []
 	while jie_guo.size() < shu_liang and not dou.is_empty():
 		var zui_jin_i := 0
 		var zui_jin_ju := INF

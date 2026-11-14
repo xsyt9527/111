@@ -7,8 +7,7 @@ const DI_TU_CHI_CUN := Vector2(4128.0, 2304.0)  # 整图尺寸：只用于全图
 const FANG_JIAN_JIN_BIAO_LIU := 6.0  # 换房后夹到新房内 6px：避免站在边界反复触发
 const FANG_JIAN_HUAN_CHU_SHI_JIAN := 0.12  # 单程淡入/淡出时长：黑场总计约 0.24 秒
 const HUAN_FANG_WU_DI_SHI_JIAN := 0.9  # 换房入场免伤时长：淡入 0.12 秒内也不可被咬
-const REN_LEI_QUAN_TU_OFFSET := Vector2(0.0, -260.0)  # 人类战相机上移：机器船在玩家上方 600px
-const REN_LEI_QUAN_TU_ZOOM := 0.85  # 人类战取景放宽：能看到船与预警圈
+const REN_LEI_QUAN_TU_ZOOM := 0.85  # 人类战取景上限（zoom 越小看得越多）：动态取景不会比这更近
 const QUAN_TU_LIMIT := Rect2(Vector2.ZERO, DI_TU_CHI_CUN)  # 人类战/九图演出的全图 limit
 const SHI_JIAO_MEI_JI := 0.0  # TASK-019：固定探索镜头 1.0 倍，体型增长不再被镜头拉远抵消
 const SHI_JIAO_FENG_DING := 2.0  # 可见范围最多拉到 2 倍（保留旧上限语义；当前系数为 0 时恒 1.0）
@@ -59,6 +58,7 @@ const DI_TU_MING := [
 @onready var boss_label: Label = $BossUI/BossLabel  # Boss 名称（人类战才显示）
 @onready var boss_tiao: ProgressBar = $BossUI/BossTiao  # Boss 血条
 @onready var xiao_xi_label: Label = $XiaoXiUI/XiaoXiLabel  # 大事件横幅（降临/体型不足）
+@onready var xiao_di_tu: XiaoDiTu = $XiaoDiTuUI/XiaoDiTu  # 上帝视角小地图：开局按读档透明度应用
 var ji_qi_chuan: JiQiChuan = null  # 人类战机器船：生成后 Main 持有，胜利判定与血条都读它
 var _jing_sha: YuNpc = null  # 祭坛首领（鲸鲨）：8 分钟内打到残血 → 机器船提前降临
 var _yi_ti_shi_boos := false  # 第 6 分钟的巨影位置提示只弹一次
@@ -98,7 +98,9 @@ func _ready() -> void:
 	camera.global_position = yu.global_position
 	camera.reset_smoothing()
 	_chuang_jian_hei_mu()
-	yu_qun.qie_huan_fang_jian(fang_jian_qu(dang_qian_fang_jian))
+	yu_qun.qie_huan_fang_jian(fang_jian_qu(dang_qian_fang_jian), dang_qian_fang_jian)
+	# 小地图透明度：读档值开局生效（设置面板拖动时另行即时推送）
+	xiao_di_tu.she_tou_ming_du(CunDang.xiao_di_tu_tou_ming)
 
 
 func _shua_tiao_yang_se(tiao: ProgressBar, tian_se: Color) -> void:
@@ -153,14 +155,21 @@ func _process(_delta: float) -> void:
 	# 相机跟随玩家；普通探索时 limit 锁当前房间，人类战临时切全图取景
 	# 演出期间相机由 DiTuPinJieYanChu 接管，这里不要再每帧抢回来
 	if not yan_chu_zhong:
-		camera.global_position = yu.global_position
 		if _zai_ren_lei_zhan():
-			camera.offset = REN_LEI_QUAN_TU_OFFSET
-			camera.zoom = Vector2.ONE * REN_LEI_QUAN_TU_ZOOM
-		else:
+			# 决战取景：先恢复全图 limit，再彻底清零 offset。
+			# 旧版固定 offset=(0,-260) 会让 Camera2D 绕过 limit 上移画面，向上游就看到背景外灰区；
+			# 现在中心由纯函数按地图可见矩形夹取，offset 必须保持 0。
+			_suo_quan_tu()
 			camera.offset = Vector2.ZERO
-			# 普通探索（含船沉后的收尾）恢复当前房间 limit：把人类战借用的全图取景归还
+			# 决战直接取景（关闭平滑）：玩家/船贴地图边缘时避免相机滞后半拍露出灰边
+			camera.position_smoothing_enabled = false
+			_ying_yong_ren_lei_qu_zhuang()
+		else:
+			camera.global_position = yu.global_position
+			camera.offset = Vector2.ZERO
+			# 普通探索（含船沉后的收尾）恢复当前房间 limit 与平滑：把人类战借用的全图取景归还
 			_suo_fang_jian(dang_qian_fang_jian)
+			camera.position_smoothing_enabled = true
 			# 镜头拉远：等级越高看得越远（范围 ×(1+0.1×等级)，Lv.10 封顶 2.0×）
 			# Camera2D.zoom 是放大倍数，>1 看得更少；范围 ×N 等价于 zoom ÷N
 			camera.zoom = Vector2.ONE / _shi_jiao_bei()
@@ -258,14 +267,14 @@ func _on_ren_lei_yan_chu_jie_shu() -> void:
 	if is_instance_valid(_jing_sha):
 		_jing_sha.visible = true
 	_qie_huan_hud(true)
-	# 船在玩家上方 600px：保持全图 limit，交给 _process 的船战取景（offset/zoom）
+	# 演完先恢复全图 limit 并清零 offset（旧版固定 -260 上移就是灰区根因）。
+	# 先让船落位，再按玩家+船实际位置取景；若船因故不存在，取景函数会自动以玩家为中心。
 	_suo_quan_tu()
-	camera.offset = REN_LEI_QUAN_TU_OFFSET
-	camera.position_smoothing_enabled = true
-	camera.zoom = Vector2.ONE * REN_LEI_QUAN_TU_ZOOM
-	camera.global_position = yu.global_position
-	camera.reset_smoothing()
+	camera.offset = Vector2.ZERO
+	camera.position_smoothing_enabled = false
 	_sheng_cheng_ji_qi_chuan()
+	_ying_yong_ren_lei_qu_zhuang()
+	camera.reset_smoothing()
 	_xian_shi_xiao_xi("人类机器船降临！")
 
 
@@ -293,7 +302,8 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	ji_qi_chuan.xue = chuan_xue
 	# 鲸鲨还活着：船降临后先打它 8~10 秒（玩家咬船会立刻转仇）
 	ji_qi_chuan.jing_sha = _jing_sha if is_instance_valid(_jing_sha) and not _jing_sha.si_le else null
-	ji_qi_chuan.position = yu.global_position + Vector2(0, -600)
+	# 悬停高度跟船体常量走（×0.8 后为 480px），不要在 Main 里写死 600
+	ji_qi_chuan.position = yu.global_position + Vector2(0.0, -JiQiChuan.XUAN_FU_GAO_DU)
 	add_child(ji_qi_chuan)
 	ji_qi_chuan.bei_ji_bai.connect(_on_ji_qi_chuan_bei_ji_bai)
 	YinXiang.bo_bgm(&"jue_zhan")  # 决战曲：船降临即换，胜利/失败进结算页再切回深海摇篮
@@ -386,6 +396,59 @@ func _suo_quan_tu() -> void:
 	camera.limit_bottom = int(QUAN_TU_LIMIT.end.y)
 
 
+func ren_lei_qu_zhuang(wan_jia_wei: Vector2, chuan_wei: Vector2, wan_jia_ti_chang: float,
+		chuan_ban_jing: float, shi_kou_chi_cun: Vector2,
+		di_tu_qu: Rect2 = QUAN_TU_LIMIT) -> Dictionary:
+	# 人类战取景纯函数：只算中心与 zoom，不读写节点状态（无头测试可直接调用）。
+	# Camera2D.zoom 是放大倍数：越小看得越多；可见世界矩形 = 视口尺寸 ÷ zoom。
+	# 旧版固定 offset + 固定 zoom 会绕过 limit：中心必须按“可见矩形”夹在地图内。
+	var zhong_xin := (wan_jia_wei + chuan_wei) * 0.5  # 期望中心：玩家与船的中点
+	# 横向需求：玩家体长 ×1.15、船体直径 +160 边距、双方水平错位 + 半个玩家体长
+	var xu_qiu_kuan := maxf(maxf(wan_jia_ti_chang * 1.15, chuan_ban_jing * 2.0 + 160.0),
+			absf(chuan_wei.x - wan_jia_wei.x) + wan_jia_ti_chang * 0.5)
+	# 纵向需求：双方纵向距离 + 玩家体长 ×0.6 + 船体直径 + 240 上下边距
+	var xu_qiu_gao := absf(chuan_wei.y - wan_jia_wei.y) + wan_jia_ti_chang * 0.6 \
+			+ chuan_ban_jing * 2.0 + 240.0
+	# 视口装下需求所需 zoom；0.85 是取景上限（数字更大等于看得更少，船战不需要）
+	var shi_pei_zoom := minf(minf(shi_kou_chi_cun.x / xu_qiu_kuan, shi_kou_chi_cun.y / xu_qiu_gao),
+			REN_LEI_QUAN_TU_ZOOM)
+	# zoom 下限：可见矩形不能超过地图，否则中心怎么夹都会露灰区；+0.01 留 1% 余量
+	var xia_zoom := maxf(shi_kou_chi_cun.x / di_tu_qu.size.x,
+			shi_kou_chi_cun.y / di_tu_qu.size.y) + 0.01
+	# 最低 0.36 是观感下限（再远鱼会太小）；超大视口下 xia_zoom 更高，优先保证不露灰区
+	var zoom := clampf(shi_pei_zoom, maxf(0.36, xia_zoom), REN_LEI_QUAN_TU_ZOOM)
+	# 用最终 zoom 反推可见矩形半宽/半高，把中心夹进地图：整块可见矩形都落在 QUAN_TU_LIMIT 内
+	var ban_kuan := shi_kou_chi_cun.x / (2.0 * zoom)
+	var ban_gao := shi_kou_chi_cun.y / (2.0 * zoom)
+	zhong_xin.x = clampf(zhong_xin.x, di_tu_qu.position.x + ban_kuan, di_tu_qu.end.x - ban_kuan)
+	zhong_xin.y = clampf(zhong_xin.y, di_tu_qu.position.y + ban_gao, di_tu_qu.end.y - ban_gao)
+	return {"zhong_xin": zhong_xin, "zoom": zoom}
+
+
+func _ying_yong_ren_lei_qu_zhuang() -> void:
+	# 运行时胶水：读玩家/船/视口，调用纯函数并落到 Camera2D；船未生成时先以玩家为中心
+	var wan_jia_wei := yu.global_position
+	var chuan_wei := wan_jia_wei
+	var chuan_ban_jing := 0.0
+	if is_instance_valid(ji_qi_chuan):
+		chuan_wei = ji_qi_chuan.global_position
+		chuan_ban_jing = ji_qi_chuan.chuan_ti_ban_jing()
+	var wan_jia_ti_chang := 160.0  # 读不到/异常时回退：保证取景不会因 0 体长缩成一团
+	if is_instance_valid(yu):
+		var ce_ti_chang := yu.ti_chang()
+		if ce_ti_chang > 0.0:
+			wan_jia_ti_chang = ce_ti_chang
+	var shi_kou := get_viewport_rect().size
+	if shi_kou.x <= 0.0 or shi_kou.y <= 0.0:
+		shi_kou = Vector2(1280.0, 720.0)  # 无头/尚未布局时的兜底视口
+	var qu_zhuang := ren_lei_qu_zhuang(wan_jia_wei, chuan_wei, wan_jia_ti_chang,
+			chuan_ban_jing, shi_kou)
+	var zhong_xin: Vector2 = qu_zhuang["zhong_xin"]
+	var zoom: float = qu_zhuang["zoom"]
+	camera.global_position = zhong_xin
+	camera.zoom = Vector2.ONE * zoom
+
+
 func _chuang_jian_hei_mu() -> void:
 	# 黑幕放独立 CanvasLayer（layer=100）：盖住 HUD 与所有 CanvasLayer
 	var ceng := CanvasLayer.new()
@@ -436,7 +499,7 @@ func _qie_huan_fang_jian(pian: int) -> void:
 	# 避免换房把玩家已有的保护截短。
 	if xu_yao_huan_fang_wu_di(yu.wudi, yu.wudi_dingshi.time_left):
 		yu.jin_ru_wudi(HUAN_FANG_WU_DI_SHI_JIAN)
-	yu_qun.qie_huan_fang_jian(qu)
+	yu_qun.qie_huan_fang_jian(qu, dang_qian_fang_jian)
 	_xian_shi_xiao_xi("进入 " + DI_TU_MING[dang_qian_fang_jian])
 	if _zhe_hei != null:
 		var chu := create_tween()

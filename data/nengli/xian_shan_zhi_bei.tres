@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/xian_shan_zhi_bei.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"xian_shan_zhi_bei"
 ming_zi = "仙山之背"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "受伤-30%（本作体型即血量，“只掉肉”换算为掉体型）；吞噬门槛×1.5，更难吞下别人。"
 lai_yuan = "鲸鲨"
 suoshu_xing_tai = &"bei_ming_ju_kun"

@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/lie_kong_bu.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"lie_kong_bu"
 ming_zi = "裂空步"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "瞬移0.5身位，内部CD5s；瞬移后0.3s无敌。"
 lai_yuan = "剑鱼"
 suoshu_xing_tai = &"kong_jian_lie_ren_yu"

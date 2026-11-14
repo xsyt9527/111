@@ -5,6 +5,7 @@ class_name JiQiChuan
 # （tixing / si_le / qu_dian / shou_dao_yao_ji），让 Yu 的自动咬击原样锁定它
 #
 # 2026-11-03 扩展：整船视觉/判定 ×3，攻击范围 ×2。
+# 2026-11-12 TASK-022：整船视觉/受击判定在 ×3 基础上再 ×0.8（倍率 3.0→2.4），攻击范围保持不变。
 # 2026-11-05 改版：只保留素材包里的四招（探照灯扫描/船锚横扫/深水炸弹/鱼叉齐射），
 # 取消血量/时间阶段解锁——开局即四招轮换，出招规则见 _ke_xuan_zhao() 的硬约束。
 
@@ -14,11 +15,20 @@ const ZUI_DA_XUE := 360.0         # 默认血量：A13 起由 Main 按「玩家�
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
 const RUO_DIAN_BEI_LV := 3.0      # 弱点（玻璃舱）伤害倍率
 const GEN_SUI_SU_DU := 110.0      # 横向跟随玩家的速度（px/秒）：慢到玩家能绕到侧面
-const XUAN_FU_GAO_DU := 600.0     # 悬停在玩家上方多高（整船 ×3 后同步抬高，避免船体压住玩家）
+const XUAN_FU_GAO_DU := 480.0     # 悬停在玩家上方多高（TASK-022 船体 ×0.8 后由 600 同步降到 480）
 const GONG_JI_JIAN_GE := 1.0      # 两次攻击的间隔（秒）：高频压迫，靠规则限制连段
-const CHUAN_TI_BEI_LV := 3.0      # 整船视觉倍率（用户 2026-11-03：整体放大 ×3）
-const ZHAO_TI_BEI_LV := 3.8       # 整船招式动画倍率：让动画里的船体约等于普通船贴图 ×3
+const CHUAN_TI_BEI_LV := 2.4      # 整船视觉倍率（TASK-022 用户反馈船太大：3.0 ×0.8 = 2.4）
+const ZHAO_TI_BEI_LV := 3.04      # 整船招式动画倍率：让动画里的船体约等于普通船贴图 ×2.4（3.8 ×0.8）
 const GONG_JI_FAN_WEI_BEI_LV := 2.0  # 所有攻击范围倍率（用户 2026-11-03：范围 ×2）
+
+# —— 技能/被动兼容（2026-11-13 玩家反馈：主动技能与被动必须能作用于机械船）——
+const JI_NENG_MEI_JI_HP := 8.0  # 鱼技能「掉 1 级体型」换算成船体 HP 的比例（约 8 HP/级，可调）
+const KONG_ZHI_DAN_CI_SHANG_XIAN := 1.2  # 单次硬控最长秒数（用户要求 0.6~1.5 秒）
+const KONG_ZHI_KANG_XING_SHI_CHANG := 3.0  # 吃到一次硬控后的内部抗性窗口（秒）
+const KONG_ZHI_KANG_XING_XI_SHU := 0.35  # 抗性窗口内后续硬控时长折扣：防无限锁
+const YUN_XUAN_SHI_CHANG := 1.2  # 电麻/毒晕满条后的失控时长（秒）
+const ZHUANG_TAI_MING: Array[StringName] = [&"shi_hua", &"feng_kuang", &"kong_ju", \
+		&"mei_huo", &"zhi_mang", &"shu_fu"]  # 与 YuNpc 同名的六状态白名单
 
 # —— 深水炸弹 ——
 const ZHA_DAN_BAN_JING := 240.0   # 120 × 2
@@ -97,6 +107,25 @@ var _shou_ji_ji_shi := 0.0  # 受击连击窗口剩余
 var _shou_ji_lian_xu := 0  # 窗口内受击次数
 var _xian_da_jing_sha := 0.0  # 开局优先鲸鲨剩余秒：玩家咬船立即清零
 
+# —— 技能/被动兼容状态（2026-11-13）——
+# 船可以吃控/状态，但用独立时钟与抗性，绝不照搬 YuNpc 的无限锁语义
+var shi_boss := true  # 终局首领：模块据此对百分比/直伤减半；船体仍不可被整吞
+var shi_hua_shou_shang_bei := 1.0  # 石化期间受击倍率：_fang_shi_hua 成功后由玩家技能覆写
+var dian_ma := 0.0  # 电麻条 0~100：满条触发短失控
+var du_yun := 0.0  # 毒晕条 0~100：满条触发短失控
+var _yun_xuan_sheng_yu := 0.0  # 电麻/毒晕失控剩余秒
+var _ding_zhu_sheng_yu := 0.0  # 定身剩余秒（只拉长反应，不追命）
+var _kong_zhi_kang_xing_sheng_yu := 0.0  # 内部抗性剩余秒：窗口内后续硬控按折扣缩时
+var _zhuang_tai_sheng_yu: Dictionary = {}  # 六状态：StringName -> 剩余秒
+var _mei_huo_dian := Vector2.ZERO  # 魅惑记录点（与 YuNpc 同名，模块可能读取）
+var _qiang_suan_sheng_yu := 0.0  # 酸蚀总剩余秒（只对船体掉少量 HP）
+var _qiang_suan_mei_miao := 0.0  # 酸蚀每秒掉几级体型
+var _qiang_suan_ji_shi := 0.0  # 酸蚀结算累计秒
+var _qiang_suan_bei_yao := false  # 酸蚀期间被咬是否 ×2（与 YuNpc 语义一致）
+var _gao_liang_sheng_yu := 0.0  # 被声呐/共生海葵等标记的剩余秒
+var _deng_ji_sheng_yu := 0.0  # 头顶等级牌剩余秒
+var _deng_ji_biao: Label = null  # 头顶等级牌（弱点洞察/声呐选最大体型时给玩家反馈）
+
 # 深水炸弹
 var _zha_dan_dian := Vector2.ZERO
 var _zha_dan_jin_xing := false
@@ -126,19 +155,27 @@ func _ready() -> void:
 	_gong_ji_dingshi.start(GONG_JI_JIAN_GE)  # 降临后 1 秒首次出招
 	_ying_yong_fang_da()
 	_xian_da_jing_sha = XIAN_DA_JING_SHA_SHI_CHANG if _jing_sha_huo() else 0.0
+	# 技能/被动兼容：单独成组，绝不加入 "yu_npc"（避免 NPC 吞噬/刷怪/同类逻辑把船当鱼）
+	add_to_group(&"ji_qi_chuan")
 
 
 func _ying_yong_fang_da() -> void:
-	# 视觉 ×3 + 判定 ×3 + 攻击范围 ×2：都从常量算，不手改场景里的数字
+	# 船体贴图 + 两个受击圆统一按 CHUAN_TI_BEI_LV 缩放（TASK-022 为 ×2.4，视觉与判定一致）；
+	# 攻击范围常量不在这里改（GONG_JI_FAN_WEI_BEI_LV 等保持原值）。
 	_chuan_ti.scale = Vector2.ONE * CHUAN_TI_BEI_LV
 	var ruo_dian: CollisionShape2D = $SheDingQu/CollisionShape2D
 	var chuan_ti_qu: CollisionShape2D = $ChuanTiQu/CollisionShape2D
 	ruo_dian.position = Vector2(0, -20.0 * CHUAN_TI_BEI_LV)
 	chuan_ti_qu.position = Vector2(0, 60.0 * CHUAN_TI_BEI_LV)
 	if ruo_dian.shape is CircleShape2D:
-		ruo_dian.shape.radius = 60.0 * CHUAN_TI_BEI_LV
+		ruo_dian.shape.radius = 60.0 * CHUAN_TI_BEI_LV  # 弱点玻璃舱：基准 60 × 整船倍率
 	if chuan_ti_qu.shape is CircleShape2D:
-		chuan_ti_qu.shape.radius = 150.0 * CHUAN_TI_BEI_LV
+		chuan_ti_qu.shape.radius = 150.0 * CHUAN_TI_BEI_LV  # 船体：基准 150 × 整船倍率
+
+
+func chuan_ti_ban_jing() -> float:
+	# 船体碰撞圆半径（世界像素）：基准 150 × 整船视觉倍率；决战相机用它按船体大小取景
+	return 150.0 * CHUAN_TI_BEI_LV
 
 
 func _process(delta: float) -> void:
@@ -148,17 +185,21 @@ func _process(delta: float) -> void:
 	_geng_xin_chuan_mao(delta)
 	_geng_xin_tan_zhao(delta)
 	_geng_xin_yu_chas(delta)
+	_geng_xin_zhuang_tai(delta)  # 技能状态/酸蚀 DoT：死亡后也收尾，但不重复扣血
 	if si_le or wan_jia == null or not is_instance_valid(wan_jia):
 		return
-	# 慢速跟随：横向追玩家、纵向吊在玩家上方——玩家往上顶才能咬到玻璃舱
-	position.x = move_toward(position.x, wan_jia.position.x, GEN_SUI_SU_DU * delta)
-	position.y = clampf(wan_jia.position.y - XUAN_FU_GAO_DU, 90.0, 2150.0)
 	if _xian_da_jing_sha > 0.0:
 		_xian_da_jing_sha = maxf(0.0, _xian_da_jing_sha - delta)
 	if _shou_ji_ji_shi > 0.0:
 		_shou_ji_ji_shi = maxf(0.0, _shou_ji_ji_shi - delta)
 		if _shou_ji_ji_shi <= 0.0:
 			_shou_ji_lian_xu = 0
+	# 硬控期间不跟随：玩家能靠定身/失控拉开距离；减速（探照灯）仍由玩家侧处理
+	if zai_kong_zhi():
+		return
+	# 慢速跟随：横向追玩家、纵向吊在玩家上方——玩家往上顶才能咬到玻璃舱
+	position.x = move_toward(position.x, wan_jia.position.x, GEN_SUI_SU_DU * delta)
+	position.y = clampf(wan_jia.position.y - XUAN_FU_GAO_DU, 90.0, 2150.0)
 
 
 func _geng_xin_leng_que(delta: float) -> void:
@@ -175,6 +216,234 @@ func qu_dian(bu: String) -> Vector2:
 			return global_position + Vector2(0, 70.0 * CHUAN_TI_BEI_LV)
 
 
+# —— 技能/被动兼容 API（2026-11-13）——
+# 设计口径：
+# 1) 鱼技能的「掉几级体型」不能直接当船 HP：统一走 shou_dao_ji_neng，按 JI_NENG_MEI_JI_HP 换算。
+# 2) 百分比直伤（水刀/裂缝等）走 shou_dao_ji_neng_bai_fen，按 max(xue) 计算并保留首领减半。
+# 3) 技能对船只走普通船体伤害：不叠玻璃舱 ×3，也不重复套护甲（护甲留在玩家主动咬击通道）。
+# 4) 控制类方法都做单次上限 + 内部抗性，避免多个技能把船无限锁死。
+
+func mian_chao_fang() -> float:
+	# 鸭子契约：水平朝向（贴图默认朝右，-1=朝左）；背刺直觉按它判背后
+	var mu := _mu_biao()
+	if mu != null and is_instance_valid(mu) and mu.global_position.x < global_position.x:
+		return -1.0
+	return 1.0
+
+
+func ji_neng_dui_bi_ti_xing() -> float:
+	# 鸭子契约：需要「对方体型」的鱼技能公式（剧毒突刺/冲撞）以玩家体型为参照。
+	# 船真实 tixing=99 只用于「吞不下」，不能拿来算 3% 咬伤，否则单次伤害会爆表。
+	if wan_jia != null and is_instance_valid(wan_jia):
+		return maxf(1.0, wan_jia.tixing)
+	return 9.0
+
+
+func shou_dao_ji_neng(liang: float, lai_yuan = null) -> void:
+	# 主动/被动技能的统一等级伤害入口：liang=「掉几级体型」，1 级 ≈ JI_NENG_MEI_JI_HP HP
+	if si_le or liang <= 0.0:
+		return
+	_kou_xue_ji_neng(liang * JI_NENG_MEI_JI_HP, lai_yuan)
+
+
+func shou_dao_ji_neng_bai_fen(bai_fen: float, lai_yuan = null) -> void:
+	# 百分比直伤入口：按当前最大血量换算；船是首领，固定减半，绝不使用 tixing*百分比
+	if si_le or bai_fen <= 0.0:
+		return
+	_kou_xue_ji_neng(maxf(zui_da_xue, 1.0) * bai_fen / 100.0 * 0.5, lai_yuan)
+
+
+func shou_dao_ji_neng_hp(shang_hai: float, lai_yuan = null) -> void:
+	# 已换算成船体 HP 的入口：咬击联动（撕裂齿/腐肉诱饵）按实际 HP 再折算少量伤害
+	if si_le or shang_hai <= 0.0:
+		return
+	_kou_xue_ji_neng(shang_hai, lai_yuan)
+
+
+func _kou_xue_ji_neng(shang_hai: float, _lai_yuan) -> void:
+	# 技能伤害不触发「1.5 秒 3 次」连击保护：否则多个 DoT 会逼船一直出控制招
+	if si_le or shang_hai <= 0.0:
+		return
+	xue = maxf(0.0, xue - shang_hai)
+	_shan_guang()
+	_xian_da_jing_sha = 0.0  # 被技能打也算转仇
+	if xue <= 0.0:
+		_chen_mo()
+
+
+func shou_zhi_jie_shang(liang: float, lai_yuan = null) -> void:
+	# 兼容 YuNpc 的「无视防御直伤」：调用方给的是「级」，这里换 HP；不经过护甲/反甲/记仇
+	if si_le or liang <= 0.0:
+		return
+	_kou_xue_ji_neng(liang * JI_NENG_MEI_JI_HP, lai_yuan)
+
+
+func jia_dian_ma(liang: float) -> void:
+	# 兼容 YuNpc：电麻条 0~100；满条进入短失控（不是永久麻痹）
+	if si_le or not is_inside_tree() or liang <= 0.0 or _yun_xuan_sheng_yu > 0.0:
+		return
+	dian_ma = minf(100.0, dian_ma + liang)
+	if dian_ma >= 100.0:
+		_chu_fa_yun_xuan()
+
+
+func jia_du_yun(liang: float) -> void:
+	# 兼容 YuNpc：毒晕条 0~100；满条进入短失控
+	if si_le or not is_inside_tree() or liang <= 0.0 or _yun_xuan_sheng_yu > 0.0:
+		return
+	du_yun = minf(100.0, du_yun + liang)
+	if du_yun >= 100.0:
+		_chu_fa_yun_xuan()
+
+
+func _chu_fa_yun_xuan() -> void:
+	# 电麻/毒晕统一失控：清零两条、单次限时、并写入内部抗性
+	var shi := _suan_kong_zhi_shi_chang(YUN_XUAN_SHI_CHANG)
+	_yun_xuan_sheng_yu = maxf(_yun_xuan_sheng_yu, shi)
+	dian_ma = 0.0
+	du_yun = 0.0
+	_kong_zhi_kang_xing_sheng_yu = KONG_ZHI_KANG_XING_SHI_CHANG
+
+
+func _suan_kong_zhi_shi_chang(shi_chang: float) -> float:
+	# 硬控单次上限 + 抗性窗口折扣：防止电麻流/定身流无限锁船
+	var shi := minf(shi_chang, KONG_ZHI_DAN_CI_SHANG_XIAN)
+	if _kong_zhi_kang_xing_sheng_yu > 0.0:
+		shi *= KONG_ZHI_KANG_XING_XI_SHU
+	return maxf(0.0, shi)
+
+
+func ding_zhu(shi_chang: float) -> void:
+	# 兼容 YuNpc 的定身：只拉长出招反应，不阻止玩家拉开距离；同样受单次上限/抗性约束
+	if si_le or not is_inside_tree() or shi_chang <= 0.0:
+		return
+	var shi := _suan_kong_zhi_shi_chang(shi_chang)
+	if shi <= 0.0:
+		return
+	_ding_zhu_sheng_yu = maxf(_ding_zhu_sheng_yu, shi)
+	_kong_zhi_kang_xing_sheng_yu = KONG_ZHI_KANG_XING_SHI_CHANG
+
+
+func jia_zhuang_tai(ming: StringName, shi_chang: float, mu_dian := Vector2.ZERO) -> bool:
+	# 兼容 YuNpc 的六状态白名单；船不免疫状态，但每个状态都限时，并共享硬控抗性
+	if si_le or not is_inside_tree() or shi_chang <= 0.0 or not ZHUANG_TAI_MING.has(ming):
+		return false
+	var shi := _suan_kong_zhi_shi_chang(shi_chang)
+	if shi <= 0.0:
+		return false
+	_zhuang_tai_sheng_yu[ming] = maxf(float(_zhuang_tai_sheng_yu.get(ming, 0.0)), shi)
+	if ming == &"mei_huo":
+		_mei_huo_dian = mu_dian  # 鬼火引路要记录魅惑点（与 YuNpc 契约一致）
+	_kong_zhi_kang_xing_sheng_yu = KONG_ZHI_KANG_XING_SHI_CHANG
+	return true
+
+
+func you_zhuang_tai(ming: StringName) -> bool:
+	return float(_zhuang_tai_sheng_yu.get(ming, 0.0)) > 0.0
+
+
+func zhuang_tai_sheng_yu(ming: StringName) -> float:
+	if ming == &"ding_zhu":
+		return _ding_zhu_sheng_yu
+	return float(_zhuang_tai_sheng_yu.get(ming, 0.0))
+
+
+func zai_kong_zhi() -> bool:
+	# 硬控口径：失控/定身/石化/疯狂/恐惧/麻痹视觉；魅惑/致盲只停攻击，不拦跟随
+	return _yun_xuan_sheng_yu > 0.0 or _ding_zhu_sheng_yu > 0.0 \
+		or you_zhuang_tai(&"shi_hua") or you_zhuang_tai(&"feng_kuang") \
+		or you_zhuang_tai(&"kong_ju") or you_zhuang_tai(&"shu_fu")
+
+
+func jia_qiang_suan(shi_chang: float, mei_miao: float, bei_yao := true) -> bool:
+	# 兼容 YuNpc：酸蚀不掉「级」，按每秒折算船体 HP；总时长仍受调用方控制
+	if si_le or not is_inside_tree() or shi_chang <= 0.0 or mei_miao <= 0.0:
+		return false
+	_qiang_suan_sheng_yu = maxf(_qiang_suan_sheng_yu, shi_chang)
+	_qiang_suan_mei_miao = maxf(_qiang_suan_mei_miao, mei_miao)
+	_qiang_suan_bei_yao = bool(_qiang_suan_bei_yao) or bei_yao
+	return true
+
+
+func diao_rou(shu: int, mei_kuai_ti_xing := 0.3, _fu_rou_sheng_yu := 0.0, _xi_yin_ban_jing := 0.0) -> void:
+	# 兼容 YuNpc 掉肉：船不掉肉块，把「块数 × 每块等级」折算成少量 HP，保证被动有实际输出
+	if si_le or shu <= 0 or mei_kuai_ti_xing <= 0.0:
+		return
+	shou_dao_ji_neng(float(shu) * mei_kuai_ti_xing, null)
+
+
+func tui_kai(fang: Vector2, ju_li: float) -> void:
+	# 兼容 YuNpc 击退：机械船太大，只吃「极轻位移」（每次最多 3px，约等于漩涡 10px/秒），
+	# 不会被单次技能推飞/推出战场；方向由调用方给，零向量忽略。
+	if si_le or ju_li <= 0.0 or fang.length_squared() < 0.0001:
+		return
+	position += fang.normalized() * minf(ju_li * 0.1, 3.0)
+
+
+func bei_chi(_ji_yu_jiang_li := true, _chi_zhe = null) -> void:
+	# 兼容 YuNpc 吞噬：船体不可整吞；留空实现让模块鸭子调用不报错
+	pass
+
+
+func shi_fang_gao_liang(shi_chang: float) -> void:
+	# 兼容 YuNpc 标记：本体画一圈黄环，告诉玩家技能已选中船
+	if si_le or shi_chang <= 0.0:
+		return
+	_gao_liang_sheng_yu = maxf(_gao_liang_sheng_yu, shi_chang)
+	queue_redraw()
+
+
+func xian_shi_deng_ji(shi_chang: float) -> void:
+	# 兼容 YuNpc：头顶显示 Lv.99，配合弱点洞察/声呐的「选最大体型」反馈
+	if si_le or shi_chang <= 0.0:
+		return
+	_deng_ji_sheng_yu = maxf(_deng_ji_sheng_yu, shi_chang)
+	if _deng_ji_biao == null or not is_instance_valid(_deng_ji_biao):
+		_deng_ji_biao = Label.new()
+		_deng_ji_biao.position = Vector2(-26.0, -180.0)
+		_deng_ji_biao.z_index = 5
+		add_child(_deng_ji_biao)
+	_deng_ji_biao.text = "Lv.%d" % int(round(tixing))
+	_deng_ji_biao.visible = true
+
+
+func _geng_xin_zhuang_tai(delta: float) -> void:
+	# 所有技能状态与 DoT 的独立时钟：抗性先减，再减各控制/标记
+	_kong_zhi_kang_xing_sheng_yu = maxf(0.0, _kong_zhi_kang_xing_sheng_yu - delta)
+	_yun_xuan_sheng_yu = maxf(0.0, _yun_xuan_sheng_yu - delta)
+	_ding_zhu_sheng_yu = maxf(0.0, _ding_zhu_sheng_yu - delta)
+	var guo_qi: Array = []
+	for ming in _zhuang_tai_sheng_yu.keys():
+		var sheng := float(_zhuang_tai_sheng_yu[ming]) - delta
+		if sheng <= 0.0:
+			guo_qi.append(ming)
+		else:
+			_zhuang_tai_sheng_yu[ming] = sheng
+	for ming in guo_qi:
+		_zhuang_tai_sheng_yu.erase(ming)
+	# 电麻/毒晕条缓慢回落：不让一次没打满的积累永久挂账
+	if _yun_xuan_sheng_yu <= 0.0:
+		dian_ma = maxf(0.0, dian_ma - 15.0 * delta)
+		du_yun = maxf(0.0, du_yun - 15.0 * delta)
+	if _qiang_suan_sheng_yu > 0.0 and not si_le:
+		_qiang_suan_sheng_yu = maxf(0.0, _qiang_suan_sheng_yu - delta)
+		_qiang_suan_ji_shi += delta
+		while _qiang_suan_ji_shi >= 1.0 and not si_le:
+			_qiang_suan_ji_shi -= 1.0
+			_kou_xue_ji_neng(_qiang_suan_mei_miao * JI_NENG_MEI_JI_HP, null)
+		if _qiang_suan_sheng_yu <= 0.0:
+			_qiang_suan_mei_miao = 0.0
+			_qiang_suan_ji_shi = 0.0
+			_qiang_suan_bei_yao = false
+	if _gao_liang_sheng_yu > 0.0:
+		_gao_liang_sheng_yu = maxf(0.0, _gao_liang_sheng_yu - delta)
+		queue_redraw()
+	if _deng_ji_sheng_yu > 0.0:
+		_deng_ji_sheng_yu = maxf(0.0, _deng_ji_sheng_yu - delta)
+		if _deng_ji_sheng_yu <= 0.0 and _deng_ji_biao != null and is_instance_valid(_deng_ji_biao):
+			_deng_ji_biao.visible = false
+
+
 func shou_dao_yao_ji(shang_hai: float, _lai_yuan = null, bu := "shen") -> void:
 	# 鸭子类型契约：玩家咬一口。咬玻璃舱 ×3，咬船体 ×1
 	if si_le:
@@ -183,6 +452,11 @@ func shou_dao_yao_ji(shang_hai: float, _lai_yuan = null, bu := "shen") -> void:
 	# A13：非致命区（船体）护甲减伤 30%；玻璃舱是弱点，不吃护甲
 	if bu != "zhi_ming":
 		shang_hai *= 1.0 - SHU_ZHI.CHUAN_HU_JIA_JIAN_SHANG
+	# 技能/被动兼容：石化期间只对玩家来源加伤；酸蚀期间被咬 ×2（与 YuNpc 语义一致）
+	if you_zhuang_tai(&"shi_hua") and _lai_yuan is Node and (_lai_yuan as Node).is_in_group(&"player"):
+		shang_hai *= shi_hua_shou_shang_bei
+	if _qiang_suan_sheng_yu > 0.0 and _qiang_suan_bei_yao:
+		shang_hai *= 2.0
 	xue = maxf(0.0, xue - shang_hai * xi_shu)
 	_shan_guang()
 	# 玩家咬船 = 立刻转仇：开局先打鲸鲨的窗口作废，后续招式回到玩家身上
@@ -225,6 +499,15 @@ func _chen_mo() -> void:
 	_tan_zhao_jin_xing = false
 	_yu_chas.clear()
 	_zheng_zai_chu_zhao = false
+	# 技能兼容状态收尾：死亡后不再吃控/DoT，等级牌也隐藏
+	_zhuang_tai_sheng_yu.clear()
+	_yun_xuan_sheng_yu = 0.0
+	_ding_zhu_sheng_yu = 0.0
+	_qiang_suan_sheng_yu = 0.0
+	_gao_liang_sheng_yu = 0.0
+	_deng_ji_sheng_yu = 0.0
+	if _deng_ji_biao != null and is_instance_valid(_deng_ji_biao):
+		_deng_ji_biao.visible = false
 	queue_redraw()
 	bei_ji_bai.emit()
 	var bu_jian := create_tween()
@@ -245,6 +528,10 @@ func _on_gong_ji_timeout() -> void:
 		return
 	# 失控保护：整拍跳过，等玩家能动了再出招（设计允许“跳过”）
 	if ZhangBen.zai_kong_zhi():
+		_gong_ji_dingshi.start(GONG_JI_JIAN_GE)
+		return
+	# 技能控制/致盲/魅惑：本拍不出招；状态都由限时/抗性收尾，不会无限锁
+	if zai_kong_zhi() or you_zhuang_tai(&"zhi_mang") or you_zhuang_tai(&"mei_huo"):
 		_gong_ji_dingshi.start(GONG_JI_JIAN_GE)
 		return
 	var zhao := _ke_xuan_zhao()
@@ -592,6 +879,12 @@ func _geng_xin_yu_chas(delta: float) -> void:
 # —— 绘制（预警/范围提示） ——
 
 func _draw() -> void:
+	# 技能标记：声呐/猎手直觉/共生海葵选中船时，画一圈黄环（纯表现）
+	if _gao_liang_sheng_yu > 0.0:
+		draw_arc(Vector2.ZERO, chuan_ti_ban_jing() + 16.0, 0.0, TAU, 64, Color(1.0, 0.86, 0.3, 0.45), 4.0)
+	if _qiang_suan_sheng_yu > 0.0:
+		# 酸蚀：淡绿腐蚀环，提示 DoT 正在作用
+		draw_arc(Vector2.ZERO, chuan_ti_ban_jing() + 8.0, 0.0, TAU, 64, Color(0.55, 1.0, 0.4, 0.30), 3.0)
 	if _zha_dan_jin_xing:
 		var dian := to_local(_zha_dan_dian)
 		var jin_du := 1.0 - _zha_dan_sheng_yu / ZHA_DAN_YU_JING

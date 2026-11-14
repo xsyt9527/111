@@ -134,15 +134,23 @@ static func _ke_yong(yu) -> bool:
 	return is_instance_valid(yu) and yu.is_inside_tree() and yu.get_parent() != null
 
 
-static func _zui_jin_npc(yu, ban_jing: float, tiao_guo_boss := false) -> YuNpc:
-	# 玩家周围最近的目标；孢子类技能按设计排除首领
-	var zui: YuNpc = null
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：普通鱼 + 机械船；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group("yu_npc")
+	return []
+
+
+static func _zui_jin_npc(yu, ban_jing: float, tiao_guo_boss := false) -> Node2D:
+	# 玩家周围最近的目标；孢子类技能按设计排除「普通鱼首领」，但机械船仍可被选中
+	var zui: Node2D = null
 	var zui_ju := INF
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le or not is_instance_valid(npc):
+	for npc in _di_ren(yu):
+		if bool(npc.get("si_le")):
 			continue
-		if tiao_guo_boss and npc.shi_boss:
+		if tiao_guo_boss and npc is YuNpc and bool(npc.get("shi_boss")):
 			continue
 		var ju: float = yu.global_position.distance_to(npc.global_position)
 		if ju <= ban_jing and ju < zui_ju:
@@ -151,13 +159,12 @@ static func _zui_jin_npc(yu, ban_jing: float, tiao_guo_boss := false) -> YuNpc:
 	return zui
 
 
-static func _zui_jin_npc_wei(yu, wei: Vector2, ban_jing: float, yi_yao: Dictionary) -> YuNpc:
-	# 指定点周围最近、且本拍还没被别的光点咬过的目标
-	var zui: YuNpc = null
+static func _zui_jin_npc_wei(yu, wei: Vector2, ban_jing: float, yi_yao: Dictionary) -> Node2D:
+	# 指定点周围最近、且本拍还没被别的光点咬过的目标（机械船同样可被光点咬）
+	var zui: Node2D = null
 	var zui_ju := INF
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le or not is_instance_valid(npc):
+	for npc in _di_ren(yu):
+		if bool(npc.get("si_le")):
 			continue
 		if yi_yao.has(npc.get_instance_id()):
 			continue
@@ -246,9 +253,11 @@ static func _geng_xin_ying_ju(yu, neng: NengLi, delta: float) -> void:
 			if mu == null:
 				continue
 			yi_yao[mu.get_instance_id()] = true
-			# 契约：无视防御的直伤对首领减半
-			mu.shou_zhi_jie_shang(shang * (0.5 if mu.shi_boss else 1.0))
-			mu.jia_dian_ma(dian)
+			# 契约：无视防御的直伤对首领减半；机械船由自己的入口把「级」换 HP
+			if mu.has_method("shou_zhi_jie_shang"):
+				mu.call("shou_zhi_jie_shang", shang * (0.5 if bool(mu.get("shi_boss")) else 1.0))
+			if mu.has_method("jia_dian_ma"):
+				mu.call("jia_dian_ma", dian)
 			TE_XIAO.fang_dian(yu.get_parent(), mu.global_position, 0.35)
 	yu.set_meta(MK_YING_JU_JI_SHI, ji)
 
@@ -299,11 +308,13 @@ static func _geng_xin_bao_zi(yu, neng: NengLi, delta: float) -> void:
 		return
 	sheng = maxf(0.0, sheng - delta)
 	yu.set_meta(MK_BAO_ZI_SHENG_YU, sheng)
-	var mu := instance_from_id(mu_id) as YuNpc
+	var mu := instance_from_id(mu_id) as Node2D
 	var mu_wei: Vector2 = yu.get_meta(MK_BAO_ZI_MU_WEI, yu.global_position)
-	if mu == null or not is_instance_valid(mu) or mu.si_le or mu.shi_boss:
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")) \
+			or (mu is YuNpc and bool(mu.get("shi_boss"))):
 		# 目标死亡/失效：孢子立即结束。云只由「被孢子吸到最小体型」那条出口生成，
-		# 别的死因不该算「吸死」，不触发星传播散
+		# 别的死因不该算「吸死」，不触发星传播散。
+		# 普通鱼首领按设计免疫孢子；机械船可吃 DoT（伤害减半，永不触发整吞出口）。
 		_qing_bao_zi(yu)
 		return
 	if sheng <= 0.0:
@@ -317,21 +328,23 @@ static func _geng_xin_bao_zi(yu, neng: NengLi, delta: float) -> void:
 	var hui := neng.dang_zhi(&"fu_shu_zhi", 1)
 	while ji <= 0.0:
 		ji += ji_ge
-		if not is_instance_valid(mu) or mu.si_le:
+		if not is_instance_valid(mu) or bool(mu.get("si_le")):
 			break
-		mu.shou_zhi_jie_shang(shang)
+		var shang_ci := shang * (0.5 if bool(mu.get("shi_boss")) else 1.0)
+		if mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", shang_ci)
 		ZhangBen.hui_ti_xing(hui)  # 吸血链：吸多少级就回多少级体型
 		if not is_instance_valid(mu):
 			_qing_bao_zi(yu)
 			return
-		if mu.si_le:
+		if bool(mu.get("si_le")):
 			_qing_bao_zi(yu)
 			return
-		if mu.tixing <= YuNpc.ZUI_XIAO_TI_XING + 0.0001:
+		if mu is YuNpc and (mu as YuNpc).tixing <= YuNpc.ZUI_XIAO_TI_XING + 0.0001:
 			# 本作普通 NPC 直伤只会夹到最小体型；吸到最小即视为「被孢子吸死」，
 			# 走无奖励离场出口，让被动「星传播散」能真正触发
 			mu_wei = mu.global_position
-			mu.bei_chi(false, null)
+			(mu as YuNpc).bei_chi(false, null)
 			_bao_zi_si_wang(yu, mu_wei)
 			_qing_bao_zi(yu)
 			return
@@ -394,11 +407,12 @@ static func _shi_fang_deng_li_zi(yu, neng: NengLi, dang: int) -> bool:
 	if mu_lie.is_empty():
 		return false
 	for node in mu_lie:
-		var mu := node as YuNpc
-		if mu == null or mu.si_le:
+		var mu := node as Node2D
+		if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
 			continue
-		# 无视减伤/反甲直扣；首领减半（契约：boss 免疫状态、无视防御类减半）
-		mu.shou_zhi_jie_shang(shang * (0.5 if mu.shi_boss else 1.0))
+		# 无视减伤/反甲直扣；首领减半（机械船由自己的入口换 HP）
+		if mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", shang * (0.5 if bool(mu.get("shi_boss")) else 1.0))
 	_she_xian_biao_yan(yu, qi, fang, chang, ban_kuan)
 	_ji_lu_gui_ji(yu, qi, fang, chang, ban_kuan)
 	return true
@@ -408,12 +422,9 @@ static func _she_xian_ming_zhong(yu, qi: Vector2, fang: Vector2, chang: float, b
 	# 点到线段的矩形判定：前向投影在射程内 + 侧向偏移在射线半宽内
 	var jie: Array = []
 	var ce := Vector2(-fang.y, fang.x)
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le or not is_instance_valid(npc):
-			continue
-		var cha := npc.global_position - qi
-		var qian := cha.dot(fang)
+	for npc in _di_ren(yu):
+		var cha: Vector2 = npc.global_position - qi
+		var qian: float = cha.dot(fang)
 		if qian < 0.0 or qian > chang:
 			continue
 		if absf(cha.dot(ce)) > ban_kuan:
@@ -518,18 +529,16 @@ static func _geng_xin_gui_ji(yu, neng: NengLi, delta: float) -> void:
 static func _gui_ji_shang(yu, qi: Vector2, fang: Vector2, chang: float, ban_kuan: float, shang: float) -> void:
 	# 与主动射线同一套线段判定：穿过路径的都要掉肉
 	var ce := Vector2(-fang.y, fang.x)
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le or not is_instance_valid(npc):
-			continue
-		var cha := npc.global_position - qi
-		var qian := cha.dot(fang)
+	for npc in _di_ren(yu):
+		var cha: Vector2 = npc.global_position - qi
+		var qian: float = cha.dot(fang)
 		if qian < 0.0 or qian > chang:
 			continue
 		if absf(cha.dot(ce)) > ban_kuan:
 			continue
-		# 契约：无视防御的直伤对首领减半
-		npc.shou_zhi_jie_shang(shang * (0.5 if npc.shi_boss else 1.0))
+		# 契约：无视防御的直伤对首领减半；机械船由自己的入口换 HP
+		if npc.has_method("shou_zhi_jie_shang"):
+			npc.call("shou_zhi_jie_shang", shang * (0.5 if bool(npc.get("shi_boss")) else 1.0))
 
 
 static func _gui_ji_qing_li(yu) -> void:
@@ -577,9 +586,6 @@ static func _geng_xin_yun(yu, neng: NengLi, delta: float) -> void:
 
 
 static func _yun_du(yu, wei: Vector2, ban: float, du: float) -> void:
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
-		if npc == null or npc.si_le or not is_instance_valid(npc):
-			continue
-		if wei.distance_to(npc.global_position) <= ban:
-			npc.jia_du_yun(du)
+	for npc in _di_ren(yu):
+		if wei.distance_to(npc.global_position) <= ban and npc.has_method("jia_du_yun"):
+			npc.call("jia_du_yun", du)

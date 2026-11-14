@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/gong_sheng_hai_kui.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"gong_sheng_hai_kui"
 ming_zi = "共生海葵"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "每4s自动对3身位内最近敌人放毒雾：毒晕20%+每秒掉肉0.1级×3s。"
 lai_yuan = "蓑鲉"
 suoshu_xing_tai = &"shan_hu_ji_guan_shou"

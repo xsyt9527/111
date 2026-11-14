@@ -9,10 +9,14 @@ var _ben_mian_zan_ting := false  # 暂停是否本面板所设：三选一弹窗
 
 # 「角色」能力一览：入口按钮与整块面板都用代码建，场景文件只保留原设置项
 # 数据全部来自账本：主动读 zhu_dong_zu，被动读 bei_dong_ceng，NengLi 资源按 id 反查
+# 例外：上帝视角是开局常驻规则，固定展示且不占被动层数，不读 bei_dong_ceng
 var _jiao_se_an_niu: Button = null  # 设置主菜单里的「角色」入口
 var _jiao_se_fu_ceng: Control = null  # 全屏遮罩层：挡住背后设置按钮，关掉后回到设置
 var _jiao_se_guan_bi: Button = null  # 能力一览的关闭按钮
 var _jiao_se_nei_lie: VBoxContainer = null  # 可滚动内容列：每次打开清空重建
+var _di_tu_tou_ming_hang: HBoxContainer = null  # 「地图透明度」整行（代码建在设置主菜单里）
+var _di_tu_tou_ming_hua: HSlider = null  # 透明度滑条：0.3~1.0，步进 0.05
+var _di_tu_tou_ming_zhi: Label = null  # 百分比读数（「85%」这种）
 
 @onready var she_zhi_an_niu: Button = $SheZhiAnNiu
 @onready var mian_ban: PanelContainer = $SheZhiMianBan
@@ -24,13 +28,14 @@ var _jiao_se_nei_lie: VBoxContainer = null  # 可滚动内容列：每次打开�
 
 func _ready() -> void:
 	mian_ban.visible = false  # 平时藏着：点"设置"才现身
-	mian_ban.offset_top = -164.0  # 多一个「角色」按钮：面板加高，避免第四行被裁掉
-	mian_ban.offset_bottom = 164.0
+	mian_ban.offset_top = -200.0  # 「角色」+「地图透明度」两行：面板再加高，避免新行被裁掉
+	mian_ban.offset_bottom = 200.0
 	she_zhi_an_niu.pressed.connect(_on_she_zhi_an_niu)
 	zan_ting.pressed.connect(_on_zan_ting_an_niu)
 	ji_xu.pressed.connect(_on_ji_xu_an_niu)
 	fan_hui.pressed.connect(_on_fan_hui_an_niu)
 	_jian_jiao_se_ru_kou()
+	_jian_di_tu_tou_ming_hang()
 	_jian_jiao_se_mian_ban()
 
 
@@ -44,6 +49,84 @@ func _jian_jiao_se_ru_kou() -> void:
 	_jiao_se_an_niu.pressed.connect(_on_jiao_se_an_niu)
 	mian_ban_lie.add_child(_jiao_se_an_niu)
 	mian_ban_lie.move_child(_jiao_se_an_niu, fan_hui.get_index())  # 排在返回之前
+
+
+func _jian_di_tu_tou_ming_hang() -> void:
+	# 「地图透明度」行：代码建（不改 SheZhi.tscn），插在「角色」之后、「返回主界面并保存」之前
+	_di_tu_tou_ming_hang = HBoxContainer.new()
+	_di_tu_tou_ming_hang.name = "DiTuTouMingLie"
+	_di_tu_tou_ming_hang.add_theme_constant_override("separation", 10)
+
+	var biao_ti := Label.new()
+	biao_ti.name = "DiTuTouMingLabel"
+	biao_ti.text = "地图透明度"
+	biao_ti.add_theme_font_size_override("font_size", 16)
+	biao_ti.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_di_tu_tou_ming_hang.add_child(biao_ti)
+
+	_di_tu_tou_ming_hua = HSlider.new()
+	_di_tu_tou_ming_hua.name = "DiTuTouMingHua"
+	_di_tu_tou_ming_hua.min_value = 0.3
+	_di_tu_tou_ming_hua.max_value = 1.0
+	_di_tu_tou_ming_hua.step = 0.05
+	_di_tu_tou_ming_hua.value = 0.85  # 与 CunDang 默认一致；打开面板时再按读档值同步
+	_di_tu_tou_ming_hua.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_di_tu_tou_ming_hua.size_flags_vertical = Control.SIZE_SHRINK_CENTER  # HBox 里纵向居中
+	_di_tu_tou_ming_hua.value_changed.connect(_on_di_tu_tou_ming_bian)
+	_di_tu_tou_ming_hua.drag_ended.connect(_on_di_tu_tou_ming_tuo_dong_jie_shu)
+	_di_tu_tou_ming_hang.add_child(_di_tu_tou_ming_hua)
+
+	_di_tu_tou_ming_zhi = Label.new()
+	_di_tu_tou_ming_zhi.name = "DiTuTouMingZhi"
+	_di_tu_tou_ming_zhi.custom_minimum_size = Vector2(52, 0)
+	_di_tu_tou_ming_zhi.text = "85%"
+	_di_tu_tou_ming_zhi.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_di_tu_tou_ming_zhi.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_di_tu_tou_ming_zhi.add_theme_font_size_override("font_size", 16)
+	_di_tu_tou_ming_hang.add_child(_di_tu_tou_ming_zhi)
+
+	mian_ban_lie.add_child(_di_tu_tou_ming_hang)
+	# 此时「角色」已在「返回」之前：再插到返回的序号上，顺序即 角色 → 地图透明度 → 返回
+	mian_ban_lie.move_child(_di_tu_tou_ming_hang, fan_hui.get_index())
+
+
+func _tong_bu_di_tu_tou_ming() -> void:
+	# 打开面板：从 /root/CunDang 同步上次保存的透明度；set_value_no_signal 不反触发 value_changed
+	if _di_tu_tou_ming_hua == null:
+		return
+	var cun_dang := get_node_or_null("/root/CunDang")
+	if cun_dang == null:
+		return
+	var zhi := clampf(float(cun_dang.get("xiao_di_tu_tou_ming")), 0.3, 1.0)
+	_di_tu_tou_ming_hua.set_value_no_signal(zhi)
+	_shua_xin_di_tu_tou_ming_wen_zi(zhi)
+
+
+func _on_di_tu_tou_ming_bian(zhi: float) -> void:
+	# 拖动即时生效：写设置缓存 + 刷新百分比，再把新值推给当前 Main 的小地图
+	_shua_xin_di_tu_tou_ming_wen_zi(zhi)
+	var cun_dang := get_node_or_null("/root/CunDang")
+	if cun_dang != null:
+		cun_dang.set("xiao_di_tu_tou_ming", clampf(zhi, 0.3, 1.0))
+	var fu_qin := get_parent()
+	if fu_qin == null:
+		return  # 独立测试场景/未入树：没有 Main，安静跳过即时应用
+	var xiao_di_tu = fu_qin.get_node_or_null("XiaoDiTuUI/XiaoDiTu")
+	if xiao_di_tu != null and xiao_di_tu.has_method("she_tou_ming_du"):
+		xiao_di_tu.she_tou_ming_du(zhi)
+
+
+func _on_di_tu_tou_ming_tuo_dong_jie_shu(_gai_dong: bool) -> void:
+	# 松手才落盘：拖动过程连发 value_changed，不能每格都写文件
+	var cun_dang := get_node_or_null("/root/CunDang")
+	if cun_dang != null:
+		cun_dang.call("xie_she_zhi")
+
+
+func _shua_xin_di_tu_tou_ming_wen_zi(zhi: float) -> void:
+	# 百分比读数：0.3~1.0 → 30%~100%（步进 0.05，四舍五入到整百分比）
+	if _di_tu_tou_ming_zhi != null:
+		_di_tu_tou_ming_zhi.text = "%d%%" % int(round(zhi * 100.0))
 
 
 func _jian_jiao_se_mian_ban() -> void:
@@ -117,6 +200,7 @@ func _on_she_zhi_an_niu() -> void:
 	_ben_mian_zan_ting = not get_tree().paused  # 打开前没暂停 → 这份暂停是本面板设的
 	get_tree().paused = true
 	mian_ban.visible = true
+	_tong_bu_di_tu_tou_ming()  # 打开时同步上次保存的透明度与百分比
 	if _jiao_se_fu_ceng != null:
 		_jiao_se_fu_ceng.visible = false  # 每次从主设置进入都先收回能力页
 
@@ -150,10 +234,6 @@ func _shua_xin_jiao_se() -> void:
 		if int(ZhangBen.bei_dong_ceng[bian_hao]) > 0:
 			bei_dong_shu += 1
 
-	if zhu_dong_shu == 0 and bei_dong_shu == 0:
-		_jiao_se_nei_lie.add_child(_zuo_kong_zhuang_tai())
-		return
-
 	# 主动区：数组本身就是当前装备组；档位从账本读（升过档显示 2/3 档）
 	_jiao_se_nei_lie.add_child(_zuo_fen_qu_biao_ti("主动技能"))
 	if zhu_dong_shu == 0:
@@ -168,10 +248,12 @@ func _shua_xin_jiao_se() -> void:
 				lei_xing += " · %d/%d 档" % [dang, neng.zui_da_dang]
 			_jiao_se_nei_lie.add_child(_zuo_neng_li_ka(neng, lei_xing, false))
 
-	# 被动区：账本只存 id → 层数，NengLi 资源从本局获得历史/数据目录反查
+	# 被动区：上帝视角卡片固定第一张（常驻规则，不占层数）；其余被动照旧从账本反查
+	# 即使本局一个主动/被动都没有，也必须显示这张卡和被动分区，不能走空状态提前返回
 	_jiao_se_nei_lie.add_child(_zuo_fen_qu_biao_ti("被动能力"))
+	_jiao_se_nei_lie.add_child(_zuo_shang_di_shi_jiao_ka())
 	if bei_dong_shu == 0:
-		_jiao_se_nei_lie.add_child(_zuo_kong_wen_an("暂无被动能力"))
+		_jiao_se_nei_lie.add_child(_zuo_kong_wen_an("暂无其他被动能力"))
 	else:
 		for bian_hao in ZhangBen.bei_dong_ceng:
 			var ceng := int(ZhangBen.bei_dong_ceng[bian_hao])
@@ -299,6 +381,83 @@ func _zuo_tu_biao_kuai(neng: NengLi) -> Control:
 	return kuang
 
 
+func _zuo_shang_di_shi_jiao_ka() -> Control:
+	# 「上帝视角（永久被动）」固定卡：常驻规则，不读 ZhangBen.bei_dong_ceng、不占被动层数
+	# 排版沿用 _zuo_neng_li_ka：左图标块 + 右名称/类型/描述，青色底配金色点缀
+	var ka := PanelContainer.new()
+	ka.name = "ShangDiShiJiaoKa"
+	ka.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var ka_shi := StyleBoxFlat.new()
+	ka_shi.bg_color = Color(0.06, 0.16, 0.2, 0.95)          # 深青底：和普通被动卡区分
+	ka_shi.border_color = Color(1.0, 0.78, 0.16, 0.55)      # 金色细描边
+	ka_shi.set_border_width_all(1)
+	ka_shi.set_corner_radius_all(8)
+	ka.add_theme_stylebox_override("panel", ka_shi)
+
+	var heng := HBoxContainer.new()
+	heng.add_theme_constant_override("separation", 14)
+	ka.add_child(heng)
+
+	# 左图标块：没有专属美术，用「图」字占位（青色字 + 金色描边）
+	var kuang := Control.new()
+	kuang.name = "TuBiaoKuai"
+	kuang.custom_minimum_size = Vector2(96, 96)
+	kuang.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	heng.add_child(kuang)
+	var tu_di := PanelContainer.new()
+	tu_di.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tu_di.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var tu_shi := StyleBoxFlat.new()
+	tu_shi.bg_color = Color(0.05, 0.24, 0.28, 0.95)
+	tu_shi.border_color = Color(1.0, 0.78, 0.16, 0.45)
+	tu_shi.set_border_width_all(1)
+	tu_shi.set_corner_radius_all(8)
+	tu_di.add_theme_stylebox_override("panel", tu_shi)
+	kuang.add_child(tu_di)
+	var tu := Label.new()
+	tu.text = "图"
+	tu.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tu.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	tu.add_theme_font_size_override("font_size", 34)
+	tu.add_theme_color_override("font_color", Color(0.55, 0.95, 1, 1))
+	tu.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tu_di.add_child(tu)
+
+	# 右侧文字列：名称 + 类型 + 长期生效的规则描述
+	var wen_zi := VBoxContainer.new()
+	wen_zi.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wen_zi.add_theme_constant_override("separation", 6)
+	heng.add_child(wen_zi)
+
+	var tou := HBoxContainer.new()
+	tou.add_theme_constant_override("separation", 10)
+	wen_zi.add_child(tou)
+	var ming := Label.new()
+	ming.name = "MingZi"
+	ming.text = "上帝视角"
+	ming.add_theme_font_size_override("font_size", 24)
+	ming.add_theme_color_override("font_color", Color(0.93, 0.97, 1, 1))
+	ming.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tou.add_child(ming)
+	var lei := Label.new()
+	lei.name = "LeiXing"
+	lei.text = "永久被动"
+	lei.add_theme_font_size_override("font_size", 16)
+	lei.add_theme_color_override("font_color", Color(1.0, 0.86, 0.35, 0.95))  # 金色类型标
+	lei.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	tou.add_child(lei)
+
+	var miao := Label.new()
+	miao.name = "MiaoShu"
+	miao.text = "九宫格海图 · 实时标记首领/鱼/植物/自己"
+	miao.add_theme_font_size_override("font_size", 16)
+	miao.add_theme_color_override("font_color", Color(0.82, 0.87, 0.93, 0.95))
+	miao.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	miao.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wen_zi.add_child(miao)
+	return ka
+
+
 func _zuo_fen_qu_biao_ti(wen: String) -> Label:
 	# 分区标题：主动/被动各一行，和卡面浅蓝文字同一视觉语言
 	var biao := Label.new()
@@ -317,29 +476,6 @@ func _zuo_kong_wen_an(wen: String) -> Label:
 	biao.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	biao.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return biao
-
-
-func _zuo_kong_zhuang_tai() -> Control:
-	# 全局空状态：主动、被动都没有时只显示这一块
-	var kuang := VBoxContainer.new()
-	kuang.name = "KongZhuangTai"
-	kuang.custom_minimum_size = Vector2(0, 220)
-	kuang.alignment = BoxContainer.ALIGNMENT_CENTER
-	kuang.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var zhu := Label.new()
-	zhu.name = "KongZhu"
-	zhu.text = "本局还没有获得能力"
-	zhu.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	zhu.add_theme_font_size_override("font_size", 24)
-	kuang.add_child(zhu)
-	var ci := Label.new()
-	ci.text = "升级后从三选一里选一个能力，这里会随本局进度更新。"
-	ci.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ci.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	ci.add_theme_font_size_override("font_size", 16)
-	ci.add_theme_color_override("font_color", Color(0.7, 0.8, 0.9, 0.9))
-	kuang.add_child(ci)
-	return kuang
 
 
 func _on_jiao_se_guan_bi() -> void:

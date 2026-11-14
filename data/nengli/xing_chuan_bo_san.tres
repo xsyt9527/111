@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/xing_chuan_bo_san.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"xing_chuan_bo_san"
 ming_zi = "星传播散"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "被诅咒孢子吸死的敌人原地留下孢子云4s，半径1.5身位内每秒+20%毒晕条。"
 lai_yuan = "钻光鱼"
 suoshu_xing_tai = &"zu_zhou_xing_chen_chong"

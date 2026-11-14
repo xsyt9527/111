@@ -1,0 +1,24 @@
+{
+  "task_id": "TASK-025",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "数据层与表现层分离：未加载房只存 Dictionary，不建节点",
+    "记录是唯一权威：当前房实体每帧回写记录",
+    "无节点轻量模拟：虚拟游动与互吃只改字典",
+    "Godot 节点生命周期与 add_child 时序：恢复载荷必须在 add_child 前写入",
+    "雷达按数据模型绘制：XiaoDiTu 读 YuQun.fang_jian_ji_lu 而不依赖场景树实体"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "未加载房保底 60% 与 20 秒 35% 互吃的实机减员观感",
+    "雷达每帧 315~405 个点在手机上的帧率",
+    "停刷期换房只换房号不加载的体验是否需要另开任务"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

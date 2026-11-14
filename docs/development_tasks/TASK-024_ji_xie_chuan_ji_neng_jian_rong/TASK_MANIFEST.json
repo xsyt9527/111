@@ -1,0 +1,322 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-024",
+  "task_spec_version": 1,
+  "slug": "ji-xie-chuan-ji-neng-jian-rong",
+  "title": "主动技能与被动对机械船统一生效，并自动通关评估难度",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+  "objective": "按用户 2026-11-13 反馈，让玩家的主动技能与被动对机械船（JiQiChuan）统一生效：船补齐鸭子契约（受伤入口、等级→HP 换算、百分比直伤、控制状态、DoT、标记、吞噬 no-op），玩家技能统一扫描普通鱼与机械船，并按船体 HP 口径结算；控制类加单次上限与抗性窗口避免无限锁船。随后用自动通关探针完整跑一局，记录结果、时长、等级/体型、受伤、技能/卡牌与船战数据，如实评估难度。",
+  "audit_freshness": {
+    "audited_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "environment_checked_at": "2026-11-13T09:30:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "JiQiChuan 受伤/控制/血量接口变化",
+      "Yu.di_ren_lie 敌人扫描接口变化",
+      "zhuan_shu_ku 进化模块的技能结算入口变化",
+      "ZHANG_BEN 体型/等级伤害口径变化",
+      "主场景或机械船战流程变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "机械船战斗兼容层",
+      "玩家主动技能目标扫描",
+      "玩家被动对船触发",
+      "自动通关难度探针（临时验证工具）"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/ji_qi_chuan.gd",
+      "res://scripts/yu.gd",
+      "res://scripts/zhuan_shu_ku/*.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-017（人类机械船战）",
+      "TASK-019（体型/伤害/技能范围）",
+      "TASK-022（机械船视觉与判定 ×0.8）",
+      "TASK-023（小地图与设置收尾，回归不相关）"
+    ],
+    "consumed_interfaces": [
+      "JiQiChuan.tixing / si_le / xue / zui_da_xue / shi_boss",
+      "YuNpc 鸭子契约：shou_dao_yao_ji / shou_zhi_jie_shang / jia_dian_ma / jia_du_yun / jia_zhuang_tai / jia_qiang_suan / diao_rou / ding_zhu / tui_kai / bei_chi",
+      "ZhangBen.dang_qian_ti_xing / zhu_dong_zu / zhao_bei_dong / bei_dong_zhi",
+      "ZhuAN_SHU 进化模块每帧 geng_xin 与技能施放入口"
+    ],
+    "provided_interfaces": [
+      "JiQiChuan.di_ren_lie 可扫描的统一敌人标识（&\"ji_qi_chuan\" 组 + shi_boss）",
+      "JiQiChuan.ji_neng_dui_bi_ti_xing() 技能公式参照体型",
+      "JiQiChuan.shou_dao_ji_neng(liang) 等级伤害→HP 换算入口",
+      "JiQiChuan.shou_dao_ji_neng_bai_fen(bai_fen) 百分比直伤入口",
+      "JiQiChuan.shou_dao_ji_neng_hp(shang_hai) 已换算 HP 入口",
+      "JiQiChuan 控制状态 API（jia_zhuang_tai / jia_qiang_suan / ding_zhu / jia_dian_ma / jia_du_yun）",
+      "Yu.di_ren_lie() 普通鱼 + 机械船去重敌人列表",
+      "Yu._zhuan_shu_shang_npc / zhan_dou_bai_fen_shang 统一结算入口"
+    ],
+    "emitted_signals": [
+      "无新增全局信号"
+    ],
+    "received_signals": [
+      "沿用 ZhangBen.ti_xing_bian_hua / jie_shu / si_wang",
+      "沿用技能施放与进化模块既有调用链"
+    ],
+    "shared_state": [
+      "不把机械船加入 yu_npc 组，避免刷怪/吞噬/同类 AI 把船当鱼",
+      "技能控制有单次上限与内部抗性窗口，避免多技能无限锁船"
+    ],
+    "registered_shared_changes": [
+      "JiQiChuan 新增 ji_qi_chuan 组、兼容方法、状态计时与 HP 换算常量",
+      "Yu 新增 di_ren_lie/_ji_neng_dui_bi_ti/zhan_dou_bai_fen_shang/_zhuan_shu_shang_npc 并替换技能扫描",
+      "六份进化模块的敌人扫描改用玩家统一敌人列表"
+    ],
+    "conflict_hotspots": [
+      "scripts/yu.gd 与 TASK-019/022 的伤害/技能范围改动",
+      "scripts/ji_qi_chuan.gd 与 TASK-022 的视觉/判定改动",
+      "zhuan_shu_ku 各模块与玩家主脚本的鸭子调用契约",
+      "tests/ce_panding.gd 既有断言只追加不改写"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "自动通关探针完整跑完一局并输出指标"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/ji_qi_chuan.gd",
+    "scripts/yu.gd",
+    "scripts/zhuan_shu_ku/*.gd",
+    "tests/ce_panding.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/she_zhi.gd",
+    "scripts/cun_dang.gd",
+    "scripts/main.gd",
+    "scenes/Main.tscn",
+    "project.godot",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-024_ji_xie_chuan_ji_neng_jian_rong/**",
+    "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/**",
+    "tests/tong_guan_probe.gd",
+    "tests/tong_guan_probe.gd.uid",
+    "tests/tong_guan_probe.tscn"
+  ],
+  "forbidden_systems": [
+    "把机械船加入 yu_npc 组或复用 NPC 刷怪/吞噬",
+    "改普通鱼/玩家的既有伤害与掉落数值",
+    "改技能范围/体型曲线平衡",
+    "Autoload 新增与存档 schema 改动",
+    "删除或改写 tests/ 既有断言",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "机械船鸭子契约与 HP 换算通道",
+      "behavior": "JiQiChuan 加入独立组 &\"ji_qi_chuan\" 并标记 shi_boss=true；新增兼容 YuNpc 的受伤/控制/DoT/标记 API：等级伤害按 JI_NENG_MEI_JI_HP=8 换算 HP、百分比直伤按 max(xue)×百分比×0.5、控制状态有单次上限 1.2 秒与 3 秒抗性窗口、酸蚀/电麻/毒晕/石化/魅惑等按船体限时生效、击退只允许极轻位移、吞噬为 no-op。保证船的 si_le/xue/zui_da_xue/沉没流程不变。",
+      "main_concept": "鸭子类型契约：只要对象暴露相同方法名，玩家技能无需分支即可作用于船",
+      "files": [
+        "scripts/ji_qi_chuan.gd"
+      ],
+      "automated_checks": [
+        "headless 解析无 ERROR",
+        "ce_panding 断言船组/shi_boss/HP 换算/控制上限与抗性"
+      ],
+      "manual_checks": [
+        "F5 船战中放控制技能，船有短失控但不被永久锁死"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "玩家技能与被动统一扫描与结算",
+      "behavior": "Yu 新增 di_ren_lie() 合并 yu_npc 与 ji_qi_chuan（按实例去重、过滤 si_le）；所有主动/被动扫描改用该列表。等级伤害统一走 _zhuan_shu_shang_npc（船→shou_dao_ji_neng），百分比直伤统一走 zhan_dou_bai_fen_shang（船→shou_dao_ji_neng_bai_fen），需要「对方体型」的公式通过 ji_neng_dui_bi_ti_xing 取玩家体型参照；六份进化模块同步改用玩家统一敌人列表；控制/DoT/标记/击退按船提供的鸭子方法安全调用。",
+      "main_concept": "统一结算入口：不同对象用不同伤害单位（鱼=体型级、船=HP），由入口做单位换算",
+      "files": [
+        "scripts/yu.gd",
+        "scripts/zhuan_shu_ku/*.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 断言技能对船造成 HP 伤害且不出现 tixing=99 爆表",
+        "ce_panding 断言百分比技能对船按 max HP 减半结算"
+      ],
+      "manual_checks": [
+        "F5 船战中主动技能命中船、被动持续触发、船血条下降"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "回归断言、自动通关与门禁文档",
+      "behavior": "只追加 tests/ce_panding.gd 断言覆盖船兼容；用临时 tests/tong_guan_probe 自动完整跑一局（胜利/失败/死亡、时长、等级/体型、受伤、技能/卡牌/进化次数、船出现/血量/战斗时长），据实评估难度；跑 headless --import 与 tests/pao_pi.bat 八步门禁；更新 TASK_INDEX、引擎词总表、学习路线与 Word 词表；写实现报告并清理临时探针与日志。",
+      "main_concept": "自动探针只能当机器人下限参考，不能等同真人试玩",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "validate_task.py 输出 VALID",
+        "check_task_scope.py check 零违规",
+        "tong_guan_probe 输出 TONG_GUAN|RESULT 与完整指标"
+      ],
+      "manual_checks": [
+        "用户 F5 实机复核技能对船生效",
+        "用户按探针指标判断难度是否合适"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释鸭子类型契约如何让同一技能作用于鱼与船",
+      "能说明「体型级伤害」与「HP 伤害」两种单位如何换算",
+      "能解释控制单次上限与抗性窗口为何必要",
+      "能解释自动探针的局限：只能证明可通关，不代表真人难度体验"
+    ],
+    "concepts": [
+      "鸭子类型与 has_method 契约",
+      "Godot 节点组查询",
+      "伤害单位换算",
+      "状态机与冷却/抗性",
+      "自动探针与难度评估"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "机械船仍是 Main 下独立节点，只补鸭子方法与状态计时；玩家技能通过组扫描发现船，不新增 Autoload、不改主场景结构。",
+    "current_tree": "Main.tscn -> JiQiChuan(Node2D, group 无) + Yu(Node2D, group yu) + YuQun；Yu/zhuan_shu_ku 技能只扫 group yu_npc",
+    "target_tree": "Main.tscn -> JiQiChuan(Node2D, group ji_qi_chuan, shi_boss=true) + Yu + YuQun；Yu.di_ren_lie 合并 yu_npc 与 ji_qi_chuan 并去重；zhuan_shu_ku 模块经玩家统一入口结算",
+    "ownership": [
+      "JiQiChuan 拥有船体 HP/状态/控制兼容层",
+      "Yu 拥有敌人列表与统一结算入口",
+      "zhuan_shu_ku 各模块拥有自身技能行为，只消费统一入口",
+      "ZhangBen 保持体型/等级伤害账本权威"
+    ],
+    "signal_contracts": [
+      "无新增信号；沿用既有直接方法调用与账本信号"
+    ],
+    "loading_policy": [
+      "不新增资源加载；船仍在人类战流程实例化"
+    ],
+    "state_persistence": [
+      "船体状态只活在单局节点内，不写存档"
+    ],
+    "animation_dependencies": [
+      "受击闪白/高亮/等级标记沿用船体既有表现",
+      "控制状态只影响船招计时，不锁玩家输入"
+    ],
+    "lifecycle_checks": [
+      "船沉没后 di_ren_lie 不再返回该船",
+      "船离场/重开后状态计时清零",
+      "技能对普通鱼行为与旧版一致"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规",
+    "tong_guan_probe 完整跑完一局并输出 TONG_GUAN|RESULT"
+  ],
+  "required_manual_checks": [
+    "F5 船战中主动技能命中船且船血条下降",
+    "F5 被动（近身麻/共生海葵/酸蚀等）对船持续生效",
+    "F5 控制技能只短时控船，不无限锁死",
+    "F5 普通鱼战斗与旧版一致",
+    "用户确认自动探针难度结论是否可接受"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "无外部参考实现；按项目既有 YuNpc 鸭子契约与 Godot 节点组机制实现",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "等级→HP 换算常量 8 是否让技能伤害在船战中过强/过弱，需要自动探针与 F5 实测",
+      "控制抗性窗口 3 秒/系数 0.35 的手感需要实机确认"
+    ],
+    "needs_comparison": false,
+    "rationale": "本任务是让既有技能系统扩展到机械船，没有外部行为基准；按 YuNpc 现有方法名与玩家伤害口径实现即可。"
+  },
+  "scope_change_triggers": [
+    "需要把机械船并入 yu_npc 组",
+    "需要改普通鱼/玩家既有伤害数值",
+    "需要新增 Autoload 或改存档 schema",
+    "需要改主场景顶层结构",
+    "自动探针无法跑完整局需要改游戏流程"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-13T17:00:00+08:00",
+    "exact_user_text": "我觉得技能被动什么的应该要能对机械船使用。然后，你运行游戏自己通关一次，试试难度够不够",
+    "canonical_example": "我觉得技能被动什么的应该要能对机械船使用。然后，你运行游戏自己通关一次，试试难度够不够"
+  }
+}

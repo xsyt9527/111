@@ -138,39 +138,38 @@ static func _geng_lie_kou(yu, neng: NengLi, delta: float) -> void:
 	if sheng <= 0.0:
 		_free_tu(yu, META_LIE_KOU_TU)
 		return
-	var shu: SceneTree = yu.get_tree()
-	if shu == null:
-		return
 	var ban := _ban_jing_shijie(yu, neng, 1)
 	var shi := _zhi(neng, &"shu_zhi")  # 束缚时长（2 秒）
 	var ji_lu: Array = yu.get_meta(META_LIE_KOU_MU_BIAO, [])
-	for node in shu.get_nodes_in_group("yu_npc"):
-		var mu := node as YuNpc
-		if mu == null or not is_instance_valid(mu) or mu.si_le:
-			continue
-		var jian := mu.get_instance_id()
+	for mu in _di_ren(yu):
+		var jian: int = int(mu.get_instance_id())
 		if ji_lu.has(jian):
-			continue  # 本次陷阱每条鱼只咬住一次：不被每帧刷新成无限束缚
+			continue  # 本次陷阱每个目标只咬住一次：不被每帧刷新成无限束缚
 		if yu.global_position.distance_to(mu.global_position) > ban:
 			continue
-		if mu.jia_zhuang_tai(&"shu_fu", shi):
-			ji_lu.append(jian)  # boss 免疫会返回 false，自然不进记录
+		if mu.has_method("jia_zhuang_tai") and bool(mu.call("jia_zhuang_tai", &"shu_fu", shi)):
+			ji_lu.append(jian)  # 船走限时/抗性；普通鱼首领免疫会返回 false
 			yu.set_meta(META_LIE_KOU_MU_BIAO, ji_lu)
 
 
 # ---- 主动：摄魂 ----
 
 static func _fang_she_hun(yu, neng: NengLi, dang: int) -> bool:
-	# 吸 5 身位内最近的非首领：目标掉体型、玩家回体型 + 固定经验
+	# 吸 5 身位内最近的非首领鱼；机械船可被摄魂（只吃减半直伤，不回体型/经验、不整吞）
 	var ban := _ban_jing_shijie(yu, neng, dang)
 	var mu := _zhao_zui_jin(yu, ban, true)
 	if mu == null:
 		return false  # 没有可吸目标：空放不扣冷却
 	var kou := _zhi(neng, &"shu_zhi", dang)
 	var jing := int(round(_zhi(neng, &"fu_shu_zhi", dang)))
-	mu.shou_zhi_jie_shang(kou)
-	ZhangBen.hui_ti_xing(kou)
-	ZhangBen.jia_jing_yan(jing)
+	if mu is YuNpc:
+		(mu as YuNpc).shou_zhi_jie_shang(kou)
+		ZhangBen.hui_ti_xing(kou)
+		ZhangBen.jia_jing_yan(jing)
+	else:
+		# 机械船：首领减半；等级伤害由船换算入口换 HP
+		if mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", kou * 0.5)
 	_shan_xi_hun_xian(yu, mu)
 	return true
 
@@ -179,19 +178,20 @@ static func _fang_she_hun(yu, neng: NengLi, dang: int) -> bool:
 
 static func _ji_lu_yao_qian(yu, shu_ju: Dictionary) -> void:
 	# 咬伤倍率查询在扣血之前：趁这一刻记下目标咬前体型，供 yao_zhong 补差
-	var mu := shu_ju.get("mu") as YuNpc
-	if mu == null or not is_instance_valid(mu) or mu.si_le:
+	# 机械船也记录（其 tixing 固定 99，补差会稳定折算成每口最低伤害）
+	var mu := shu_ju.get("mu") as Node2D
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
 		return
 	var biao: Dictionary = yu.get_meta(META_GANG_TIE_YAO_QIAN, {})
 	if biao.size() > 128:
 		biao.clear()  # 极限兜底：不让快照表随着一局无限增长
-	biao[mu.get_instance_id()] = float(mu.tixing)
+	biao[mu.get_instance_id()] = float(mu.get("tixing"))
 	yu.set_meta(META_GANG_TIE_YAO_QIAN, biao)
 
 
 static func _yao_zhong_gang_tie(yu, neng: NengLi, shu_ju: Dictionary) -> void:
-	var mu := shu_ju.get("mu") as YuNpc
-	if mu == null or not is_instance_valid(mu) or mu.si_le:
+	var mu := shu_ju.get("mu") as Node2D
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
 		return
 	var biao: Dictionary = yu.get_meta(META_GANG_TIE_YAO_QIAN, {})
 	var jian := mu.get_instance_id()
@@ -200,11 +200,12 @@ static func _yao_zhong_gang_tie(yu, neng: NengLi, shu_ju: Dictionary) -> void:
 	var qian := float(biao[jian])
 	biao.erase(jian)
 	yu.set_meta(META_GANG_TIE_YAO_QIAN, biao)
-	var yi_diao := qian - float(mu.tixing)
+	var yi_diao := qian - float(mu.get("tixing"))
 	var zui_shao := _zhi(neng, &"fu_shu_zhi")  # 每次至少 0.2 级
 	if yi_diao + 0.0001 < zui_shao:
-		# 只补差额：咬得狠的照原伤害，bite 不够 0.2 的补到 0.2；boss 也照补（掉肉不整吞）
-		mu.shou_zhi_jie_shang(zui_shao - yi_diao)
+		# 只补差额：咬得狠的照原伤害，bite 不够 0.2 的补到 0.2；机械船由自己的入口换 HP
+		if mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", zui_shao - yi_diao)
 
 
 # ---- 被动：棘刺口内 ----
@@ -222,37 +223,33 @@ static func _geng_ji_ci(yu, neng: NengLi, delta: float) -> void:
 
 static func _ji_ci_sun_xie(yu, neng: NengLi) -> void:
 	# 每拍对「被玩家束缚」的目标额外直伤：裂口陷阱记录表 + 全场 shu_fu 状态扫描
-	var shu: SceneTree = yu.get_tree()
-	if shu == null:
-		return
 	var mu_biao := {}
 	var ji_lu: Array = yu.get_meta(META_LIE_KOU_MU_BIAO, [])
 	for jian in ji_lu:
 		var dong = instance_from_id(int(jian))
-		if dong is YuNpc and is_instance_valid(dong) and not dong.si_le \
-				and dong.you_zhuang_tai(&"shu_fu"):
+		if is_instance_valid(dong) and dong.has_method("you_zhuang_tai") \
+				and not bool(dong.get("si_le")) and bool(dong.call("you_zhuang_tai", &"shu_fu")):
 			mu_biao[jian] = dong
-	for node in shu.get_nodes_in_group("yu_npc"):
-		var mu := node as YuNpc
-		if mu == null or not is_instance_valid(mu) or mu.si_le:
-			continue
-		if mu.you_zhuang_tai(&"shu_fu"):
+	for mu in _di_ren(yu):
+		if mu.has_method("you_zhuang_tai") and bool(mu.call("you_zhuang_tai", &"shu_fu")):
 			mu_biao[mu.get_instance_id()] = mu
 	var liang := _zhi(neng, &"shu_zhi")  # 每 0.5 秒 0.1 级，即每秒 0.2
 	for jian in mu_biao:
 		var mu = mu_biao[jian]
-		if is_instance_valid(mu) and not mu.si_le:
-			mu.shou_zhi_jie_shang(liang)
+		if is_instance_valid(mu) and not bool(mu.get("si_le")) and mu.has_method("shou_zhi_jie_shang"):
+			mu.call("shou_zhi_jie_shang", liang)
 
 
 # ---- 被动：恐惧之口 ----
 
 static func _yao_zhong_kong_ju(_yu, neng: NengLi, shu_ju: Dictionary) -> void:
-	var mu := shu_ju.get("mu") as YuNpc
-	if mu == null or not is_instance_valid(mu) or mu.si_le:
+	var mu := shu_ju.get("mu") as Node2D
+	if mu == null or not is_instance_valid(mu) or bool(mu.get("si_le")):
 		return
-	# 恐惧 2 秒：AI 反向逃窜；boss 免疫由 jia_zhuang_tai 内部挡住
-	mu.jia_zhuang_tai(&"kong_ju", _zhi(neng, &"shu_zhi"))
+	# 恐惧 2 秒：普通鱼 AI 反向逃窜（boss 免疫由 jia_zhuang_tai 内部挡住）；
+	# 机械船接受限时恐惧（1.2 秒上限 + 硬控抗性），不会无限锁
+	if mu.has_method("jia_zhuang_tai"):
+		mu.call("jia_zhuang_tai", &"kong_ju", _zhi(neng, &"shu_zhi"))
 
 
 # ---- 公共小工具 ----
@@ -260,6 +257,15 @@ static func _yao_zhong_kong_ju(_yu, neng: NengLi, shu_ju: Dictionary) -> void:
 static func _zhi(neng: NengLi, jian: StringName, dang := 1) -> float:
 	# 专属技单档：统一从 NengLi 字段读，档位表留空
 	return neng.dang_zhi(jian, dang)
+
+
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：普通鱼 + 机械船；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group("yu_npc")
+	return []
 
 
 static func _sheng_yu(yu, jian: StringName) -> float:
@@ -278,18 +284,12 @@ static func _shen_wei_jing(yu, bei: float) -> float:
 	return yu._shen_wei() * bei
 
 
-static func _zhao_zui_jin(yu, ban_jing: float, tiao_boss: bool) -> YuNpc:
-	# 最近的存活 NPC：摄魂用，boss 跳过
-	var shu: SceneTree = yu.get_tree()
-	if shu == null:
-		return null
-	var zui: YuNpc = null
+static func _zhao_zui_jin(yu, ban_jing: float, tiao_boss: bool) -> Node2D:
+	# 最近的存活目标：摄魂用；「跳过首领」只跳普通鱼首领，机械船仍可被摄魂
+	var zui: Node2D = null
 	var zui_ju := INF
-	for node in shu.get_nodes_in_group("yu_npc"):
-		var mu := node as YuNpc
-		if mu == null or not is_instance_valid(mu) or mu.si_le:
-			continue
-		if tiao_boss and mu.shi_boss:
+	for mu in _di_ren(yu):
+		if tiao_boss and mu is YuNpc and bool(mu.get("shi_boss")):
 			continue
 		var ju: float = yu.global_position.distance_to(mu.global_position)
 		if ju <= ban_jing and ju < zui_ju:
@@ -330,7 +330,7 @@ static func _shan_quan(yu, jian: StringName, ban_jing_shijie: float,
 	return gen
 
 
-static func _shan_xi_hun_xian(yu, mu: YuNpc) -> void:
+static func _shan_xi_hun_xian(yu, mu: Node2D) -> void:
 	# 摄魂连线：从玩家嘴到目标，0.35 秒淡出；父场景节点自毁
 	var fu: Node = yu.get_parent()
 	if fu == null or not yu.is_inside_tree() or not is_instance_valid(mu):

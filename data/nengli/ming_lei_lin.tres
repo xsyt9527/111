@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="NengLi" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NengLi" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/neng_li.gd" id="1_neng_li"]
+[ext_resource type="Texture2D" path="res://assets/sucai/tubiao/ming_lei_lin.png" id="2_tu_biao"]
 
 [resource]
 script = ExtResource("1_neng_li")
 bian_hao = &"ming_lei_lin"
 ming_zi = "鸣雷鳞"
+tu_biao = ExtResource("2_tu_biao")
 miao_shu = "全部电系效果范围+30%，电麻积累+25%。"
 lai_yuan = "电鳗"
 suoshu_xing_tai = &"lei_yuan_ming_she"

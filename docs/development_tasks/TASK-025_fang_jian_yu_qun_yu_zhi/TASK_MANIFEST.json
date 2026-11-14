@@ -1,0 +1,314 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-025",
+  "task_spec_version": 1,
+  "slug": "fang-jian-yu-qun-yu-zhi",
+  "title": "房间预置鱼群：取消换房整批刷新，雷达显示九房 NPC 与后台互吃",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+  "objective": "按用户 2026-11-14 要求，禁用换房时清空旧房并整批补满的行为：九宫格 9 个房间各预置固定数量鱼群记录（未加载房只存数据，不建节点）；进入房间时按记录位置与成长状态实例化；雷达显示九格 NPC 点（当前房稍大稍亮、其他房略小略暗）；未加载房按轻量虚拟模拟游动与 NPC 互吃；当前房保留原有 Dingshi 补鱼节奏，后台不按固定配额持续补鱼。",
+  "audit_freshness": {
+    "audited_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "environment_checked_at": "2026-11-14T13:40:00+08:00",
+    "engine_executable_source": "GODOT_4_7_BIN",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "YuQun 刷鱼/换房/互吃接口变化",
+      "YuNpc _ready 初始化字段或出屏回收规则变化",
+      "XiaoDiTu NPC 标记绘制或图例文本变化",
+      "Main 换房流程或房间矩形变化",
+      "存档 schema 或 Autoload 列表变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "九宫格房间鱼群记录与生命周期",
+      "换房保存/加载",
+      "未加载房间轻量虚拟模拟",
+      "雷达九房 NPC 标记数据源"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/yu_qun.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/xiao_di_tu.gd",
+      "res://scripts/main.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-020（九宫格房间与换房流程）",
+      "TASK-021（上帝视角小地图）",
+      "TASK-023（雷达面板与透明度）",
+      "TASK-024（机械船兼容，回归不相关）"
+    ],
+    "consumed_interfaces": [
+      "Main.dang_qian_fang_jian / fang_jian_qu(pian) / qu_yu_pian(wei)",
+      "YuQun._chou_yu_zhong / dang_qian_shang_xian / Dingshi / _hu_chi_ju_ding",
+      "YuNpc 字段 tixing / sudu / fangxiang / deng_ji_nei / jing_yan_nei / si_le / shi_boss / _ying_she_ti_xing",
+      "ShengJiBiao 隐藏经验升级阈值",
+      "XiaoDiTu._qu_zhu_jie_mian / _dao_di_tu / _hua_dian / _yu_se_biao_ji"
+    ],
+    "provided_interfaces": [
+      "YuQun.qie_huan_fang_jian(qu: Rect2, pian: int = -1)",
+      "YuQun.fang_jian_ji_lu(pian: int) -> Array[Dictionary]（内部记录只读）",
+      "YuQun.qu_pian(qu: Rect2) -> int",
+      "YuQun._chu_shi_hua_jiu_fang()",
+      "YuNpc.you_yu_qun_guan_li: bool",
+      "YuNpc.zai_ru_ti_xing(ti, nei_deng, nei_jing_yan)"
+    ],
+    "emitted_signals": [
+      "无新增全局信号"
+    ],
+    "received_signals": [
+      "沿用 Dingshi.timeout 与 ZhangBen.ju_nei_shi_jian 时钟"
+    ],
+    "shared_state": [
+      "九房鱼群记录只存在 YuQun 单局内，不写存档、不新增 Autoload",
+      "当前房实体与记录双态：记录是唯一权威，实体每帧回写",
+      "Main 下的鲸鲨 Boss 与教学脚本预排布鱼不属于 YuQun 记录，换房不得误杀"
+    ],
+    "registered_shared_changes": [
+      "YuNpc 新增 you_yu_qun_guan_li 开关，仅关闭托管鱼的相机出屏回收",
+      "Main 两处换房调用传入房号"
+    ],
+    "conflict_hotspots": [
+      "scripts/yu_qun.gd 与 TASK-020 换房刷鱼逻辑",
+      "scripts/yu_npc.gd 的 _process 回收与 TASK-019/024 状态/AI 改动",
+      "scripts/xiao_di_tu.gd 的 _hu_npc 与 TASK-023 雷达绘制",
+      "tests/ce_panding.gd 旧换房/欢迎鱼断言必须改写而非留下假绿"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/pao_pi.bat 八步全绿",
+      "validate_task.py 输出 VALID",
+      "check_task_scope.py check 零违规",
+      "临时机器人探针完整跑完一局并给出难度参考"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/yu_qun.gd",
+    "scripts/yu_npc.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/main.gd",
+    "tests/ce_panding.gd",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-025_fang_jian_yu_qun_yu_zhi/**",
+    "tests/_tmp_fang_jian_probe.gd",
+    "tests/_tmp_fang_jian_probe.gd.uid",
+    "tests/_tmp_fang_jian_probe.tscn"
+  ],
+  "forbidden_systems": [
+    "新增 Autoload 或修改存档 schema",
+    "改玩家/普通鱼既有伤害、体型曲线与掉落平衡",
+    "把机械船、鲸鲨 Boss、教学鱼纳入九房鱼群记录",
+    "删除或弱化雷达既有图例与既有断言",
+    "改主场景顶层结构或换房黑场流程",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "九房记录数据层与首次惰性初始化",
+      "behavior": "YuQun 新增 9 组鱼记录；首次 qie_huan_fang_jian 时按 dang_qian_shang_xian 生成每房固定数量记录（房内 40px 边距），当前房加载为实体；记录保存鱼种、位置、朝向、游速、体型、隐藏等级/经验与实体引用。",
+      "main_concept": "数据层与表现层分离：未加载房间只保留 Dictionary 记录，不实例化节点",
+      "files": [
+        "scripts/yu_qun.gd"
+      ],
+      "automated_checks": [
+        "headless 解析无 ERROR",
+        "ce_panding 断言九房记录数量与房内位置"
+      ],
+      "manual_checks": [
+        "F5 开局雷达九格都有红点"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "换房保存/加载与实体归鱼群管理",
+      "behavior": "换房时先把旧房实体状态回写记录并释放，更新房间矩形与房号，再按目标房记录实例化；加载时恢复体型/隐藏成长并把离玩家 <240px 的鱼推开；YuQun 托管的鱼不再被相机出屏回收，改为夹在房间边界内往返；停刷时保存释放但不加载。",
+      "main_concept": "记录是唯一权威：实体只是记录的可视化副本，每帧/换房都回写",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scripts/yu_npc.gd",
+        "scripts/main.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 断言换房后旧实体释放、记录保留、目标房按记录加载",
+        "ce_panding 断言成长恢复不被 _ready 默认值覆盖"
+      ],
+      "manual_checks": [
+        "F5 来回换房位置与鱼群延续，不出现整批新鱼"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "未加载房间虚拟游动、互吃与档位保底",
+      "behavior": "8 个未加载房每 0.25 秒推进记录位置并在房边反弹；每 20 秒按 140px/1.1 倍/35% 概率让大鱼优先吃最小鱼并积累隐藏经验；每档淘汰最小约 20% 并补同数量当前档新鱼，低于保底 60% 时补到保底；停刷时全部冻结。",
+      "main_concept": "无节点轻量模拟：只改字典即可让雷达上的鱼点移动、消失与变大",
+      "files": [
+        "scripts/yu_qun.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 强制概率断言最小鱼优先被吃、吃方成长",
+        "ce_panding 断言档位淘汰与保底不会让房间灭绝"
+      ],
+      "manual_checks": [
+        "F5 雷达上其他房红点会移动、消失、变大"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "雷达九房显示、测试改写与门禁文档",
+      "behavior": "XiaoDiTu 优先读取九房记录绘制 NPC 点（当前房 1.8~2.6px 正常红，其他房 1.3~1.9px 低 alpha），再补画未托管的教学鱼，最后保留 Boss 金点；改写旧换房/欢迎鱼断言并新增房间鱼群用例；跑八步门禁、任务校验与范围检查，更新任务包与词表文档。",
+      "main_concept": "表现层读数据模型：雷达不依赖场景树里是否存在实体",
+      "files": [
+        "scripts/xiao_di_tu.gd",
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "validate_task.py 输出 VALID",
+        "check_task_scope.py check 零违规"
+      ],
+      "manual_checks": [
+        "F5 图例仍为「金 首领 · 蓝 玩家 · 红 鱼 · 绿 植物」",
+        "用户验收雷达与换房体验"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释为什么未加载房间只存 Dictionary、不实例化 YuNpc",
+      "能说明记录与当前房实体为什么需要每帧同步",
+      "能解释虚拟互吃与档位淘汰如何让雷达上的鱼点变化",
+      "能说出换房保存/加载的固定顺序与停刷时的差异"
+    ],
+    "concepts": [
+      "数据层与表现层分离",
+      "双态同步与唯一权威",
+      "无节点轻量模拟",
+      "Godot 节点生命周期与 add_child 时序",
+      "雷达按数据模型绘制"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "YuQun 仍是 Main 下的 Node2D 子节点，只改其内部数据与实体管理；不新增节点、不增删主场景结构、不改 Autoload 与存档，生命周期与 TASK-020 一致。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规",
+    "临时机器人探针完成一局并输出结果"
+  ],
+  "required_manual_checks": [
+    "F5 开局雷达九格都有 NPC 红点",
+    "F5 换房后目标房鱼在记录位置出现且来回换房延续",
+    "F5 未加载房红点会移动、消失或变大",
+    "F5 当前房仍按原节奏补鱼，雷达图例不变",
+    "用户确认换房体验与难度可接受"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "未加载房保底比例 60% 的手感需要 F5 观察",
+      "虚拟互吃 35% 概率下房间减员速度需要实机评估",
+      "雷达每帧约 315 个点在手机上的帧率需要真机确认"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要新增 Autoload 或改存档 schema",
+    "需要改主场景顶层结构或换房黑场流程",
+    "需要改玩家/普通鱼伤害与体型平衡",
+    "需要把机械船、Boss 或教学鱼纳入九房记录",
+    "需要让未加载房参与玩家技能判定"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-14T13:43:26+08:00",
+    "exact_user_text": "要不，你把鱼的跨场景刷新先禁掉，先改成每个小地图有那么多的预制未加载的鱼，比如小雷达里面可以看到其他图的npc鱼点点，然后我跨场景的时候就可以在对应位置加载出来预制的鱼怎么样，不然现在这种跨场景就刷新太奇怪了，换成每个场景加载那么多鱼然后，预制（雷达上面最好npc鱼之间还有互相吞噬），你先总结出来小方案，然后给我批",
+    "canonical_example": "确认 TASK-025 v1 进入开发"
+  }
+}

@@ -111,6 +111,15 @@ static func _shen_wei(yu) -> float:
 	return 100.0
 
 
+static func _di_ren(yu) -> Array:
+	# 统一敌人列表：优先用 Yu.di_ren_lie()（普通鱼 + 机械船）；旧假人/测试退回 "yu_npc"
+	if yu != null and is_instance_valid(yu) and yu.has_method("di_ren_lie"):
+		return yu.di_ren_lie()
+	if yu != null and is_instance_valid(yu) and yu.is_inside_tree():
+		return yu.get_tree().get_nodes_in_group("yu_npc")
+	return []
+
+
 static func _ke_chi(npc) -> bool:
 	# 可整吞的鱼：有效、未死、非首领（首领只能咬死；吸卷也不整吞）
 	if npc == null or not is_instance_valid(npc):
@@ -123,11 +132,13 @@ static func _ke_chi(npc) -> bool:
 
 
 static func _ke_la(npc) -> bool:
-	# 可拉拽的鱼：有效且未死；首领也拉（但绝不整吞）
+	# 可拉拽的目标：有效且未死；普通鱼/首领都拉（首领也拉，但绝不整吞）；机械船吃极轻位移
 	if npc == null or not is_instance_valid(npc):
 		return false
 	var yu_npc := npc as YuNpc
-	return yu_npc != null and not yu_npc.si_le
+	if yu_npc != null:
+		return not yu_npc.si_le
+	return npc is Node2D and npc.has_method("tui_kai") and not bool(npc.get("si_le"))
 
 
 static func _bo_te_xiao(yu, ming: StringName, wei: Vector2, bi: float) -> void:
@@ -268,8 +279,7 @@ static func _you_xuan_wo_mu_biao(yu, ban_ju: float) -> bool:
 	# 空放判定：8 身位内没有任何鱼（首领也算，只是拉不吞）
 	if yu == null or not is_instance_valid(yu) or not yu.is_inside_tree():
 		return false
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
+	for npc in _di_ren(yu):
 		if not _ke_la(npc):
 			continue
 		if yu.global_position.distance_to(npc.global_position) <= ban_ju:
@@ -302,16 +312,19 @@ static func _geng_xin_xuan_wo(yu, neng: NengLi, delta: float) -> void:
 		return
 	var ban_ju: float = yu.fan_wei_xiu_zheng(neng.dang_zhi(&"ban_jing", 1) * _shen_wei(yu), 0.5)
 	var su: float = maxf(0.0, neng.dang_zhi(&"shu_zhi", 1)) * _shen_wei(yu) * yong
-	for node in yu.get_tree().get_nodes_in_group("yu_npc"):
-		var npc := node as YuNpc
+	for npc in _di_ren(yu):
 		if not _ke_la(npc):
 			continue
 		var cha: Vector2 = yu.global_position - npc.global_position
 		var ju := cha.length()
 		if ju <= 0.001 or ju > ban_ju:
 			continue
-		# 玩家自己不给减速/加速：这里只推 NPC，反方向满速即可维持距离
-		npc.global_position += cha.normalized() * minf(su, ju)
+		# 玩家自己不给减速/加速：这里只推敌人，反方向满速即可维持距离
+		if npc is YuNpc:
+			npc.global_position += cha.normalized() * minf(su, ju)
+		else:
+			# 机械船：不瞬移，走极轻位移接口；漩涡对船约 10px/秒
+			npc.call("tui_kai", cha.normalized(), minf(su, ju))
 
 
 # ---- 主动 3：吞星（星空吞星兽）----

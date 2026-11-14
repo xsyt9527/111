@@ -166,9 +166,9 @@ horizontal_alignment = 1
 [node name="BossLabel" type="Label" parent="BossUI"]
 visible = false
 offset_left = 940.0
-offset_top = 96.0
+offset_top = 220.0
 offset_right = 1256.0
-offset_bottom = 118.0
+offset_bottom = 242.0
 theme_override_colors/font_color = Color(1, 0.82, 0.62, 0.96)
 theme_override_font_sizes/font_size = 18
 text = "机器船"
@@ -177,9 +177,9 @@ horizontal_alignment = 2
 [node name="BossTiao" type="ProgressBar" parent="BossUI"]
 visible = false
 offset_left = 940.0
-offset_top = 122.0
+offset_top = 246.0
 offset_right = 1256.0
-offset_bottom = 138.0
+offset_bottom = 262.0
 max_value = 90.0
 value = 90.0
 show_percentage = false
@@ -220,10 +220,10 @@ vertical_alignment = 1
 
 [node name="JinHuaTiShi" type="Button" parent="NengLiUI"]
 visible = false
-offset_left = 990.0
-offset_top = 22.0
-offset_right = 1250.0
-offset_bottom = 92.0
+offset_left = 540.0
+offset_top = 100.0
+offset_right = 800.0
+offset_bottom = 170.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
 theme_override_font_sizes/font_size = 20
@@ -244,32 +244,22 @@ tooltip_text = "仅调试构建显示：立刻升 1 级"
 [node name="XiaoDiTuUI" type="CanvasLayer" parent="."]
 
 [node name="XiaoDiTu" type="Control" parent="XiaoDiTuUI"]
-offset_left = 24.0
-offset_top = 210.0
-offset_right = 264.0
-offset_bottom = 386.0
+offset_left = 1008.0
+offset_top = 52.0
+offset_right = 1248.0
+offset_bottom = 212.0
 mouse_filter = 0
 script = ExtResource("25_xiaoditu")
 
-[node name="BiaoTi" type="Label" parent="XiaoDiTuUI/XiaoDiTu"]
-offset_left = 8.0
-offset_top = 0.0
-offset_right = 240.0
-offset_bottom = 18.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.55, 0.95, 1, 0.96)
-theme_override_font_sizes/font_size = 14
-text = "上帝视角（永久被动）"
-
 [node name="TuLi" type="Label" parent="XiaoDiTuUI/XiaoDiTu"]
 offset_left = 8.0
-offset_top = 156.0
+offset_top = 140.0
 offset_right = 240.0
-offset_bottom = 176.0
+offset_bottom = 158.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.82, 0.92, 1, 0.85)
 theme_override_font_sizes/font_size = 10
-text = "黑 首领 · 蓝 玩家 · 红 鱼 · 绿 植物"
+text = "金 首领 · 蓝 玩家 · 红 鱼 · 绿 植物"
 
 [node name="JinHuaDanChuang" parent="." instance=ExtResource("23_jinhua")]
 

@@ -1,0 +1,312 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-023",
+  "task_spec_version": 1,
+  "slug": "lei-da-xiao-di-tu",
+  "title": "小地图移到设置下方、无背景雷达式绘制与地图透明度设置",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+  "objective": "把右上角小地图移到设置按钮下方；改为无海图背景的雷达式绘制（半透明深色面板、淡化九宫格、四类亮点不变）；在设置面板增加地图透明度滑条并持久化到 she_zhi.json。",
+  "audit_freshness": {
+    "audited_commit": "bcc1f3dfe25267e4c4017946ee076bc7c5640899",
+    "environment_checked_at": "2026-11-13T00:00:00Z",
+    "engine_executable_source": "common_path",
+    "engine_version_detected": "4.7.2",
+    "audit_invalidation_triggers": [
+      "Main.tscn HUD 位置变化",
+      "XiaoDiTu 绘制/透明度接口变化",
+      "CunDang 设置字段变化",
+      "SheZhi 面板结构变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "小地图表现",
+      "游玩设置"
+    ],
+    "owned_scenes": [
+      "res://scenes/Main.tscn",
+      "res://scenes/SheZhi.tscn"
+    ],
+    "owned_scripts": [
+      "scripts/xiao_di_tu.gd",
+      "scripts/she_zhi.gd",
+      "scripts/cun_dang.gd",
+      "scripts/main.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-021",
+      "TASK-022"
+    ],
+    "consumed_interfaces": [
+      "Main.dang_qian_fang_jian 当前房间号（只读）",
+      "Main.zhi_wu_zu / npc_zu / wan_jia / shou_ling / ji_qi_chuan 世界对象引用（只读）",
+      "CunDang.xie_she_zhi() / zai_ru_she_zhi() 设置读写入口",
+      "SheZhi.SheZhiMianBan/MianBanLie 设置主面板容器",
+      "XiaoDiTu._qu_zhu_jie_mian() 获取 Main 的既有约定"
+    ],
+    "provided_interfaces": [
+      "XiaoDiTu.she_tou_ming_du(zhi)",
+      "CunDang.xiao_di_tu_tou_ming",
+      "SheZhi.DiTuTouMingHua"
+    ],
+    "emitted_signals": [
+      "无新增全局信号"
+    ],
+    "received_signals": [
+      "复用 HSlider.value_changed（运行时创建，局部连接）",
+      "复用 SheZhi 既有按钮 pressed 信号"
+    ],
+    "shared_state": [
+      "CunDang.xiao_di_tu_tou_ming 为跨局持久设置，范围 0.3~1.0",
+      "XiaoDiTu 只读 Main 世界状态，不写 gameplay 数据"
+    ],
+    "registered_shared_changes": [
+      "Main.tscn 中 XiaoDiTu 节点矩形移到设置按钮下方",
+      "CunDang 设置 JSON 增加 xiao_di_tu_tou_ming 可选键",
+      "SheZhi 主设置面板增加地图透明度滑条"
+    ],
+    "conflict_hotspots": [
+      "main.gd HUD 布局与 TASK-021/022 小地图改动",
+      "she_zhi.gd 设置面板既有四行按钮布局",
+      "cun_dang.gd 设置读写与旧档缺键兼容",
+      "ce_panding 既有断言只追加不改写"
+    ],
+    "required_integration_checks": [
+      "headless --import 退出码 0",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "F5 小地图位于设置按钮下方且无海图背景"
+    ]
+  },
+  "allowed_existing_files": [
+    "scripts/xiao_di_tu.gd",
+    "scenes/Main.tscn",
+    "scripts/she_zhi.gd",
+    "scripts/cun_dang.gd",
+    "scripts/main.gd",
+    "tests/ce_panding.gd",
+    "docs/TASK_INDEX.md",
+    "docs/引擎词总表.md",
+    "LEARNING_ROADMAP.md",
+    "Godot引擎词总表.docx",
+    ".godot/**"
+  ],
+  "allowed_new_files": [
+    "docs/development_tasks/TASK-023_lei_da_xiao_di_tu/**"
+  ],
+  "forbidden_systems": [
+    "背景海图绘制",
+    "旋转扫描线动画",
+    "Autoload 新增",
+    "存档 schema 改动",
+    "攻击/掉落/体型数值"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "地图位置与雷达绘制",
+      "behavior": "把 Main.tscn 的 XiaoDiTuUI/XiaoDiTu 从左上 (24,210)-(264,386) 移到右上设置按钮 (1168,12)-(1248,44) 下方，目标矩形 (1008,52)-(1248,212)；删除 XiaoDiTu 对海图 beijing_3x3.webp 的 preload 与贴图绘制，改为纯代码雷达：半透明深色面板底、淡化九宫格、当前房间亮框，玩家蓝/首领金/NPC 红/植物绿四类亮点保持不变；探测范围、房间数据与图例文案不动。",
+      "main_concept": "Control 立即模式绘制",
+      "files": [
+        "scripts/xiao_di_tu.gd",
+        "scenes/Main.tscn"
+      ],
+      "automated_checks": [
+        "ce_panding 断言地图矩形位于设置按钮下方",
+        "ce_panding 断言 XiaoDiTu 不再 preload 海图背景且仍绘制四类亮点"
+      ],
+      "manual_checks": [
+        "F5 查看小地图在设置按钮下方、不遮挡设置按钮",
+        "F5 查看小地图无海图背景、半透明深色底、九宫格淡化、四类亮点可辨"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "透明度设置与持久化",
+      "behavior": "在 SheZhi 主设置面板 MianBanLie 增加「地图透明度」滑条（0.3~1.0，步长 0.05，默认 0.85）；拖动时写 CunDang.xiao_di_tu_tou_ming 并调用 XiaoDiTu.she_tou_ming_du(zhi) 即时刷新；CunDang.zai_ru_she_zhi 读取可选键 xiao_di_tu_tou_ming（旧档缺键回退 0.85），xie_she_zhi 写回该键，SHE_ZHI_BAN_BEN 保持 1，不影响局内存档。",
+      "main_concept": "设置 JSON 持久化与即时反馈",
+      "files": [
+        "scripts/she_zhi.gd",
+        "scripts/cun_dang.gd"
+      ],
+      "automated_checks": [
+        "ce_panding 断言设置默认 0.85、范围 0.3~1.0、读写键名 xiao_di_tu_tou_ming",
+        "ce_panding 断言 she_tou_ming_du 对输入做范围夹取"
+      ],
+      "manual_checks": [
+        "F5 打开设置拖动滑条，小地图透明度即时变化",
+        "重启游戏后透明度保持上次设置",
+        "删除设置文件后启动默认 0.85"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "测试/门禁/文档",
+      "behavior": "追加 ce_panding 断言并跑 headless --import、tests/pao_pi.bat 八步、validate_task.py、check_task_scope.py；更新任务索引、引擎词总表、学习路线与 Word 词表；写实现报告并清理临时探针与截图。",
+      "main_concept": "自动化回归与门禁",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "tests/pao_pi.bat 八步全绿",
+        "validate_task.py 输出 VALID",
+        "check_task_scope.py check 零违规"
+      ],
+      "manual_checks": [
+        "F5 完整走一遍设置与地图查看流程",
+        "用户确认雷达式小地图与透明度滑条观感"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释 Control 立即模式绘制：_draw 里画什么、何时 queue_redraw",
+      "能说明 CanvasLayer/Control 布局如何决定小地图落在设置按钮下方",
+      "能说明设置 JSON 的读取、写入与旧档缺键回退",
+      "能解释滑条 value_changed 到小地图即时变淡的完整链路"
+    ],
+    "concepts": [
+      "Control 立即模式绘制",
+      "CanvasLayer/Control 布局",
+      "设置 JSON 持久化",
+      "即时反馈",
+      "Rect2 九宫格坐标映射"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": true,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "小地图仍是 Main 内 HUD 节点，只移动节点矩形并把海图贴图绘制改为纯代码雷达绘制；SheZhi 仍是独立 CanvasLayer 场景实例，不新增 Autoload。",
+    "current_tree": "Main.tscn -> XiaoDiTuUI/CanvasLayer -> XiaoDiTu/Control(offset 24,210 - 264,386) -> TuLi/Label；Main.tscn -> SheZhi/CanvasLayer(instance res://scenes/SheZhi.tscn) -> SheZhiAnNiu/Button + SheZhiMianBan/PanelContainer -> MianBanLie/VBoxContainer -> 标题/暂停/继续/角色/返回",
+    "target_tree": "Main.tscn -> XiaoDiTuUI/CanvasLayer -> XiaoDiTu/Control(offset 1008,52 - 1248,212) -> TuLi/Label；SheZhi.MianBanLie 增加 DiTuTouMingLie（HBoxContainer：Label + HSlider + 百分比 Label）行；XiaoDiTu 不再 preload 海图背景。",
+    "ownership": [
+      "XiaoDiTu 拥有雷达绘制与透明度接口",
+      "Main.tscn 拥有 HUD 节点位置",
+      "SheZhi 拥有设置面板滑条",
+      "CunDang 拥有设置字段读写"
+    ],
+    "signal_contracts": [
+      "无新增全局信号；滑条复用 Range.value_changed 在 she_zhi.gd 内局部连接"
+    ],
+    "loading_policy": [
+      "删除 DI_TU_WEN_LI 的 preload，不加载海图背景，仅绘制矢量图形",
+      "设置读取沿用 CunDang.zai_ru_she_zhi，旧档缺键回退 0.85"
+    ],
+    "state_persistence": [
+      "CunDang.xiao_di_tu_tou_ming 写入 user://shenhaishiji_shezhi.json 的 xiao_di_tu_tou_ming 键",
+      "不改 SHE_ZHI_BAN_BEN，不影响局内存档"
+    ],
+    "animation_dependencies": [
+      "小地图每帧 queue_redraw（沿用）",
+      "滑条拖动即时刷新，不做补间动画"
+    ],
+    "lifecycle_checks": [
+      "进入/退出 Main 无残留",
+      "暂停中打开设置面板滑条仍可拖动",
+      "旧设置文件无 xiao_di_tu_tou_ming 键时默认 0.85"
+    ]
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规"
+  ],
+  "required_manual_checks": [
+    "F5 小地图位于设置按钮下方且不遮挡设置按钮",
+    "F5 小地图无海图背景、半透明深色面板、九宫格淡化、四类亮点可辨",
+    "F5 设置面板拖动地图透明度滑条即时生效",
+    "重启游戏后透明度保持",
+    "旧设置文件无 xiao_di_tu_tou_ming 键时启动默认 0.85"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "无外部参考实现；按用户反馈与项目既有的 Control 自绘、设置 JSON 读写模式实现",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "透明度默认 0.85 与下限 0.3 的可读性需 F5 实机确认",
+      "滑条在设置主面板中的具体行位需 F5 确认不挤压既有按钮"
+    ],
+    "needs_comparison": false,
+    "rationale": "本任务是对现有 HUD 表现与游玩设置的增量调整，没有外部行为基准可对照；按用户原文与项目既有约定实现即可，无需对照分析。"
+  },
+  "scope_change_triggers": [
+    "需要改 project.godot",
+    "需要新增 Autoload",
+    "需要改攻击/掉落/体型数值",
+    "需要改局内存档 schema",
+    "需要旋转扫描线等超出静态雷达绘制的动画"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-13T00:00:00+08:00",
+    "exact_user_text": "1.把地图放在设置下面，现在的ui位置怪怪的。2.地图就像个雷达一样，能探测，不需要背景地图的图，不然小小一张地图，色彩太丰富了，玩起来地图看的太难受了，对了，再给他加一个透明度的设置在设置里面，这样方便观看",
+    "canonical_example": "1.把地图放在设置下面，现在的ui位置怪怪的。2.地图就像个雷达一样，能探测，不需要背景地图的图，不然小小一张地图，色彩太丰富了，玩起来地图看的太难受了，对了，再给他加一个透明度的设置在设置里面，这样方便观看"
+  }
+}
