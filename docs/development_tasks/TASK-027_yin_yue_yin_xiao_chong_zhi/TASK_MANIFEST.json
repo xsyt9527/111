@@ -1,0 +1,433 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-027",
+  "task_spec_version": 1,
+  "slug": "yin-yue-yin-xiao-chong-zhi",
+  "title": "全部音乐与音效重制：3 条 BGM 重编曲 + 19 条 SFX 统一生成",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "objective": "按用户 2026-11-14 要求「全部音乐重新生成一遍，全部！音效也是」，重写 3 条 BGM 的编曲与混音并保持 56/96/140 BPM、12/16/24 小节与原时长，重写 12 条既有音效并新增 7 条旧键音效，使 19 条使用中音效全部由统一生成器产出 44.1kHz/16bit/单声道/峰值 -1.5dBFS WAV；把 yin_xiang.gd 的 7 个旧键 preload 指向新文件，删除 11 条旧 wav，保持 YIN_XIAO_BIAO 19 键与 BGM 3 首断言不变。用户追加反馈「机械船降临的音乐听得怪怪的」：决战曲 qu_jue_zhan 重写时去掉刺耳高频音色与怪异旋律走向，改为低频压迫 + 干净鼓点 + 克制的铜管动机，保持 140 BPM 决战紧张感。",
+  "audit_freshness": {
+    "audited_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "environment_checked_at": "2026-11-14T20:10:03+08:00",
+    "engine_executable_source": "GODOT_4_7_BIN",
+    "engine_version_detected": "4.7.2.stable.official.ed1daf0bf",
+    "audit_invalidation_triggers": [
+      "YinXiang 键名、preload 路径或 BGM_QU_MU 变化",
+      "音频生成器输出的采样率/位深/声道/时长/峰值变化",
+      "assets/yinxiao 文件增删或 Godot 导入缓存变化",
+      "tests/ce_panding.gd 音频契约断言变化",
+      "LMMS 可执行文件或 Python 环境变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "程序化音乐生成管线",
+      "程序化音效生成管线",
+      "音频资源与音效键表接线"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/yin_xiang.gd",
+      "res://tools/yinyue/shengcheng_yinyue.py",
+      "res://tools/yinyue/shengcheng_yin_xiao.py"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-014（能力与技能音效调用点）",
+      "TASK-024（机械船音效与统一结算）"
+    ],
+    "consumed_interfaces": [
+      "YinXiang.fang(bian_hao, yin_liang_db)",
+      "YinXiang.bo_bgm(qu)",
+      "YinXiang.YIN_XIAO_BIAO[19 键]",
+      "YinXiang.BGM_QU_MU[3 首]",
+      "24 处 an_niu 调用点与其余旧键调用点"
+    ],
+    "provided_interfaces": [
+      "assets/yinxiao/yin_xiao_*.wav（19 条，44.1kHz/16bit/单声道/峰值 -1.5dBFS）",
+      "assets/yinxiao/bgm_shen_hai.wav / bgm_tan_suo.wav / bgm_jue_zhan.wav（3 条无缝循环）",
+      "tools/yinyue/shengcheng_yin_xiao.py 的 19 条 JOBS 清单",
+      "tools/yinyue/shengcheng_yinyue.py 的 validate_bgm()"
+    ],
+    "emitted_signals": [
+      "无新增信号；音效仍由 YinXiang.fang 播放"
+    ],
+    "received_signals": [
+      "ZhangBen.sheng_ji 仍由 YinXiang 监听触发升级音"
+    ],
+    "shared_state": [
+      "YIN_XIAO_BIAO 键名是调用方合同，一个不改；只改 7 个 preload 路径",
+      "BGM_QU_MU 仍是 shen_hai / tan_suo / jue_zhan 三首",
+      "qu_jing_sha 只写 build/音乐试听，不进 assets、不进 BGM_QU_MU"
+    ],
+    "registered_shared_changes": [
+      "assets/yinxiao 音频二进制文件全部替换或删除",
+      "scripts/yin_xiang.gd 7 个旧键 preload 路径变化，键名不变"
+    ],
+    "conflict_hotspots": [
+      "scripts/yin_xiang.gd 与 24 处 an_niu 调用点：键名不得改",
+      "tests/ce_panding.gd 的 19 键与 3 BGM 硬断言",
+      "assets/yinxiao 旧 wav 删除顺序：必须先让新文件通过导入与测试",
+      "LMMS 渲染的 .mmp 工程与 loop_wav 后处理"
+    ],
+    "required_integration_checks": [
+      "两个生成器全部 job 成功且 validate 全过",
+      "headless --import 退出码 0 且 0 ERROR",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "Web 导出包体与 F5 试听"
+    ]
+  },
+  "allowed_existing_files": [
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/an_niu.wav",
+    "assets/yinxiao/an_niu.wav.import",
+    "assets/yinxiao/bgm_jue_zhan.wav",
+    "assets/yinxiao/bgm_jue_zhan.wav.import",
+    "assets/yinxiao/bgm_shen_hai.wav",
+    "assets/yinxiao/bgm_shen_hai.wav.import",
+    "assets/yinxiao/bgm_tan_suo.wav",
+    "assets/yinxiao/bgm_tan_suo.wav.import",
+    "assets/yinxiao/chi.wav",
+    "assets/yinxiao/chi.wav.import",
+    "assets/yinxiao/fang_neng_li.wav",
+    "assets/yinxiao/fang_neng_li.wav.import",
+    "assets/yinxiao/sheng_ji.wav",
+    "assets/yinxiao/sheng_ji.wav.import",
+    "assets/yinxiao/sheng_li.wav",
+    "assets/yinxiao/sheng_li.wav.import",
+    "assets/yinxiao/shi_bai.wav",
+    "assets/yinxiao/shi_bai.wav.import",
+    "assets/yinxiao/shi_kong.wav",
+    "assets/yinxiao/shi_kong.wav.import",
+    "assets/yinxiao/shou_shang.wav",
+    "assets/yinxiao/shou_shang.wav.import",
+    "assets/yinxiao/si_wang.wav",
+    "assets/yinxiao/si_wang.wav.import",
+    "assets/yinxiao/tan_chuang.wav",
+    "assets/yinxiao/tan_chuang.wav.import",
+    "assets/yinxiao/yao.wav",
+    "assets/yinxiao/yao.wav.import",
+    "assets/yinxiao/yin_xiao_chong_ci.wav",
+    "assets/yinxiao/yin_xiao_chong_ci.wav.import",
+    "assets/yinxiao/yin_xiao_dian_xi.wav",
+    "assets/yinxiao/yin_xiao_dian_xi.wav.import",
+    "assets/yinxiao/yin_xiao_du_xi.wav",
+    "assets/yinxiao/yin_xiao_du_xi.wav.import",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav.import",
+    "assets/yinxiao/yin_xiao_jing_bao.wav",
+    "assets/yinxiao/yin_xiao_jing_bao.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_na.wav",
+    "assets/yinxiao/yin_xiao_sheng_na.wav.import",
+    "assets/yinxiao/yin_xiao_shou_shang.wav",
+    "assets/yinxiao/yin_xiao_shou_shang.wav.import",
+    "assets/yinxiao/yin_xiao_si_wang.wav",
+    "assets/yinxiao/yin_xiao_si_wang.wav.import",
+    "assets/yinxiao/yin_xiao_tun_xia.wav",
+    "assets/yinxiao/yin_xiao_tun_xia.wav.import",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav.import",
+    "assets/yinxiao/yin_xiao_yao_ji.wav",
+    "assets/yinxiao/yin_xiao_yao_ji.wav.import",
+    "docs/TASK_INDEX.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+    "docs/引擎词总表.md",
+    "project.godot",
+    "rigs/",
+    "scripts/di_tu_pin_jie_yan_chu.gd",
+    "scripts/main.gd",
+    "scripts/neng_li_ui.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/yin_xiang.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/yu_qun.gd",
+    "scripts/zhang_ben.gd",
+    "scripts/zhuan_shu_ku/fen_yu.gd",
+    "tests/ce_panding.gd",
+    "tools/yinyue/",
+    "tools/yinyue/shengcheng_yin_xiao.py",
+    "tools/yinyue/shengcheng_yinyue.py"
+  ],
+  "allowed_new_files": [
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/yin_xiao_an_niu.wav",
+    "assets/yinxiao/yin_xiao_an_niu.wav.import",
+    "assets/yinxiao/yin_xiao_chi.wav",
+    "assets/yinxiao/yin_xiao_chi.wav.import",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_li.wav",
+    "assets/yinxiao/yin_xiao_sheng_li.wav.import",
+    "assets/yinxiao/yin_xiao_shi_bai.wav",
+    "assets/yinxiao/yin_xiao_shi_bai.wav.import",
+    "assets/yinxiao/yin_xiao_shi_kong.wav",
+    "assets/yinxiao/yin_xiao_shi_kong.wav.import",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav.import",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/VERIFICATION_REPORT.md",
+    "project.godot",
+    "rigs/",
+    "tests/_tmp_yu_wang_probe.gd",
+    "tests/_tmp_yu_wang_probe.gd.uid",
+    "tests/_tmp_yu_wang_probe.tscn",
+    "tools/yinyue/"
+  ],
+  "forbidden_systems": [
+    "新增音效键或修改 YIN_XIAO_BIAO 的 19 个键名",
+    "新增 BGM 曲目、修改 BGM_QU_MU 的 3 首断言或把 qu_jing_sha 接入 assets",
+    "修改任何 gameplay 脚本、场景、tres 或存档 schema",
+    "修改 project.godot 的音频相关配置",
+    "删除尚未通过导入与测试的新文件之前的旧 wav",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "12 条既有音效重写与 7 条旧键音效补齐",
+      "behavior": "shengcheng_yin_xiao.py 的 JOBS 从 12 条扩到 19 条；12 条既有 yin_xiao_* 重写包络与音色；新增 an_niu/chi/tan_chuang/fang_neng_li/shi_kong/sheng_li/shi_bai 七条生成函数，输出 yin_xiao_*.wav；全部 44.1kHz/16bit/单声道/峰值 -1.5dBFS。",
+      "main_concept": "同一参数化合成管线：用统一的采样率、位深、声道与峰值约束产出所有音效",
+      "files": [
+        "tools/yinyue/shengcheng_yin_xiao.py",
+        "assets/yinxiao/yin_xiao_*.wav"
+      ],
+      "automated_checks": [
+        "19 条 job 全部成功",
+        "validate() 检查格式/时长/峰值全过"
+      ],
+      "manual_checks": [
+        "逐条试听 19 条音效辨识度"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "音效键表接线与旧 wav 清理",
+      "behavior": "yin_xiang.gd 的 7 个旧键 preload 指向新 yin_xiao_* 文件，19 个键名不变；删除 11 条旧 wav 与 .import；重新 import 后 YIN_XIAO_BIAO 仍为 19 键、BGM 仍为 3 首。",
+      "main_concept": "键表解耦：调用方按稳定键名播放，资源路径可在键表内替换",
+      "files": [
+        "scripts/yin_xiang.gd",
+        "assets/yinxiao/*.wav",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "YIN_XIAO_BIAO.size()==19",
+        "BGM_QU_MU.size()==3",
+        "headless --import 0 ERROR",
+        "24 处 an_niu 调用点仍可解析"
+      ],
+      "manual_checks": [
+        "F5 按钮、吃植物、弹窗、技能、失控、胜负音效均可触发"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "3 条 BGM 重编曲与循环校验",
+      "behavior": "qu_shen_hai/qu_tan_suo/qu_jue_zhan 重写编曲与混音，保持 56/96/140 BPM、12/16/24 小节、约 51.4/40.0/41.1 秒；LMMS 渲染后 loop_wav 把尾音折回开头；新增 validate_bgm() 检查格式/时长/峰值/首尾电平；修复 inst_triple 左右失谐不一致。决战曲 qu_jue_zhan 按用户「听得怪怪的」反馈重做：去掉刺耳的高频锯齿/镲片堆叠与怪异半音旋律，改用低频持续 + 干净四拍鼓点 + 克制的铜管动机，保持 140 BPM 压迫感并在循环接缝处不出现突兀转折。",
+      "main_concept": "无缝循环：把尾音折回开头，使播放器从末尾回到 0 时没有可听断点",
+      "files": [
+        "tools/yinyue/shengcheng_yinyue.py",
+        "assets/yinxiao/bgm_*.wav"
+      ],
+      "automated_checks": [
+        "3 条 BGM 全部渲染成功",
+        "validate_bgm() 格式/时长/峰值/循环缝全过",
+        "BGM 总大小控制在 20MB 内"
+      ],
+      "manual_checks": [
+        "主菜单/局内/决战循环试听无断缝",
+        "决战曲试听确认不再「怪怪的」：无刺耳高频、无怪异旋律"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "导入、门禁、试听与文档收尾",
+      "behavior": "重新导入全部音频，八步门禁全绿，validate 与 scope 零违规；F5 与 Web 试听；更新任务索引、引擎词表与学习路线；写三份报告。",
+      "main_concept": "资源导入与运行时接线分离：先保证导入无 ERROR，再验证播放链路",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "validate_task.py VALID",
+        "check_task_scope.py check 0 violation",
+        "tests/pao_pi.bat 八步全绿",
+        "Web 导出 index.pck 包体对比"
+      ],
+      "manual_checks": [
+        "F5 与 Web 端音频启动与 19 条音效试听",
+        "用户确认音乐与音效可接受"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "configuration_inspection",
+        "editor_operation"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释为什么只改 preload 路径而保持 19 个键名不变",
+      "能说明 44.1kHz/16bit/单声道/峰值约束如何由 validate 检查",
+      "能解释 loop_wav 如何把尾音折回开头形成无缝循环",
+      "能说明「听感怪」时先排查高频堆积、不和谐音程与循环接缝的顺序",
+      "能定位旧 wav 删除前必须先通过导入与测试的顺序原因"
+    ],
+    "concepts": [
+      "参数化音频合成管线",
+      "键表解耦",
+      "无缝循环与尾音折回",
+      "资源导入与运行时接线分离",
+      "音频格式与峰值校验"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "configuration_inspection",
+      "editor_operation",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "只替换音频资源与 Autoload YinXiang 的 preload 路径，不新增/删除节点、不改 Autoload 顺序、不改存档与场景树，运行时生命周期不变。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "shengcheng_yinyue.py 全部 job 成功且 validate_bgm 全过",
+    "shengcheng_yin_xiao.py 19 条 job 成功且 validate 全过",
+    "headless --import 退出码 0 且 0 ERROR",
+    "tests/pao_pi.bat 八步全绿",
+    "validate_task.py 退出码 0",
+    "check_task_scope.py check 零违规"
+  ],
+  "required_manual_checks": [
+    "F5 主菜单/局内/决战三条 BGM 循环无断缝",
+    "F5 决战曲单独试听确认不刺耳、不怪异",
+    "F5 逐条触发 19 条音效",
+    "Web 端点击后音频启动",
+    "用户确认音乐与音效可接受"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "LMMS 批量渲染 3 条 BGM 的耗时与稳定性",
+      "重编曲后 51.4/40.0/41.1 秒时长能否保持 ±0.05 秒",
+      "Web 导出包体是否因 WAV 重生成明显增大",
+      "19 条音效的主观辨识度需要用户试听"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要新增音效键或 BGM 曲目",
+    "需要延长 BGM 时长或改变 BPM/小节数",
+    "需要修改 gameplay 脚本、场景或 tres",
+    "需要把 qu_jing_sha 接入 assets 或 BGM_QU_MU",
+    "需要改 project.godot 音频配置"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-14T20:53:42+08:00",
+    "exact_user_text": "三包都批准",
+    "canonical_example": "确认 TASK-027 v1 进入开发"
+  }
+}

@@ -1,0 +1,312 @@
+{
+ "frames": [
+  {
+   "filename": "she_hun 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "she_hun 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 92
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_she_hun.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 92
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "shadow/soul-drain",
+   "name": "she_hun",
+   "fps": 12,
+   "loop": false,
+   "frames": 12,
+   "frameSize": [
+    160,
+    92
+   ],
+   "pivot": [
+    0.0,
+    46.0
+   ],
+   "columns": 12,
+   "visible": [
+    145,
+    65
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

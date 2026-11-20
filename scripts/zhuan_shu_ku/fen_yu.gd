@@ -128,7 +128,7 @@ static func _ke_chi(npc) -> bool:
 	if yu_npc == null or yu_npc.si_le:
 		return false
 	# 直取属性而不是 get("shi_boss")：类型明确，也避免字典式读写的隐式转换
-	return not yu_npc.shi_boss
+	return not yu_npc.shi_boss and not yu_npc.yu_wang  # TASK-026：鱼王也不可整吞
 
 
 static func _ke_la(npc) -> bool:
@@ -185,7 +185,10 @@ static func _shi_fang_kun_tun(yu, neng: NengLi, dang: int) -> bool:
 	yu.set_meta(META_KUN_XI_SHUI, 0.0)
 	yu.set_meta(META_KUN_SAO_JIAN, KUN_TUN_SAO_JIAN_GE)
 	yu.set_meta(META_KUN_MU_BIAO, [])
-	_bo_te_xiao(yu, &"dian_gan", yu.global_position, 0.9)
+	# v2 鲲吞天地蓄力：青色吞海光在玩家身上聚拢，尺寸随体长；缺资源回退旧电圈
+	if TeXiaoKu.bo_ming(&"kun_tun", yu.get_parent(), yu.global_position,
+			TeXiaoKu.ti_kuan(yu) * 1.4, {"chi_xu": KUN_TUN_QIAN_YAO_MIAO}) == null:
+		_bo_te_xiao(yu, &"dian_gan", yu.global_position, 0.9)
 	return true
 
 
@@ -203,7 +206,12 @@ static func _geng_xin_kun_tun(yu, neng: NengLi, delta: float) -> void:
 			yu.set_meta(META_KUN_XI_SHUI, xi)
 			yu.set_meta(META_KUN_SAO_JIAN, KUN_TUN_SAO_JIAN_GE)
 			_sao_kun_mu_biao(yu, neng)
-			_bo_te_xiao(yu, &"xuan_wo", yu.global_position, 1.4)
+			# v2 鲲吞天地吸水窗口：巨型青蓝漩涡，宽度=判定直径，持续到窗口结束；缺资源回退旧漩涡
+			var ban_ju: float = yu.fan_wei_xiu_zheng(
+					neng.dang_zhi(&"ban_jing", 1) * _shen_wei(yu), 0.5)
+			if TeXiaoKu.bo_ming(&"kun_tun", yu.get_parent(), yu.global_position,
+					ban_ju * 2.0, {"chi_xu": xi}) == null:
+				_bo_te_xiao(yu, &"xuan_wo", yu.global_position, 1.4)
 			ben_ci_kai_chuang = true
 	if xi <= 0.0:
 		return
@@ -294,7 +302,10 @@ static func _shi_fang_xuan_wo(yu, neng: NengLi, dang: int) -> bool:
 	if not _you_xuan_wo_mu_biao(yu, ban_ju):
 		return false  # 附近没有鱼：空放不扣冷却
 	yu.set_meta(META_XUAN_WO_SHENG_YU, maxf(0.0, neng.dang_zhi(&"chi_xu", dang)))
-	_bo_te_xiao(yu, &"xuan_wo", yu.global_position, 1.6)
+	# v2 深渊漩涡：深渊漩涡环，宽度=判定直径，持续到窗口结束；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"shen_yuan", yu.get_parent(), yu.global_position,
+			ban_ju * 2.0, {"chi_xu": float(yu.get_meta(META_XUAN_WO_SHENG_YU, 0.0))}) == null:
+		_bo_te_xiao(yu, &"xuan_wo", yu.global_position, 1.6)
 	return true
 
 
@@ -362,7 +373,10 @@ static func _shi_fang_tun_xing(yu, neng: NengLi, dang: int) -> bool:
 		else:
 			wu.queue_free()
 	yu.set_meta(META_TUN_XING_AN_CHANG, maxf(0.0, neng.dang_zhi(&"chi_xu", dang)))
-	_bo_te_xiao(yu, &"dian_gan", yu.global_position, 1.5)
+	# v2 吞星：暗场星尘在玩家身上炸开，尺寸随体长；缺资源回退旧电圈
+	if TeXiaoKu.bo_ming(&"tun_xing", yu.get_parent(), yu.global_position,
+			TeXiaoKu.ti_kuan(yu) * 1.8) == null:
+		_bo_te_xiao(yu, &"dian_gan", yu.global_position, 1.5)
 	return true
 
 
@@ -398,7 +412,10 @@ static func _bei_yao_shen_yuan_zhuang_jia(yu, neng: NengLi, shu_ju: Dictionary) 
 			else Vector2.RIGHT.rotated(randf() * TAU)
 	var ju: float = neng.dang_zhi(&"ban_jing", 1) * _shen_wei(yu)
 	npc.tui_kai(fang, ju)
-	_bo_te_xiao(yu, &"ying_ke_hu_ti", npc.global_position, 0.9)
+	# v2 深渊装甲弹开：咬击者身上骨白反震光；尺寸随其体长；缺资源回退旧硬壳特效
+	if TeXiaoKu.bo_ming(&"fb_fan_shang", yu.get_parent(), npc.global_position,
+			TeXiaoKu.ti_kuan(npc) * 0.9) == null:
+		_bo_te_xiao(yu, &"ying_ke_hu_ti", npc.global_position, 0.9)
 
 
 # ---- 被动 3：星域领域（星空吞星兽）----

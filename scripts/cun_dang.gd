@@ -13,12 +13,11 @@ const CHENG_JIU_MEI_CI := 10  # 每次通关（胜利）获得的成就值
 const YONG_JIU_ZHU_DONG_DAI_JIA := 30  # 永久解锁一个主动技能的成就值价格
 const YONG_JIU_BEI_DONG_DAI_JIA := 20  # 永久解锁一个被动技能的成就值价格
 # 显式注册表：导出后 .tres 会变成 .remap/.res，运行时 DirAccess 列目录不可靠
-# 试玩版全开：凹凸蜗牛鱼 + 10 种 NPC 鱼 + 鲸鲨首领（暗影剑鱼沿用剑鱼进化树）
+# 试玩版全开：凹凸蜗牛鱼 + 9 种 NPC 鱼（含鲸鲨）。铜眼鱼/暗影剑鱼已删除
 # 旧的 deng_long_yu/dian_yao 两份形态文件保留作历史数据，不再进入注册表
 const XING_TAI_ZU := [
 	preload("res://data/xingtai/ao_tu_wo_niu_yu.tres"),
 	preload("res://data/xingtai/lan_yu.tres"),
-	preload("res://data/xingtai/hong_yu.tres"),
 	preload("res://data/xingtai/cheng_yu.tres"),
 	preload("res://data/xingtai/lv_yu.tres"),
 	preload("res://data/xingtai/ju_kou_yu.tres"),
@@ -26,7 +25,6 @@ const XING_TAI_ZU := [
 	preload("res://data/xingtai/qi_yu.tres"),
 	preload("res://data/xingtai/jian_yu.tres"),
 	preload("res://data/xingtai/ye_deng_long_yu.tres"),
-	preload("res://data/xingtai/an_ying_jian_yu.tres"),
 	preload("res://data/xingtai/fen_yu.tres"),
 ]
 

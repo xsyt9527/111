@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 深海食纪 · 自制 BGM 生成器（LMMS 1.2.2）
+2026-11-15 TASK-027 全量重制：三首重新编曲/配器（决战曲改为低频持续+干净四拍+克制铜管）；
+修复 inst_triple 左右声道 finel/finer 失谐不成对导致的拍频；新增 validate_bgm() 复核。
 用途：用 LMMS 命令行渲染三首循环 BGM，并把结果做「无缝循环」后处理，写进 assets/yinxiao/。
 产物：
   assets/yinxiao/bgm_shen_hai.wav  深海摇篮（主界面/选角/结算，56 BPM，12 小节 ≈ 51.4 秒）
@@ -38,10 +40,12 @@ def _fmt(v):
 
 def inst_triple(coarse0=0, wave0=2, vol0=100, coarse1=0, wave1=2, vol1=0,
                 fine1=8, coarse2=-12, wave2=0, vol2=0, detune=0):
-    """三振荡器：默认一层锯齿，可叠第二层锯齿微失谐 + 低八度正弦垫底。"""
+    """三振荡器：默认一层锯齿，可叠第二层锯齿微失谐 + 低八度正弦垫底。
+    实测 LMMS 1.2.2：finel 只作用于左声道、finer 只作用于右声道；单声道成品若只设 finer，
+    下混后左右声道各偏一个音分形成拍频（旧版「音乐怪怪的」的元凶之一），必须成对设置。"""
     attrs = {
         "vol0": vol0, "wavetype0": wave0, "coarse0": coarse0, "finel0": 0, "finer0": 0, "pan0": 0,
-        "vol1": vol1, "wavetype1": wave1, "coarse1": coarse1, "finel1": 0, "finer1": fine1, "pan1": 0,
+        "vol1": vol1, "wavetype1": wave1, "coarse1": coarse1, "finel1": fine1, "finer1": fine1, "pan1": 0,
         "vol2": vol2, "wavetype2": wave2, "coarse2": coarse2, "finel2": 0, "finer2": 0, "pan2": 0,
         "modalgo1": 0, "modalgo2": 0, "modalgo3": 0,
         "stphdetun0": detune, "stphdetun1": 0, "stphdetun2": 0,
@@ -163,8 +167,9 @@ def qu_shen_hai():
         for i, k in enumerate(keys):
             pad.append(n(b0, 0, 48, k, 88 if i == 0 else 74, -10 if i % 2 else 10))
     tracks.append(inst_track(
-        "和声垫", inst_triple(coarse0=0, wave0=1, vol0=100, vol1=0, coarse2=0, wave2=0, vol2=34),
-        eldata(fcut=900, fres=0.3, att=2.4, dec=0.8, sustain=0.9, rel=1.8, env_amt=1.0),
+        "和声垫", inst_triple(coarse0=0, wave0=1, vol0=100, vol1=0, fine1=0,
+                              coarse2=0, wave2=0, vol2=34),
+        eldata(fcut=820, fres=0.3, att=2.4, dec=0.8, sustain=0.9, rel=1.8, env_amt=1.0),
         vol=42, pan=0, total_len=total, notes=pad))
 
     # 低音持续：纯正弦，跟着和弦根音走，也是整组 3 小节
@@ -173,8 +178,8 @@ def qu_shen_hai():
         drone.append(n(b0, 0, 48, root, 96))
         drone.append(n(b0, 0, 48, root + 12, 28))
     tracks.append(inst_track(
-        "低音持续", inst_triple(coarse0=0, wave0=0, vol0=100, vol1=0, wave1=1, vol2=0),
-        eldata(fcut=500, fres=0.2, att=1.4, dec=0.5, sustain=0.92, rel=0.8, env_amt=1.0),
+        "低音持续", inst_triple(coarse0=0, wave0=0, vol0=100, vol1=0, wave1=1, fine1=0, vol2=0),
+        eldata(fcut=460, fres=0.2, att=1.4, dec=0.5, sustain=0.92, rel=0.8, env_amt=1.0),
         vol=38, pan=0, total_len=total, notes=drone))
 
     # 钟琴：每个和弦只落 1~2 颗 A3~E4 柔音，无回声；正弦为主，只带一点泛音
@@ -190,12 +195,12 @@ def qu_shen_hai():
     ]
     bn = []
     for i, (b, s, ln, k) in enumerate(bells):
-        bn.append(n(b, s, ln, k, 78, -12 if i % 2 else 12))
+        bn.append(n(b, s, ln, k, 76, -12 if i % 2 else 12))
     tracks.append(inst_track(
-        "钟琴", inst_triple(coarse0=0, wave0=0, vol0=100, coarse1=0, wave1=1, vol1=6,
+        "钟琴", inst_triple(coarse0=0, wave0=0, vol0=100, coarse1=0, wave1=1, vol1=6, fine1=0,
                             coarse2=12, wave2=0, vol2=10),
-        eldata(fcut=3200, fres=0.2, att=0.02, dec=1.5, sustain=0.05, rel=3.0, env_amt=1.0),
-        vol=42, pan=0, total_len=total, notes=bn))
+        eldata(fcut=2600, fres=0.2, att=0.02, dec=1.5, sustain=0.05, rel=3.0, env_amt=1.0),
+        vol=40, pan=0, total_len=total, notes=bn))
 
     return bpm, total, tracks
 
@@ -242,8 +247,8 @@ def qu_tan_suo():
                 arp.append(n(b, i * 2, 1.7, seq[idx], v, -24 if i % 2 else 24))
     tracks.append(inst_track(
         "琶音", inst_triple(coarse0=0, wave0=1, vol0=100, vol1=34, wave1=0, fine1=7),
-        eldata(fcut=2600, fres=0.35, att=0.003, dec=0.42, sustain=0.05, rel=0.5, env_amt=1.0),
-        vol=42, pan=0, total_len=total, notes=arp))
+        eldata(fcut=2300, fres=0.35, att=0.003, dec=0.42, sustain=0.05, rel=0.5, env_amt=1.0),
+        vol=38, pan=0, total_len=total, notes=arp))
 
     # 和声垫
     pad = []
@@ -271,24 +276,16 @@ def qu_tan_suo():
     for b in (7, 15):
         snare += [n(b, 13, 1, 57, 54), n(b, 14, 1, 57, 68), n(b, 15, 1, 57, 86)]
     tracks.append(inst_track(
-        "军鼓", inst_afp("drums/snare01.ogg"), eldata(fcut=6000, fres=0.2),
-        vol=150, pan=10, total_len=total, notes=snare))
+        "军鼓", inst_afp("drums/snare01.ogg"), eldata(fcut=5000, fres=0.2),
+        vol=112, pan=10, total_len=total, notes=snare))
 
-    hat = []
+    bi_he = []
     for b in range(bars):
         for s in range(0, 16, 2):
-            hat.append(n(b, s, 0.8, 57, 56 if s % 4 == 0 else 34, -16))
-        if b % 4 == 3:
-            hat.append(n(b, 14, 0.8, 57, 48, -16))
+            bi_he.append(n(b, s, 0.8, 57, 38 if s % 4 == 0 else 24, -16))
     tracks.append(inst_track(
-        "闭镲", inst_afp("drums/hihat_closed01.ogg"), eldata(fcut=9000, fres=0.2),
-        vol=80, pan=-16, total_len=total, notes=hat))
-
-    shaker = [n(b, s, 0.6, 57, 34 if s % 4 else 44, 20)
-              for b in range(bars) for s in range(0, 16, 2)]
-    tracks.append(inst_track(
-        "沙锤", inst_afp("drums/shaker01.ogg"), eldata(fcut=8000, fres=0.2),
-        vol=64, pan=20, total_len=total, notes=shaker))
+        "闭镲", inst_afp("drums/hihat_closed01.ogg"), eldata(fcut=8500, fres=0.2),
+        vol=56, pan=-16, total_len=total, notes=bi_he))
 
     # 后半段旋律
     lead = []
@@ -308,7 +305,7 @@ def qu_tan_suo():
             lead.append(n(b, s, ln, k - 12, 42, -8))  # 低八度加厚
     tracks.append(inst_track(
         "旋律", inst_triple(wave0=1, vol0=100, vol1=34, wave1=0, fine1=5),
-        eldata(fcut=4200, fres=0.25, att=0.02, dec=0.5, sustain=0.62, rel=0.7, env_amt=1.0),
+        eldata(fcut=3800, fres=0.25, att=0.02, dec=0.5, sustain=0.62, rel=0.7, env_amt=1.0),
         vol=46, pan=8, total_len=total, notes=lead))
 
     return bpm, total, tracks
@@ -316,139 +313,109 @@ def qu_tan_suo():
 
 # ---------------------------------------------------------------- 曲 3：钢铁围猎
 def qu_jue_zhan():
+    """2026-11-15 全量重制：低频持续 + 干净四拍 + 克制铜管动机。
+
+    旧版听感问题：十六分锯齿推进贝斯、锯齿+方波主旋律、每小节六次切分铜管、
+    十六分闭镲 + 拍手 + 吊镲堆叠、旋律里 C→C# 半音。高频密、和声乱 → 「怪怪的」。
+    新版只做四层：
+      ① 低频持续：正弦 sub + 五度，2 小节换根音（Em/C/G/D），无节奏切分；
+      ② 暖垫：三角三和弦长音，音量压到 26，只补中低频；
+      ③ 干净四拍：底鼓每拍、军鼓 2/4 拍、八分闭镲轻打；无拍手/吊镲/十六分镲；
+      ④ 克制铜管：8 小节后每 4 小节只在一小节内打三音动机（根-五度-八度），
+         三角+正弦、低通 1900Hz，不用锯齿；20~23 小节收尾上行。
+    保留 140 BPM / 24 小节 ≈ 41.14 秒，循环接缝由 loop_wav + validate_bgm 管。
+    """
     bpm = 140
     bars = 24
     total = bars * TICKS
     tracks = []
 
-    # Em / C / G / D，每 2 小节换一次
+    # Em / C / G / D，每 2 小节换一次（只保留根音与三和弦内音，不用半音）
     prog = [
-        dict(root=40, chord=[52, 55, 59], pad=[40, 47]),
-        dict(root=36, chord=[48, 52, 55], pad=[36, 43]),
-        dict(root=43, chord=[50, 55, 59], pad=[43, 50]),
-        dict(root=38, chord=[50, 54, 57], pad=[38, 45]),
+        dict(root=40, chord=[52, 55, 59]),
+        dict(root=36, chord=[48, 52, 55]),
+        dict(root=43, chord=[50, 55, 59]),
+        dict(root=38, chord=[50, 54, 57]),
     ]
 
-    # 十六分音符推进贝斯
-    bass = []
-    for b in range(bars):
-        ch = prog[(b // 2) % 4]
-        r = ch["root"]
-        pattern = [0, 0, 12, 0, 0, 0, 12, 0, 0, 0, 12, 0, 7, 7, 12, 12]
-        for i, off in enumerate(pattern):
-            v = 100 if i % 4 == 0 else 74
-            if b in (16, 17, 18, 19):
-                if i % 2:
-                    continue
-                v = 66
-            bass.append(n(b, i, 0.9, r + off, v))
-    tracks.append(inst_track(
-        "驱动贝斯", inst_triple(coarse0=-12, wave0=2, vol0=100, vol1=38, wave1=0, fine1=2),
-        eldata(fcut=900, fres=0.3, att=0.002, dec=0.14, sustain=0.55, rel=0.08, env_amt=1.0),
-        vol=80, pan=0, total_len=total, notes=bass))
-
-    # 铜管柱式和弦：切分重音
-    stabs = []
-    for b in range(bars):
-        ch = prog[(b // 2) % 4]
-        hits = [(0, 2, 92), (3, 1, 58), (6, 2, 76), (10, 1, 54), (12, 2, 84), (15, 1, 66)]
-        if b in (16, 17, 18, 19):
-            hits = [(0, 4, 74), (8, 4, 62)]
-        for (s, ln, v) in hits:
-            for k in ch["chord"]:
-                stabs.append(n(b, s, ln, k, v, -10))
-    tracks.append(inst_track(
-        "铜管", inst_triple(wave0=2, vol0=100, vol1=62, wave1=3, fine1=12, coarse2=-12, wave2=2, vol2=40),
-        eldata(fcut=2400, fres=0.45, att=0.008, dec=0.2, sustain=0.5, rel=0.18, env_amt=1.0),
-        vol=44, pan=6, total_len=total, notes=stabs))
-
-    # 弦乐式持续垫：制造压迫感
-    pad = []
-    for blk in range(12):
+    # ---- 低频持续：根音 + 五度正弦，2 小节长音；三角同音只给一点肉感
+    drone = []
+    for blk in range(bars // 2):
         ch = prog[blk % 4]
-        for k in ch["pad"]:
-            pad.append(n(blk * 2, 0, 15.7, k, 72))
+        r = ch["root"]
+        drone += [n(blk * 2, 0, 32, r, 96), n(blk * 2, 0, 32, r + 7, 60)]
     tracks.append(inst_track(
-        "压迫垫", inst_triple(wave0=1, vol0=100, vol1=0, fine1=14, coarse2=0, wave2=0, vol2=60),
-        eldata(fcut=700, fres=0.4, att=0.9, dec=0.6, sustain=0.85, rel=1.2, env_amt=1.0),
-        vol=38, pan=0, total_len=total, notes=pad))
+        "低频持续",
+        inst_triple(wave0=0, vol0=100, wave1=1, vol1=22, fine1=0, wave2=0, vol2=0),
+        eldata(fcut=520, fres=0.25, att=0.16, dec=0.4, sustain=0.94, rel=0.5, env_amt=1.0),
+        vol=56, pan=0, total_len=total, notes=drone))
 
-    # 鼓组
+    # ---- 暖垫：三和弦三角长音，每 2 小节一块
+    pad = []
+    for blk in range(bars // 2):
+        ch = prog[blk % 4]
+        for k in ch["chord"]:
+            pad.append(n(blk * 2, 0, 32, k, 40))
+    tracks.append(inst_track(
+        "暖垫",
+        inst_triple(wave0=1, vol0=100, wave1=0, vol1=12, fine1=0, coarse2=0, wave2=0, vol2=20),
+        eldata(fcut=700, fres=0.3, att=0.8, dec=0.6, sustain=0.85, rel=1.0, env_amt=1.0),
+        vol=26, pan=0, total_len=total, notes=pad))
+
+    # ---- 干净四拍：底鼓每拍；16~19 小节只留 1/3 拍
     kick = []
     for b in range(bars):
         if 16 <= b <= 19:
-            kick += [n(b, 0, 1.4, 57, 100), n(b, 8, 1.4, 57, 92)]
+            kick += [n(b, 0, 1.4, 57, 100), n(b, 8, 1.4, 57, 96)]
         else:
             kick += [n(b, s, 1.4, 57, 100) for s in (0, 4, 8, 12)]
-            if b % 2:
-                kick.append(n(b, 14, 1.0, 57, 62))
     tracks.append(inst_track(
-        "底鼓", inst_afp("drums/kick_hard01.ogg"), eldata(fcut=500, fres=0.2),
-        vol=88, pan=0, total_len=total, notes=kick))
+        "底鼓", inst_afp("drums/kick_hard01.ogg"), eldata(fcut=480, fres=0.2),
+        vol=76, pan=0, total_len=total, notes=kick))
 
+    # ---- 军鼓：2/4 拍；16~19 只打第 3 拍；不用 snare_harsh 的高噪采样
     snare = []
     for b in range(bars):
         if 16 <= b <= 19:
-            snare += [n(b, 8, 1.2, 57, 80)]
+            snare += [n(b, 8, 1.2, 57, 86)]
         else:
             snare += [n(b, s, 1.2, 57, 96) for s in (4, 12)]
-    for b in (7, 15, 23):
-        snare += [n(b, 13, 1, 57, 62), n(b, 14, 1, 57, 78), n(b, 15, 1, 57, 96)]
     tracks.append(inst_track(
-        "军鼓", inst_afp("drums/snare_harsh01.ogg"), eldata(fcut=7000, fres=0.2),
-        vol=118, pan=8, total_len=total, notes=snare))
+        "军鼓", inst_afp("drums/snare01.ogg"), eldata(fcut=5000, fres=0.2),
+        vol=110, pan=6, total_len=total, notes=snare))
 
-    clap = [n(b, s, 1.0, 57, 74, -8) for b in range(bars) if not (16 <= b <= 19)
-            for s in (4, 12)]
-    tracks.append(inst_track(
-        "拍手", inst_afp("drums/clap01.ogg"), eldata(fcut=8000, fres=0.2),
-        vol=90, pan=-8, total_len=total, notes=clap))
-
-    hat = []
+    # ---- 闭镲：八分轻打；16~19 改四分
+    bi_he = []
     for b in range(bars):
-        for s in range(0, 16):
-            if 16 <= b <= 19 and s % 2:
-                continue
-            hat.append(n(b, s, 0.5, 57, 66 if s % 4 == 0 else 36, 18))
-        if b % 4 == 0:
-            hat.append(n(b, 14, 0.7, 57, 58, 18))
+        if 16 <= b <= 19:
+            for s in (0, 4, 8, 12):
+                bi_he.append(n(b, s, 0.6, 57, 32, 16))
+        else:
+            for s in range(0, 16, 2):
+                bi_he.append(n(b, s, 0.6, 57, 38 if s % 4 == 0 else 24, 16))
     tracks.append(inst_track(
-        "十六分镲", inst_afp("drums/hihat_closed03.ogg"), eldata(fcut=10000, fres=0.2),
-        vol=64, pan=18, total_len=total, notes=hat))
+        "闭镲", inst_afp("drums/hihat_closed01.ogg"), eldata(fcut=8500, fres=0.2),
+        vol=54, pan=16, total_len=total, notes=bi_he))
 
-    crash = [n(b, 0, 8, 57, 90, -20) for b in (0, 8, 16, 20)]
+    # ---- 克制铜管：8/12/16 小节块头一小节三音（根-五度-八度），三角+正弦
+    brass = []
+    for b0 in (8, 12, 16):
+        ch = prog[(b0 // 2) % 4]
+        r = ch["root"]
+        brass += [n(b0, 0, 4, r + 12, 92, -6),
+                  n(b0, 4, 4, r + 19, 78, 6),
+                  n(b0, 8, 8, r + 24, 86, -6)]
+    # 20~23 收尾：G 和弦上行 → D 和弦落回，全部用和弦内音
+    for b0 in (20, 22):
+        ch = prog[(b0 // 2) % 4]
+        for i, k in enumerate(ch["chord"]):
+            brass.append(n(b0, i * 3, 3, k + 12, 90 - i * 4, -4))
     tracks.append(inst_track(
-        "吊镲", inst_afp("drums/crash01.ogg"), eldata(fcut=12000, fres=0.2),
-        vol=34, pan=-20, total_len=total, notes=crash))
-
-    # 第二段主旋律（8~15 小节）+ 结尾拔高
-    lead = []
-    mel = [
-        (8, [(0, 2, 71), (2, 2, 76), (4, 2, 79), (6, 4, 78), (12, 2, 74)]),
-        (9, [(0, 4, 76), (6, 2, 74), (8, 4, 71), (14, 2, 67)]),
-        (10, [(0, 2, 72), (2, 2, 76), (4, 4, 79), (10, 2, 81), (12, 2, 79)]),
-        (11, [(0, 4, 79), (6, 2, 74), (8, 6, 71)]),
-        (12, [(0, 2, 71), (2, 2, 76), (4, 2, 79), (6, 4, 83), (12, 2, 81)]),
-        (13, [(0, 4, 79), (6, 2, 78), (8, 4, 76), (14, 2, 74)]),
-        (14, [(0, 2, 72), (2, 2, 76), (4, 2, 79), (6, 2, 81), (8, 6, 83)]),
-        (15, [(0, 4, 81), (4, 4, 79), (8, 8, 76)]),
-    ]
-    for b, items in mel:
-        for (s, ln, k) in items:
-            lead.append(n(b, s, ln, k, 88, -6))
-            lead.append(n(b, s, ln, k - 12, 40, 6))
-    # 20~23 结尾句：上行到 B5 收住，方便循环回开头
-    for (b, s, ln, k) in [(20, 0, 2, 76), (20, 2, 2, 79), (20, 4, 4, 83),
-                          (21, 0, 2, 81), (21, 2, 2, 83), (21, 4, 4, 86),
-                          (22, 0, 4, 83), (22, 4, 4, 81), (22, 8, 6, 79),
-                          (23, 0, 4, 78), (23, 4, 4, 79), (23, 8, 8, 83)]:
-        lead.append(n(b, s, ln, k, 90, -6))
-        lead.append(n(b, s, ln, k - 12, 40, 6))
-    tracks.append(inst_track(
-        "主旋律", inst_triple(wave0=2, vol0=100, vol1=48, wave1=3, fine1=9,
-                              coarse2=12, wave2=0, vol2=16),
-        eldata(fcut=3800, fres=0.4, att=0.012, dec=0.3, sustain=0.66, rel=0.25, env_amt=1.0),
-        vol=52, pan=-6, total_len=total, notes=lead))
+        "铜管动机",
+        inst_triple(wave0=1, vol0=100, wave1=0, vol1=28, fine1=0,
+                    coarse2=12, wave2=0, vol2=6),
+        eldata(fcut=1900, fres=0.35, att=0.05, dec=0.35, sustain=0.62, rel=0.45, env_amt=1.0),
+        vol=50, pan=-4, total_len=total, notes=brass))
 
     return bpm, total, tracks
 
@@ -669,8 +636,10 @@ def render(name, bpm, total, tracks, out_dir=None, peak_db=-1.0, dc_block=False)
         print(r.stdout[-2000:])
         print(r.stderr[-2000:])
         raise SystemExit("渲染失败：" + name)
-    loop_wav(raw, os.path.join(out_dir, name + ".wav"), bpm, total, peak_db, dc_block)
+    dst = os.path.join(out_dir, name + ".wav")
+    loop_wav(raw, dst, bpm, total, peak_db, dc_block)
     os.remove(raw)
+    validate_bgm(dst, total * 60.0 / bpm / 48.0, peak_db)
 
 
 def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0, dc_block=False):
@@ -715,6 +684,44 @@ def loop_wav(src, dst, bpm, total_ticks, peak_db=-1.0, dc_block=False):
     print("  → %s  %.2f 秒  %.2f MB  峰值 %.1f dBFS"
           % (os.path.basename(dst), loop_len / sr,
              os.path.getsize(dst) / 1048576.0, peak_db))
+
+
+def dbfs(v):
+    return 20.0 * np.log10(max(1e-12, float(v)))
+
+
+def validate_bgm(path, expected_sec, peak_db):
+    """复核 BGM 格式（44.1kHz/16bit/单声道）、时长（±0.05s）、峰值（目标 ±1dB）
+    与首尾 10ms 电平/循环接缝。loop_wav 末尾有 5ms 双向淡出，所以端点样本应接近 0。"""
+    with wave.open(path, "rb") as w:
+        sr = w.getframerate()
+        ch = w.getnchannels()
+        sw = w.getsampwidth()
+        n = w.getnframes()
+        data = w.readframes(n)
+    x = np.frombuffer(data, dtype="<i2").astype(np.float64) / 32768.0
+    dur = n / sr
+    peak = float(np.max(np.abs(x))) if len(x) else 0.0
+    rms = float(np.sqrt(np.mean(x ** 2))) if len(x) else 0.0
+    edge = max(1, int(0.01 * sr))
+    head_rms = float(np.sqrt(np.mean(x[:edge] ** 2)))
+    tail_rms = float(np.sqrt(np.mean(x[-edge:] ** 2)))
+    seam = abs(float(x[0]) - float(x[-1]))
+    ok_fmt = (sr == 44100 and ch == 1 and sw == 2)
+    ok_dur = abs(dur - expected_sec) <= 0.05
+    ok_peak = peak < 1.0 and abs(dbfs(peak) - peak_db) <= 1.0
+    ok_edge = abs(float(x[0])) <= 0.002 and abs(float(x[-1])) <= 0.002 and seam <= 0.005
+    print("  校验 %-16s %s  %dHz/%dbit/%dch  %.3fs  峰值 %.2f dBFS  RMS %.1f dB"
+          % (os.path.basename(path),
+             "OK" if (ok_fmt and ok_dur and ok_peak and ok_edge) else "FAIL",
+             sr, sw * 8, ch, dur, dbfs(peak), dbfs(rms)))
+    print("    首/尾 10ms RMS %.1f / %.1f dB  首/末样本 %.4f / %.4f  接缝 %.5f"
+          % (dbfs(head_rms), dbfs(tail_rms), x[0], x[-1], seam))
+    if not (ok_fmt and ok_dur and ok_peak and ok_edge):
+        raise SystemExit("BGM 校验未通过：%s" % os.path.basename(path))
+    return dict(sr=sr, ch=ch, sw=sw, dur=dur, peak_db=dbfs(peak), rms_db=dbfs(rms),
+                head_rms_db=dbfs(head_rms), tail_rms_db=dbfs(tail_rms), seam=seam,
+                size=os.path.getsize(path))
 
 
 def main():

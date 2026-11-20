@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "jn_fang_dian 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 1",
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 2",
+   "frame": {
+    "x": 304,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 3",
+   "frame": {
+    "x": 456,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 4",
+   "frame": {
+    "x": 608,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 5",
+   "frame": {
+    "x": 760,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 6",
+   "frame": {
+    "x": 912,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 7",
+   "frame": {
+    "x": 1064,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_fang_dian 8",
+   "frame": {
+    "x": 1216,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 116
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 116
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_jn_fang_dian.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1368,
+   "h": 116
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "scifi/emp-blast",
+   "name": "jn_fang_dian",
+   "fps": 12,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    152,
+    116
+   ],
+   "pivot": [
+    76.0,
+    58.0
+   ],
+   "columns": 9,
+   "visible": [
+    144,
+    111
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

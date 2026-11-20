@@ -61,7 +61,9 @@ func bei_yao(yu) -> void:
 	if _po_le:
 		return
 	_po_le = true
-	TE_XIAO.you_er_qi_pao(get_parent(), global_position)
+	# v2 金色气泡破裂：小尺寸固定，缺资源回退旧泡
+	if TeXiaoKu.bo_ming(&"jn_you_er", get_parent(), global_position, 70.0) == null:
+		TE_XIAO.you_er_qi_pao(get_parent(), global_position)
 	if huan_ying_zhu != null and is_instance_valid(huan_ying_zhu) \
 			and huan_ying_zhu.has_method("_kong_que_ying_bei_yao"):
 		huan_ying_zhu._kong_que_ying_bei_yao(yu, huan_ying_du, huan_ying_diao_rou)

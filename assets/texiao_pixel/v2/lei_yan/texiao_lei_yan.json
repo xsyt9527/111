@@ -1,0 +1,312 @@
+{
+ "frames": [
+  {
+   "filename": "lei_yan 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 1",
+   "frame": {
+    "x": 84,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 2",
+   "frame": {
+    "x": 168,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 3",
+   "frame": {
+    "x": 252,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 4",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 5",
+   "frame": {
+    "x": 420,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 6",
+   "frame": {
+    "x": 504,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 7",
+   "frame": {
+    "x": 588,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 8",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 9",
+   "frame": {
+    "x": 756,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 10",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_yan 11",
+   "frame": {
+    "x": 924,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 104
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_lei_yan.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1008,
+   "h": 104
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "ui/exclamation",
+   "name": "lei_yan",
+   "fps": 12,
+   "loop": false,
+   "frames": 12,
+   "frameSize": [
+    84,
+    104
+   ],
+   "pivot": [
+    42.0,
+    52.0
+   ],
+   "columns": 12,
+   "visible": [
+    50,
+    59
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -29,6 +29,10 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/handheld/orientation="landscape"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/ai_rig_2d/plugin.cfg")
+
 [gui]
 
 theme/custom_font="res://assets/fonts/NotoSansSC-Regular.otf"

@@ -1,0 +1,400 @@
+{
+ "frames": [
+  {
+   "filename": "kun_tun 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 1",
+   "frame": {
+    "x": 184,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 2",
+   "frame": {
+    "x": 368,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 3",
+   "frame": {
+    "x": 552,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 4",
+   "frame": {
+    "x": 736,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 5",
+   "frame": {
+    "x": 920,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 6",
+   "frame": {
+    "x": 1104,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 7",
+   "frame": {
+    "x": 1288,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 8",
+   "frame": {
+    "x": 1472,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 9",
+   "frame": {
+    "x": 1656,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 10",
+   "frame": {
+    "x": 1840,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 11",
+   "frame": {
+    "x": 0,
+    "y": 132,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 12",
+   "frame": {
+    "x": 184,
+    "y": 132,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 13",
+   "frame": {
+    "x": 368,
+    "y": 132,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 14",
+   "frame": {
+    "x": 552,
+    "y": 132,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  },
+  {
+   "filename": "kun_tun 15",
+   "frame": {
+    "x": 736,
+    "y": 132,
+    "w": 184,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 132
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_kun_tun.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2024,
+   "h": 264
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 15,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "shadow/black-hole",
+   "name": "kun_tun",
+   "fps": 10,
+   "loop": true,
+   "frames": 16,
+   "frameSize": [
+    184,
+    132
+   ],
+   "pivot": [
+    92.0,
+    66.0
+   ],
+   "columns": 11,
+   "visible": [
+    169,
+    130
+   ],
+   "fit": "native",
+   "lifetime": 1.6,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

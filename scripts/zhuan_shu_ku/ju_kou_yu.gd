@@ -12,6 +12,7 @@ const BEI_DONG_IDS: Array[StringName] = [&"gang_tie_liao_ya", &"ji_ci_kou_nei", 
 # meta 键统一 zs_<技能id>_<字段>：同一条玩家节点上多鱼种并存也不会串味
 const META_TAO_TIE_SHENG := &"zs_tao_tie_ju_tun_sheng_yu"  # 饕餮窗口剩余秒
 const META_TAO_TIE_TU := &"zs_tao_tie_ju_tun_tu"  # 饕餮窗口视觉节点
+const META_TAO_TIE_FX := &"zs_tao_tie_ju_tun_fx"  # 饕餮窗口 v2 特效节点（跟随玩家）
 const META_LIE_KOU_SHENG := &"zs_lie_kou_xian_jing_sheng_yu"  # 裂口陷阱窗口剩余秒
 const META_LIE_KOU_MU_BIAO := &"zs_lie_kou_xian_jing_mu_biao"  # 本次已咬住的实例 id 列表
 const META_LIE_KOU_TU := &"zs_lie_kou_xian_jing_tu"  # 裂口陷阱视觉节点
@@ -96,6 +97,11 @@ static func _fang_tao_tie(yu, neng: NengLi, dang: int) -> bool:
 	var tu := _shan_quan(yu, META_TAO_TIE_TU, ban, Color(1.0, 0.48, 0.18, 0.26), "JuKouTaoTieQuan")
 	if tu != null:
 		yu.set_meta(META_TAO_TIE_TU, tu)
+	# v2 饕餮巨吞：橙色吞海巨口光环，宽度=判定直径；和旧光圈一样跟随玩家；缺资源静默
+	var fx := TeXiaoKu.bo_ming(&"tao_tie", yu.get_parent(), yu.global_position,
+			ban * 2.0, {"chi_xu": chi_xu, "gen_sui": yu})
+	if fx != null:
+		yu.set_meta(META_TAO_TIE_FX, fx)
 	return true
 
 
@@ -110,6 +116,9 @@ static func _geng_tao_tie(yu, delta: float) -> void:
 	if tu != null and is_instance_valid(tu):
 		tu.global_position = yu.global_position
 		tu.scale = yu.scale
+	var fx = yu.get_meta(META_TAO_TIE_FX) if yu.has_meta(META_TAO_TIE_FX) else null
+	if fx != null and is_instance_valid(fx):
+		fx.global_position = yu.global_position
 	if sheng <= 0.0:
 		_free_tu(yu, META_TAO_TIE_TU)
 
@@ -126,6 +135,9 @@ static func _fang_lie_kou(yu, neng: NengLi, dang: int) -> bool:
 	var tu := _shan_quan(yu, META_LIE_KOU_TU, ban, Color(0.86, 0.28, 0.36, 0.22), "JuKouLieKouJing")
 	if tu != null:
 		yu.set_meta(META_LIE_KOU_TU, tu)
+	# v2 裂口陷阱：暗红裂口在原地张开，宽度=判定直径，持续到窗口结束；缺资源静默（旧光圈照常）
+	TeXiaoKu.bo_ming(&"lie_kou", yu.get_parent(), yu.global_position,
+			ban * 2.0, {"chi_xu": chi_xu})
 	return true
 
 
@@ -170,6 +182,9 @@ static func _fang_she_hun(yu, neng: NengLi, dang: int) -> bool:
 		# 机械船：首领减半；等级伤害由船换算入口换 HP
 		if mu.has_method("shou_zhi_jie_shang"):
 			mu.call("shou_zhi_jie_shang", kou * 0.5)
+	# v2 摄魂：目标身上炸开的幽蓝魂光；尺寸随目标体长；缺资源静默（旧连线照常）
+	TeXiaoKu.bo_ming(&"she_hun", yu.get_parent(), mu.global_position,
+			TeXiaoKu.ti_kuan(mu) * 1.2, {"chi_xu": 0.6})
 	_shan_xi_hun_xian(yu, mu)
 	return true
 

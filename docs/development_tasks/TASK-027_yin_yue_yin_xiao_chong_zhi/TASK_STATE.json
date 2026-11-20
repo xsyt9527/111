@@ -1,0 +1,772 @@
+{
+  "task_id": "TASK-027",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "current_step": "step-04",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-027 已实现并验证：22 条 WAV 全过复核，八步门禁 3273 断言全绿，scope 0 violation；等待用户 F5 试听与学习检查点。未 commit、未 push。",
+  "implementation_baseline": {
+    "captured_at": "2026-11-14T17:11:48.001305Z",
+    "commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "preexisting_changes": [
+      {
+        "path": "Godot引擎词总表.docx",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:66a4d40c99a7ab9b2d87dbd67baae632e17b233e5d6d716748fe66296033bd45"
+      },
+      {
+        "path": "LEARNING_ROADMAP.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:bfd92fa5c95082129bf8608fdabfab453cde654ab710e19fa5483c9d2bc34b3f"
+      },
+      {
+        "path": "addons/ai_rig_2d/CLAUDE_RIG_GUIDE.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7806c6a641fbdd6056db11340750931658a1b4227034922a35fb1fba61fe3606"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/rig_builder.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7281c932566c1fc1e331eb9e076391fd248e24c246638b4f60cd15266d893053"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/rig_builder.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a39730bfe3fd758750af85b5d8c51f513ea0876e190450293851fdc53a593c5"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/schema_validator.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a10999e7da017b46cdaf8530cb37f78ccc6870a8de18e203ff9d004e8c6853c"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/schema_validator.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c888911d9bced5dde5eb19176a6d7ff2766dc9cf8330a8c1a405a1bba5eefa2f"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/weight_calculator.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fac9e08367b9cfd2fa15c29a7d21b9c199b83d7dd6ddf98ba3f3aaa59c2192dc"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/weight_calculator.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4eb79e939c82b191d275ecb9f06e58f75f3c22e5bc2756118ea2d18764f3f6e8"
+      },
+      {
+        "path": "addons/ai_rig_2d/editor/rig_dock.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e9c1804469142add744b1db6f4db2f0468755d494685d80d9fb8be6f5ce26a1f"
+      },
+      {
+        "path": "addons/ai_rig_2d/editor/rig_dock.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9866e4724ee20b5840132b271193a0e1c988e5d23d7fa3c6512ade25972fb398"
+      },
+      {
+        "path": "addons/ai_rig_2d/extensions/procedural_registry.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:333d713cca1be5d8925dcf968259166dea8a0d7ce96bac0e452606703a6bd25f"
+      },
+      {
+        "path": "addons/ai_rig_2d/extensions/procedural_registry.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6e8a037e355963e1f4d5da84c912f9d31c7ef6cd67932b9016bd424f98f4ac98"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.cfg",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:171553ccf66fcb704a1daed9a0c9b6e838b50029dfe61dcef55d4b2c86617673"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:aa11ff40eacd7c5b4fbe8a476b1d2e0d7ea7c176c4480336c4b64c74d7d4f2ec"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:009ae1cbb3883fc111d680966bbb196b3e96578393d5aabb52183585ad5a4329"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/layered_atlas_provider.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bc2cf5c576639ee84fcfabccee102e9dd2cb22f09de0434036a34e5198fb66d9"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/layered_atlas_provider.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12d1995f356496d88a706eb326d9b9677580e39d82fa54c5875dbe1b2b0aacf8"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/provider_base.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:83346346c6360ba1967a30f2f7f82a6b8059f71036d38cdb77658db7d138a338"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/provider_base.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:28d66baaf4f29e44ab9df9e361c58978080838ee8e465c745938f3ec40a2ee7e"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/single_image_provider.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fef8bce5664409b458e5e66ad913bad1ac8c8f731674efdacd841abdaf94c6fe"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/single_image_provider.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:77fe2d87f07b80e1ed1d0c3770995fce00057b25d9847d076be88dcb9e8c89e8"
+      },
+      {
+        "path": "addons/ai_rig_2d/validate_rig.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c32fb5fd83b4b6df3030eb4657c3af39961300dbaa2116c33a0d78fac672dea7"
+      },
+      {
+        "path": "addons/ai_rig_2d/validate_rig.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:58487a7e120bd1418b2d1d46034ef7b77ed16c4975147a458ef361f89310a078"
+      },
+      {
+        "path": "docs/TASK_INDEX.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c24917ab143a590fa0418d586955e55a5a61f07b3d963a76ba46dfd4cd109d64"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:32b7395078472aa5565945200f5a353027de1defb5aeb7562ab53a0d78c30e1e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7dcc030946677b490648ecd88e9a17185c8a40e9555084822f921500fe8ec2f3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ffa6fcdd291904d2ed508332faf7624fd03a51ae72c84e2759735cc2bbbb388d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1052dbd2d40de9feaf0566ee7fcde11df4b99527ce279d20e93739802be4fd60"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ed7f5094ca5a5937720c45d68df6a5482fdb0374845a3b97a3390a16d78709eb"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b2bbbc9ad7091727e97f7d4037d5f5d33d4249dbedc5c2e39cdaafe80496c2ed"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:230975e81155bd4cee4b08cde1608977125271ab988c8d6aee47d6c9790dcbad"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2f4d100e69233704cd395fd76294d43dba16801229a8f14a7f396a4c940d9236"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d047e2bc908f65db47a47fe14644d314ef4ac6507377669bed4bdf9ea445617f"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:becf7ec15b2e4be0c6b8061845a2d2dcc0cd44a335c7d7652fbfa06f46c01809"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:981b4c16e4ae42cc11c2361975d18ad9e4bec7a002682eaf03b1df9976fa0bd0"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:880538541a278f12e7346afe464f05f3f12d856c95da2b5bf55df9c8c4e188f8"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f5e3a4bce35740a941075f2d7568b486554f6778a3960b7369f4e778606abed3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:464354ff6aa10c68811c654333cceabc5ef7800fc00db28f5bab0fef81cc2957"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e36df1752c6fb00a59df710a745920ac483e272c611f765a387724c23bfd64ef"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5c129b34898b7cffbb4274fb56ae02bf16720711cc14befc880b63e974af8267"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2964f5b2c2971ba95635340b7157ff9bdc8ee3e062375d304e5734d43520076a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b443d9dde6cb361c96d757db036e28f9a972a56ce3d64e256ff27b94c76a068"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8bbd0336b66c1e65d813635362fa7376950d2875a51277548148d41a1f99e977"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:10f40a9594d93557fec9657794691d120468c5993d698ce26cd5515614903c48"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:85bc9dc11205be3478ae444baa0c33b8d696bfbc78ff86bfc7673ffc223dabf4"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a965de05a92a61342f089e2056545cdd88d27aecf7a5382508e3829e37fed0c"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:749c1830f539e3141454d49d889a4e495139f948e4fec8943ab3ef0a171734b2"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b5cf8374cd8428a53adf1971fc7394c71641d8ccbf07c4aa499eb467881d69d9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cdfc77bd09aa7185a87de5fd11c81b4e96e0bd8be1953c2f872f4b46f67ce5fa"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:076d2511e3fe66c094b7a09a61589d4e32531c82a938fe2a029b41e60900c5f9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3e25c9bd76cbdcc32e33b2ede25e6231cfdaed45219655d2e168beb6864e2ae6"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e206e71752b1bfe7be6d57fcedbb9be3b201a1e45346b1631b6c0889d6c43bc2"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:159a55a9db6426a1bc23bfc400d2b35fc415e2396083f3877b58f3df016c6a2e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9353aa5996a23af6d6b0d1199c690ce54fa4a5bdce0b02afe37c4b71aa84a63f"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0140511d172df619ac4f61c8e1ab3a461602a5e78cf311775869c617179fb2c4"
+      },
+      {
+        "path": "docs/引擎词总表.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a8ea79fba13c42ab15744394d9365d4039c8a77c593074b7f53404371efb687a"
+      },
+      {
+        "path": "project.godot",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a144e4a0f2111adbe5d951f8ed3a406d7c6dfac757ee2c75da4f6b35bf7ccd15"
+      },
+      {
+        "path": "rigs/capture_preview.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dd44f1bc0d7a86e89faec7a1e75ec79a0a5eea221798770a59d9ac3377d6a294"
+      },
+      {
+        "path": "rigs/examples/hero_pixel_64.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a3818dec9cdfc02a59877c3d47919ec37547d31d68b95fa7c812fad1b8d310d3"
+      },
+      {
+        "path": "rigs/examples/portrait_hires_mesh.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:952e604c7a14847d2a14b1589fd62cadd6a04c5a2f55a365b526ba99190a462f"
+      },
+      {
+        "path": "rigs/generated/WoNiuYuShiDian.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc3fe3a3b4dc183dd1d145554e8cdf36135ed9a14f6ed61a8a6f7bbba4cd026e"
+      },
+      {
+        "path": "rigs/generated/WoNiuYuShiDian_anims.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9d5dde48e428658faae4d106f8ea0addd198b11e08b17d9262779a3daf77e60f"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f00.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ebba0a0afab5eeeec047576f459e279a40f55a134adc4916741481f1ae3ed947"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a5deb9d01023ab94ca0aa1c757ac833c0a2c49117d59e90a13601fb5597bc2f6"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1229ed6a063cc17ccb68476645cd3ac9893f91a94119200c2b1d154538e5cd2e"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b07af9e8919b78b68580f89e9e441f8033056254c670423bc05c5e8fca8bc80"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9fd84523b18d53c41b621df2d8860b43ad50493c7494ba1255c7c535d7f908c6"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f05.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:71701943b94e300d894e9de516e7ad815715e8c2aff5d68fe3e5faada254fe06"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f06.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f5df1b88284ba1498deff9a8cea82fb1ff639731813b0db6e48916efcff9e940"
+      },
+      {
+        "path": "rigs/previews/visual_f0.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:94afa0d9394951c0d220547911af4ac353a35222ee40260a2569bcfe5364f3e0"
+      },
+      {
+        "path": "rigs/previews/visual_f1.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2ab63a5c54563d2466d7442dea3efbad42d76294aebe35880b6d81ff00b1d379"
+      },
+      {
+        "path": "rigs/previews/visual_f2.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:79022e5e5b936d3e75a0858bddd7ab3e25bb1488ca5dbe8406bdabc46093efd5"
+      },
+      {
+        "path": "rigs/previews/visual_f3.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:30b308a4328985734e4716155fc35569a29b20f6c975e2cb799086342e672abd"
+      },
+      {
+        "path": "rigs/wo_niu_yu_shidian.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:824947652d49a87e1ce7ce9412a735890fbaa83a79109448a8db1091a55a6787"
+      },
+      {
+        "path": "scripts/di_tu_pin_jie_yan_chu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b311430c859c8155ca23af17b5213b0469c406ea4ec79f2a89229080b36a0d4e"
+      },
+      {
+        "path": "scripts/neng_li_ui.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:defbe3185082d2c3efc9407d1acb4513bc65c14e1881b29a9117add7c6b6ce24"
+      },
+      {
+        "path": "scripts/xiao_di_tu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f7b7e5c6c89919c42b683b8fdfc22519f478fb6c7e50822765a757c4c29a2b33"
+      },
+      {
+        "path": "scripts/yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3d264fb13c016d275efae58e4a7b34dcc68a57b6fc845d1333cf3c4f04e457d2"
+      },
+      {
+        "path": "scripts/yu_npc.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:37263e5582ddb0c969958fe770da44b58bff6c9c85dc2a199fbdc6760aaeca9a"
+      },
+      {
+        "path": "scripts/yu_qun.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b8e32c1a88884d9fd28f336cc7d4ee9159a780eb9bd026f495837ed1d66fa1c4"
+      },
+      {
+        "path": "scripts/zhang_ben.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2825e01443ef82fd425d9869c733fb5929561c33b51b6f5843815147b1499d69"
+      },
+      {
+        "path": "scripts/zhuan_shu_ku/fen_yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:89da1d135deac75ba8576da4ed91f56ce1f32477b61f3a15b7e94d79700479be"
+      },
+      {
+        "path": "tests/ce_panding.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8844ba44e32c8d7d4b6b67d43046a670dd99dd559ab732da596caac40f64eee4"
+      },
+      {
+        "path": "tools/yinyue/shengcheng_yin_xiao.py",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:810a79da07de0d76ce6a84b1030e09ed89523d9f3019a89b2d2920ba4d670b4f"
+      }
+    ]
+  },
+  "last_verified_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "tools/yinyue/shengcheng_yin_xiao.py",
+        "tools/yinyue/yin_xiao_*.mmp",
+        "assets/yinxiao/yin_xiao_*.wav"
+      ],
+      "check_results": [
+        {
+          "check": "19 条 job 全部成功",
+          "result": "19/19 OK，产物均为 44.1kHz/16bit/单声道"
+        },
+        {
+          "check": "validate() 格式/时长/峰值",
+          "result": "19/19 PASS，时长误差 0.000s，峰值 -1.50 dBFS"
+        },
+        {
+          "check": "专项校验",
+          "result": "F5 静默段 ≤ -60 dBFS、F10 基频 800Hz、F11 四段 440/466Hz、F11 循环接缝 0.000000"
+        },
+        {
+          "check": "独立 Python 复核",
+          "result": "19/19 PASS（格式/时长/峰值/接缝全过）"
+        },
+        {
+          "check": "八步门禁",
+          "result": "232 / 25 / 1422 / 8 / 20 / 144 / 1422（3273 断言，0 failed，无 ERROR）"
+        }
+      ],
+      "next_action": "用户 F5 逐条试听 19 条音效的辨识度"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yin_xiang.gd",
+        "assets/yinxiao/an_niu.wav、chi.wav、fang_neng_li.wav、sheng_ji.wav、sheng_li.wav、shi_bai.wav、shi_kong.wav、shou_shang.wav、si_wang.wav、tan_chuang.wav、yao.wav（旧文件及 .import 各 11 条删除）",
+        "assets/yinxiao/yin_xiao_an_niu.wav、yin_xiao_chi.wav、yin_xiao_fang_neng_li.wav、yin_xiao_sheng_li.wav、yin_xiao_shi_bai.wav、yin_xiao_shi_kong.wav、yin_xiao_tan_chuang.wav（7 个旧键新产物）"
+      ],
+      "check_results": [
+        {
+          "check": "YIN_XIAO_BIAO 键数",
+          "result": "19 键齐全，键名一个未改；BGM_QU_MU 仍 3 首"
+        },
+        {
+          "check": "7 个旧键 preload",
+          "result": "an_niu/chi/tan_chuang/fang_neng_li/shi_kong/sheng_li/shi_bai 全部指向 yin_xiao_*.wav"
+        },
+        {
+          "check": "测试契约",
+          "result": "未改 tests/ce_panding.gd；19 键与 3 BGM 硬断言未变，未新增断言"
+        },
+        {
+          "check": "headless --import",
+          "result": "由协调者统一运行：0 ERROR，22 个 .import 齐全"
+        },
+        {
+          "check": "八步门禁",
+          "result": "232 / 25 / 1422 / 8 / 20 / 144 / 1422（3273 断言，0 failed，无 ERROR）"
+        }
+      ],
+      "next_action": "用户 F5 验证旧键调用点（含 24 处 an_niu）播放正常"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "tools/yinyue/shengcheng_yinyue.py",
+        "tools/yinyue/bgm_shen_hai.mmp、bgm_tan_suo.mmp、bgm_jue_zhan.mmp",
+        "assets/yinxiao/bgm_shen_hai.wav、bgm_tan_suo.wav、bgm_jue_zhan.wav"
+      ],
+      "check_results": [
+        {
+          "check": "三首 BGM 渲染 + validate_bgm()",
+          "result": "3/3 PASS：51.429s/-6.00dBFS、40.000s/-1.00dBFS、41.143s/-1.00dBFS，首尾样本 0、接缝 0.000000"
+        },
+        {
+          "check": "inst_triple 失谐成对",
+          "result": "finel/finer 统一由 fine1 成对写入，消除单声道左右失谐拍频"
+        },
+        {
+          "check": "决战曲重写",
+          "result": "删除锯齿贝斯/主旋律/拍手/吊镲/十六分镲/snare_harsh；只剩低频持续+暖垫+干净四拍+克制铜管"
+        },
+        {
+          "check": "频谱复核",
+          "result": "bgm_jue_zhan ≤200Hz 91.2%、≥4kHz 0.4%；bgm_shen_hai 73.9%/0.0%；bgm_tan_suo 59.8%/0.8%"
+        },
+        {
+          "check": "八步门禁",
+          "result": "232 / 25 / 1422 / 8 / 20 / 144 / 1422（3273 断言，0 failed，无 ERROR）"
+        }
+      ],
+      "next_action": "用户 F5 重点试听决战曲是否仍有刺耳高频或怪异走向"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/IMPLEMENTATION_REPORT.md",
+        "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/VERIFICATION_REPORT.md",
+        "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/CODE_REVIEW.md",
+        "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+        "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md"
+      ],
+      "check_results": [
+        {
+          "check": "headless --import",
+          "result": "退出码 0，0 ERROR，22 条 wav / 22 个 .import 一一对应"
+        },
+        {
+          "check": "八步门禁",
+          "result": "232 / 25 / 1422 / 8 / 20 / 144 / 1422（3273 断言，0 failed，无 ERROR）；输出「全绿：可以交付」"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-027 v1 (plan_driven)"
+        },
+        {
+          "check": "check_task_scope.py check",
+          "result": "106 allowed / 73 unchanged pre-existing / 0 violation(s)"
+        },
+        {
+          "check": "check_task_scope.py check（文档收尾后复跑）",
+          "result": "117 allowed / 65 unchanged pre-existing / 0 violation(s)"
+        },
+        {
+          "check": "测试契约",
+          "result": "tests/ce_panding.gd 未改 19 键与 3 BGM 断言；028/029 新增断言属其他包"
+        },
+        {
+          "check": "F5 试听",
+          "result": "待用户：19 条音效辨识度、3 首 BGM 循环缝、决战曲高频与走向"
+        }
+      ],
+      "next_action": "用户 F5 试听 19 条音效与 3 首 BGM（重点决战曲与循环接缝）；完成学习检查点。未 commit、未 push。"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-11-14T20:53:42+08:00",
+    "exact_user_text": "三包都批准"
+  },
+  "capability_decisions": {
+    "superpowers": "not_needed",
+    "godot_skill": "available",
+    "code_review": "available"
+  }
+}

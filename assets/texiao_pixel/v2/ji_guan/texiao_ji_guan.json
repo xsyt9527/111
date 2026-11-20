@@ -1,0 +1,356 @@
+{
+ "frames": [
+  {
+   "filename": "ji_guan 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 12",
+   "frame": {
+    "x": 0,
+    "y": 63,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ji_guan 13",
+   "frame": {
+    "x": 160,
+    "y": 63,
+    "w": 160,
+    "h": 63
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 63
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 63
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_ji_guan.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 126
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 13,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "nature/thorns",
+   "name": "ji_guan",
+   "fps": 12,
+   "loop": true,
+   "frames": 14,
+   "frameSize": [
+    160,
+    63
+   ],
+   "pivot": [
+    80.0,
+    31.5
+   ],
+   "columns": 12,
+   "visible": [
+    133,
+    53
+   ],
+   "fit": "native",
+   "lifetime": 1.2,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -7,6 +7,7 @@ var mu_biao: Node2D = null  # 跟随的玩家鱼
 var kuan := 52.0
 var gao := 7.0
 var bi_li := 1.0  # 当前血量比：当前体型/上限
+var _shang_ci_bi := 1.0  # 上一帧血量比：掉血超过 2% 才播受击特效，回升不回放
 
 
 func _process(_delta: float) -> void:
@@ -15,6 +16,10 @@ func _process(_delta: float) -> void:
 	bi_li = clampf(ZhangBen.dang_qian_ti_xing / maxf(ZhangBen.ti_xing_shang_xian(), 0.01), 0.0, 1.0)
 	# 鱼头顶世界位：基准贴图高 100px × 根缩放的 0.62（身高占比），再悬空 16px
 	global_position = mu_biao.global_position + Vector2(0, -(100.0 * mu_biao.scale.y * 0.62 + 16.0))
+	# v2 血条受击：掉血瞬间在血条上闪一下红（固定 UI 尺寸，不随体型放大）
+	if bi_li < _shang_ci_bi - 0.02:
+		TeXiaoKu.bo_ming(&"sys_xue_tiao", self, global_position + Vector2(0, -gao - 6.0), kuan * 1.5)
+	_shang_ci_bi = bi_li
 	queue_redraw()
 
 

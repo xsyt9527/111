@@ -1,0 +1,444 @@
+{
+ "frames": [
+  {
+   "filename": "ji_guang 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 12",
+   "frame": {
+    "x": 0,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 13",
+   "frame": {
+    "x": 160,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 14",
+   "frame": {
+    "x": 320,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 15",
+   "frame": {
+    "x": 480,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 16",
+   "frame": {
+    "x": 640,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ji_guang 17",
+   "frame": {
+    "x": 800,
+    "y": 90,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_ji_guang.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 180
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 17,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "weather/aurora",
+   "name": "ji_guang",
+   "fps": 10,
+   "loop": true,
+   "frames": 18,
+   "frameSize": [
+    160,
+    90
+   ],
+   "pivot": [
+    0.0,
+    45.0
+   ],
+   "columns": 12,
+   "visible": [
+    160,
+    88
+   ],
+   "fit": "native",
+   "lifetime": 1.8,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

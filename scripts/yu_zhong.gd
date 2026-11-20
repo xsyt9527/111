@@ -17,3 +17,4 @@ class_name YuZhong
 @export var gong_ji_yu_wang := true  # 攻击欲望：路人鱼设 false，其余鱼主动索敌（策划案 8.5）
 @export var neng_li: NengLi = null  # 鱼种能力：吃掉它后，升级三选一里可能出现（TASK-014）
 @export var shi_boss := false  # 首领：不参与普通鱼群刷新，被咬到残血才算击败（鲸鲨，TASK-017）
+@export var ying_yang_dang := 1  # 营养档 1/2/3（隐藏营养值系统）：按鱼种最终成体生态位定，1=小型速生 2=中型 3=大型/顶级

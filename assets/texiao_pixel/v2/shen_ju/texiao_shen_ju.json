@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "shen_ju 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "shen_ju 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 32
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_shen_ju.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1440,
+   "h": 32
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "projectiles/bullet-tracer",
+   "name": "shen_ju",
+   "fps": 15,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    160,
+    32
+   ],
+   "pivot": [
+    0.0,
+    16.0
+   ],
+   "columns": 9,
+   "visible": [
+    124,
+    29
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

@@ -92,4 +92,5 @@ func _geng_xin_hong_guang(delta: float) -> void:
 
 func bei_chi() -> void:
 	# 被吃掉的统一入口：谁吃谁负责奖励，这里只管自己退场（子类按需覆写）
+	TeXiaoKu.bo_fan_kui(&"shi_rou", get_parent(), global_position, null)  # v2 拾取肉块：金色小点，固定尺寸
 	queue_free()

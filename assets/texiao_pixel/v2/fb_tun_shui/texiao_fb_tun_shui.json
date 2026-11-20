@@ -1,0 +1,268 @@
+{
+ "frames": [
+  {
+   "filename": "fb_tun_shui 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_tun_shui 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_tun_shui.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1600,
+   "h": 91
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 9,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "water/splash",
+   "name": "fb_tun_shui",
+   "fps": 15,
+   "loop": false,
+   "frames": 10,
+   "frameSize": [
+    160,
+    91
+   ],
+   "pivot": [
+    80.0,
+    45.5
+   ],
+   "columns": 10,
+   "visible": [
+    94,
+    90
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "TASK-027",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "参数化音频合成管线：统一采样率/位深/声道/峰值约束产出 19 条音效",
+    "键表解耦：YIN_XIAO_BIAO 键名稳定，只替换 preload 资源路径",
+    "无缝循环与尾音折回：loop_wav 把尾音叠回开头，消除循环断点",
+    "资源导入与运行时接线分离：先验证 import，再验证播放链路",
+    "音频格式与峰值校验：validate/validate_bgm 检查格式、时长、峰值、循环缝"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [
+    "AI 侧验证（非学生学习证据）：22 条 WAV 独立复核 PASS；八步门禁 3273 断言全绿；scope 0 violation"
+  ],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "LMMS 批量渲染 3 条 BGM 的耗时与稳定性",
+    "重编曲后原时长能否保持在 ±0.05 秒",
+    "Web 导出包体变化与加载时间",
+    "19 条音效的主观辨识度"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

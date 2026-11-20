@@ -1,0 +1,27 @@
+{
+  "task_id": "TASK-028",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "显影与飞入：元素初始在最终位置，只改变 alpha 与 scale",
+    "单一焦点与留白：同一时间只让一个元素成为视觉中心",
+    "打字机 visible_ratio：用比例控制文本逐步显现",
+    "4 帧 AnimatedSprite2D 与冷色背光：用动态剪影替代红闪震屏",
+    "单一收尾入口与 Tween 生命周期：所有临时对象在一处清理"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [
+    "AI 侧验证（非学生学习证据）：6zf 静态/运行时断言通过；八步门禁 3273 断言全绿；scope 0 violation"
+  ],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "92px 黑边在 16:9 与手机比例下的观感",
+    "4 帧船体与冷蓝背光的压迫感强度",
+    "打字机速度与 7.3 秒总时长的节奏",
+    "玩家格金框与区域名小字在低分辨率下的可读性"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

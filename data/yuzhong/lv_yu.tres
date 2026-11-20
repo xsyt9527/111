@@ -10,6 +10,7 @@
 script = ExtResource("1_yu_zhong")
 bian_hao = &"lv_yu"
 ming_zi = "电鳗"
+ying_yang_dang = 1
 dengji = 3
 fan_ying_shi_jian = 0.6
 fenzhi = 2

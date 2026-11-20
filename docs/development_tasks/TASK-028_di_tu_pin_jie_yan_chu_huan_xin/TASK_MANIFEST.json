@@ -1,0 +1,429 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-028",
+  "task_spec_version": 1,
+  "slug": "di-tu-pin-jie-yan-chu-huan-xin",
+  "title": "九图拼合结尾演出重做：慢推镜、九格显影、打字机与冷蓝船影",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "objective": "按用户 2026-11-14 反馈「结尾那个动画太 ai 了，参考其他游戏优化下」，把通关前 7.3 秒九图拼合演出从「九块图飞入 + 回弹 + 红闪 + 大标题 + 震屏 + 玩家翘头旋转」改为《潜水员戴夫》式分镜：黑边合拢、镜头慢推、九格在最终位置波纹显影、单一焦点、区域名打字机、留白、机械船用 4 帧动态船体从上方压入并配低透明冷蓝背光；去掉红闪、震屏、震惊气泡与玩家旋转；保持 YAN_CHU_SHI_CHANG=7.3 秒，jie_shu 只发一次。用户追加要求：九格拼合顺序改为从左上角开始按行优先 1→2→…→9 一张一张拼下来（pin_jie_shun_xu=[0,1,2,3,4,5,6,7,8]），玩家格不再固定最后。",
+  "audit_freshness": {
+    "audited_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "environment_checked_at": "2026-11-14T20:10:03+08:00",
+    "engine_executable_source": "GODOT_4_7_BIN",
+    "engine_version_detected": "4.7.2.stable.official.ed1daf0bf",
+    "audit_invalidation_triggers": [
+      "DiTuPinJieYanChu 演出时长、纯函数或信号变化",
+      "Main 的结尾演出连接、10 秒无敌或机械船生成时序变化",
+      "九图静态契约断言变化",
+      "HUD 层名、音效键表或 BGM 曲目变化",
+      "场景顶层结构、Autoload 或引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "通关前九图拼合演出",
+      "演出期间的主场景 HUD 临时隐藏",
+      "演出跳过入口"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/di_tu_pin_jie_yan_chu.gd",
+      "res://scripts/main.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-020（九宫格房间与九图拼合演出原型）",
+      "TASK-021/023（HUD 与小地图层名）"
+    ],
+    "consumed_interfaces": [
+      "Main._bo_fang_ren_lei_yan_chu()",
+      "Main.dang_qian_fang_jian / fang_jian_qu() / qu_yu_pian()",
+      "DiTuPinJieYanChu.jie_shu 信号",
+      "DiTuPinJieYanChu.quan_tu_zoom / ge_zi_qu / ge_zi_zhong_xin / wan_jia_pian / pin_jie_shun_xu / fei_ru_qi_dian / WAN_JIA_JU_JIAO / YAN_CHU_SHI_CHANG",
+      "YinXiang.fang / bo_bgm",
+      "data/donghua/ji_qi_chuan_4zhen.tres"
+    ],
+    "provided_interfaces": [
+      "DiTuPinJieYanChu.jie_shu（仍只发一次）",
+      "DiTuPinJieYanChu._unhandled_input(ui_cancel) 跳过入口",
+      "fei_ru_qi_dian() 保留供静态契约调用，运行时不再使用",
+      "Main 演出期间 QiPaoCeng / SheZhi 按钮隐藏与恢复"
+    ],
+    "emitted_signals": [
+      "jie_shu：演出结束唯一信号，只发一次"
+    ],
+    "received_signals": [
+      "Main 连接 jie_shu 继续生成机械船",
+      "跳过按钮与 ESC 走同一 _tiao_guo() 路径"
+    ],
+    "shared_state": [
+      "演出期间玩家节点仍存在，结束后还原位置/旋转/相机 offset",
+      "QiPaoCeng 与设置按钮只在演出期间隐藏，结束后恢复原 visible",
+      "YAN_CHU_SHI_CHANG 与 _ding_shi(7.3) 必须一致"
+    ],
+    "registered_shared_changes": [
+      "Main 新增演出期间 HUD 临时隐藏/恢复，不改流程时序",
+      "DiTuPinJieYanChu 删除震惊气泡节点与 _process 跟随，改为静态分镜"
+    ],
+    "conflict_hotspots": [
+      "scripts/di_tu_pin_jie_yan_chu.gd 与 TASK-020 九图静态契约",
+      "scripts/main.gd 与 Main 的 10 秒无敌/机械船生成时序",
+      "tests/ce_panding.gd 九图静态断言与 HUD 层名断言",
+      "QiPaoCeng 随机气泡入镜、SheZhi 设置按钮暂停冻住 tween"
+    ],
+    "required_integration_checks": [
+      "validate_task.py VALID",
+      "headless --import 退出码 0",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "F5 目检 7.3 秒演出与演出后机械船生成"
+    ]
+  },
+  "allowed_existing_files": [
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/an_niu.wav",
+    "assets/yinxiao/an_niu.wav.import",
+    "assets/yinxiao/bgm_jue_zhan.wav",
+    "assets/yinxiao/bgm_jue_zhan.wav.import",
+    "assets/yinxiao/bgm_shen_hai.wav",
+    "assets/yinxiao/bgm_shen_hai.wav.import",
+    "assets/yinxiao/bgm_tan_suo.wav",
+    "assets/yinxiao/bgm_tan_suo.wav.import",
+    "assets/yinxiao/chi.wav",
+    "assets/yinxiao/chi.wav.import",
+    "assets/yinxiao/fang_neng_li.wav",
+    "assets/yinxiao/fang_neng_li.wav.import",
+    "assets/yinxiao/sheng_ji.wav",
+    "assets/yinxiao/sheng_ji.wav.import",
+    "assets/yinxiao/sheng_li.wav",
+    "assets/yinxiao/sheng_li.wav.import",
+    "assets/yinxiao/shi_bai.wav",
+    "assets/yinxiao/shi_bai.wav.import",
+    "assets/yinxiao/shi_kong.wav",
+    "assets/yinxiao/shi_kong.wav.import",
+    "assets/yinxiao/shou_shang.wav",
+    "assets/yinxiao/shou_shang.wav.import",
+    "assets/yinxiao/si_wang.wav",
+    "assets/yinxiao/si_wang.wav.import",
+    "assets/yinxiao/tan_chuang.wav",
+    "assets/yinxiao/tan_chuang.wav.import",
+    "assets/yinxiao/yao.wav",
+    "assets/yinxiao/yao.wav.import",
+    "assets/yinxiao/yin_xiao_chong_ci.wav",
+    "assets/yinxiao/yin_xiao_chong_ci.wav.import",
+    "assets/yinxiao/yin_xiao_dian_xi.wav",
+    "assets/yinxiao/yin_xiao_dian_xi.wav.import",
+    "assets/yinxiao/yin_xiao_du_xi.wav",
+    "assets/yinxiao/yin_xiao_du_xi.wav.import",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav.import",
+    "assets/yinxiao/yin_xiao_jing_bao.wav",
+    "assets/yinxiao/yin_xiao_jing_bao.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_na.wav",
+    "assets/yinxiao/yin_xiao_sheng_na.wav.import",
+    "assets/yinxiao/yin_xiao_shou_shang.wav",
+    "assets/yinxiao/yin_xiao_shou_shang.wav.import",
+    "assets/yinxiao/yin_xiao_si_wang.wav",
+    "assets/yinxiao/yin_xiao_si_wang.wav.import",
+    "assets/yinxiao/yin_xiao_tun_xia.wav",
+    "assets/yinxiao/yin_xiao_tun_xia.wav.import",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav.import",
+    "assets/yinxiao/yin_xiao_yao_ji.wav",
+    "assets/yinxiao/yin_xiao_yao_ji.wav.import",
+    "docs/TASK_INDEX.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+    "docs/引擎词总表.md",
+    "project.godot",
+    "rigs/",
+    "scripts/di_tu_pin_jie_yan_chu.gd",
+    "scripts/main.gd",
+    "scripts/neng_li_ui.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/yin_xiang.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/yu_qun.gd",
+    "scripts/zhang_ben.gd",
+    "scripts/zhuan_shu_ku/fen_yu.gd",
+    "tests/ce_panding.gd",
+    "tools/yinyue/",
+    "tools/yinyue/shengcheng_yin_xiao.py",
+    "tools/yinyue/shengcheng_yinyue.py"
+  ],
+  "allowed_new_files": [
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/yin_xiao_an_niu.wav",
+    "assets/yinxiao/yin_xiao_an_niu.wav.import",
+    "assets/yinxiao/yin_xiao_chi.wav",
+    "assets/yinxiao/yin_xiao_chi.wav.import",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_li.wav",
+    "assets/yinxiao/yin_xiao_sheng_li.wav.import",
+    "assets/yinxiao/yin_xiao_shi_bai.wav",
+    "assets/yinxiao/yin_xiao_shi_bai.wav.import",
+    "assets/yinxiao/yin_xiao_shi_kong.wav",
+    "assets/yinxiao/yin_xiao_shi_kong.wav.import",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav.import",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/VERIFICATION_REPORT.md",
+    "project.godot",
+    "rigs/",
+    "tests/_tmp_yu_wang_probe.gd",
+    "tests/_tmp_yu_wang_probe.gd.uid",
+    "tests/_tmp_yu_wang_probe.tscn",
+    "tools/yinyue/"
+  ],
+  "forbidden_systems": [
+    "修改 YAN_CHU_SHI_CHANG=7.3 或 _ding_shi(7.3, _jie_shu_yan_chu)",
+    "修改九图静态纯函数契约 GE_SHU/DI_TU_CHI_CUN/MEI_GE_CHI_CUN/quan_tu_zoom/ge_zi_qu/ge_zi_zhong_xin/wan_jia_pian/fei_ru_qi_dian/WAN_JIA_JU_JIAO；pin_jie_shun_xu 允许且必须改为 [0,1,2,3,4,5,6,7,8] 并与测试同步",
+    "新增音效键或 BGM 曲目",
+    "修改 HUD_CENG_MING 中的 XiaoDiTuUI 层名",
+    "改动 Main 的 10 秒无敌、机械船生成时序或顶层节点树",
+    "修改 gameplay 数值、鱼种、存档或 project.godot",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "黑边合拢、左上角起逐张拼合与接缝金线",
+      "behavior": "0.0~1.6 秒黑边合拢到 92px、镜头从玩家特写缓拉到全图；0.5~2.5 秒九块图按 pin_jie_shun_xu=[0,1,2,3,4,5,6,7,8]（左上→右上→第二行→右下）每块约 0.15 秒错峰显影：初始就在最终中心，alpha 0→1、scale 0.96→1、并从上方 18~24px 落下拼合，各带一圈波纹；玩家格不再固定最后，按所在格序号出现；1.2~2.2 秒接缝金线随已拼好的边分段亮到 0.55；不再大距离飞入、不回弹。",
+      "main_concept": "行优先顺序拼合：用固定 0..8 序列表达「一张一张拼下来」，而不是先四角再中心",
+      "files": [
+        "scripts/di_tu_pin_jie_yan_chu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "pin_jie_shun_xu 等于 [0,1,2,3,4,5,6,7,8]",
+        "九块图初始位置等于 ge_zi_zhong_xin(pian)，逐块 alpha/scale/落下显影",
+        "运行时不再调用 fei_ru_qi_dian() 计算起点",
+        "WAN_JIA_JU_JIAO=0.88 契约不变"
+      ],
+      "manual_checks": [
+        "F5 目检左上角到右下角逐张拼合与波纹"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "玩家格焦点、区域名打字机与镜头呼吸",
+      "behavior": "2.5~3.6 秒玩家格金框亮起、镜头轻推近玩家 0.6 秒并停留；区域名与水位小字用 visible_ratio 打字机显现；3.6~4.5 秒镜头缓回全图、区域名淡出；去掉震惊气泡与「浮游望青天」大字。",
+      "main_concept": "单一焦点：同一时间只让一个元素成为视觉中心",
+      "files": [
+        "scripts/di_tu_pin_jie_yan_chu.gd"
+      ],
+      "automated_checks": [
+        "不再创建震惊气泡节点",
+        "区域名 visible_ratio 从 0 到 1",
+        "玩家位置/旋转在演出结束后还原"
+      ],
+      "manual_checks": [
+        "F5 目检玩家格金框与打字机节奏"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "机械船动态入场、冷蓝背光与去红闪震屏",
+      "behavior": "4.5~5.9 秒播放 jing_bao 与决战 BGM，船体用 4 帧 AnimatedSprite2D 从画面上缘 1.4 秒压入，冷蓝背光最高 alpha 约 0.12，全图压暗 12%，标题打字机 0.05 秒/字；5.9~6.6 秒船停驻、舱灯闪 2 次、落点一次气泡；无红闪、无震屏、无玩家翘头。",
+      "main_concept": "动态剪影：用 4 帧船体与冷色背光制造压迫，而不是靠红闪与震屏堆叠",
+      "files": [
+        "scripts/di_tu_pin_jie_yan_chu.gd"
+      ],
+      "automated_checks": [
+        "使用 ji_qi_chuan_4zhen.tres 且保留静态 CHUAN_TIE_TU 兜底",
+        "背光颜色为冷蓝且 alpha 上限约 0.12",
+        "无红闪、无震屏节点/Tween",
+        "标题 visible_ratio 打字机"
+      ],
+      "manual_checks": [
+        "F5 目检船体压入与冷蓝背光"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "HUD 临时隐藏、ESC 跳过、测试与门禁",
+      "behavior": "演出期间隐藏 QiPaoCeng 与设置按钮，结束后恢复；0.6 秒出现跳过按钮，ESC 走同一 _tiao_guo()；7.3 秒 _jie_shu_yan_chu() 杀 tween、还原玩家、清 camera offset、jie_shu 只发一次、queue_free；更新九图测试与文档。",
+      "main_concept": "生命周期收尾：演出必须只有一个收尾入口，所有 Tween 与临时节点在同一处清理",
+      "files": [
+        "scripts/main.gd",
+        "scripts/di_tu_pin_jie_yan_chu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "jie_shu 只发一次（正常路径与跳过路径）",
+        "演出期间 QiPaoCeng/设置按钮隐藏，结束后恢复",
+        "YAN_CHU_SHI_SHANG 与 _ding_shi(7.3) 一致",
+        "八步门禁全绿"
+      ],
+      "manual_checks": [
+        "F5 演出后机械船正常生成且可继续操作",
+        "ESC/按钮跳过不重复发 jie_shu"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释「显影」与「飞入」在时间轴上的差别",
+      "能解释 pin_jie_shun_xu 从四角优先改为行优先 0..8 的理由与测试同步方式",
+      "能说明为什么九图静态纯函数契约必须保留",
+      "能指出 _jie_shu_yan_chu() 是唯一收尾入口并解释 jie_shu 只发一次",
+      "能说明演出期间隐藏 QiPaoCeng/设置按钮的原因"
+    ],
+    "concepts": [
+      "显影与飞入",
+      "单一焦点与留白",
+      "打字机 visible_ratio",
+      "4 帧 AnimatedSprite2D 与冷色背光",
+      "单一收尾入口与 Tween 生命周期"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "DiTuPinJieYanChu 仍是 Main 运行时创建的演出节点；只改其内部视觉与时间轴，并对 Main 下既有 QiPaoCeng/设置按钮做临时 visible 切换；不新增/删除主场景节点、不改顶层树、不改 Autoload 与存档。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0 且 0 ERROR",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规",
+    "jie_shu 单次发送断言（正常与跳过路径）"
+  ],
+  "required_manual_checks": [
+    "F5 480 秒触发结尾，检查慢推、左上角到右下角逐张拼合、单一焦点、打字机",
+    "F5 检查冷蓝船影、无红闪/震屏、无震惊气泡",
+    "F5 检查 ESC/按钮跳过只发一次 jie_shu",
+    "F5 演出结束后机械船正常生成且可继续操作",
+    "用户截图对比新旧分镜并确认观感"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "92px 黑边在 16:9 与手机比例下的观感",
+      "4 帧船体与冷蓝背光的亮度是否足够压迫",
+      "打字机速度与 7.3 秒总时长的节奏是否偏赶",
+      "玩家格金框与区域名小字在低分辨率下的可读性"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要改演出总时长或 Main 无敌/船生成时序",
+    "需要改九图静态纯函数契约",
+    "需要新增音效键、BGM 曲目或美术资源",
+    "需要改主场景顶层结构或 HUD 层名",
+    "需要改 gameplay 数值、鱼种或存档"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-14T20:53:42+08:00",
+    "exact_user_text": "三包都批准",
+    "canonical_example": "确认 TASK-028 v1 进入开发"
+  }
+}

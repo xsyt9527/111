@@ -1,0 +1,488 @@
+{
+ "frames": [
+  {
+   "filename": "huan_feng 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 1",
+   "frame": {
+    "x": 196,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 2",
+   "frame": {
+    "x": 392,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 3",
+   "frame": {
+    "x": 588,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 4",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 5",
+   "frame": {
+    "x": 980,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 6",
+   "frame": {
+    "x": 1176,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 7",
+   "frame": {
+    "x": 1372,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 8",
+   "frame": {
+    "x": 1568,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 9",
+   "frame": {
+    "x": 1764,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 10",
+   "frame": {
+    "x": 0,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 11",
+   "frame": {
+    "x": 196,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 12",
+   "frame": {
+    "x": 392,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 13",
+   "frame": {
+    "x": 588,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 14",
+   "frame": {
+    "x": 784,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 15",
+   "frame": {
+    "x": 980,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 16",
+   "frame": {
+    "x": 1176,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 17",
+   "frame": {
+    "x": 1372,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 18",
+   "frame": {
+    "x": 1568,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  },
+  {
+   "filename": "huan_feng 19",
+   "frame": {
+    "x": 1764,
+    "y": 168,
+    "w": 196,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 168
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_huan_feng.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1960,
+   "h": 336
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 19,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "nature/tornado",
+   "name": "huan_feng",
+   "fps": 10,
+   "loop": true,
+   "frames": 20,
+   "frameSize": [
+    196,
+    168
+   ],
+   "pivot": [
+    98.0,
+    84.0
+   ],
+   "columns": 10,
+   "visible": [
+    143,
+    164
+   ],
+   "fit": "native",
+   "lifetime": 2.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

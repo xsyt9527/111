@@ -1,0 +1,415 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-029",
+  "task_spec_version": 1,
+  "slug": "ji-neng-lan-bu-ju-yu-gong-ji-jian",
+  "title": "主动技能栏自适应布局与手动攻击键",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "objective": "按用户 2026-11-14 反馈处理两个 UI 问题：①「主动技能太多会超出屏幕」——neng_li_ui.gd 的竖排按钮组改为按数量自适应列数/行高/列宽，最多 4 列、每列最多 5 个，10 个以上主动仍完整显示在 1280×720 内；②「要不要加个攻击键」——在右下角新增手动咬击按钮（代码生成，不改 Main.tscn），点击立即触发一次咬击，与自动咬共享同一冷却，按钮显示冷却读秒，自动咬默认保留；摇杆换到右手侧时按钮组与攻击键整体镜像到左侧。",
+  "audit_freshness": {
+    "audited_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "environment_checked_at": "2026-11-14T20:53:42+08:00",
+    "engine_executable_source": "GODOT_4_7_BIN",
+    "engine_version_detected": "4.7.2.stable.official.ed1daf0bf",
+    "audit_invalidation_triggers": [
+      "NengLiUI 按钮布局、位置或尺寸常量变化",
+      "Yu._chang_shi_yao_ji / _yao_ji_leng_que / zi_dong_yao_ji 行为变化",
+      "摇杆换边设置 yao_gan_ce 或视口尺寸变化",
+      "Main.tscn 的 NengLiUI / UI 层结构变化",
+      "tests/ce_panding.gd 布局与咬击断言变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "主动技能按钮布局",
+      "手动攻击按钮与冷却反馈",
+      "摇杆换边时的 UI 镜像"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/neng_li_ui.gd",
+      "res://scripts/yu.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-014（主动技能按钮组与账本 zhu_dong_zu）",
+      "TASK-024（机械船可咬契约与统一结算）",
+      "TASK-026（咬伤经验与鱼王规则）"
+    ],
+    "consumed_interfaces": [
+      "ZhangBen.zhu_dong_zu / dang_qian_zhu_dong_dang",
+      "Yu.shi_fang_zhu_dong / _chang_shi_yao_ji / _yao_ji_leng_que / leng_que_sheng",
+      "Yu.zi_dong_yao_ji",
+      "CunDang.yao_gan_ce",
+      "Main._qie_huan_hud 对 NengLiUI CanvasLayer 的显隐"
+    ],
+    "provided_interfaces": [
+      "NengLiUI.ji_neng_bu_ju(shu, shi_kou) -> Array[Dictionary]（纯函数：按钮位置/尺寸）",
+      "NengLiUI.gong_ji_an_niu_wei_zhi(shi_kou, yao_gan_ce) -> Vector2",
+      "Yu.yao_ji_shou_dong() -> bool"
+    ],
+    "emitted_signals": [
+      "无新增信号；攻击键 pressed 直接调 Yu.yao_ji_shou_dong"
+    ],
+    "received_signals": [
+      "Button.pressed 仍走既有技能释放入口"
+    ],
+    "shared_state": [
+      "手动咬击与自动咬共用 _yao_ji_leng_que：一次咬击只结算一次冷却",
+      "自动咬默认 zi_dong_yao_ji=true 不变；攻击键是补充入口，不替换自动咬",
+      "按钮布局只在装备数或摇杆侧变化时重建"
+    ],
+    "registered_shared_changes": [
+      "NengLiUI 新增代码生成的攻击按钮，不新增场景节点",
+      "Yu 新增 yao_ji_shou_dong() 公开入口，不改 _chang_shi_yao_ji 内部结算"
+    ],
+    "conflict_hotspots": [
+      "scripts/neng_li_ui.gd 的 _tong_bu_an_niu 与长按范围/冷却变暗逻辑",
+      "scripts/yu.gd 的自动咬与冲撞/失控互斥",
+      "tests/ce_panding.gd 既有按钮位置与咬击断言",
+      "摇杆换边时技能组与被动标签的镜像位置",
+      "NengLiUI 层在演出期间被 Main._qie_huan_hud 临时隐藏"
+    ],
+    "required_integration_checks": [
+      "validate_task.py VALID",
+      "headless --import 退出码 0 且 0 ERROR",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "F5 10+ 主动不溢出与攻击键可咬"
+    ]
+  },
+  "allowed_existing_files": [
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/an_niu.wav",
+    "assets/yinxiao/an_niu.wav.import",
+    "assets/yinxiao/bgm_jue_zhan.wav",
+    "assets/yinxiao/bgm_jue_zhan.wav.import",
+    "assets/yinxiao/bgm_shen_hai.wav",
+    "assets/yinxiao/bgm_shen_hai.wav.import",
+    "assets/yinxiao/bgm_tan_suo.wav",
+    "assets/yinxiao/bgm_tan_suo.wav.import",
+    "assets/yinxiao/chi.wav",
+    "assets/yinxiao/chi.wav.import",
+    "assets/yinxiao/fang_neng_li.wav",
+    "assets/yinxiao/fang_neng_li.wav.import",
+    "assets/yinxiao/sheng_ji.wav",
+    "assets/yinxiao/sheng_ji.wav.import",
+    "assets/yinxiao/sheng_li.wav",
+    "assets/yinxiao/sheng_li.wav.import",
+    "assets/yinxiao/shi_bai.wav",
+    "assets/yinxiao/shi_bai.wav.import",
+    "assets/yinxiao/shi_kong.wav",
+    "assets/yinxiao/shi_kong.wav.import",
+    "assets/yinxiao/shou_shang.wav",
+    "assets/yinxiao/shou_shang.wav.import",
+    "assets/yinxiao/si_wang.wav",
+    "assets/yinxiao/si_wang.wav.import",
+    "assets/yinxiao/tan_chuang.wav",
+    "assets/yinxiao/tan_chuang.wav.import",
+    "assets/yinxiao/yao.wav",
+    "assets/yinxiao/yao.wav.import",
+    "assets/yinxiao/yin_xiao_chong_ci.wav",
+    "assets/yinxiao/yin_xiao_chong_ci.wav.import",
+    "assets/yinxiao/yin_xiao_dian_xi.wav",
+    "assets/yinxiao/yin_xiao_dian_xi.wav.import",
+    "assets/yinxiao/yin_xiao_du_xi.wav",
+    "assets/yinxiao/yin_xiao_du_xi.wav.import",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav.import",
+    "assets/yinxiao/yin_xiao_jing_bao.wav",
+    "assets/yinxiao/yin_xiao_jing_bao.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_na.wav",
+    "assets/yinxiao/yin_xiao_sheng_na.wav.import",
+    "assets/yinxiao/yin_xiao_shou_shang.wav",
+    "assets/yinxiao/yin_xiao_shou_shang.wav.import",
+    "assets/yinxiao/yin_xiao_si_wang.wav",
+    "assets/yinxiao/yin_xiao_si_wang.wav.import",
+    "assets/yinxiao/yin_xiao_tun_xia.wav",
+    "assets/yinxiao/yin_xiao_tun_xia.wav.import",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav.import",
+    "assets/yinxiao/yin_xiao_yao_ji.wav",
+    "assets/yinxiao/yin_xiao_yao_ji.wav.import",
+    "docs/TASK_INDEX.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+    "docs/引擎词总表.md",
+    "project.godot",
+    "rigs/",
+    "scripts/di_tu_pin_jie_yan_chu.gd",
+    "scripts/main.gd",
+    "scripts/neng_li_ui.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/yin_xiang.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/yu_qun.gd",
+    "scripts/zhang_ben.gd",
+    "scripts/zhuan_shu_ku/fen_yu.gd",
+    "tests/ce_panding.gd",
+    "tools/yinyue/",
+    "tools/yinyue/shengcheng_yin_xiao.py",
+    "tools/yinyue/shengcheng_yinyue.py"
+  ],
+  "allowed_new_files": [
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/yin_xiao_an_niu.wav",
+    "assets/yinxiao/yin_xiao_an_niu.wav.import",
+    "assets/yinxiao/yin_xiao_chi.wav",
+    "assets/yinxiao/yin_xiao_chi.wav.import",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_li.wav",
+    "assets/yinxiao/yin_xiao_sheng_li.wav.import",
+    "assets/yinxiao/yin_xiao_shi_bai.wav",
+    "assets/yinxiao/yin_xiao_shi_bai.wav.import",
+    "assets/yinxiao/yin_xiao_shi_kong.wav",
+    "assets/yinxiao/yin_xiao_shi_kong.wav.import",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav.import",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/VERIFICATION_REPORT.md",
+    "project.godot",
+    "rigs/",
+    "tests/_tmp_yu_wang_probe.gd",
+    "tests/_tmp_yu_wang_probe.gd.uid",
+    "tests/_tmp_yu_wang_probe.tscn",
+    "tools/yinyue/"
+  ],
+  "forbidden_systems": [
+    "修改 scenes/Main.tscn 顶层结构或 project.godot（攻击按钮必须代码生成）",
+    "新增 Autoload 或修改存档 schema",
+    "修改技能键名、冷却数值、账本 zhu_dong_zu 或 YIN_XIAO_BIAO",
+    "关闭或替换自动咬默认行为（zi_dong_yao_ji 默认仍为 true）",
+    "改咬击伤害、经验或接触减免数值（属于 TASK-026）",
+    "重做九图结尾演出或重制音频",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "主动技能栏按数量自适应布局",
+      "behavior": "新增纯函数 ji_neng_bu_ju(shu, shi_kou)：列数 = clamp(ceil(shu/5),1,4)，每列最多 5 个；按钮从底部 680 向上排，行高在数量多时从 72 压缩到不低于 52，按钮宽 1~2 列 210、3 列 168、4 列 132；右缘固定 1250，第 0 个在右下，后续沿列向上、再向左展开；摇杆换右手侧时整体镜像到左缘 30。装备数为 0 或变化时才重建。",
+      "main_concept": "布局纯函数：把「数量 → 位置/尺寸」算清楚，再让节点照结果摆放",
+      "files": [
+        "scripts/neng_li_ui.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "1/5/10/11/20 个主动的列数与行数符合预期",
+        "所有按钮矩形在视口 1280×720 内且互不重叠",
+        "摇杆换边后所有按钮 x 镜像且仍在屏内",
+        "按钮尺寸不低于最小可点击尺寸"
+      ],
+      "manual_checks": [
+        "F5 装备 10 个以上主动时整列不超出屏幕",
+        "F5 摇杆换右手侧后技能组整体换到左侧"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "手动攻击键与冷却反馈",
+      "behavior": "NengLiUI 代码生成一个 96×96 圆形攻击按钮，放在右下角技能组右侧、右缘 1250、下缘 680；pressed 调 Yu.yao_ji_shou_dong()：冷却中/冲撞中/失控/演出中被拒绝，空挥不进冷却，咬到目标才进入与自动咬相同的 _yao_ji_leng_que；按钮文本显示「咬 + 就绪/冷却剩余」，冷却中变暗；摇杆换右手侧时攻击键与技能组镜像到左下。",
+      "main_concept": "统一冷却：手动与自动咬击共用同一把冷却尺，避免双入口重复结算",
+      "files": [
+        "scripts/neng_li_ui.gd",
+        "scripts/yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "yu.yao_ji_shou_dong() 冷却中返回 false",
+        "空挥返回 false 且不进冷却",
+        "咬到鱼/船返回 true 并进入 _yao_ji_leng_que",
+        "失控/冲撞中/演出中拒绝",
+        "攻击按钮位置在屏内且不压技能按钮"
+      ],
+      "manual_checks": [
+        "F5 点击攻击键能咬鱼与机械船",
+        "F5 冷却读秒与变暗反馈正确",
+        "手机/触摸点击可触发且不误触摇杆"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "测试、门禁与文档收尾",
+      "behavior": "新增布局纯函数与攻击键用例；八步门禁全绿；validate 与 scope 零违规；更新任务索引、引擎词表与学习路线；写三份报告。",
+      "main_concept": "UI 纯函数化：布局可测试，交互走既有结算入口",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "validate_task.py VALID",
+        "check_task_scope.py check 0 violation",
+        "headless --import 0 ERROR",
+        "tests/pao_pi.bat 八步全绿"
+      ],
+      "manual_checks": [
+        "用户 F5 验收技能栏与攻击键"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释为什么布局要用纯函数算位置再摆节点",
+      "能说明手动咬击与自动咬击为什么必须共用同一冷却",
+      "能定位攻击键在冲撞/失控/演出中被拒绝的原因",
+      "能说明代码生成按钮为什么不改 Main.tscn"
+    ],
+    "concepts": [
+      "布局纯函数",
+      "统一冷却入口",
+      "代码生成 UI 与场景节点分离",
+      "摇杆换边镜像",
+      "按钮状态反馈"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "攻击按钮由 NengLiUI._tong_bu_an_niu 代码生成与释放，仍是 NengLiUI CanvasLayer 的子节点；不新增/删除主场景节点、不改顶层树、不改 Autoload 与存档。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0 且 0 ERROR",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规",
+    "布局纯函数与攻击键冷却用例"
+  ],
+  "required_manual_checks": [
+    "F5 10 个以上主动技能按钮完整显示不溢出",
+    "F5 攻击键咬鱼/咬船与冷却读秒",
+    "F5 摇杆换右手侧后技能组与攻击键镜像",
+    "用户确认按钮大小与位置手感可接受"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "4 列布局在手机 16:9 与刘海屏下的实际可点击性",
+      "攻击键与技能组同时出现在右下角的拥挤程度",
+      "手动咬击是否让玩家频繁空挥，需要 F5 手感评估"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要改 Main.tscn 或 project.godot 才能放下按钮",
+    "需要新增 Autoload 或存档字段",
+    "需要改技能数值、键名或咬击结算",
+    "需要重做演出或音频"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-14T21:21:38+08:00",
+    "exact_user_text": "TASK-029 已创建，awaiting 停等你的批准，通过",
+    "canonical_example": "确认 TASK-029 v1 进入开发"
+  }
+}

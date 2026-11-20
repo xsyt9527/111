@@ -100,7 +100,10 @@ static func _shi_fang_liu_xing_yue(yu, neng: NengLi, dang: int) -> bool:
 	yu.set_meta(M_LIU_TIAO, chi_xu)
 	yu.set_meta(M_LIU_YAO, 0.0)
 	_kai_wu_di(yu, chi_xu)
-	TE_XIAO.ni_liu(yu.get_parent(), yu.global_position, 1.2)
+	# v2 流星跃起跳：青色脱离水面的滑翔尾迹，尺寸随体长；缺资源回退旧逆流
+	if TeXiaoKu.bo_ming(&"liu_xing", yu.get_parent(), yu.global_position,
+			TeXiaoKu.ti_kuan(yu) * 1.3) == null:
+		TE_XIAO.ni_liu(yu.get_parent(), yu.global_position, 1.2)
 	return true
 
 
@@ -143,7 +146,10 @@ static func _luo_di_liu_xing_yue(yu, neng: NengLi) -> void:
 			if npc.has_method("tui_kai"):
 				npc.call("tui_kai", fang.normalized(), tui_ju)  # 船内部会压成极轻位移
 	yu.set_meta(M_LIU_YAO, LIU_XING_YAO_MIAO)
-	TE_XIAO.xuan_wo(yu.get_parent(), yu.global_position, 1.5)
+	# v2 流星跃落地：砸地冲击波盖住判定圈；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"liu_xing", yu.get_parent(), yu.global_position,
+			ban_jing * 2.0) == null:
+		TE_XIAO.xuan_wo(yu.get_parent(), yu.global_position, 1.5)
 	_guan_wu_di(yu)
 
 
@@ -168,7 +174,10 @@ static func _shi_fang_shen_ju_chong_feng(yu, neng: NengLi, dang: int) -> bool:
 	yu.set_meta(M_SHEN_SU, ju_li / chi_xu)
 	yu.set_meta(M_SHEN_MING, false)
 	_kai_wu_di(yu, chi_xu)
-	TE_XIAO.yu_lei(yu.get_parent(), yu.global_position, 1.1)
+	# v2 神驹冲锋：蹄下青色冲刺浪，尺寸随体长；缺资源回退旧水花
+	if TeXiaoKu.bo_ming(&"shen_ju", yu.get_parent(), yu.global_position,
+			TeXiaoKu.ti_kuan(yu) * 1.4) == null:
+		TE_XIAO.yu_lei(yu.get_parent(), yu.global_position, 1.1)
 	return true
 
 
@@ -211,7 +220,10 @@ static func _ming_zhong_shen_ju_chong_feng(yu, neng: NengLi, mu: Node2D) -> void
 		mu.call("shou_dao_yao_ji", shang_hai, yu)
 	if shu_fu_miao > 0.0 and _ke_yong_mu_biao(mu) and mu.has_method("jia_zhuang_tai"):
 		mu.call("jia_zhuang_tai", &"shu_fu", shu_fu_miao)
-	TE_XIAO.ying_lin(yu.get_parent(), mu.global_position, 1.0)
+	# v2 神驹冲锋命中：金色撞击火花，尺寸随目标体长；缺资源回退旧鳞闪
+	if TeXiaoKu.bo_ming(&"shen_ju", yu.get_parent(), mu.global_position,
+			TeXiaoKu.ti_kuan(mu) * 1.0) == null:
+		TE_XIAO.ying_lin(yu.get_parent(), mu.global_position, 1.0)
 
 
 # ---- 千眼齐射（qian_yan_lei_po_yu）----
@@ -231,7 +243,10 @@ static func _shi_fang_qian_yan_qi_she(yu, neng: NengLi, dang: int) -> bool:
 		npc.call("shou_zhi_jie_shang", shang_hai * (0.5 if bool(npc.get("shi_boss")) else 1.0))
 		if _ke_yong_mu_biao(npc) and npc.has_method("jia_dian_ma"):
 			npc.call("jia_dian_ma", dian_ma)
-			TE_XIAO.fang_dian(yu.get_parent(), npc.global_position, 0.6)
+			# v2 千眼齐射：每只眼锁一道青绿电束，尺寸随目标体长；缺资源回退旧电圈
+			if TeXiaoKu.bo_ming(&"qian_yan", yu.get_parent(), npc.global_position,
+					TeXiaoKu.ti_kuan(npc) * 1.0) == null:
+				TE_XIAO.fang_dian(yu.get_parent(), npc.global_position, 0.6)
 	return true
 
 
@@ -275,7 +290,10 @@ static func _fan_shang_gu_zhi_zhong_jia(yu, neng: NengLi, shu_ju: Dictionary) ->
 	var wei: Vector2 = yu.global_position
 	if lai_yuan is Node2D:
 		wei = (lai_yuan as Node2D).global_position
-	TE_XIAO.ying_lin(yu.get_parent(), wei, 0.8)
+	# v2 骨质重甲反弹：骨白火花在咬击者身上亮起，尺寸随其体长；缺资源回退旧鳞闪
+	if TeXiaoKu.bo_ming(&"fb_fan_shang", yu.get_parent(), wei,
+			TeXiaoKu.ti_kuan(lai_yuan) * 0.8) == null:
+		TE_XIAO.ying_lin(yu.get_parent(), wei, 0.8)
 	return false  # 不吃掉事件：玩家的减伤/扣血照常走完
 
 

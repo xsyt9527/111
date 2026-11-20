@@ -1,0 +1,312 @@
+{
+ "frames": [
+  {
+   "filename": "fb_bei_yao_si 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_bei_yao_si 11",
+   "frame": {
+    "x": 1232,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_bei_yao_si.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1344,
+   "h": 92
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "spawn/poof",
+   "name": "fb_bei_yao_si",
+   "fps": 12,
+   "loop": false,
+   "frames": 12,
+   "frameSize": [
+    112,
+    92
+   ],
+   "pivot": [
+    56.0,
+    46.0
+   ],
+   "columns": 12,
+   "visible": [
+    91,
+    76
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

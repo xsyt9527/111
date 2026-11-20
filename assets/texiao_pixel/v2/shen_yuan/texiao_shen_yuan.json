@@ -1,0 +1,488 @@
+{
+ "frames": [
+  {
+   "filename": "shen_yuan 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 1",
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 2",
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 3",
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 4",
+   "frame": {
+    "x": 512,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 5",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 6",
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 7",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 8",
+   "frame": {
+    "x": 1024,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 9",
+   "frame": {
+    "x": 1152,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 10",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 11",
+   "frame": {
+    "x": 1408,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 12",
+   "frame": {
+    "x": 1536,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 13",
+   "frame": {
+    "x": 1664,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 14",
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 15",
+   "frame": {
+    "x": 1920,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 16",
+   "frame": {
+    "x": 0,
+    "y": 84,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 17",
+   "frame": {
+    "x": 128,
+    "y": 84,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 18",
+   "frame": {
+    "x": 256,
+    "y": 84,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shen_yuan 19",
+   "frame": {
+    "x": 384,
+    "y": 84,
+    "w": 128,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 84
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_shen_yuan.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2048,
+   "h": 168
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 19,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "water/whirlpool",
+   "name": "shen_yuan",
+   "fps": 10,
+   "loop": true,
+   "frames": 20,
+   "frameSize": [
+    128,
+    84
+   ],
+   "pivot": [
+    64.0,
+    42.0
+   ],
+   "columns": 16,
+   "visible": [
+    118,
+    76
+   ],
+   "fit": "native",
+   "lifetime": 2.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

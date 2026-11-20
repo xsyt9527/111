@@ -1,0 +1,400 @@
+{
+ "frames": [
+  {
+   "filename": "shi_hua_tong 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 1",
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 2",
+   "frame": {
+    "x": 512,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 3",
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 4",
+   "frame": {
+    "x": 1024,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 5",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 6",
+   "frame": {
+    "x": 1536,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 7",
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 8",
+   "frame": {
+    "x": 0,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 9",
+   "frame": {
+    "x": 256,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 10",
+   "frame": {
+    "x": 512,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 11",
+   "frame": {
+    "x": 768,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 12",
+   "frame": {
+    "x": 1024,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 13",
+   "frame": {
+    "x": 1280,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 14",
+   "frame": {
+    "x": 1536,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shi_hua_tong 15",
+   "frame": {
+    "x": 1792,
+    "y": 144,
+    "w": 256,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 144
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_shi_hua_tong.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2048,
+   "h": 288
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 15,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "weather/god-rays",
+   "name": "shi_hua_tong",
+   "fps": 10,
+   "loop": true,
+   "frames": 16,
+   "frameSize": [
+    256,
+    144
+   ],
+   "pivot": [
+    128.0,
+    144.0
+   ],
+   "columns": 8,
+   "visible": [
+    256,
+    144
+   ],
+   "fit": "native",
+   "lifetime": 1.6,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "bottom"
+  }
+ }
+}

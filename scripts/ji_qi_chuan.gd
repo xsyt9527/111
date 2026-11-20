@@ -284,6 +284,8 @@ func jia_dian_ma(liang: float) -> void:
 		return
 	dian_ma = minf(100.0, dian_ma + liang)
 	if dian_ma >= 100.0:
+		# v2 电麻光环：满条瞬间头顶一电黄爆闪，和 YuNpc 同款；不显形也不影响判定
+		TeXiaoKu.gua_zhuang_tai(&"dian_ma", self, 1.2, {"chi_xu": YUN_XUAN_SHI_CHANG})
 		_chu_fa_yun_xuan()
 
 
@@ -293,6 +295,8 @@ func jia_du_yun(liang: float) -> void:
 		return
 	du_yun = minf(100.0, du_yun + liang)
 	if du_yun >= 100.0:
+		# v2 毒晕光环：满条瞬间头顶一绿毒爆闪，和 YuNpc 同款
+		TeXiaoKu.gua_zhuang_tai(&"du_yun", self, 1.2, {"chi_xu": YUN_XUAN_SHI_CHANG})
 		_chu_fa_yun_xuan()
 
 
@@ -332,6 +336,8 @@ func jia_zhuang_tai(ming: StringName, shi_chang: float, mu_dian := Vector2.ZERO)
 	if shi <= 0.0:
 		return false
 	_zhuang_tai_sheng_yu[ming] = maxf(float(_zhuang_tai_sheng_yu.get(ming, 0.0)), shi)
+	# v2 状态光环：和 YuNpc 同一套六色头顶标记（石化/魅惑/恐惧/疯狂等）；船无 ti_chang 按默认尺度
+	TeXiaoKu.gua_zhuang_tai(ming, self, 1.2, {"chi_xu": shi})
 	if ming == &"mei_huo":
 		_mei_huo_dian = mu_dian  # 鬼火引路要记录魅惑点（与 YuNpc 契约一致）
 	_kong_zhi_kang_xing_sheng_yu = KONG_ZHI_KANG_XING_SHI_CHANG
@@ -421,6 +427,7 @@ func _geng_xin_zhuang_tai(delta: float) -> void:
 			_zhuang_tai_sheng_yu[ming] = sheng
 	for ming in guo_qi:
 		_zhuang_tai_sheng_yu.erase(ming)
+		TeXiaoKu.xia_zhuang_tai(ming, self)  # 状态到期：同名光环同步释放
 	# 电麻/毒晕条缓慢回落：不让一次没打满的积累永久挂账
 	if _yun_xuan_sheng_yu <= 0.0:
 		dian_ma = maxf(0.0, dian_ma - 15.0 * delta)
@@ -489,6 +496,8 @@ func _chen_mo() -> void:
 	# 打沉：关碰撞、停攻击、广播胜利，再沉下去淡出
 	si_le = true
 	_gong_ji_dingshi.stop()
+	# v2 沉没：淡蓝魂焰从船体升起（固定尺寸，船体本身很大；不随玩家体型）
+	TeXiaoKu.bo_ming(&"fb_si_wang", get_parent(), global_position, 220.0)
 	$SheDingQu.collision_layer = 0
 	$ChuanTiQu.collision_layer = 0
 	_zhao_ti.visible = false
@@ -501,6 +510,7 @@ func _chen_mo() -> void:
 	_zheng_zai_chu_zhao = false
 	# 技能兼容状态收尾：死亡后不再吃控/DoT，等级牌也隐藏
 	_zhuang_tai_sheng_yu.clear()
+	TeXiaoKu.qing_zhuang_tai(self)  # 沉没：所有头顶状态光环一起收掉
 	_yun_xuan_sheng_yu = 0.0
 	_ding_zhu_sheng_yu = 0.0
 	_qiang_suan_sheng_yu = 0.0
@@ -718,6 +728,8 @@ func _jie_suan_zha_dan() -> void:
 	_zha_dan_jin_xing = false
 	_zha_dan_bao_sheng_yu = 0.35
 	queue_redraw()
+	# v2 深水炸弹爆炸：直径 = 爆炸判定圈（240×2），位置锁落点、不随玩家体型
+	TeXiaoKu.bo_ming(&"chuan_zha_dan", get_parent(), _zha_dan_dian, ZHA_DAN_BAN_JING * 2.0)
 	if wan_jia != null and wan_jia.global_position.distance_to(_zha_dan_dian) <= ZHA_DAN_BAN_JING:
 		# G 玩家侧：磁场护壁 → 深水炸弹偏转失效；金属斥力 → 船伤 -30%
 		if not wan_jia.zhuan_shu_pi_bi_dan_dao(_zha_dan_dian):
@@ -762,6 +774,11 @@ func _jie_suan_chuan_mao() -> void:
 	# 扇形判定：内径内/外径外都不吃；命中后击退，并给下一拍炸弹上规则
 	_mao_jin_xing = false
 	queue_redraw()
+	# v2 船锚横扫：铁灰锚影落在扇形中段，宽度按外径（判定最远处）；朝向随挥扫方向
+	var mao_wei := global_position + _mao_fang * (MAO_NEI_BAN_JING + MAO_WAI_BAN_JING) * 0.5
+	var mao_fx := TeXiaoKu.bo_ming(&"chuan_chuan_mao", get_parent(), mao_wei, MAO_WAI_BAN_JING * 2.0)
+	if mao_fx != null:
+		mao_fx.rotation = _mao_fang.angle()
 	if wan_jia == null or si_le:
 		return
 	var cha: Vector2 = wan_jia.global_position - global_position
@@ -791,6 +808,12 @@ func _kai_shi_tan_zhao() -> void:
 	_tan_zhao_sheng_yu = TAN_ZHAO_SHI_CHANG
 	_bo_zhao(&"tan_zhao", 0.9)
 	queue_redraw()
+	# v2 探照灯：纯白光锥从船体压向玩家方向；god-rays 的 pivot 在底部，故旋转 +90° 对齐扫描角
+	# 光锥本身是循环贴图，按扫描时长（含残留）定时淡出
+	var tan_fx := TeXiaoKu.bo_ming(&"chuan_tan_zhao", get_parent(), global_position,
+			TAN_ZHAO_CHANG * 0.8, {"chi_xu": TAN_ZHAO_SHI_CHANG + TAN_ZHAO_CAN_LIU})
+	if tan_fx != null:
+		tan_fx.rotation = _tan_zhao_fang.angle() + PI * 0.5
 
 
 func _geng_xin_tan_zhao(delta: float) -> void:
@@ -837,6 +860,11 @@ func _fa_yi_fa(mu: Node2D) -> void:
 		var you: Yu = mu
 		mu_dian += Vector2.RIGHT.rotated(you.dang_qian_jiao) * you.dang_qian_su_du * YU_CHA_ZHUAN_BEI
 	var ji_xian := (mu_dian - global_position).angle()
+	# v2 鱼叉齐射：每轮一支钢灰箭影从船体射出，朝向预判角；尺寸固定（弹道本体）
+	var cha_fx := TeXiaoKu.bo_ming(&"chuan_yu_cha", get_parent(),
+			global_position + Vector2.RIGHT.rotated(ji_xian) * 120.0, 220.0)
+	if cha_fx != null:
+		cha_fx.rotation = ji_xian
 	for pian in [-YU_CHA_PIAN_JIAO, 0.0, YU_CHA_PIAN_JIAO]:
 		_yu_chas.append({
 			"pos": global_position,

@@ -15,7 +15,7 @@ const YU_NENG_LI := {
 	"zong_yu.tres": &"ruo_dian_dong_cha",
 	"ju_kou_yu.tres": &"qian_fu_tu_xi",
 	"jian_yu.tres": &"chang_mao_chuan_ci",
-}  # 鱼种 → 能力映射：这 6 种有能力的鱼，其余 5 种必须为 null（含 Lv.8/9 高级鱼模板——纯数值白板，不挂能力）
+}  # 鱼种 → 能力映射：这 6 种有能力的鱼，其余 3 种必须为 null（钻光鱼/灯笼鱼/鲸鲨——纯数值白板，不挂能力）
 
 var passed := 0  # 通过计数（收卷用）
 var failed := 0  # 失败计数（退出码的依据）
@@ -23,7 +23,7 @@ var quan_bu_neng_li: Array[NengLi] = []  # 能力池（用例 1 装载，用例 
 
 
 func _initialize() -> void:
-	# ---- 用例 1：能力池 101 个全过校验（35 通用 + 66 进化专属）----
+	# ---- 用例 1：能力池 91 个全过校验（31 通用 + 60 进化专属）----
 	var neng_wen_jian := DirAccess.get_files_at("res://data/nengli")
 	var neng_shu := 0  # .tres 实际个数（跳过杂项文件）
 	var bian_hao_ji := {}  # 能力 id 查重集合
@@ -36,27 +36,27 @@ func _initialize() -> void:
 		if neng != null:
 			bian_hao_ji[neng.bian_hao] = true
 			quan_bu_neng_li.append(neng)
-	assert_eq(neng_shu, 101, "能力池应恰好 101 个（35 通用/鱼种 + 66 进化专属）")
-	assert_eq(bian_hao_ji.size(), 101, "101 个能力的 bian_hao 应互不重复")
-	# 图标挂载契约（2026-11-10 更新）：35 个通用能力 + 33 条进化专属主动 = 68 条有图；
-	# 33 条进化专属被动的美术尚未交付，暂用纯文字卡面（图标随形态绑定，后续补齐）
+	assert_eq(neng_shu, 91, "能力池应恰好 91 个（31 通用/鱼种 + 60 进化专属）")
+	assert_eq(bian_hao_ji.size(), 91, "91 个能力的 bian_hao 应互不重复")
+	# 图标挂载契约（2026-11-17 精简后）：31 个通用能力 + 30 条进化专属主动 = 61 条有图；
+	# 30 条进化专属被动的美术尚未交付，暂用纯文字卡面（图标随形态绑定，后续补齐）
 	var you_tu_biao := {
 		&"ruan_lin": true, &"ling_min_wei_qi": true, &"shen_shang_xian": true,
 		&"da_wei_wang": true, &"ji_e_nai_shou": true, &"yin_ni_qi_xi": true,
 		&"si_lie_chi": true, &"lie_shou_zhi_jue": true, &"bao_shi_lian_suo": true,
 		&"tan_shi_hui_fu": true, &"dian_gan_shou_qi": true, &"ying_lin_fan_ji": true,
-		&"xuan_wo": true, &"yu_ni_dan": true, &"sheng_na_mai_chong": true,
+		&"xuan_wo": true,
 		&"yu_lei_chong_ci": true, &"kuang_bao_si_yao": true, &"ni_liu_shan_bi": true,
 		&"chang_mao_chuan_ci": true, &"ji_su_tu_jin": true, &"fang_dian_ma_bi": true,
 		&"qian_fu_tu_xi": true, &"du_ji_hu_ti": true, &"du_xian": true,
-		&"man_li_chong_zhuang": true, &"ruo_dian_dong_cha": true, &"shi_fu_zhe": true,
-		&"ying_ke_hu_ti": true, &"dian_mai_chong": true, &"you_er_qi_pao": true,
+		&"ruo_dian_dong_cha": true, &"shi_fu_zhe": true,
+		&"ying_ke_hu_ti": true, &"you_er_qi_pao": true,
 		&"xue_xing_kuang_re": true, &"bei_ci_zhi_jue": true, &"jue_jing_fan_yao": true,
 		&"xiu_lin": true, &"fu_rou_you_er": true,
-		# 2026-11-10 P0 第一批：33 条进化专属主动图标接入
+		# 2026-11-10 P0 第一批：30 条进化专属主动图标接入
 		&"chao_ya_shui_dao": true, &"ci_chang_hu_bi": true, &"deng_li_zi_qi_she": true,
-		&"feng_kuang_guang_xian": true, &"guan_xing": true, &"gui_huo_yin_lu": true,
-		&"huan_feng": true, &"ji_guan_fan_jia": true, &"ji_guang_ju_zhen": true,
+		&"gui_huo_yin_lu": true,
+		&"huan_feng": true, &"ji_guan_fan_jia": true,
 		&"jiu_tou_dian_wang": true, &"ju_du_tu_ci": true, &"kong_jian_lie_feng": true,
 		&"kong_que_huan_ying": true, &"kun_tun_tian_di": true, &"lei_bao_zhao_huan": true,
 		&"lie_kou_xian_jing": true, &"lin_guang_bao_shan": true, &"liu_xing_yue": true,
@@ -72,7 +72,7 @@ func _initialize() -> void:
 			continue
 		tu_biao_shu += 1
 		assert_guo("图标: " + String(neng.bian_hao), "" if neng.tu_biao != null else "缺少 tu_biao")
-	assert_eq(tu_biao_shu, 68, "图标应恰好挂到 68 条（35 通用 + 33 进化专属主动）")
+	assert_eq(tu_biao_shu, 61, "图标应恰好挂到 61 条（31 通用 + 30 进化专属主动）")
 
 	# ---- 用例 2：红测——已知坏数据必须被校验器抓到 ----
 	var huai: NengLi = load("res://tests/huai_neng_li.tres")  # 键合法、数值为负
@@ -130,33 +130,23 @@ func _initialize() -> void:
 			if yu_zhong.neng_li != null:
 				assert_string(String(yu_zhong.neng_li.bian_hao), String(qi_wang),
 						"鱼种 %s 的能力映射应为 %s" % [wen_jian, qi_wang])
-	assert_eq(yu_shu, 11, "鱼种表应恰好 11 行（6 旧种换皮 + 旗鱼/剑鱼/巨口鱼 + Lv.8/9 高级鱼模板）")
+	assert_eq(yu_shu, 9, "鱼种表应恰好 9 行（6 旧种换皮 + 旗鱼/剑鱼/巨口鱼）")
 
-	# Lv.8/9 高级鱼模板：数值是玩法承诺（游速快 + 反应快 + 分值高），逐项锁死；
-	# 贴图是占位（顶玩家灯笼鱼/剑鱼现成资源），美术后补只换 tie_tu/dong_hua 两行
+	# Lv.8 高级鱼模板：数值是玩法承诺（游速快 + 反应快 + 分值高），逐项锁死；
+	# 贴图是占位（顶玩家灯笼鱼现成资源），美术后补只换 tie_tu/dong_hua 两行
 	var ye_deng: YuZhong = load("res://data/yuzhong/ye_deng_long_yu.tres")
-	var an_ying: YuZhong = load("res://data/yuzhong/an_ying_jian_yu.tres")
-	assert_eq(ye_deng.dengji, 8, "野灯笼鱼应为 Lv.8（填补等级空档）")
-	assert_eq(an_ying.dengji, 9, "暗影剑鱼应为 Lv.9（填补等级空档）")
+	assert_eq(ye_deng.dengji, 8, "野灯笼鱼应为 Lv.8（高级鱼）")
 	assert_eq(ye_deng.fenzhi, 8, "野灯笼鱼分值 8（高经验回报）")
-	assert_eq(an_ying.fenzhi, 10, "暗影剑鱼分值 10（高经验回报）")
 	assert_float(ye_deng.sudu_fanwei.x, 170.0, "野灯笼鱼游速下限 170（比剑鱼快）")
 	assert_float(ye_deng.sudu_fanwei.y, 220.0, "野灯笼鱼游速上限 220")
-	assert_float(an_ying.sudu_fanwei.x, 185.0, "暗影剑鱼游速下限 185（全场最快野生鱼）")
-	assert_float(an_ying.sudu_fanwei.y, 240.0, "暗影剑鱼游速上限 240")
 	assert_float(ye_deng.fan_ying_shi_jian, 0.5, "野灯笼鱼反应 0.5 秒（反应快）")
-	assert_float(an_ying.fan_ying_shi_jian, 0.4, "暗影剑鱼反应 0.4 秒（反应快）")
 	assert_eq(1 if ye_deng.neng_li == null else 0, 1, "野灯笼鱼是纯数值白板：不挂能力")
-	assert_eq(1 if an_ying.neng_li == null else 0, 1, "暗影剑鱼是纯数值白板：不挂能力")
 	assert_eq(1 if ye_deng.shi_boss else 0, 0, "野灯笼鱼非首领（普通鱼群刷新）")
-	assert_eq(1 if an_ying.shi_boss else 0, 0, "暗影剑鱼非首领（普通鱼群刷新）")
 	assert_eq(1 if ye_deng.gong_ji_yu_wang else 0, 1, "野灯笼鱼有攻击欲望（主动咬玩家）")
-	assert_eq(1 if an_ying.gong_ji_yu_wang else 0, 1, "暗影剑鱼有攻击欲望（主动咬玩家）")
 
-	# 五鱼攻击帧（6 个鱼种共用 5 套 gong 动画）：咬中时临时替换游动帧，播完切回 you
+	# 五鱼攻击帧（5 个鱼种共用 5 套 gong 动画）：咬中时临时替换游动帧，播完切回 you
 	var gong_yu := {
 		"jian_yu.tres": "jian_yu_gong",
-		"an_ying_jian_yu.tres": "jian_yu_gong",
 		"qi_yu.tres": "qi_yu_gong",
 		"cheng_yu.tres": "shi_zi_yu_gong",
 		"lv_yu.tres": "dian_yao_gong",
@@ -172,8 +162,8 @@ func _initialize() -> void:
 			assert_eq(1 if yz.gong_ji_dong_hua.get_frame_texture(&"gong", 0) != null else 0, 1,
 					"鱼种 %s 攻击帧有贴图" % wen_jian)
 	assert_eq(1 if ye_deng.gong_ji_dong_hua == null else 0, 1, "未配攻击帧的鱼种保持 null（回退游动帧）")
-	assert_eq(NengLiKu.quan_bu().size(), 101, "能力总表 101 个（49 主动 + 52 被动：含 66 进化专属）")
-	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池仍是 35 个：专属技永不流入三选一/成就")
+	assert_eq(NengLiKu.quan_bu().size(), 91, "能力总表 91 个（42 主动 + 49 被动：含 60 进化专属）")
+	assert_eq(NengLiKu.tong_yong_chi().size(), 31, "通用池 31 个：专属技永不流入三选一/成就")
 	var zhu_dong_shu := 0
 	var bei_dong_shu := 0
 	var zhuan_shu_shu := 0
@@ -184,16 +174,16 @@ func _initialize() -> void:
 			bei_dong_shu += 1
 		if neng.shi_zhuan_shu():
 			zhuan_shu_shu += 1
-	assert_eq(zhu_dong_shu, 49, "主动能力 49 个（16 通用 + 33 专属）")
-	assert_eq(bei_dong_shu, 52, "被动能力 52 个（19 通用 + 33 专属）")
-	assert_eq(zhuan_shu_shu, 66, "进化专属能力 66 条（P0 6 + T1 24 + H 系列 36）")
+	assert_eq(zhu_dong_shu, 42, "主动能力 42 个（12 通用 + 30 专属）")
+	assert_eq(bei_dong_shu, 49, "被动能力 49 个（19 通用 + 30 专属）")
+	assert_eq(zhuan_shu_shu, 60, "进化专属能力 60 条（10 鱼种 × 3 分支 × 2）")
 
 	# ---- 用例 4：三选一算法（注入固定种子，可复现；档位版规则）----
 	# 候选池 = 未满档能力：满档主动排除、未满档主动保留（可升档）、满层被动排除、未满层被动保留
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20261030
 	var quan_bu: Array[NengLi] = NengLiChou.ke_xuan_chi(quan_bu_neng_li, {}, {})
-	assert_eq(quan_bu.size(), 35, "无装备时候选池 35 个（16 主动 + 19 被动；66 专属被过滤）")
+	assert_eq(quan_bu.size(), 31, "无装备时候选池 31 个（12 主动 + 19 被动；60 专属被过滤）")
 	# 进化专属：带归属形态、永不进三选一（P0 6 条 + G T1 24 条 + H 系列 36 条）
 	var zhuan_shu_id := [&"tai_sui_ge_rou", &"ning_jiao_tan_fu", &"qiang_suan_pen_tu",
 			&"ji_yin_she_lu", &"chao_ya_shui_dao", &"xie_ya_ji_dong",
@@ -215,13 +205,11 @@ func _initialize() -> void:
 			# 巨口鱼
 			&"tao_tie_ju_tun", &"gang_tie_liao_ya", &"lie_kou_xian_jing", &"ji_ci_kou_nei",
 			&"she_hun", &"kong_ju_zhi_kou",
-			# 铜眼鱼
-			&"guan_xing", &"xian_jian_zhi_ming", &"feng_kuang_guang_xian", &"xie_shen_zhu_shi",
-			&"ji_guang_ju_zhen", &"chong_neng_yan",
+			# 铜眼鱼已删除
 			# 钻光鱼
 			&"ying_ju_cheng_long", &"ju_qun", &"zu_zhou_bao_zi", &"xing_chuan_bo_san",
 			&"deng_li_zi_qi_she", &"ji_guang_gui_ji"]
-	assert_eq(zhuan_shu_id.size(), 66, "专属能力 id 清单应补全 66 条")
+	assert_eq(zhuan_shu_id.size(), 60, "专属能力 id 清单应补全 60 条")
 	for id in zhuan_shu_id:
 		var zhuan := NengLiKu.zhao(id)
 		assert_eq(1 if zhuan != null else 0, 1, "专属能力必须注册: " + String(id))
@@ -229,11 +217,11 @@ func _initialize() -> void:
 			assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "专属能力必须带归属形态: " + String(id))
 			assert_eq(1 if zhuan.suoshu_xing_tai != &"" else 0, 1, "专属归属不能为空: " + String(id))
 			assert_eq(zhuan.zui_da_dang, 1, "专属技单档不可升级: " + String(id))
-	assert_eq(quan_bu.size(), 35, "专属技不参与三选一（候选池不因新增 66 条而变大）")
+	assert_eq(quan_bu.size(), 31, "专属技不参与三选一（候选池不因专属 60 条而变大）")
 	# 满档排除：放电麻痹 1 档即满——装上就从候选池消失
 	var fang_dian := _zhao_neng(&"fang_dian_ma_bi")
 	var ke_xuan := NengLiChou.ke_xuan_chi(quan_bu, {&"fang_dian_ma_bi": 1}, {})
-	assert_eq(ke_xuan.size(), 34, "装满档主动（放电 1/1 档）后候选池剩 34")
+	assert_eq(ke_xuan.size(), 30, "装满档主动（放电 1/1 档）后候选池剩 30")
 	var han_dian := false
 	for neng in ke_xuan:
 		if neng.bian_hao == &"fang_dian_ma_bi":
@@ -241,21 +229,21 @@ func _initialize() -> void:
 	assert_eq(1 if han_dian else 0, 0, "候选池不应包含满档主动")
 	# 升档保留：漩涡 3 档上限——1 档未满仍在候选池，抽中即升档（不再简单排除）
 	var ke_sheng := NengLiChou.ke_xuan_chi(quan_bu, {&"xuan_wo": 1}, {})
-	assert_eq(ke_sheng.size(), 35, "装未满档主动（漩涡 1/3 档）不再排除：候选池仍 35 个")
+	assert_eq(ke_sheng.size(), 31, "装未满档主动（漩涡 1/3 档）不再排除：候选池仍 31 个")
 	var han_wo := false
 	for neng in ke_sheng:
 		if neng.bian_hao == &"xuan_wo":
 			han_wo = true
 	assert_eq(1 if han_wo else 0, 1, "未满档主动应留在候选池（可升档）")
-	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {&"xuan_wo": 3}, {}).size(), 34, "漩涡 3/3 满档：升无可升被排除")
+	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {&"xuan_wo": 3}, {}).size(), 30, "漩涡 3/3 满档：升无可升被排除")
 	# 被动层门：毒棘满层排除，未满层保留
-	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {}, {&"du_ji_hu_ti": 3}).size(), 34, "毒棘 3/3 满层：候选池剩 34")
-	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {}, {&"du_ji_hu_ti": 2}).size(), 35, "毒棘 2/3 未满层：仍在候选池可叠层")
-	# 4 个旧主动全部 1 档即满：装满只排除这 4 个——新主动还能入槽、被动还能叠层
+	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {}, {&"du_ji_hu_ti": 3}).size(), 30, "毒棘 3/3 满层：候选池剩 30")
+	assert_eq(NengLiChou.ke_xuan_chi(quan_bu, {}, {&"du_ji_hu_ti": 2}).size(), 31, "毒棘 2/3 未满层：仍在候选池可叠层")
+	# 3 个旧主动 1 档即满：装满只排除这 3 个——新主动还能入槽、被动还能叠层
 	var quan_zhuang_chi := NengLiChou.ke_xuan_chi(quan_bu,
-			{&"fang_dian_ma_bi": 1, &"ji_su_tu_jin": 1, &"man_li_chong_zhuang": 1, &"qian_fu_tu_xi": 1}, {})
-	assert_eq(quan_zhuang_chi.size(), 31, "4 旧主动全满档：剩 31（12 新主动 + 19 被动，三选一不枯竭）")
-	assert_eq(NengLiChou.chou_san_zhang(quan_zhuang_chi, &"", false, rng).size(), 3, "31 个候选时抽牌给满 3 张")
+			{&"fang_dian_ma_bi": 1, &"ji_su_tu_jin": 1, &"qian_fu_tu_xi": 1}, {})
+	assert_eq(quan_zhuang_chi.size(), 28, "3 旧主动全满档：剩 28（9 新主动 + 19 被动，三选一不枯竭）")
+	assert_eq(NengLiChou.chou_san_zhang(quan_zhuang_chi, &"", false, rng).size(), 3, "28 个候选时抽牌给满 3 张")
 
 	# 200 轮：恰 3 张、互不重复、每张都露过面
 	var wei_gui := 0
@@ -271,9 +259,9 @@ func _initialize() -> void:
 		if ben_lun.size() != 3:
 			wei_gui += 1
 	assert_eq(wei_gui, 0, "200 轮抽样每轮应恰 3 张且互不重复")
-	assert_eq(chu_xian.size(), 35, "200 轮后每个能力都该出现过（随机性覆盖）")
+	assert_eq(chu_xian.size(), 31, "200 轮后每个能力都该出现过（随机性覆盖）")
 
-	# 强制包含：35 个通用 id 逐个测
+	# 强制包含：31 个通用 id 逐个测
 	for neng in quan_bu:
 		var san := NengLiChou.chou_san_zhang(quan_bu, neng.bian_hao, true, rng)
 		var zhao_dao := false
@@ -308,7 +296,7 @@ func _initialize() -> void:
 	assert_eq(1 if ming_zhong >= 400 and ming_zhong <= 600 else 0, 1,
 			"50%% 概率 1000 轮应在 400~600 次（实际 %d）" % ming_zhong)
 
-	# ---- 用例 5：形态池——玩家 + 10 NPC 鱼 + 鲸鲨（2026-11-04 选择角色扩展）----
+	# ---- 用例 5：形态池——玩家 + 9 NPC 鱼（含鲸鲨）（2026-11-04 选择角色扩展）----
 	# data/xingtai 下仍保留 2 个旧形态文件（deng_long_yu/dian_yao），只作历史数据，不进注册表
 	var xing_tai_wen_jian := DirAccess.get_files_at("res://data/xingtai")
 	var xing_tai_shu := 0
@@ -325,10 +313,10 @@ func _initialize() -> void:
 			xing_tai_ji[xing_tai.bian_hao] = true
 			assert_eq(1 if xing_tai.dong_hua != null and xing_tai.dong_hua.has_animation(&"you") else 0,
 					1, "形态 %s 必须有 \"you\" 动画" % wen_jian)
-	assert_eq(xing_tai_shu, 14, "形态资源 14 个都能加载（12 可玩 + 2 个旧形态历史数据）")
-	assert_eq(xing_tai_ji.size(), 14, "14 个形态的 bian_hao 应互不重复")
+	assert_eq(xing_tai_shu, 12, "形态资源 12 个都能加载（10 可玩 + 2 个旧形态历史数据）")
+	assert_eq(xing_tai_ji.size(), 12, "12 个形态的 bian_hao 应互不重复")
 
-	# 每个可玩形态都必须能对上进化注册表的一组 3 条（暗影剑鱼在形态侧映射到 jian_yu）
+	# 每个可玩形态都必须能对上进化注册表的一组 3 条
 	for wen_jian in xing_tai_wen_jian:
 		if not wen_jian.ends_with(".tres"):
 			continue
@@ -354,13 +342,13 @@ func _initialize() -> void:
 	assert_eq(1 if wo_niu.dong_hua != null and wo_niu.dong_hua.get_frame_count(&"you") == 4 else 0,
 			1, "主角游动动画 4 帧")
 
-	# 玩家形态注册表：12 个全开（CunDang 是 Autoload，--script 模式不加载，读脚本常量）
+	# 玩家形态注册表：10 个全开（CunDang 是 Autoload，--script 模式不加载，读脚本常量）
 	var cun_dang_lei = load("res://scripts/cun_dang.gd")
 	assert_eq(1 if cun_dang_lei != null else 0, 1, "CunDang 脚本必须可加载")
 	if cun_dang_lei != null:
 		var chang_liang: Dictionary = cun_dang_lei.get_script_constant_map()
 		var zhu_ce: Array = chang_liang.get("XING_TAI_ZU", [])
-		assert_eq(zhu_ce.size(), 12, "形态注册表 12 个：玩家 + 10 NPC 鱼 + 鲸鲨")
+		assert_eq(zhu_ce.size(), 10, "形态注册表 10 个：玩家 + 9 NPC 鱼（含鲸鲨）")
 		assert_string(String(zhu_ce[0].bian_hao) if zhu_ce.size() > 0 else "",
 				"ao_tu_wo_niu_yu", "注册表第一位是蜗牛鱼")
 		assert_string(String(chang_liang.get("MO_REN_BIAN_HAO", &"")),
@@ -372,7 +360,7 @@ func _initialize() -> void:
 			zhu_ce_id_ji[xt.bian_hao] = true
 			assert_eq(0 if xt.bian_hao in [&"deng_long_yu", &"dian_yao"] else 1, 1,
 					"旧形态不再是玩家选项: " + String(xt.bian_hao))
-		assert_eq(zhu_ce_id_ji.size(), 12, "注册表 12 个形态 id 应互不重复")
+		assert_eq(zhu_ce_id_ji.size(), 10, "注册表 10 个形态 id 应互不重复")
 
 	# ---- 用例 5 红测：坏形态必须被校验器抓到（红测失守 = 校验器自己坏了）----
 	var huai_xing_tai: XingTai = load("res://tests/huai_xing_tai.tres")  # 负速度夹具
@@ -414,13 +402,11 @@ func _initialize() -> void:
 		assert_eq(1 if qi_pao_zhen.get_animation_loop(&"bao") else 0, 0,
 				"气泡动画必须不循环（loop = false，播完自动结束）")
 
-	# ---- 用例 7：12 套专属能力特效资源契约（te_xiao.gd 全部 preload）----
+	# ---- 用例 7：10 套专属能力特效资源契约（te_xiao.gd 全部 preload）----
 	# 防「素材做好但没接线」再次发生：资源本身必须存在、动画名/帧数/循环符合 te_xiao 的播放约定
-	# 帧率按素材节奏单独锁：旧 8 套 12 fps；新 4 套 10/12/10/8（血腥狂热前两帧近似，放慢）
+	# 帧率按素材节奏单独锁：旧 6 套 12 fps；新 4 套 10/12/10/8（血腥狂热前两帧近似，放慢）
 	var te_xiao_biao := [
 		{"lu_jing": "res://data/donghua/xuan_wo_4zhen.tres", "fps": 12},
-		{"lu_jing": "res://data/donghua/yu_ni_dan_4zhen.tres", "fps": 12},
-		{"lu_jing": "res://data/donghua/sheng_na_mai_chong_4zhen.tres", "fps": 12},
 		{"lu_jing": "res://data/donghua/yu_lei_chong_ci_4zhen.tres", "fps": 12},
 		{"lu_jing": "res://data/donghua/kuang_bao_si_yao_4zhen.tres", "fps": 12},
 		{"lu_jing": "res://data/donghua/ni_liu_shan_bi_4zhen.tres", "fps": 12},
@@ -468,12 +454,12 @@ func _initialize() -> void:
 					tong_chi_cun = false
 		assert_eq(1 if tong_chi_cun else 0, 1, "植物四帧必须同尺寸: " + lu_jing)
 
-	# ---- 用例 9：进化形态数据契约（11 鱼种 × 3 分支 = 33）----
+	# ---- 用例 9：进化形态数据契约（10 鱼种 × 3 分支 = 30）----
 	# 素材 2026-11-03 批量导入；图鉴与进化三选一都直接读这张注册表，字段错一处就全错
 	var jin_hua_quan := JinHuaKu.quan_bu()
-	assert_eq(jin_hua_quan.size(), 33, "进化形态应恰好 33 个（11 鱼种 × 3 分支）")
+	assert_eq(jin_hua_quan.size(), 30, "进化形态应恰好 30 个（10 鱼种 × 3 分支）")
 	var jin_hua_id_ji := {}
-	var zhuan_shu_cao := 0  # 已填的专属槽总数（33 分支 × 2 = 66）
+	var zhuan_shu_cao := 0  # 已填的专属槽总数（30 分支 × 2 = 60）
 	for jin_hua in jin_hua_quan:
 		assert_eq(1 if jin_hua != null else 0, 1, "进化注册表不能有空项")
 		if jin_hua == null:
@@ -504,7 +490,7 @@ func _initialize() -> void:
 					tong_chi_cun = false
 			assert_eq(1 if tong_chi_cun else 0, 1,
 					"进化六帧必须同尺寸且可加载: " + String(jin_hua.bian_hao))
-		# 全部 33 条分支都可被选（选角全开）
+		# 全部 30 条分支都可被选（选角全开）
 		assert_eq(1 if jin_hua.wan_jia_ke_yong else 0, 1,
 				"进化分支必须对玩家开放: " + String(jin_hua.bian_hao))
 		assert_eq(1 if JinHuaKu.zhao(jin_hua.bian_hao) == jin_hua else 0, 1,
@@ -517,12 +503,12 @@ func _initialize() -> void:
 						"专属能力必须在能力池注册: " + String(zhuan_shu.bian_hao))
 				assert_string(String(zhuan_shu.suoshu_xing_tai), String(jin_hua.bian_hao),
 						"专属能力归属必须匹配分支: " + String(zhuan_shu.bian_hao))
-	assert_eq(jin_hua_id_ji.size(), 33, "33 个进化 id 应互不重复")
-	assert_eq(zhuan_shu_cao, 66, "专属技能/被动槽应填满 66 条（P0 6 + T1 24 + H 系列 36）")
+	assert_eq(jin_hua_id_ji.size(), 30, "30 个进化 id 应互不重复")
+	assert_eq(zhuan_shu_cao, 60, "专属技能/被动槽应填满 60 条（10 鱼种 × 3 分支 × 2）")
 
-	# 分组：11 组 × 每组 3 条，且每组正好覆盖东方/西方/异化各一条
+	# 分组：10 组 × 每组 3 条，且每组正好覆盖东方/西方/异化各一条
 	var jin_hua_zu := JinHuaKu.an_ji_yu()
-	assert_eq(jin_hua_zu.size(), 11, "进化应覆盖 11 个基础鱼种分组")
+	assert_eq(jin_hua_zu.size(), 10, "进化应覆盖 10 个基础鱼种分组")
 	for yu_zhong_id in jin_hua_zu:
 		var zu: Array = jin_hua_zu[yu_zhong_id]
 		assert_eq(zu.size(), 3, "每个鱼种必须恰好 3 条分支: " + String(yu_zhong_id))
@@ -530,7 +516,7 @@ func _initialize() -> void:
 		for jin_hua in zu:
 			fen_zhi_ji[jin_hua.fen_zhi] = true
 		assert_eq(fen_zhi_ji.size(), 3, "三条分支必须各占东方/西方/异化: " + String(yu_zhong_id))
-		# 10 个 NPC 鱼种必须对应 data/yuzhong 的真实鱼种；玩家凹凸蜗牛鱼走形态表
+		# 9 个 NPC 鱼种必须对应 data/yuzhong 的真实鱼种；玩家凹凸蜗牛鱼走形态表
 		if yu_zhong_id != &"ao_tu_wo_niu_yu":
 			assert_eq(1 if FileAccess.file_exists("res://data/yuzhong/%s.tres" % String(yu_zhong_id)) else 0,
 					1, "进化所属鱼种必须是真实鱼种: " + String(yu_zhong_id))
@@ -548,8 +534,6 @@ func _initialize() -> void:
 	assert_eq(jian_fen_zhi.size(), 3, "剑鱼可选进化分支应恰好 3 条")
 	for jin_hua in jian_fen_zhi:
 		assert_string(String(jin_hua.ji_yu_bian_hao), "jian_yu", "剑鱼候选只属于剑鱼")
-	assert_eq(JinHuaKu.wan_jia_fen_zhi(&"an_ying_jian_yu").size(), 0,
-			"暗影剑鱼没有独立分支：形态侧映射到 jian_yu")
 	assert_eq(JinHuaKu.wan_jia_fen_zhi(&"bu_cun_zai").size(), 0, "未知鱼种没有候选")
 	for yu_zhong_id in jin_hua_zu:
 		assert_eq(JinHuaKu.wan_jia_fen_zhi(yu_zhong_id).size(), 3,
@@ -578,6 +562,73 @@ func _initialize() -> void:
 		if zi_ben == null or String(zi_ben.get_instance_base_type()) == "":
 			huai_jiao_ben.append(wen_jian)
 	assert_eq(huai_jiao_ben.size(), 0, "scripts/ 下脚本都应能编译，坏的: %s" % ", ".join(huai_jiao_ben))
+
+	# ---- 用例 11：pixelfx v2 特效资源完整性（TASK-031）----
+	# 每套：PNG+JSON 存在、frames 非空、首帧尺寸=frameSize、pivot 在帧内、fps>0、
+	# columns>0、visible 非零、加载器可解析；注册表引用的键与 42 个主动 id 全覆盖
+	var zi_yuan: Dictionary = TeXiaoKuZiYuan.ZI_YUAN
+	var zi_yuan_shu := 0
+	for key in zi_yuan:
+		zi_yuan_shu += 1
+		var lu := String(zi_yuan[key].get("lu", ""))
+		var png := lu.get_basename() + ".png"
+		assert_eq(1 if FileAccess.file_exists(lu) else 0, 1, "v2 JSON 存在: " + String(key))
+		assert_eq(1 if FileAccess.file_exists(png) else 0, 1, "v2 PNG 存在: " + String(key))
+		if not FileAccess.file_exists(lu):
+			continue
+		var wen := FileAccess.open(lu, FileAccess.READ)
+		var jie = null
+		if wen != null:
+			jie = JSON.parse_string(wen.get_as_text())
+			wen.close()
+		if not (jie is Dictionary):
+			assert_eq(0, 1, "v2 JSON 可解析: " + String(key))
+			continue
+		var zhen: Array = jie.get("frames", [])
+		assert_eq(1 if zhen.size() > 0 else 0, 1, "v2 帧列表非空: " + String(key))
+		var pf: Dictionary = jie.get("meta", {}).get("pixelfx", {})
+		var chi: Array = pf.get("frameSize", [0, 0])
+		var yuan: Array = pf.get("pivot", [0, 0])
+		var ke: Array = pf.get("visible", [0, 0])
+		assert_eq(1 if float(pf.get("fps", 0.0)) > 0.0 else 0, 1, "v2 fps>0: " + String(key))
+		assert_eq(1 if int(pf.get("columns", 0)) > 0 else 0, 1, "v2 columns>0: " + String(key))
+		assert_eq(1 if float(ke[0]) > 0.0 and float(ke[1]) > 0.0 else 0, 1,
+				"v2 visible 非零: " + String(key))
+		assert_eq(1 if float(yuan[0]) >= 0.0 and float(yuan[0]) <= float(chi[0]) \
+				and float(yuan[1]) >= 0.0 and float(yuan[1]) <= float(chi[1]) else 0, 1,
+				"v2 pivot 在帧内: " + String(key))
+		var f0: Dictionary = zhen[0].get("frame", {})
+		assert_eq(1 if float(f0.get("w", 0.0)) == float(chi[0]) \
+				and float(f0.get("h", 0.0)) == float(chi[1]) else 0, 1,
+				"v2 首帧尺寸=frameSize: " + String(key))
+		assert_eq(1 if not XiangSuTeXiao.qu_lu(lu).is_empty() else 0, 1,
+				"v2 加载器可解析: " + String(key))
+	assert_eq(1 if zi_yuan_shu >= 84 else 0, 1, "v2 资源至少 84 套（实际 %d）" % zi_yuan_shu)
+
+	# 注册表引用全覆盖：技能/反馈/状态/界面/船招引用的每个键都必须有资源
+	var yin_yong: Array[String] = []
+	for id in TeXiaoKu.JI_NENG_KU:
+		yin_yong.append(String(TeXiaoKu.JI_NENG_KU[id]))
+	for ming in TeXiaoKu.FAN_KUI:
+		yin_yong.append(String(TeXiaoKu.FAN_KUI[ming]["key"]))
+	for ming in TeXiaoKu.ZHUANG_TAI_KU:
+		yin_yong.append(String(TeXiaoKu.ZHUANG_TAI_KU[ming]))
+	for ming in TeXiaoKu.JIE_MIAN_KU:
+		yin_yong.append(String(TeXiaoKu.JIE_MIAN_KU[ming]["key"]))
+	for key in TeXiaoKu.CHUAN_KU:
+		yin_yong.append(String(key))
+	var que_shi: Array[String] = []
+	for key in yin_yong:
+		if not zi_yuan.has(key):
+			que_shi.append(key)
+	assert_eq(que_shi.size(), 0, "注册表引用的 v2 键都应有资源，缺: %s" % ", ".join(que_shi))
+
+	# 主动技全覆盖：能力池里每个主动 id 都要在 JI_NENG_KU 注册（漏接 = 玩家放技能没特效）
+	var wei_zhu_ce: Array[String] = []
+	for neng in NengLiKu.ZHU_DONG:
+		if not TeXiaoKu.JI_NENG_KU.has(neng.bian_hao):
+			wei_zhu_ce.append(String(neng.bian_hao))
+	assert_eq(wei_zhu_ce.size(), 0, "42 个主动技都应有 v2 特效键，缺: %s" % ", ".join(wei_zhu_ce))
 
 	# ---- 收卷：退出码是唯一门禁语言 ----
 	print("Results: %d passed, %d failed" % [passed, failed])

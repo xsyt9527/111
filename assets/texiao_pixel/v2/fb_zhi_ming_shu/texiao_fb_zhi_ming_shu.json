@@ -1,0 +1,378 @@
+{
+ "frames": [
+  {
+   "filename": "fb_zhi_ming_shu 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 1",
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 2",
+   "frame": {
+    "x": 304,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 3",
+   "frame": {
+    "x": 456,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 4",
+   "frame": {
+    "x": 608,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 5",
+   "frame": {
+    "x": 760,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 6",
+   "frame": {
+    "x": 912,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 7",
+   "frame": {
+    "x": 1064,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 8",
+   "frame": {
+    "x": 1216,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 9",
+   "frame": {
+    "x": 1368,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 10",
+   "frame": {
+    "x": 1520,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 11",
+   "frame": {
+    "x": 1672,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 12",
+   "frame": {
+    "x": 1824,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 13",
+   "frame": {
+    "x": 0,
+    "y": 120,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_zhi_ming_shu 14",
+   "frame": {
+    "x": 152,
+    "y": 120,
+    "w": 152,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 120
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_zhi_ming_shu.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1976,
+   "h": 240
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 14,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "ui/crit-number",
+   "name": "fb_zhi_ming_shu",
+   "fps": 12,
+   "loop": false,
+   "frames": 15,
+   "frameSize": [
+    152,
+    120
+   ],
+   "pivot": [
+    76.0,
+    60.0
+   ],
+   "columns": 13,
+   "visible": [
+    152,
+    114
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

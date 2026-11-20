@@ -1,0 +1,155 @@
+﻿批次,类别,文件id,中文名,输出路径,画布,备注
+P0-A,基础鱼,ao_tu_wo_niu_yu,凹凸蜗牛鱼,gemini_out_v2/01_base_fish/ao_tu_wo_niu_yu.png,1024×1024,风格锚：第一张必须先验收
+P0-B,基础鱼,zuan_guang_yu,钻光鱼,gemini_out_v2/01_base_fish/zuan_guang_yu.png,1024×1024,
+P0-B,基础鱼,shi_zi_yu,狮子鱼,gemini_out_v2/01_base_fish/shi_zi_yu.png,1024×1024,
+P0-B,基础鱼,da_yan_jin_qiang_yu,大眼金枪鱼,gemini_out_v2/01_base_fish/da_yan_jin_qiang_yu.png,1024×1024,
+P0-B,基础鱼,dian_yao,电鳗,gemini_out_v2/01_base_fish/dian_yao.png,1024×1024,
+P0-B,基础鱼,qi_yu,旗鱼,gemini_out_v2/01_base_fish/qi_yu.png,1024×1024,
+P0-B,基础鱼,jian_yu,剑鱼,gemini_out_v2/01_base_fish/jian_yu.png,1024×1024,
+P0-B,基础鱼,ju_kou_yu,巨口鱼,gemini_out_v2/01_base_fish/ju_kou_yu.png,1024×1024,
+P0-B,基础鱼,deng_long_yu,灯笼鱼,gemini_out_v2/01_base_fish/deng_long_yu.png,1024×1024,
+P0-B,基础鱼,jing_sha,鲸鲨,gemini_out_v2/01_base_fish/jing_sha.png,1024×1024,
+P1,进化形态,tai_sui_rou_ling_zhi_shou,太岁肉灵芝兽,gemini_out_v2/02_jinhua/tai_sui_rou_ling_zhi_shou.png,1024×1024,基础图 ao_tu_wo_niu_yu
+P1,进化形态,shen_hai_shi_lai_mu_nv_wang,深海史莱姆女王,gemini_out_v2/02_jinhua/shen_hai_shi_lai_mu_nv_wang.png,1024×1024,基础图 ao_tu_wo_niu_yu
+P1,进化形态,chao_ya_ning_jiao_pao,超压凝胶炮,gemini_out_v2/02_jinhua/chao_ya_ning_jiao_pao.png,1024×1024,基础图 ao_tu_wo_niu_yu
+P1,进化形态,shi_xing_ying_huo_chong,噬星萤火虫,gemini_out_v2/02_jinhua/shi_xing_ying_huo_chong.png,1024×1024,基础图 zuan_guang_yu
+P1,进化形态,zu_zhou_xing_chen_chong,诅咒星辰虫,gemini_out_v2/02_jinhua/zu_zhou_xing_chen_chong.png,1024×1024,基础图 zuan_guang_yu
+P1,进化形态,deng_li_zi_chuan_jia_yu,等离子穿甲鱼,gemini_out_v2/02_jinhua/deng_li_zi_chuan_jia_yu.png,1024×1024,基础图 zuan_guang_yu
+P1,进化形态,jiu_wei_du_yu_yao,九尾毒羽妖,gemini_out_v2/02_jinhua/jiu_wei_du_yu_yao.png,1024×1024,基础图 shi_zi_yu
+P1,进化形态,mei_du_sha_du_guan,美杜莎毒冠,gemini_out_v2/02_jinhua/mei_du_sha_du_guan.png,1024×1024,基础图 shi_zi_yu
+P1,进化形态,shan_hu_ji_guan_shou,珊瑚棘冠兽,gemini_out_v2/02_jinhua/shan_hu_ji_guan_shou.png,1024×1024,基础图 shi_zi_yu
+P1,进化形态,wen_yao_zhan_wei,文鳐战鲔,gemini_out_v2/02_jinhua/wen_yao_zhan_wei.png,1024×1024,基础图 da_yan_jin_qiang_yu
+P1,进化形态,hai_shen_xun_yang_ju,海神巡洋驹,gemini_out_v2/02_jinhua/hai_shen_xun_yang_ju.png,1024×1024,基础图 da_yan_jin_qiang_yu
+P1,进化形态,qian_yan_lei_po_yu,千眼雷破鱼,gemini_out_v2/02_jinhua/qian_yan_lei_po_yu.png,1024×1024,基础图 da_yan_jin_qiang_yu
+P1,进化形态,lei_yuan_ming_she,雷渊鸣蛇,gemini_out_v2/02_jinhua/lei_yuan_ming_she.png,1024×1024,基础图 dian_yao
+P1,进化形态,lei_ting_hai_de_la,雷霆海德拉,gemini_out_v2/02_jinhua/lei_ting_hai_de_la.png,1024×1024,基础图 dian_yao
+P1,进化形态,ci_bao_shen_yuan_chong,磁暴深渊虫,gemini_out_v2/02_jinhua/ci_bao_shen_yuan_chong.png,1024×1024,基础图 dian_yao
+P1,进化形态,feng_fan_xun_hai_ye_cha,风帆巡海夜叉,gemini_out_v2/02_jinhua/feng_fan_xun_hai_ye_cha.png,1024×1024,基础图 qi_yu
+P1,进化形态,you_ling_hai_dao_fan,幽灵海盗帆,gemini_out_v2/02_jinhua/you_ling_hai_dao_fan.png,1024×1024,基础图 qi_yu
+P1,进化形态,lie_kong_fei_yu,裂空飞鱼,gemini_out_v2/02_jinhua/lie_kong_fei_yu.png,1024×1024,基础图 qi_yu
+P1,进化形态,po_lang_du_jiao_jiao,破浪独角蛟,gemini_out_v2/02_jinhua/po_lang_du_jiao_jiao.png,1024×1024,基础图 jian_yu
+P1,进化形态,shen_yuan_chuan_ci_zhe,深渊穿刺者,gemini_out_v2/02_jinhua/shen_yuan_chuan_ci_zhe.png,1024×1024,基础图 jian_yu
+P1,进化形态,kong_jian_lie_ren_yu,空间裂刃鱼,gemini_out_v2/02_jinhua/kong_jian_lie_ren_yu.png,1024×1024,基础图 jian_yu
+P1,进化形态,tao_tie_tun_hai_shou,饕餮吞海兽,gemini_out_v2/02_jinhua/tao_tie_tun_hai_shou.png,1024×1024,基础图 ju_kou_yu
+P1,进化形态,shen_yuan_lie_kou_guai,深渊裂口怪,gemini_out_v2/02_jinhua/shen_yuan_lie_kou_guai.png,1024×1024,基础图 ju_kou_yu
+P1,进化形态,ling_hun_xi_shi_zhe,灵魂吸食者,gemini_out_v2/02_jinhua/ling_hun_xi_shi_zhe.png,1024×1024,基础图 ju_kou_yu
+P1,进化形态,you_ming_yin_lu_deng,幽冥引路灯,gemini_out_v2/02_jinhua/you_ming_yin_lu_deng.png,1024×1024,基础图 deng_long_yu
+P1,进化形态,xing_luo_you_hun,星落游魂,gemini_out_v2/02_jinhua/xing_luo_you_hun.png,1024×1024,基础图 deng_long_yu
+P1,进化形态,bao_lie_lin_guang_shou,爆裂磷光兽,gemini_out_v2/02_jinhua/bao_lie_lin_guang_shou.png,1024×1024,基础图 deng_long_yu
+P1,进化形态,bei_ming_ju_kun,北冥巨鲲,gemini_out_v2/02_jinhua/bei_ming_ju_kun.png,1024×1024,基础图 jing_sha
+P1,进化形态,yuan_chu_li_wei_tan,原初利维坦,gemini_out_v2/02_jinhua/yuan_chu_li_wei_tan.png,1024×1024,基础图 jing_sha
+P1,进化形态,xing_kong_tun_xing_shou,星空吞星兽,gemini_out_v2/02_jinhua/xing_kong_tun_xing_shou.png,1024×1024,基础图 jing_sha
+P2,技能图标,chang_mao_chuan_ci,长矛穿刺,gemini_out_v2/03_tubiao/chang_mao_chuan_ci.png,1024×1024,P2-基础主动
+P2,技能图标,fang_dian_ma_bi,放电麻痹,gemini_out_v2/03_tubiao/fang_dian_ma_bi.png,1024×1024,P2-基础主动
+P2,技能图标,ji_su_tu_jin,极速突进,gemini_out_v2/03_tubiao/ji_su_tu_jin.png,1024×1024,P2-基础主动
+P2,技能图标,kuang_bao_si_yao,狂暴撕咬,gemini_out_v2/03_tubiao/kuang_bao_si_yao.png,1024×1024,P2-基础主动
+P2,技能图标,ni_liu_shan_bi,逆流闪避,gemini_out_v2/03_tubiao/ni_liu_shan_bi.png,1024×1024,P2-基础主动
+P2,技能图标,qian_fu_tu_xi,潜伏突袭,gemini_out_v2/03_tubiao/qian_fu_tu_xi.png,1024×1024,P2-基础主动
+P2,技能图标,ruo_dian_dong_cha,弱点洞察,gemini_out_v2/03_tubiao/ruo_dian_dong_cha.png,1024×1024,P2-基础主动
+P2,技能图标,xuan_wo,漩涡,gemini_out_v2/03_tubiao/xuan_wo.png,1024×1024,P2-基础主动
+P2,技能图标,xue_xing_kuang_re,血腥狂热,gemini_out_v2/03_tubiao/xue_xing_kuang_re.png,1024×1024,P2-基础主动
+P2,技能图标,ying_ke_hu_ti,硬壳护体,gemini_out_v2/03_tubiao/ying_ke_hu_ti.png,1024×1024,P2-基础主动
+P2,技能图标,you_er_qi_pao,诱饵气泡,gemini_out_v2/03_tubiao/you_er_qi_pao.png,1024×1024,P2-基础主动
+P2,技能图标,yu_lei_chong_ci,鱼雷冲刺,gemini_out_v2/03_tubiao/yu_lei_chong_ci.png,1024×1024,P2-基础主动
+P2,技能图标,bao_shi_lian_suo,暴食连锁,gemini_out_v2/03_tubiao/bao_shi_lian_suo.png,1024×1024,P2-基础被动
+P2,技能图标,bei_ci_zhi_jue,背刺直觉,gemini_out_v2/03_tubiao/bei_ci_zhi_jue.png,1024×1024,P2-基础被动
+P2,技能图标,da_wei_wang,大胃王,gemini_out_v2/03_tubiao/da_wei_wang.png,1024×1024,P2-基础被动
+P2,技能图标,dian_gan_shou_qi,电感受器,gemini_out_v2/03_tubiao/dian_gan_shou_qi.png,1024×1024,P2-基础被动
+P2,技能图标,du_ji_hu_ti,毒棘护体,gemini_out_v2/03_tubiao/du_ji_hu_ti.png,1024×1024,P2-基础被动
+P2,技能图标,du_xian,毒腺,gemini_out_v2/03_tubiao/du_xian.png,1024×1024,P2-基础被动
+P2,技能图标,fu_rou_you_er,腐肉诱饵,gemini_out_v2/03_tubiao/fu_rou_you_er.png,1024×1024,P2-基础被动
+P2,技能图标,ji_e_nai_shou,饥饿耐受,gemini_out_v2/03_tubiao/ji_e_nai_shou.png,1024×1024,P2-基础被动
+P2,技能图标,jue_jing_fan_yao,绝境反咬,gemini_out_v2/03_tubiao/jue_jing_fan_yao.png,1024×1024,P2-基础被动
+P2,技能图标,lie_shou_zhi_jue,猎手直觉,gemini_out_v2/03_tubiao/lie_shou_zhi_jue.png,1024×1024,P2-基础被动
+P2,技能图标,ling_min_wei_qi,灵敏尾鳍,gemini_out_v2/03_tubiao/ling_min_wei_qi.png,1024×1024,P2-基础被动
+P2,技能图标,ruan_lin,软鳞,gemini_out_v2/03_tubiao/ruan_lin.png,1024×1024,P2-基础被动
+P2,技能图标,shen_shang_xian,肾上腺,gemini_out_v2/03_tubiao/shen_shang_xian.png,1024×1024,P2-基础被动
+P2,技能图标,shi_fu_zhe,食腐者,gemini_out_v2/03_tubiao/shi_fu_zhe.png,1024×1024,P2-基础被动
+P2,技能图标,si_lie_chi,撕裂齿,gemini_out_v2/03_tubiao/si_lie_chi.png,1024×1024,P2-基础被动
+P2,技能图标,tan_shi_hui_fu,贪食回复,gemini_out_v2/03_tubiao/tan_shi_hui_fu.png,1024×1024,P2-基础被动
+P2,技能图标,xiu_lin,锈鳞,gemini_out_v2/03_tubiao/xiu_lin.png,1024×1024,P2-基础被动
+P2,技能图标,yin_ni_qi_xi,隐匿气息,gemini_out_v2/03_tubiao/yin_ni_qi_xi.png,1024×1024,P2-基础被动
+P2,技能图标,ying_lin_fan_ji,硬鳞反击,gemini_out_v2/03_tubiao/ying_lin_fan_ji.png,1024×1024,P2-基础被动
+P2,技能图标,chao_ya_shui_dao,超压水刀,gemini_out_v2/03_tubiao/chao_ya_shui_dao.png,1024×1024,P2-进化主动
+P2,技能图标,ci_chang_hu_bi,磁场护壁,gemini_out_v2/03_tubiao/ci_chang_hu_bi.png,1024×1024,P2-进化主动
+P2,技能图标,deng_li_zi_qi_she,等离子齐射,gemini_out_v2/03_tubiao/deng_li_zi_qi_she.png,1024×1024,P2-进化主动
+P2,技能图标,gui_huo_yin_lu,鬼火引路,gemini_out_v2/03_tubiao/gui_huo_yin_lu.png,1024×1024,P2-进化主动
+P2,技能图标,huan_feng,唤风,gemini_out_v2/03_tubiao/huan_feng.png,1024×1024,P2-进化主动
+P2,技能图标,ji_guan_fan_jia,棘冠反甲,gemini_out_v2/03_tubiao/ji_guan_fan_jia.png,1024×1024,P2-进化主动
+P2,技能图标,jiu_tou_dian_wang,九头电网,gemini_out_v2/03_tubiao/jiu_tou_dian_wang.png,1024×1024,P2-进化主动
+P2,技能图标,ju_du_tu_ci,剧毒突刺,gemini_out_v2/03_tubiao/ju_du_tu_ci.png,1024×1024,P2-进化主动
+P2,技能图标,kong_jian_lie_feng,空间裂缝,gemini_out_v2/03_tubiao/kong_jian_lie_feng.png,1024×1024,P2-进化主动
+P2,技能图标,kong_que_huan_ying,孔雀幻影,gemini_out_v2/03_tubiao/kong_que_huan_ying.png,1024×1024,P2-进化主动
+P2,技能图标,kun_tun_tian_di,鲲吞天地,gemini_out_v2/03_tubiao/kun_tun_tian_di.png,1024×1024,P2-进化主动
+P2,技能图标,lei_bao_zhao_huan,雷暴召唤,gemini_out_v2/03_tubiao/lei_bao_zhao_huan.png,1024×1024,P2-进化主动
+P2,技能图标,lie_kou_xian_jing,裂口陷阱,gemini_out_v2/03_tubiao/lie_kou_xian_jing.png,1024×1024,P2-进化主动
+P2,技能图标,lin_guang_bao_shan,磷光爆闪,gemini_out_v2/03_tubiao/lin_guang_bao_shan.png,1024×1024,P2-进化主动
+P2,技能图标,liu_xing_yue,流星跃,gemini_out_v2/03_tubiao/liu_xing_yue.png,1024×1024,P2-进化主动
+P2,技能图标,luo_xuan_zuan_tu,螺旋钻突,gemini_out_v2/03_tubiao/luo_xuan_zuan_tu.png,1024×1024,P2-进化主动
+P2,技能图标,po_kong_fu_chong,破空俯冲,gemini_out_v2/03_tubiao/po_kong_fu_chong.png,1024×1024,P2-进化主动
+P2,技能图标,qian_yan_qi_she,千眼齐射,gemini_out_v2/03_tubiao/qian_yan_qi_she.png,1024×1024,P2-进化主动
+P2,技能图标,qiang_suan_pen_tu,强酸喷吐,gemini_out_v2/03_tubiao/qiang_suan_pen_tu.png,1024×1024,P2-进化主动
+P2,技能图标,she_hun,摄魂,gemini_out_v2/03_tubiao/she_hun.png,1024×1024,P2-进化主动
+P2,技能图标,shen_ju_chong_feng,神驹冲锋,gemini_out_v2/03_tubiao/shen_ju_chong_feng.png,1024×1024,P2-进化主动
+P2,技能图标,shen_yuan_xuan_wo,深渊漩涡,gemini_out_v2/03_tubiao/shen_yuan_xuan_wo.png,1024×1024,P2-进化主动
+P2,技能图标,shi_hua_zhi_tong,石化之瞳,gemini_out_v2/03_tubiao/shi_hua_zhi_tong.png,1024×1024,P2-进化主动
+P2,技能图标,tai_sui_ge_rou,太岁割肉,gemini_out_v2/03_tubiao/tai_sui_ge_rou.png,1024×1024,P2-进化主动
+P2,技能图标,tao_tie_ju_tun,饕餮巨吞,gemini_out_v2/03_tubiao/tao_tie_ju_tun.png,1024×1024,P2-进化主动
+P2,技能图标,tun_xing,吞星,gemini_out_v2/03_tubiao/tun_xing.png,1024×1024,P2-进化主动
+P2,技能图标,xing_chen_yin_xing,星辰隐形,gemini_out_v2/03_tubiao/xing_chen_yin_xing.png,1024×1024,P2-进化主动
+P2,技能图标,ying_ju_cheng_long,萤聚成龙,gemini_out_v2/03_tubiao/ying_ju_cheng_long.png,1024×1024,P2-进化主动
+P2,技能图标,you_ling_qi_she,幽灵齐射,gemini_out_v2/03_tubiao/you_ling_qi_she.png,1024×1024,P2-进化主动
+P2,技能图标,zu_zhou_bao_zi,诅咒孢子,gemini_out_v2/03_tubiao/zu_zhou_bao_zi.png,1024×1024,P2-进化主动
+P2,技能图标,bao_lie_ti_zhi,爆裂体质,gemini_out_v2/03_tubiao/bao_lie_ti_zhi.png,1024×1024,P2-进化被动
+P2,技能图标,duo_tou_rong_cuo,多头容错,gemini_out_v2/03_tubiao/duo_tou_rong_cuo.png,1024×1024,P2-进化被动
+P2,技能图标,gang_tie_liao_ya,钢铁獠牙,gemini_out_v2/03_tubiao/gang_tie_liao_ya.png,1024×1024,P2-进化被动
+P2,技能图标,gong_sheng_hai_kui,共生海葵,gemini_out_v2/03_tubiao/gong_sheng_hai_kui.png,1024×1024,P2-进化被动
+P2,技能图标,gu_zhi_zhong_jia,骨质重甲,gemini_out_v2/03_tubiao/gu_zhi_zhong_jia.png,1024×1024,P2-进化被动
+P2,技能图标,hua_xiang_yi,滑翔翼,gemini_out_v2/03_tubiao/hua_xiang_yi.png,1024×1024,P2-进化被动
+P2,技能图标,ji_ci_kou_nei,棘刺口内,gemini_out_v2/03_tubiao/ji_ci_kou_nei.png,1024×1024,P2-进化被动
+P2,技能图标,ji_guang_gui_ji,极光轨迹,gemini_out_v2/03_tubiao/ji_guang_gui_ji.png,1024×1024,P2-进化被动
+P2,技能图标,ji_yin_she_lu,基因摄录,gemini_out_v2/03_tubiao/ji_yin_she_lu.png,1024×1024,P2-进化被动
+P2,技能图标,jin_shen_ji_ma,近身即麻,gemini_out_v2/03_tubiao/jin_shen_ji_ma.png,1024×1024,P2-进化被动
+P2,技能图标,jin_shu_chi_li,金属斥力,gemini_out_v2/03_tubiao/jin_shu_chi_li.png,1024×1024,P2-进化被动
+P2,技能图标,ju_qun,聚群,gemini_out_v2/03_tubiao/ju_qun.png,1024×1024,P2-进化被动
+P2,技能图标,kong_ju_zhi_kou,恐惧之口,gemini_out_v2/03_tubiao/kong_ju_zhi_kou.png,1024×1024,P2-进化被动
+P2,技能图标,lei_yan_suo_ding,雷眼锁定,gemini_out_v2/03_tubiao/lei_yan_suo_ding.png,1024×1024,P2-进化被动
+P2,技能图标,lie_kong_bu,裂空步,gemini_out_v2/03_tubiao/lie_kong_bu.png,1024×1024,P2-进化被动
+P2,技能图标,ming_lei_lin,鸣雷鳞,gemini_out_v2/03_tubiao/ming_lei_lin.png,1024×1024,P2-进化被动
+P2,技能图标,ning_jiao_tan_fu,凝胶弹肤,gemini_out_v2/03_tubiao/ning_jiao_tan_fu.png,1024×1024,P2-进化被动
+P2,技能图标,po_jia_long_lin,破甲龙鳞,gemini_out_v2/03_tubiao/po_jia_long_lin.png,1024×1024,P2-进化被动
+P2,技能图标,she_fa_pen_du,蛇发喷毒,gemini_out_v2/03_tubiao/she_fa_pen_du.png,1024×1024,P2-进化被动
+P2,技能图标,shen_yuan_zhuang_jia,深渊装甲,gemini_out_v2/03_tubiao/shen_yuan_zhuang_jia.png,1024×1024,P2-进化被动
+P2,技能图标,shun_feng_yi,顺风翼,gemini_out_v2/03_tubiao/shun_feng_yi.png,1024×1024,P2-进化被动
+P2,技能图标,wang_ling_gu_qu,亡灵骨躯,gemini_out_v2/03_tubiao/wang_ling_gu_qu.png,1024×1024,P2-进化被动
+P2,技能图标,xian_shan_zhi_bei,仙山之背,gemini_out_v2/03_tubiao/xian_shan_zhi_bei.png,1024×1024,P2-进化被动
+P2,技能图标,xie_ya_ji_dong,泄压机动,gemini_out_v2/03_tubiao/xie_ya_ji_dong.png,1024×1024,P2-进化被动
+P2,技能图标,xing_chuan_bo_san,星传播散,gemini_out_v2/03_tubiao/xing_chuan_bo_san.png,1024×1024,P2-进化被动
+P2,技能图标,xing_yu_ling_yu,星域领域,gemini_out_v2/03_tubiao/xing_yu_ling_yu.png,1024×1024,P2-进化被动
+P2,技能图标,xing_zuo_yu_hui,星座余晖,gemini_out_v2/03_tubiao/xing_zuo_yu_hui.png,1024×1024,P2-进化被动
+P2,技能图标,ye_cha_fan,夜叉帆,gemini_out_v2/03_tubiao/ye_cha_fan.png,1024×1024,P2-进化被动
+P2,技能图标,you_ling_chuan_hai,幽灵船骸,gemini_out_v2/03_tubiao/you_ling_chuan_hai.png,1024×1024,P2-进化被动
+P2,技能图标,you_ming_ti,幽冥体,gemini_out_v2/03_tubiao/you_ming_ti.png,1024×1024,P2-进化被动
+P3,技能特效,dian_gan_shou_qi,电感受器（被动）,gemini_out_v2/04_texiao/dian_gan_shou_qi.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,dian_mai_chong,电脉冲（主动）,gemini_out_v2/04_texiao/dian_mai_chong.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,dian_texiao,电击命中,gemini_out_v2/04_texiao/dian_texiao.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,du_texiao,中毒,gemini_out_v2/04_texiao/du_texiao.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,kuang_bao_si_yao,狂暴撕咬,gemini_out_v2/04_texiao/kuang_bao_si_yao.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,ni_liu_shan_bi,逆流闪避,gemini_out_v2/04_texiao/ni_liu_shan_bi.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,xuan_wo,漩涡,gemini_out_v2/04_texiao/xuan_wo.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,xue_xing_kuang_re,血腥狂热,gemini_out_v2/04_texiao/xue_xing_kuang_re.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,ying_ke_hu_ti,硬壳护体,gemini_out_v2/04_texiao/ying_ke_hu_ti.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,ying_lin_fan_ji,硬鳞反击,gemini_out_v2/04_texiao/ying_lin_fan_ji.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,you_er_qi_pao,诱饵气泡,gemini_out_v2/04_texiao/you_er_qi_pao.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,技能特效,yu_lei_chong_ci,鱼雷冲刺,gemini_out_v2/04_texiao/yu_lei_chong_ci.png,1024×1024,单帧峰值，代码扩 4 帧
+P3,机器船,ji_qi_chuan,机器船船体,gemini_out_v2/05_chuan/ji_qi_chuan.png,1024×1024,
+P3,机器船,ji_qi_chuan_zhuai,机器船炮塔,gemini_out_v2/05_chuan/ji_qi_chuan_zhuai.png,1024×1024,
+P3,机器船,chuan_zhao,探照灯,gemini_out_v2/05_chuan/chuan_zhao.png,1024×1024,
+P3,机器船,chuan_mao,船锚横扫,gemini_out_v2/05_chuan/chuan_mao.png,1024×1024,
+P3,机器船,shen_zha_dan,深水炸弹,gemini_out_v2/05_chuan/shen_zha_dan.png,1024×1024,
+P3,机器船,yu_cha,鱼叉,gemini_out_v2/05_chuan/yu_cha.png,1024×1024,
+P3,场景装饰,hai_cao,海草,gemini_out_v2/06_zhuangshi/hai_cao.png,1024×1024,根部在画布底中
+P3,场景装饰,shan_hu,珊瑚,gemini_out_v2/06_zhuangshi/shan_hu.png,1024×1024,根部在画布底中
+P3,肉块,rou_kuai,鱼肉块,gemini_out_v2/07_rou/rou_kuai.png,512×512,代码生成 5 变体
+P3,气泡,hai_di_qi_pao,海底气泡,gemini_out_v2/08_qipao/hai_di_qi_pao.png,1024×1024,代码生成 4 帧
+P0-B,背景,beijing_3x3,九宫格关卡背景,gemini_out_v2/09_beijing/beijing_3x3.png,4128×2304,3×3 九格地标

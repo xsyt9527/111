@@ -144,6 +144,7 @@ func _on_ka_pian_an_niu(xing_tai: XingTai) -> void:
 	if not ZhangBen.kai_ju_xing_tai(xing_tai):
 		ti_shi.text = "形态应用失败"
 		return
+	TeXiaoKu.xuan_jiao()  # v2 选角达成：屏幕中央开箱金光（挂根节点，切场景后还能走完）
 	get_tree().change_scene_to_file("res://scenes/Main.tscn")
 
 

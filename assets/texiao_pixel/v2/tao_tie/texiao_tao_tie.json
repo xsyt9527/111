@@ -1,0 +1,400 @@
+{
+ "frames": [
+  {
+   "filename": "tao_tie 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 12",
+   "frame": {
+    "x": 0,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 13",
+   "frame": {
+    "x": 160,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 14",
+   "frame": {
+    "x": 320,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "tao_tie 15",
+   "frame": {
+    "x": 480,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_tao_tie.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 182
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 15,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "fire/fire-ring",
+   "name": "tao_tie",
+   "fps": 12,
+   "loop": true,
+   "frames": 16,
+   "frameSize": [
+    160,
+    91
+   ],
+   "pivot": [
+    80.0,
+    45.5
+   ],
+   "columns": 12,
+   "visible": [
+    152,
+    86
+   ],
+   "fit": "native",
+   "lifetime": 1.3,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

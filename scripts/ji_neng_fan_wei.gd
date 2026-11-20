@@ -14,17 +14,13 @@ enum FanWeiLeiXing { FAN_WEI, TU_JIN, ZI_SHEN }
 const FAN_WEI_BIAO := [
 	&"fang_dian_ma_bi",
 	&"xuan_wo",
-	&"sheng_na_mai_chong",
-	&"yu_ni_dan",
 	&"ruo_dian_dong_cha",
-	&"dian_mai_chong",
 	&"you_er_qi_pao",
 ]
 # 突进型：朝向前方的扇形 + 箭头
 const TU_JIN_BIAO := [
 	&"yu_lei_chong_ci",
 	&"chang_mao_chuan_ci",
-	&"man_li_chong_zhuang",
 	&"ji_su_tu_jin",
 ]
 # 自身增益型：玩家身边的小圆

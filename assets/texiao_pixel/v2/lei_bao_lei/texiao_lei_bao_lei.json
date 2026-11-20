@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "lei_bao_lei 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 1",
+   "frame": {
+    "x": 145,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 2",
+   "frame": {
+    "x": 290,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 3",
+   "frame": {
+    "x": 435,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 4",
+   "frame": {
+    "x": 580,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 5",
+   "frame": {
+    "x": 725,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 6",
+   "frame": {
+    "x": 870,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 7",
+   "frame": {
+    "x": 1015,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lei_bao_lei 8",
+   "frame": {
+    "x": 1160,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 145,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 145,
+    "h": 160
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_lei_bao_lei.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1305,
+   "h": 160
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "lightning/lightning-strike",
+   "name": "lei_bao_lei",
+   "fps": 12,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    145,
+    160
+   ],
+   "pivot": [
+    72.5,
+    80.0
+   ],
+   "columns": 9,
+   "visible": [
+    140,
+    156
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

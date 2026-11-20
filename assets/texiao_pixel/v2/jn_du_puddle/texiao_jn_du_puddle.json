@@ -1,0 +1,356 @@
+{
+ "frames": [
+  {
+   "filename": "jn_du_puddle 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 12",
+   "frame": {
+    "x": 0,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jn_du_puddle 13",
+   "frame": {
+    "x": 160,
+    "y": 91,
+    "w": 160,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 91
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_jn_du_puddle.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 182
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 13,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "nature/toxic-puddle",
+   "name": "jn_du_puddle",
+   "fps": 12,
+   "loop": true,
+   "frames": 14,
+   "frameSize": [
+    160,
+    91
+   ],
+   "pivot": [
+    80.0,
+    45.5
+   ],
+   "columns": 12,
+   "visible": [
+    96,
+    55
+   ],
+   "fit": "native",
+   "lifetime": 1.2,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

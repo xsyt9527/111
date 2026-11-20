@@ -1,0 +1,444 @@
+{
+ "frames": [
+  {
+   "filename": "sys_jin_hua 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 1",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 2",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 3",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 4",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 5",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 6",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 7",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 8",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 9",
+   "frame": {
+    "x": 1080,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 10",
+   "frame": {
+    "x": 1200,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 11",
+   "frame": {
+    "x": 1320,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 12",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 13",
+   "frame": {
+    "x": 1560,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 14",
+   "frame": {
+    "x": 1680,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 15",
+   "frame": {
+    "x": 1800,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 16",
+   "frame": {
+    "x": 1920,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_jin_hua 17",
+   "frame": {
+    "x": 0,
+    "y": 96,
+    "w": 120,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 96
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_sys_jin_hua.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2040,
+   "h": 192
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 17,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "spawn/egg-hatch",
+   "name": "sys_jin_hua",
+   "fps": 12,
+   "loop": false,
+   "frames": 18,
+   "frameSize": [
+    120,
+    96
+   ],
+   "pivot": [
+    60.0,
+    48.0
+   ],
+   "columns": 17,
+   "visible": [
+    36,
+    32
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

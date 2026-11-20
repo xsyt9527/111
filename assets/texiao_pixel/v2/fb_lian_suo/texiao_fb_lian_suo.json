@@ -1,0 +1,554 @@
+{
+ "frames": [
+  {
+   "filename": "fb_lian_suo 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 12",
+   "frame": {
+    "x": 0,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 13",
+   "frame": {
+    "x": 160,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 14",
+   "frame": {
+    "x": 320,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 15",
+   "frame": {
+    "x": 480,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 16",
+   "frame": {
+    "x": 640,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 17",
+   "frame": {
+    "x": 800,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 18",
+   "frame": {
+    "x": 960,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 19",
+   "frame": {
+    "x": 1120,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 20",
+   "frame": {
+    "x": 1280,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 21",
+   "frame": {
+    "x": 1440,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_lian_suo 22",
+   "frame": {
+    "x": 1600,
+    "y": 77,
+    "w": 160,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 77
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_lian_suo.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 154
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 22,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "ui/combo-counter",
+   "name": "fb_lian_suo",
+   "fps": 15,
+   "loop": false,
+   "frames": 23,
+   "frameSize": [
+    160,
+    77
+   ],
+   "pivot": [
+    80.0,
+    38.5
+   ],
+   "columns": 12,
+   "visible": [
+    155,
+    75
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

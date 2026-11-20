@@ -9,7 +9,6 @@ const MO_KU := [
 	preload("res://scripts/zhuan_shu_ku/ye_deng_long_yu.gd"),
 	preload("res://scripts/zhuan_shu_ku/fen_yu.gd"),
 	preload("res://scripts/zhuan_shu_ku/ju_kou_yu.gd"),
-	preload("res://scripts/zhuan_shu_ku/hong_yu.gd"),
 	preload("res://scripts/zhuan_shu_ku/lan_yu.gd"),
 ]  # 固定清单：导出后资源路径会 remap，DirAccess 列目录不可靠
 

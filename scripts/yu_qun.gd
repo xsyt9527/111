@@ -2,14 +2,15 @@ extends Node2D
 class_name YuQun
 # 鱼群生成器：持续刷新（不是每波来一批），刷新出来的鱼随局内时间越来越大（策划案 8.4 / 8.5）
 # 开局：小孩鱼（1 级）为主，偶尔 2 级；每过 20 秒刷新档位 +1（原为每分钟：用户反馈升级太慢），
-# 同时「最低等级鱼」占比逐档下降，且最低等级本身也逐档抬高（1→2→3→4 封顶，小鱼彻底退场）
+# 同时「最低等级鱼」占比逐档下降（0.7 → 0.2），但 1 级鱼全期保留（2026-11-14 用户反馈「后期只剩高等级鱼」）
+# 野外池与鱼种注册表分离：狮子鱼等特殊鱼种按档位延后进野外抽样
 
 const YU_NPC_CHANGJING := preload("res://scenes/YuNpc.tscn")  # NPC 鱼蓝图
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
 const SHENG_JI_BIAO := preload("res://data/shengji/sheng_ji_biao.tres")  # 隐藏成长升级曲线：与 YuNpc 同表
 const SHUA_XIN_JI_CHU := 2  # 第 0 档能刷到 2 级
 const SHUA_XIN_FENG_DING := 10  # 体型上限封顶 10 级（与鱼种表最高级一致）
-const SHUA_XIN_ZUI_DI_FENG_DING := 4  # 最低刷新等级封顶 4 级：后期 1~3 级彻底退场（2026-11-02 拍板）
+const DU_YU_ZUI_DI_DANG := 2  # 狮子鱼（cheng_yu）最低刷新档位：40 秒后（_dang>=2）才可抽到
 const SHUA_XIN_MEI_DANG_SHI_JIAN := 20.0  # 每 20 秒刷新分布上一档（原 60 秒：升级太慢）
 const ZUI_XIAO_JIAN_GE := 0.6  # 两条鱼之间的最短刷新间隔（秒）
 const ZUI_DA_JIAN_GE := 1.8  # 最长刷新间隔（秒）
@@ -130,10 +131,10 @@ func shua_xin_shang_xian(dang: int) -> int:
 	return mini(SHUA_XIN_JI_CHU + maxi(dang, 0), SHUA_XIN_FENG_DING)
 
 
-func shua_xin_zui_di(dang: int) -> int:
-	# 刷新最小体型（最低等级）：每过 20 秒抬 1 级，封顶 4 级
-	# 2026-11-02 拍板：小鱼渐渐不再出现，与「上限抬高」形成双重压迫
-	return mini(1 + maxi(dang, 0), SHUA_XIN_ZUI_DI_FENG_DING)
+func shua_xin_zui_di(_dang: int) -> int:
+	# 刷新最小体型：恒为 1 级，低等级鱼全期可刷（2026-11-14 用户反馈「后期只剩高等级鱼」）
+	# 参数保留：旧调用与测试仍传档位，行为不再随档位变化
+	return 1
 
 
 func lu_ren_bi_li(dang: int) -> float:
@@ -174,6 +175,54 @@ func ting_zhi_shua_xin() -> void:
 	shua_xin_ting_zhi = true
 	if is_instance_valid(dingshi):
 		dingshi.stop()
+	qing_chu_qi_ta_fang_ji_lu()  # TASK-026：人类战开始后玩家不再换房，清掉不可达房间的雷达记录
+
+
+func qing_chu_qi_ta_fang_ji_lu() -> void:
+	# 人类战开始后玩家不再换房：其它房的鱼永远碰不到——清掉它们的记录，雷达不画不可达红点
+	# 当前房记录保留：停刷不清存量（2026-11-02 拍板）
+	if _fang_jian_yu_qun.is_empty():
+		return
+	for pian in range(JIU_FANG_SHU):
+		if pian == _dang_qian_fang_jian:
+			continue
+		_fang_jian_yu_qun[pian].clear()
+
+
+func yu_wang_shu(pian: int = -1) -> int:
+	# 某房的鱼王数（默认当前房）：九房记录是权威；裸夹具（测试）退回直接子节点统计
+	# 只数存活的记录：当前房同步会删死鱼记录，未加载房不会被同步，按节点有效性兜底
+	var p := _dang_qian_fang_jian if pian < 0 else pian
+	if p < 0 or _fang_jian_yu_qun.is_empty():
+		var shu := 0
+		for zi in get_children():
+			if zi is YuNpc and zi.yu_wang and not zi.si_le:
+				shu += 1
+		return shu
+	p = clampi(p, 0, JIU_FANG_SHU - 1)
+	var shu := 0
+	for rec in _fang_jian_yu_qun[p]:
+		var yu = rec.get("node")
+		# TASK-026 补丁：已 queue_free 的节点 == null 为真，不能当未加载记录继续计数
+		if typeof(yu) != TYPE_NIL and (not is_instance_valid(yu) or yu.si_le):
+			continue
+		if int(rec.get("nei_deng", 1)) >= YuNpc.YU_WANG_DENG_JI:
+			shu += 1
+	return shu
+
+
+func hui_xie_ji_lu(yu: YuNpc) -> void:
+	# 即时回写：鱼王晋升 / 满营养静默成长后同帧就要让记录跟上，不能等下一帧同步
+	if _fang_jian_yu_qun.is_empty() or _dang_qian_fang_jian < 0:
+		return
+	for rec in _fang_jian_yu_qun[_dang_qian_fang_jian]:
+		if rec.get("node") == yu:
+			rec["ti"] = yu.tixing
+			rec["nei_deng"] = yu.deng_ji_nei
+			rec["nei_jing_yan"] = yu.jing_yan_nei
+			rec["ying_yang"] = yu.ying_yang_zhi
+			rec["man_yang"] = yu.man_yang_pin
+			return
 
 
 func qie_huan_fang_jian(qu: Rect2, pian: int = -1) -> void:
@@ -249,6 +298,8 @@ func _xin_ji_lu(zhong: YuZhong, wei: Vector2, fang: float, su: float) -> Diction
 		"nei_deng": zhong.dengji,
 		"nei_jing_yan": 0,
 		"node": null,
+		"ying_yang": -1.0,  # 隐藏营养值：<0 = 该记录尚未实例化（实体出生时 roll 后回写）
+		"man_yang": false,  # 满营养标记
 	}
 
 
@@ -286,8 +337,10 @@ func _bao_cun_dang_qian_fang_jian() -> void:
 	for i in range(ji_lu.size() - 1, -1, -1):
 		var rec: Dictionary = ji_lu[i]
 		var yu = rec.get("node")
-		if yu == null:
+		if typeof(yu) == TYPE_NIL:
 			continue  # 未加载记录（例如停刷期换房）：原样保留，不能当死鱼删掉
+		# TASK-026 补丁：已 queue_free 的鱼在字典里 == null 为真、typeof 仍是 OBJECT；
+		# 换房保存时必须按“已失效”删记录，否则它会被 node=null 洗成一条永久虚拟红点
 		if not is_instance_valid(yu) or yu.si_le:
 			ji_lu.remove_at(i)
 			continue
@@ -295,12 +348,14 @@ func _bao_cun_dang_qian_fang_jian() -> void:
 		rec["ti"] = yu.tixing
 		rec["nei_deng"] = yu.deng_ji_nei
 		rec["nei_jing_yan"] = yu.jing_yan_nei
+		rec["ying_yang"] = yu.ying_yang_zhi
+		rec["man_yang"] = yu.man_yang_pin
 		rec["su"] = yu.sudu
 		rec["fang"] = yu.fangxiang
 	# 2) 释放本条房的实体，记录里的引用清空
 	for rec in ji_lu:
 		var yu = rec.get("node")
-		if yu != null and is_instance_valid(yu):
+		if is_instance_valid(yu):
 			if yu.get_parent() == self:
 				remove_child(yu)
 			yu.queue_free()
@@ -327,9 +382,10 @@ func _jia_zai_fang_jian(pian: int, wan_jia_wei: Vector2) -> void:
 		var luo_dian: Vector2 = _jia_dao_fang_nei(rec.get("wei", fang_jian_qu.get_center()), pian)
 		luo_dian = _an_quan_jia_zai_dian(pian, luo_dian, wan_jia_wei)
 		xin_yu.position = luo_dian
-		# 恢复载荷必须在 add_child 前写入：_ready 末尾会覆盖默认的体型/隐藏成长
+		# 恢复载荷必须在 add_child 前写入：_ready 末尾会覆盖默认的体型/隐藏成长/营养
 		xin_yu.zai_ru_ti_xing(float(rec.get("ti", 1.0)),
-				int(rec.get("nei_deng", 1)), int(rec.get("nei_jing_yan", 0)))
+				int(rec.get("nei_deng", 1)), int(rec.get("nei_jing_yan", 0)),
+				float(rec.get("ying_yang", -1.0)), bool(rec.get("man_yang", false)))
 		xin_yu.you_yu_qun_guan_li = true
 		add_child(xin_yu)
 		rec["node"] = xin_yu
@@ -399,8 +455,10 @@ func _tong_bu_dang_qian_fang_jian() -> void:
 	for i in range(ji_lu.size() - 1, -1, -1):
 		var rec: Dictionary = ji_lu[i]
 		var yu = rec.get("node")
-		if yu == null:
+		if typeof(yu) == TYPE_NIL:
 			continue  # 停刷期换房只换房号不加载：记录保留，等下次加载
+		# TASK-026 补丁：queue_free 后的节点在字典里 == null 为真、typeof 仍是 OBJECT。
+		# 不能被上面的“未加载记录”分支吞掉，否则这条记录永远删不掉，雷达按最后位置留下红点
 		if not is_instance_valid(yu) or yu.si_le:
 			ji_lu.remove_at(i)
 			continue
@@ -408,6 +466,8 @@ func _tong_bu_dang_qian_fang_jian() -> void:
 		rec["ti"] = yu.tixing
 		rec["nei_deng"] = yu.deng_ji_nei
 		rec["nei_jing_yan"] = yu.jing_yan_nei
+		rec["ying_yang"] = yu.ying_yang_zhi
+		rec["man_yang"] = yu.man_yang_pin
 		rec["su"] = yu.sudu
 		rec["fang"] = yu.fangxiang
 
@@ -507,6 +567,8 @@ func _chou_da_yu_zhong() -> YuZhong:
 	for z in yu_zhong_zu:
 		if z == null or z.dengji < zui_di or z.dengji > zui_gao:
 			continue
+		if not _zai_chou_yu_pai(z, _dang):
+			continue  # A11 同样排除退池鱼种：否则 Lv.9 空档会抽到暗影剑鱼
 		ke_xuan.append(z)
 		zong += float(z.dengji)
 	if ke_xuan.is_empty() or zong <= 0.0:
@@ -539,6 +601,8 @@ func _hu_chi_ju_ding() -> void:
 			var mu := yu_men[j]
 			if mu.si_le:
 				continue
+			if mu.yu_wang:
+				continue  # TASK-026：鱼王不参与 NPC 互吃（只能被玩家打到败退）
 			if chi_zhe.tixing < mu.tixing * SHU_ZHI.TUN_CHI_BEI_LV:
 				continue
 			var ju := chi_zhe.global_position.distance_to(mu.global_position)
@@ -644,6 +708,8 @@ func _xu_ni_hu_chi(gai_lv := -1.0) -> void:
 				if j == i:
 					continue
 				var mu: Dictionary = ji_lu[j]
+				if int(mu.get("nei_deng", 1)) >= YuNpc.YU_WANG_DENG_JI:
+					continue  # TASK-026：鱼王不参与虚拟互吃
 				if float(chi.get("ti", 1.0)) < float(mu.get("ti", 1.0)) * SHU_ZHI.TUN_CHI_BEI_LV:
 					continue
 				var ju: float = (mu.get("wei", Vector2.ZERO) as Vector2).distance_to(
@@ -659,23 +725,32 @@ func _xu_ni_hu_chi(gai_lv := -1.0) -> void:
 					zui_ju = ju
 					zui_xiao_idx = j
 			if zui_xiao_idx >= 0 and randf() < gai_lv:
-				_xu_ni_chi_diao(chi, ji_lu[zui_xiao_idx])
+				_xu_ni_chi_diao(chi, ji_lu[zui_xiao_idx], pian)
 				ji_lu.remove_at(zui_xiao_idx)
 				if zui_xiao_idx < i:
 					i -= 1  # 被吃的是前面的记录：游标回退一格
 			i += 1
 
 
-func _xu_ni_chi_diao(chi: Dictionary, mu: Dictionary) -> void:
+func _xu_ni_chi_diao(chi: Dictionary, mu: Dictionary, pian: int) -> void:
 	# 虚拟吃：吃方按被吃方鱼种分值加隐藏经验，按同一张升级表可能连升体型
+	# TASK-026：隐藏等级跨 10 晋升鱼王（+2 体型）；该房名额满则停在 9 级并保留溢出经验
 	var zhong = mu.get("zhong")
 	if zhong != null:
 		chi["nei_jing_yan"] = int(chi.get("nei_jing_yan", 0)) + int(zhong.fenzhi)
 	while int(chi.get("nei_jing_yan", 0)) >= _sheng_ji_yu_zhi_nei(int(chi.get("nei_deng", 1))):
-		var yu_zhi := _sheng_ji_yu_zhi_nei(int(chi.get("nei_deng", 1)))
+		var jiu_deng := int(chi.get("nei_deng", 1))
+		var xin_deng := jiu_deng + 1
+		if jiu_deng < YuNpc.YU_WANG_DENG_JI and xin_deng >= YuNpc.YU_WANG_DENG_JI \
+				and yu_wang_shu(pian) >= YuNpc.YU_WANG_MEI_FANG_SHANG_XIAN:
+			break  # 名额满：停在 9 级，经验留着
+		var yu_zhi := _sheng_ji_yu_zhi_nei(jiu_deng)
 		chi["nei_jing_yan"] = int(chi.get("nei_jing_yan", 0)) - yu_zhi
-		chi["nei_deng"] = int(chi.get("nei_deng", 1)) + 1
-		chi["ti"] = float(chi.get("ti", 1.0)) + 1.0
+		chi["nei_deng"] = xin_deng
+		var ti_jia := 1.0
+		if jiu_deng < YuNpc.YU_WANG_DENG_JI and xin_deng >= YuNpc.YU_WANG_DENG_JI:
+			ti_jia += YuNpc.YU_WANG_TI_XING_JIA  # 跨阈值只加一次
+		chi["ti"] = float(chi.get("ti", 1.0)) + ti_jia
 
 
 func _sheng_ji_yu_zhi_nei(nei_deng: int) -> int:
@@ -731,6 +806,15 @@ func _tian_ji_lu_dang_qian(pian: int) -> bool:
 	return true
 
 
+func _zai_chou_yu_pai(zhong: YuZhong, dang: int) -> bool:
+	# 野外抽样集合判定：狮子鱼在最低两档（40 秒前）不出现
+	if zhong == null:
+		return false
+	if zhong.bian_hao == &"cheng_yu" and dang < DU_YU_ZUI_DI_DANG:
+		return false
+	return true
+
+
 func _chou_yu_zhong() -> YuZhong:
 	# 按当前档位的概率表抽一条：同等级的鱼等分该等级的概率
 	# 某等级暂时没有鱼种（比如 Lv.8/9 还没做）时，那份概率自动摊给其它等级，不会崩、不会刷空
@@ -744,6 +828,8 @@ func _chou_yu_zhong() -> YuZhong:
 	for z in yu_zhong_zu:
 		if z == null or z.dengji < zui_di or z.dengji > shang_xian:
 			continue
+		if not _zai_chou_yu_pai(z, _dang):
+			continue
 		mei_ji_shu[z.dengji] = mei_ji_shu.get(z.dengji, 0) + 1
 	if mei_ji_shu.is_empty():
 		return null  # 数据表里没有够小的鱼：这一轮刷不出来
@@ -751,12 +837,16 @@ func _chou_yu_zhong() -> YuZhong:
 	for z in yu_zhong_zu:
 		if z == null or z.dengji < zui_di or z.dengji > shang_xian:
 			continue
+		if not _zai_chou_yu_pai(z, _dang):
+			continue
 		zong += biao[z.dengji] / float(mei_ji_shu[z.dengji])
 	if zong <= 0.0:
 		return null
 	var dian := randf() * zong
 	for z in yu_zhong_zu:
 		if z == null or z.dengji < zui_di or z.dengji > shang_xian:
+			continue
+		if not _zai_chou_yu_pai(z, _dang):
 			continue
 		dian -= biao[z.dengji] / float(mei_ji_shu[z.dengji])
 		if dian <= 0.0:

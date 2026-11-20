@@ -180,6 +180,9 @@ static func _zui_jin_npc_wei(yu, wei: Vector2, ban_jing: float, yi_yao: Dictiona
 static func _shi_fang_ying_ju(yu, neng: NengLi, dang: int) -> void:
 	# 召唤 5 个光点分身：挂在场景层（yu.get_parent()），每个都是一个 Sprite2D
 	_qing_fen_shen(yu)
+	# v2 萤聚成龙起手：成群青白光点从玩家身上散开；尺寸随体长；缺资源静默（旧光点本体照常）
+	TeXiaoKu.bo_ming(&"ying_ju", yu.get_parent(), yu.global_position,
+			TeXiaoKu.ti_kuan(yu) * 1.6, {"chi_xu": 0.6})
 	var chi := maxf(0.1, neng.dang_zhi(&"chi_xu", dang))
 	var huan := YING_JU_HUAN_RAO_SHEN_WEI * _shen_wei(yu)
 	var tu := _fen_shen_tu(yu)
@@ -258,7 +261,10 @@ static func _geng_xin_ying_ju(yu, neng: NengLi, delta: float) -> void:
 				mu.call("shou_zhi_jie_shang", shang * (0.5 if bool(mu.get("shi_boss")) else 1.0))
 			if mu.has_method("jia_dian_ma"):
 				mu.call("jia_dian_ma", dian)
-			TE_XIAO.fang_dian(yu.get_parent(), mu.global_position, 0.35)
+			# v2 光点啃咬：目标身上闪青绿咬击火花；尺寸随目标体长；缺资源回退旧电圈
+			if TeXiaoKu.bo_ming(&"fb_shou_ji", yu.get_parent(), mu.global_position,
+					TeXiaoKu.ti_kuan(mu) * 0.8) == null:
+				TE_XIAO.fang_dian(yu.get_parent(), mu.global_position, 0.35)
 	yu.set_meta(MK_YING_JU_JI_SHI, ji)
 
 
@@ -294,7 +300,10 @@ static func _shi_fang_bao_zi(yu, neng: NengLi, dang: int) -> bool:
 	yu.set_meta(MK_BAO_ZI_MU_WEI, mu.global_position)
 	yu.set_meta(MK_BAO_ZI_SHENG_YU, maxf(0.1, neng.dang_zhi(&"chi_xu", dang)))
 	yu.set_meta(MK_BAO_ZI_JI_SHI, maxf(0.05, neng.dang_zhi(&"nei_bu_leng_que", dang)))
-	TE_XIAO.zhong_du(yu.get_parent(), mu.global_position, 0.7)
+	# v2 诅咒孢子附着：紫毒孢子扑在目标身上；尺寸随目标体长；缺资源回退旧毒雾
+	if TeXiaoKu.bo_ming(&"zu_zhou", yu.get_parent(), mu.global_position,
+			TeXiaoKu.ti_kuan(mu) * 1.2, {"chi_xu": 0.8}) == null:
+		TE_XIAO.zhong_du(yu.get_parent(), mu.global_position, 0.7)
 	return true
 
 
@@ -370,19 +379,23 @@ static func _bao_zi_si_wang(yu, wei: Vector2) -> void:
 	var jian := maxf(0.05, bei.dang_zhi(&"nei_bu_leng_que", 1))
 	var ban := maxf(0.0, bei.dang_zhi(&"ban_jing", 1)) * _shen_wei(yu)
 	var yun_lie: Array = yu.get_meta(MK_YUN_LIE, [])
-	var tu := TE_XIAO.DU_TE_XIAO.get_frame_texture(&"bao", 0)
-	var sp := Sprite2D.new()
-	sp.name = "LanYuBaoZiYun"
-	sp.texture = tu
-	sp.global_position = wei
-	sp.modulate = Color(0.55, 1.0, 0.55, 0.55)
-	sp.z_index = 4
-	if tu != null:
-		sp.scale = Vector2.ONE * maxf(0.5, ban * 2.0 / float(maxi(tu.get_width(), 1)))
-	var cai := CanvasItemMaterial.new()
-	cai.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sp.material = cai
-	yu.get_parent().add_child(sp)
+	# v2 星传播散：紫毒孢子云（循环，按被动持续秒淡出）；缺资源回退旧毒雾帧
+	var sp: Node2D = TeXiaoKu.bo_ming(&"zu_zhou", yu.get_parent(), wei,
+			ban * 2.0, {"chi_xu": chi})
+	if sp == null:
+		var tu := TE_XIAO.DU_TE_XIAO.get_frame_texture(&"bao", 0)
+		sp = Sprite2D.new()
+		sp.name = "LanYuBaoZiYun"
+		sp.texture = tu
+		sp.global_position = wei
+		sp.modulate = Color(0.55, 1.0, 0.55, 0.55)
+		sp.z_index = 4
+		if tu != null:
+			sp.scale = Vector2.ONE * maxf(0.5, ban * 2.0 / float(maxi(tu.get_width(), 1)))
+		var cai := CanvasItemMaterial.new()
+		cai.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		sp.material = cai
+		yu.get_parent().add_child(sp)
 	# 云自身也带兜底计时器：被动没装备/没来得及清时，视觉不会永久留场
 	var ji_shi := Timer.new()
 	ji_shi.wait_time = chi + YUN_TU_ZI_HUI_KUAN_XIAN
@@ -414,6 +427,11 @@ static func _shi_fang_deng_li_zi(yu, neng: NengLi, dang: int) -> bool:
 		if mu.has_method("shou_zhi_jie_shang"):
 			mu.call("shou_zhi_jie_shang", shang * (0.5 if bool(mu.get("shi_boss")) else 1.0))
 	_she_xian_biao_yan(yu, qi, fang, chang, ban_kuan)
+	# v2 等离子齐射起手：沿朝向的青蓝电光；尺寸随体长，按射线方向旋转；缺资源静默（射线本体照常）
+	var fx := TeXiaoKu.bo_ming(&"deng_li_zi", yu.get_parent(), qi + fang * (chang * 0.25),
+			TeXiaoKu.ti_kuan(yu) * 1.6, {"chi_xu": 0.5})
+	if fx != null:
+		fx.rotation = fang.angle()
 	_ji_lu_gui_ji(yu, qi, fang, chang, ban_kuan)
 	return true
 
@@ -471,6 +489,11 @@ static func _ji_lu_gui_ji(yu, qi: Vector2, fang: Vector2, chang: float, she_xian
 	yu.set_meta(MK_GUI_JI_BAN_KUAN, ban_kuan)
 	yu.set_meta(MK_GUI_JI_SHENG_YU, chi)
 	yu.set_meta(MK_GUI_JI_JI_SHI, jian)
+	# v2 极光轨迹：沿射线铺一条青绿极光光带，尺寸随体长，按射线方向旋转；缺资源静默（旧路径贴图照常）
+	var fx := TeXiaoKu.bo_ming(&"ji_guang", yu.get_parent(), qi + fang * (chang * 0.5),
+			TeXiaoKu.ti_kuan(yu) * 2.0, {"chi_xu": chi})
+	if fx != null:
+		fx.rotation = fang.angle()
 	var sp := _zuo_she_xian_tu(yu, qi, fang, chang, ban_kuan, &"LanYuGuiJiGuang", 0.30)
 	yu.set_meta(MK_GUI_JI_TU, sp)
 	if sp != null:

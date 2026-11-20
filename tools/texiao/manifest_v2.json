@@ -1,0 +1,1227 @@
+[
+  {
+    "key": "fb_ming_zhong",
+    "id": "impacts/hit-spark",
+    "palette": [
+      "#081820",
+      "#0f3440",
+      "#176070",
+      "#2c9aac",
+      "#5cc8dc",
+      "#a8f0ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.55,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_zhi_ming",
+    "id": "impacts/crit-hit",
+    "palette": "gold",
+    "fps": 15,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_zhi_ming_shu",
+    "id": "ui/crit-number",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center",
+    "opts": {
+      "text": "CRIT!",
+      "label": ""
+    }
+  },
+  {
+    "key": "fb_shou_ji",
+    "id": "impacts/impact-frame",
+    "palette": "blood",
+    "fps": 15,
+    "max_shi_chang": 0.45,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_bao_lie",
+    "id": "impacts/impact-frame",
+    "palette": [
+      "#141414",
+      "#2e2e2e",
+      "#545454",
+      "#8a8a8a",
+      "#c0c0c0",
+      "#f0f0f0",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.45,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_fan_shang",
+    "id": "impacts/ricochet",
+    "palette": [
+      "#081820",
+      "#0f3440",
+      "#176070",
+      "#2c9aac",
+      "#5cc8dc",
+      "#a8f0ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_fan_shang_fen",
+    "id": "impacts/ricochet",
+    "palette": [
+      "#2a0a1e",
+      "#5e1240",
+      "#a01870",
+      "#d838a0",
+      "#ff6ac8",
+      "#ffb0e0",
+      "#fff0fa"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_tun_shui",
+    "id": "water/splash",
+    "palette": "water",
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_tun_yan",
+    "id": "spawn/poof",
+    "palette": [
+      "#141414",
+      "#2e2e2e",
+      "#545454",
+      "#8a8a8a",
+      "#c0c0c0",
+      "#f0f0f0",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_bei_yao_si",
+    "id": "spawn/poof",
+    "palette": [
+      "#140408",
+      "#330810",
+      "#5e0e1a",
+      "#8c1628",
+      "#b82434",
+      "#e04850",
+      "#ff8a80"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_si_wang",
+    "id": "spawn/soul-rise",
+    "palette": [
+      "#081220",
+      "#102a48",
+      "#1c4a78",
+      "#2e74ac",
+      "#5aa0d8",
+      "#a8d8f4",
+      "#e8f8ff",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": false,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_sheng_ji",
+    "id": "holy/sunburst",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_san_xuan",
+    "id": "pickups/loot-beam",
+    "palette": [
+      "#101014",
+      "#2a2a30",
+      "#4a4a52",
+      "#7a7a84",
+      "#b4b4c0",
+      "#e8e8f0",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_xiao_hua",
+    "id": "pickups/collect-burst",
+    "palette": "ember",
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_chi_rou",
+    "id": "pickups/xp-orb",
+    "palette": "heal",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_lian_suo",
+    "id": "ui/combo-counter",
+    "palette": "gold",
+    "fps": 15,
+    "max_shi_chang": 1.45,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center",
+    "opts": {
+      "count": 2,
+      "label": "COMBO"
+    }
+  },
+  {
+    "key": "fb_bian_jie",
+    "id": "ui/exclamation",
+    "palette": "blood",
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "normal",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "fb_jing_sha",
+    "id": "spawn/spawn-portal",
+    "palette": [
+      "#03040c",
+      "#080c22",
+      "#101848",
+      "#182a78",
+      "#2848b0",
+      "#4a7ce0",
+      "#a0c8ff",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 2.0,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "sys_cheng_jiu",
+    "id": "ui/achievement",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.6,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center",
+    "opts": {
+      "text": "UNLOCKED"
+    }
+  },
+  {
+    "key": "sys_jin_hua",
+    "id": "spawn/egg-hatch",
+    "palette": "bone",
+    "fps": 12,
+    "max_shi_chang": 1.4,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "sys_xuan_jiao",
+    "id": "pickups/chest-open",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.6,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "sys_shi_rou",
+    "id": "pickups/coin-spin",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "sys_xue_tiao",
+    "id": "ui/health-bar-hit",
+    "palette": "blood",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "sys_zhuan_chang",
+    "id": "transitions/pixel-dissolve",
+    "palette": "night",
+    "fps": 15,
+    "max_shi_chang": 1.6,
+    "blend": "normal",
+    "lei": "full",
+    "pivot": "center",
+    "opts": {
+      "color": "#05030a"
+    }
+  },
+  {
+    "key": "jn_ni_liu",
+    "id": "spawn/poof",
+    "palette": [
+      "#062428",
+      "#0a4a50",
+      "#0f7078",
+      "#1898a2",
+      "#20c4d0",
+      "#5ae8f4",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_kuang_bao",
+    "id": "holy/sunburst",
+    "palette": "blood",
+    "fps": 12,
+    "max_shi_chang": 1.0,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_kuang_bao_zhua",
+    "id": "impacts/blunt-hit",
+    "palette": "blood",
+    "fps": 15,
+    "max_shi_chang": 0.45,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_ying_ke",
+    "id": "impacts/parry",
+    "palette": "stone",
+    "fps": 12,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_you_er",
+    "id": "water/bubbles",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.0,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_xue_xing",
+    "id": "nature/healing-bloom",
+    "palette": "blood",
+    "fps": 12,
+    "max_shi_chang": 1.1,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_chang_mao",
+    "id": "melee/spear-sweep",
+    "palette": [
+      "#1a1e26",
+      "#38414f",
+      "#5a6779",
+      "#8493ab",
+      "#b4c2da",
+      "#e2eaf8",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "jn_fang_dian",
+    "id": "scifi/emp-blast",
+    "palette": "electric",
+    "fps": 12,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_ji_su",
+    "id": "status/haste",
+    "palette": [
+      "#2a1204",
+      "#5c2608",
+      "#8f4210",
+      "#c96a14",
+      "#f29a1e",
+      "#ffc854",
+      "#ffe9a8",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left",
+    "xun_huan": true
+  },
+  {
+    "key": "jn_qian_fu",
+    "id": "spawn/poof",
+    "palette": [
+      "#04140e",
+      "#0a2a1c",
+      "#12503a",
+      "#1c7a58",
+      "#2aa87a",
+      "#6ae0b0",
+      "#d0fff0",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_ruo_dian",
+    "id": "ui/exclamation",
+    "palette": [
+      "#04140e",
+      "#0a2a1c",
+      "#12503a",
+      "#1c7a58",
+      "#2aa87a",
+      "#6ae0b0",
+      "#d0fff0",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_xuan_wo",
+    "id": "water/whirlpool",
+    "palette": "water",
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_dian_gan",
+    "id": "lightning/zap-hit",
+    "palette": "electric",
+    "fps": 12,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_du_puddle",
+    "id": "nature/toxic-puddle",
+    "palette": "poison",
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "chuan_zha_dan",
+    "id": "explosions/big-explosion",
+    "palette": [
+      "#1a0d04",
+      "#3d1c08",
+      "#6b330c",
+      "#a35610",
+      "#d8841a",
+      "#f8b83a",
+      "#ffdd7a",
+      "#fff6d8"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "chuan_chuan_mao",
+    "id": "scifi/tractor-beam",
+    "palette": "metal",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "bottom"
+  },
+  {
+    "key": "chuan_tan_zhao",
+    "id": "weather/god-rays",
+    "palette": [
+      "#241c08",
+      "#4a3a10",
+      "#756014",
+      "#a08a1c",
+      "#c8b024",
+      "#ead83a",
+      "#fff8a8",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "bottom"
+  },
+  {
+    "key": "chuan_yu_cha",
+    "id": "projectiles/arrow",
+    "palette": [
+      "#0e1014",
+      "#1e232c",
+      "#333a46",
+      "#525c6a",
+      "#788496",
+      "#a2aec0",
+      "#d0d8e6"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "tai_sui_poof",
+    "id": "spawn/poof",
+    "palette": [
+      "#2a0c14",
+      "#5e1a28",
+      "#96324a",
+      "#c85870",
+      "#e8889c",
+      "#ffc0cc",
+      "#fff0f4"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.7,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "tai_sui_potion",
+    "id": "pickups/potion",
+    "palette": [
+      "#2a0810",
+      "#5e1020",
+      "#a01a34",
+      "#d83858",
+      "#ff6a86",
+      "#ffb0c0",
+      "#fff0f4"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "qiang_suan",
+    "id": "nature/acid-splash",
+    "palette": "poison",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "chao_ya",
+    "id": "water/water-jet",
+    "palette": [
+      "#081820",
+      "#0f3440",
+      "#176070",
+      "#2c9aac",
+      "#5cc8dc",
+      "#a8f0ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "liu_xing",
+    "id": "fire/meteor",
+    "palette": "fire",
+    "fps": 12,
+    "max_shi_chang": 1.0,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "shen_ju",
+    "id": "projectiles/bullet-tracer",
+    "palette": [
+      "#101418",
+      "#242c34",
+      "#3e4a56",
+      "#5f7080",
+      "#8ba0b2",
+      "#c0d4e4",
+      "#eef6ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "qian_yan",
+    "id": "projectiles/laser-bolt",
+    "palette": [
+      "#0a0618",
+      "#1c1040",
+      "#331878",
+      "#5424c0",
+      "#7c3ff0",
+      "#a86aff",
+      "#d8b8ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "lei_yan",
+    "id": "ui/exclamation",
+    "palette": [
+      "#0c0820",
+      "#241052",
+      "#441c88",
+      "#6a2cc0",
+      "#9a48ec",
+      "#c684ff",
+      "#f0d8ff",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "gui_huo",
+    "id": "fire/spirit-flame",
+    "palette": [
+      "#06140c",
+      "#0c2e1a",
+      "#14522a",
+      "#1e7a38",
+      "#36b04e",
+      "#7ce07a",
+      "#c8ffbc",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "xing_chen",
+    "id": "spawn/poof",
+    "palette": "ice",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "xing_chen_po",
+    "id": "impacts/crit-hit",
+    "palette": "ice",
+    "fps": 15,
+    "max_shi_chang": 0.5,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "lin_guang",
+    "id": "holy/sunburst",
+    "palette": "ice",
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "lei_bao_yun",
+    "id": "lightning/storm-cloud",
+    "palette": [
+      "#0c0820",
+      "#241052",
+      "#441c88",
+      "#6a2cc0",
+      "#9a48ec",
+      "#c684ff",
+      "#f0d8ff",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.6,
+    "loop": true,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "lei_bao_lei",
+    "id": "lightning/lightning-strike",
+    "palette": [
+      "#0c0820",
+      "#241052",
+      "#441c88",
+      "#6a2cc0",
+      "#9a48ec",
+      "#c684ff",
+      "#f0d8ff",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "jiu_tou",
+    "id": "lightning/spark-arc",
+    "palette": "electric",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "ci_chang",
+    "id": "scifi/energy-core",
+    "palette": [
+      "#1a0a04",
+      "#3a1608",
+      "#6a2a0c",
+      "#a84810",
+      "#e87818",
+      "#ffb838",
+      "#ffe08a",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "luo_xuan",
+    "id": "water/water-jet",
+    "palette": [
+      "#14161c",
+      "#2e3442",
+      "#5a6478",
+      "#8e9ab2",
+      "#c8d4e8",
+      "#eef4ff",
+      "#ffffff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "ju_du",
+    "id": "projectiles/plasma-shot",
+    "palette": [
+      "#160a20",
+      "#320e46",
+      "#561a72",
+      "#7e2a9e",
+      "#ac48c8",
+      "#d68ae8",
+      "#f4ccff"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.5,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "kong_jian",
+    "id": "projectiles/energy-disc",
+    "palette": "shadow",
+    "fps": 15,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "lie_kong",
+    "id": "spawn/poof",
+    "palette": "arcane",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "kun_tun",
+    "id": "shadow/black-hole",
+    "palette": [
+      "#02060f",
+      "#04102a",
+      "#082050",
+      "#0c3080",
+      "#1648b0",
+      "#3a7ce0",
+      "#8cc4ff",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.6,
+    "loop": true,
+    "blend": "normal",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "shen_yuan",
+    "id": "water/whirlpool",
+    "palette": [
+      "#02040a",
+      "#050a18",
+      "#081430",
+      "#0c2050",
+      "#123478",
+      "#1c50b0",
+      "#3a7ce0",
+      "#c8e4ff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 2.0,
+    "loop": true,
+    "blend": "normal",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "tun_xing",
+    "id": "shadow/eclipse",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.8,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "tao_tie",
+    "id": "fire/fire-ring",
+    "palette": [
+      "#1c1006",
+      "#3a2208",
+      "#6b4210",
+      "#a86a16",
+      "#d8981f",
+      "#f4c854",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 1.3,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "lie_kou",
+    "id": "shadow/grasping-hands",
+    "palette": [
+      "#160826",
+      "#32104a",
+      "#54206e",
+      "#7a3496",
+      "#a44cc0",
+      "#cc7ae4",
+      "#eeb0ff",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "she_hun",
+    "id": "shadow/soul-drain",
+    "palette": [
+      "#061418",
+      "#0c2e34",
+      "#145058",
+      "#1e7a82",
+      "#2ea8ae",
+      "#4ed4d8",
+      "#8aeef0",
+      "#d8ffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.9,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "huan_feng",
+    "id": "nature/tornado",
+    "palette": "ice",
+    "fps": 10,
+    "max_shi_chang": 2.0,
+    "loop": true,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "center"
+  },
+  {
+    "key": "you_ling",
+    "id": "projectiles/cannonball",
+    "palette": [
+      "#06101e",
+      "#0c2440",
+      "#144070",
+      "#1c64a8",
+      "#3a92d8",
+      "#8cc8f4",
+      "#d4ecff",
+      "#ffffff"
+    ],
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "po_kong",
+    "id": "impacts/ground-slam",
+    "palette": "water",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "bottom"
+  },
+  {
+    "key": "kong_que",
+    "id": "scifi/hologram",
+    "palette": "cyber",
+    "fps": 12,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "ji_guan",
+    "id": "nature/thorns",
+    "palette": "blood",
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "shi_hua_tong",
+    "id": "weather/god-rays",
+    "palette": [
+      "#3a3a3e",
+      "#5c5c62",
+      "#7e7e86",
+      "#a2a2ac",
+      "#c4c4ce",
+      "#e6e6f0",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.6,
+    "loop": true,
+    "blend": "add",
+    "lei": "full",
+    "pivot": "bottom"
+  },
+  {
+    "key": "ying_ju",
+    "id": "critters/wisp",
+    "palette": "gold",
+    "fps": 12,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zu_zhou",
+    "id": "nature/spore-burst",
+    "palette": "poison",
+    "fps": 12,
+    "max_shi_chang": 0.8,
+    "blend": "normal",
+    "lei": "normal",
+    "pivot": "center"
+  },
+  {
+    "key": "deng_li_zi",
+    "id": "projectiles/plasma-shot",
+    "palette": "ice",
+    "fps": 15,
+    "max_shi_chang": 0.6,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "ji_guang",
+    "id": "weather/aurora",
+    "palette": [
+      "#0a0820",
+      "#1a1244",
+      "#2a2268",
+      "#3a4a96",
+      "#4a8ac8",
+      "#7cd8e8",
+      "#c8fff0",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.8,
+    "loop": true,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  },
+  {
+    "key": "zt_shi_hua",
+    "id": "nature/thorns",
+    "palette": "stone",
+    "fps": 10,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zt_feng_kuang",
+    "id": "status/confused",
+    "palette": "neon",
+    "fps": 10,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zt_kong_ju",
+    "id": "status/confused",
+    "palette": "shadow",
+    "fps": 10,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zt_mei_huo",
+    "id": "status/charmed",
+    "palette": [
+      "#3a0a1e",
+      "#7a1238",
+      "#c4245a",
+      "#f04e86",
+      "#ff8ab0",
+      "#ffc8da",
+      "#ffffff"
+    ],
+    "fps": 10,
+    "max_shi_chang": 1.4,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zt_dian_ma",
+    "id": "status/stunned",
+    "palette": "volt",
+    "fps": 10,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "zt_du_yun",
+    "id": "water/bubbles",
+    "palette": "poison",
+    "fps": 10,
+    "max_shi_chang": 1.2,
+    "loop": true,
+    "blend": "add",
+    "lei": "small",
+    "pivot": "center"
+  },
+  {
+    "key": "jn_yu_lei",
+    "id": "projectiles/rocket",
+    "palette": [
+      "#200804",
+      "#481408",
+      "#7c240c",
+      "#b83c10",
+      "#e86818",
+      "#ff9c30",
+      "#ffc878",
+      "#fff0d0"
+    ],
+    "fps": 15,
+    "max_shi_chang": 0.7,
+    "blend": "add",
+    "lei": "normal",
+    "pivot": "left"
+  }
+]

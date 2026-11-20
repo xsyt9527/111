@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "fb_ming_zhong 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 1",
+   "frame": {
+    "x": 136,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 2",
+   "frame": {
+    "x": 272,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 3",
+   "frame": {
+    "x": 408,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 4",
+   "frame": {
+    "x": 544,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 5",
+   "frame": {
+    "x": 680,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 6",
+   "frame": {
+    "x": 816,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 7",
+   "frame": {
+    "x": 952,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_ming_zhong 8",
+   "frame": {
+    "x": 1088,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 80
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_ming_zhong.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1224,
+   "h": 80
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "impacts/hit-spark",
+   "name": "fb_ming_zhong",
+   "fps": 15,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    136,
+    80
+   ],
+   "pivot": [
+    68.0,
+    40.0
+   ],
+   "columns": 9,
+   "visible": [
+    119,
+    70
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

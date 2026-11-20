@@ -1,0 +1,25 @@
+{
+  "task_id": "TASK-029",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "布局纯函数：输入数量与视口，输出位置尺寸，不碰节点",
+    "统一冷却入口：手动与自动咬共用同一把冷却尺",
+    "代码生成 UI：按钮由脚本创建，场景文件保持稳定",
+    "摇杆换边镜像：x 坐标以屏幕中线翻转",
+    "按钮状态反馈：文本与 modulate 表达就绪/冷却"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "4 列 132px 宽按钮在手机上的可点击性",
+    "右下角攻击键与技能组的拥挤程度",
+    "空挥不进冷却是否会被滥用",
+    "手动咬与自动咬并存的操作手感"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

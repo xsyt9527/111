@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "rig_name": "PortraitHiResMesh",
+  "provider": {
+    "type": "single_image",
+    "texture_path": "res://assets/sprites/portrait_512.png",
+    "fallback_size": [512, 512],
+    "grid_size": [12, 16],
+    "alpha_threshold": 0.02,
+    "cull_transparent_cells": false
+  },
+  "render_settings": {
+    "pixel_art_mode": false,
+    "integer_pixel_snap": false,
+    "nearest_neighbor": false,
+    "deform_mode": "mesh_weights"
+  },
+  "bones": [
+    {
+      "name": "root",
+      "parent": null,
+      "position": [256, 440],
+      "rotation_deg": 0.0,
+      "scale": [1.0, 1.0],
+      "length": 100.0,
+      "bone_angle_deg": -90.0,
+      "envelope_radius": 110.0
+    },
+    {
+      "name": "chest",
+      "parent": "root",
+      "position": [0, -110],
+      "rotation_deg": 0.0,
+      "scale": [1.0, 1.0],
+      "length": 110.0,
+      "bone_angle_deg": -90.0,
+      "envelope_radius": 95.0
+    },
+    {
+      "name": "head",
+      "parent": "chest",
+      "position": [0, -115],
+      "rotation_deg": 0.0,
+      "scale": [1.0, 1.0],
+      "length": 90.0,
+      "bone_angle_deg": -90.0,
+      "envelope_radius": 85.0
+    },
+    {
+      "name": "hair_back",
+      "parent": "head",
+      "position": [-28, -20],
+      "rotation_deg": 15.0,
+      "scale": [1.0, 1.0],
+      "length": 80.0,
+      "bone_angle_deg": 120.0,
+      "envelope_radius": 65.0
+    }
+  ],
+  "weights": {
+    "mode": "auto_envelope",
+    "falloff_power": 2.4,
+    "max_influences": 3,
+    "normalize": true
+  },
+  "animations": {
+    "idle_breathe": {
+      "length": 2.0,
+      "loop": true,
+      "step": 0.05,
+      "interpolation": "cubic",
+      "tracks": {
+        "chest": {
+          "position": [
+            { "t": 0.0, "v": [0.0, -110.0] },
+            { "t": 1.0, "v": [0.0, -114.0] },
+            { "t": 2.0, "v": [0.0, -110.0] }
+          ],
+          "scale": [
+            { "t": 0.0, "v": [1.0, 1.0] },
+            { "t": 1.0, "v": [1.02, 1.01] },
+            { "t": 2.0, "v": [1.0, 1.0] }
+          ]
+        },
+        "head": {
+          "rotation_deg": [
+            { "t": 0.0, "v": 0.0 },
+            { "t": 1.0, "v": -2.5 },
+            { "t": 2.0, "v": 0.0 }
+          ]
+        },
+        "hair_back": {
+          "rotation_deg": [
+            { "t": 0.0, "v": 15.0 },
+            { "t": 1.0, "v": 22.0 },
+            { "t": 2.0, "v": 15.0 }
+          ]
+        }
+      }
+    }
+  },
+  "output": {
+    "scene_path": "res://rigs/generated/PortraitHiResMesh.tscn",
+    "anim_library_path": "res://rigs/generated/PortraitHiResMesh_anims.tres"
+  }
+}

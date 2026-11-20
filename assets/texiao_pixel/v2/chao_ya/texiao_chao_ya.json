@@ -1,0 +1,334 @@
+{
+ "frames": [
+  {
+   "filename": "chao_ya 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chao_ya 12",
+   "frame": {
+    "x": 0,
+    "y": 68,
+    "w": 160,
+    "h": 68
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 68
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 68
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_chao_ya.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 136
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 12,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "water/water-jet",
+   "name": "chao_ya",
+   "fps": 15,
+   "loop": false,
+   "frames": 13,
+   "frameSize": [
+    160,
+    68
+   ],
+   "pivot": [
+    0.0,
+    34.0
+   ],
+   "columns": 12,
+   "visible": [
+    154,
+    53
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

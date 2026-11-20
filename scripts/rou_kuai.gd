@@ -19,6 +19,7 @@ var yi_cun_huo := 0.0  # 已存活时长（秒）
 var fu_rou_you_er_sheng_yu := 0.0  # 腐肉诱饵剩余（秒）：>0 时发光并主动吸引附近 NPC
 var xi_yin_ban_jing := 0.0  # 腐肉诱饵的吸引半径（世界像素）
 var _you_er_guang_shi := 0.0  # 诱饵发光呼吸相位（秒）
+var ying_yang_rou := false  # 营养肉块（满营养鱼的遗产）：金色微光区分，经验已含营养乘算（提案 3.5）
 
 
 func _ready() -> void:
@@ -47,6 +48,11 @@ func _process(delta: float) -> void:
 		_you_er_guang_shi += delta
 		var mai := 0.5 + 0.5 * sin(_you_er_guang_shi * 8.0)
 		modulate = Color(1.0 + 0.45 * mai, 0.7 + 0.25 * mai, 0.35 + 0.2 * mai, modulate.a)
+	elif ying_yang_rou:
+		# 营养肉块：淡金慢呼吸（比腐肉诱饵更冷静），提示「这块经验高」
+		_you_er_guang_shi += delta
+		var mai := 0.5 + 0.5 * sin(_you_er_guang_shi * 3.0)
+		modulate = Color(1.1 + 0.25 * mai, 1.0 + 0.18 * mai, 0.6 + 0.15 * mai, modulate.a)
 	elif modulate != Color.WHITE:
 		modulate = Color(1.0, 1.0, 1.0, modulate.a)  # 诱饵到点：恢复本色，透明度保留淡出值
 	if yi_cun_huo >= SHOU_MING:

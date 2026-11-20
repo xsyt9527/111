@@ -1,0 +1,25 @@
+{
+  "task_id": "TASK-026",
+  "task_spec_version": 1,
+  "learning_status": "not_started",
+  "concepts_introduced": [
+    "池内过滤与运行时抽样：野外刷鱼池可以过滤鱼种，但鱼种注册表保持完整",
+    "状态窗口与递减层数：8 秒内连吃毒鱼，毒晕收益按 1.0/0.7/0.4/0.3 递减",
+    "按实际状态差结算：咬伤经验读取结算后的最终体型差，而不是命中次数",
+    "由数据推导的运行时身份：记录 nei_deng>=10 推导鱼王，不新增记录键",
+    "身份守卫与信号语义隔离：鱼王败退不 emit bei_ji_bai"
+  ],
+  "concepts_explained_by_student": [],
+  "editor_operations_completed": [],
+  "verification_completed": [],
+  "integration_contract_understood": null,
+  "student_questions": [],
+  "unresolved_concepts": [
+    "9 级普通鱼空档与前期只有 1 级鱼的节奏观感",
+    "咬伤经验系数 5 对升级曲线的影响",
+    "2 只不可吞鱼王对后期节奏的压制程度",
+    "探针 487 秒内鱼王出现 0 条：常规局出现频率是否过低，待 F5 拍板"
+  ],
+  "assistance_level": "full",
+  "evidence": []
+}

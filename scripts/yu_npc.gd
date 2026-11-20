@@ -27,6 +27,13 @@ const BOOS_DAO_DIAN_BAN_JING := 80.0  # 离巡逻点多近算“到点”
 const FAN_MIAN_SI_QU := 20.0  # 翻面死区（像素）：横向差小于它就不转头，防止正上方追人时疯狂摆头
 const BOOS_TUI_SU_DU := 140.0  # 首领推开 NPC 的速度（像素/秒）：重叠时把小鱼顶开，不让它们卡进鲸鲨身体
 const BOOS_YAO_JI_JI_CHU := 55.0  # 首领咬击判定的基础半径：与玩家 YaoQu 同值，乘体型→像素曲线用
+# ---- TASK-026 NPC 鱼王（第二梯队）：隐藏等级 10 级晋升，残血败退给玩家奖励 ----
+const YU_WANG_QI_YONG := true  # 鱼王系统总闸：关掉即回到「所有鱼都只是经验包」
+const YU_WANG_DENG_JI := 10  # 隐藏等级达到 10 级晋升鱼王（与鲸鲨同档，但仍是普通鱼）
+const YU_WANG_MEI_FANG_SHANG_XIAN := 2  # 每房最多 2 条鱼王
+const YU_WANG_TI_XING_JIA := 2.0  # 晋升额外 +2 体型：玩家一眼看得出「这条更大」
+const YU_WANG_BAI_TUI_TI_XING := 2.0  # 残血败退阈值：体型 ≤2.0 时算被打退
+const YU_WANG_DA_ROU_TI_XING := 1.0  # 败退掉 3 块大肉，每块 1.0 体型
 const TE_XIAO := preload("res://scripts/te_xiao.gd")  # 放电/中毒的一次性特效生成器
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表（2026-11-08）
 const ROU_KUAI_CHANGJING := preload("res://scenes/RouKuai.tscn")  # 鱼肉块蓝图：撕裂齿咬掉肉用
@@ -34,6 +41,7 @@ const MEI_KUAI_ROU_TI_XING := 0.5  # 每块鱼肉默认携带的体型量（撕�
 const TUN_SHI_JIAN_GE := 0.3  # 首领吞食检查间隔（秒）：与思考间隔同量级，不逐帧扫组
 const SHENG_JI_BIAO := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级曲线参数：与玩家同表，改表两边同步
 const ZHUAN_SHU := preload("res://scripts/zhuan_shu_ku.gd")  # 进化专属技模块分派（2026-11-09）：只问玩家侧被动
+const YING_YANG := preload("res://scripts/ying_yang.gd")  # 隐藏营养值系统纯逻辑层（2026-11-20）
 
 enum ZhuangTai { YOU_DANG, ZHUI_ZHU, TAO_PAO }  # 巡游 / 追击 / 逃跑
 
@@ -43,6 +51,8 @@ var yu_zhong: YuZhong  # 鱼种数据（生成器在 add_child 前注入；_read
 var _neng_li: NengLi = null  # 鱼种能力（只读引用）：电鳗放电/蓑鲉反毒都从这里查数值
 var tixing := 1.0  # 体型=当前血量：被咬会变小，被吃归零
 var tixing_chu_shi := 1.0  # 出场时的体型（B2 击杀者「还剩 X%」的基准，只记不改）
+var xing_xiang_bi := 1.0  # 体型归一化因子：同体型所有鱼「可见内容宽」等宽（见 TiXingGuiYi）
+var _ti_xing_nei_rong := TiXingGuiYi.HUI_TUI_KUAN_GAO  # you 动画的最大内容宽/高（体长/体高换算用）
 var jiao_xue_wu_shi := false  # C 首局教学：预排布 NPC 不看玩家、不索敌（黑影/被咬尾巴的大鱼）
 var deng_ji_nei := 1  # 隐藏等级（经验曲线索引，只涨不降）：被咬掉 tixing 不倒扣经验进度
 var jing_yan_nei := 0  # 隐藏经验条：玩家看不见；吃东西涨，涨满升级=体型 +1（v0.4 生态三件套）
@@ -59,7 +69,15 @@ var si_le := false  # 已被吃掉（queue_free 前先立旗）：防止同一�
 var dian_ma := 0.0  # 电麻条（0~100）：被电鳗电到会涨，满了失控
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉毒到会涨，满了失控
 var shi_boss := false  # 首领：不参与普通鱼群刷新；不逃跑，被咬到残血才算击败（TASK-017）
+var yu_wang := false  # NPC 鱼王：隐藏等级 10 级晋升；不可整吞、不逃跑、残血败退（TASK-026）
 var you_yu_qun_guan_li := false  # 九房鱼群托管：关闭相机出屏回收，由 YuQun 按房间边界管理
+# ---- 隐藏营养值系统（2026-11-20）----
+var ying_yang_zhi := 1.0  # 营养值：出生按鱼种营养档 roll，玩家吃鱼经验 × 它（半隐藏，不显数字）
+var man_yang_pin := false  # 满营养鱼：3% 概率，营养值更高+静默成长+微光信号；同屏唯一由 YuQun 协调
+var _man_yang_ji_shi := 0.0  # 满营养静默成长累计（秒）：由本鱼 _process 累加，满 20 秒长 0.5 级
+var _zai_ru_ying_yang := -1.0  # 换房恢复载荷：营养值（<0 = 旧调用，保留本鱼已 roll 的值）
+var _zai_ru_man_yang := false  # 换房恢复载荷：满营养标记
+var _gao_ying_yang := false  # 高营养信号命中（区间上 1/3 或满营养）：供状态染色合成读
 var _zai_ru_ti_xing := 0.0  # 换房恢复载荷：体型
 var _zai_ru_deng_ji := 1  # 换房恢复载荷：隐藏等级
 var _zai_ru_jing_yan := 0  # 换房恢复载荷：隐藏经验
@@ -130,7 +148,7 @@ func _ready() -> void:
 		zui_ba = yu_zhong.zui_ba
 		shi_boss = yu_zhong.shi_boss
 		_neng_li = yu_zhong.neng_li
-	scale = Vector2.ONE * ZhangBen.ti_xing_dao_chi_du(tixing)  # 与玩家共用同一条体型→像素曲线
+	# 先装贴图再量内容：归一化因子只认最终贴图，顺序反了会读到旧帧
 	var ti: AnimatedSprite2D = $AnimatedSprite2D
 	if yu_zhong != null and yu_zhong.dong_hua != null:
 		ti.sprite_frames = yu_zhong.dong_hua  # 4 帧游动动画：鱼种定什么就长什么样
@@ -139,6 +157,8 @@ func _ready() -> void:
 	if ti.sprite_frames != null and ti.sprite_frames.has_animation(&"you"):
 		ti.play(&"you")  # 裸鱼（测试夹具没注入鱼种）没有帧资源：不播，避免 "you" 不存在报错
 	ti.flip_h = fangxiang < 0.0  # 贴图默认朝右，向左游时翻转
+	_chong_suan_ti_xing_ji_zhun()
+	_ying_she_ti_xing()  # 与玩家共用同一条体型→像素曲线，再乘形态归一化因子
 	_geng_xin_bu_wei()  # 部位点跟着朝向翻：嘴永远在脸那一侧
 	_hong_guang = $HongGuang
 	_hong_guang.sprite_frames = ti.sprite_frames  # 与本体同一套帧：不另做美术资源
@@ -154,22 +174,89 @@ func _ready() -> void:
 	# 电鳗错峰放电：一群鱼不会同一帧全开火；间隔读能力表（npc_jian_ge），改表零代码
 	if _neng_li != null and _neng_li.bian_hao == &"fang_dian_ma_bi":
 		_dian_ji_ji_shi = randf_range(0.0, _neng_li.npc_jian_ge if _neng_li.npc_jian_ge > 0.0 else DIAN_JI_JIAN_GE)
+	# 隐藏营养值：新鱼按鱼种营养档 roll 一次（换房恢复的鱼在下面被载荷值覆盖，不重 roll）
+	_chu_shi_ying_yang()
 	# 换房恢复载荷放在最后：覆盖上面按鱼种默认值写入的体型/隐藏成长，再重算感知与缩放
 	if _you_zai_ru_ti_xing:
 		tixing = maxf(_zai_ru_ti_xing, ZUI_XIAO_TI_XING)
 		tixing_chu_shi = tixing
 		deng_ji_nei = maxi(_zai_ru_deng_ji, 1)
 		jing_yan_nei = maxi(_zai_ru_jing_yan, 0)
+		if _zai_ru_ying_yang >= 0.0:
+			ying_yang_zhi = _zai_ru_ying_yang
+			man_yang_pin = _zai_ru_man_yang
 		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
 		_ying_she_ti_xing()
+		geng_xin_ying_yang_xin_hao()  # 恢复鱼也按最终营养值刷新体色/微光信号
+	# TASK-026：换房恢复的鱼王身份（记录里 deng_ji_nei>=10）；载荷 ti 已含晋升 +2，不再加
+	_geng_xin_yu_wang_zhuang_tai()
 
 
-func zai_ru_ti_xing(ti: float, nei_deng: int, nei_jing_yan: int) -> void:
+func zai_ru_ti_xing(ti: float, nei_deng: int, nei_jing_yan: int,
+		ying_yang := -1.0, man_yang := false) -> void:
 	# 换房恢复载荷：必须在 add_child 前调用；_ready 末尾应用，避免默认初始化覆盖成长
+	# ying_yang<0 表示旧调用（无营养字段）：_ready 里 _chu_shi_ying_yang 的 roll 值原样保留
 	_zai_ru_ti_xing = maxf(ti, ZUI_XIAO_TI_XING)
 	_zai_ru_deng_ji = maxi(nei_deng, 1)
 	_zai_ru_jing_yan = maxi(nei_jing_yan, 0)
+	_zai_ru_ying_yang = ying_yang
+	_zai_ru_man_yang = man_yang
 	_you_zai_ru_ti_xing = true
+
+
+func _chu_shi_ying_yang() -> void:
+	# 出生营养值：按鱼种营养档在区间内 roll 一次；再 roll 3% 满营养（满营养取档位上限×1.33）
+	# 首领（鲸鲨）固定走 3 档上沿：它本就是顶级营养，一口顶两条半
+	var dang := yu_zhong.ying_yang_dang if yu_zhong != null else 1
+	if shi_boss:
+		dang = 3
+	ying_yang_zhi = YING_YANG.roll_ying_yang(dang, randf())
+	if YING_YANG.shi_man_yang(randf()):
+		man_yang_pin = true
+		ying_yang_zhi = YING_YANG.man_yang_ying_yang(dang)
+	# 高营养/满营养的半隐藏信号：出生即按最终营养值刷新体色与微光
+	geng_xin_ying_yang_xin_hao()
+
+
+func geng_xin_ying_yang_xin_hao() -> void:
+	# 半隐藏信号（提案 3.4）：营养不显数字，只给两档可学习的外部信号
+	# 高营养（区间上 1/3）：体色更饱满发亮——用根节点 modulate 轻提亮（不覆盖状态染色）
+	# 满营养：额外开体表微光（复用 HongGuang 叠加层做淡金色呼吸光）
+	# 注意：满营养微光走 HongGuang 叠加层（_geng_xin_hong_guang 里合成），不碰 modulate，避免与状态染色冲突
+	var dang := yu_zhong.ying_yang_dang if yu_zhong != null else 1
+	_gao_ying_yang = man_yang_pin or YING_YANG.shi_gao_ying_yang(dang, ying_yang_zhi)
+
+
+func _zou_man_yang_cheng_zhang(delta: float) -> void:
+	# 满营养静默成长（提案 3.2）：每 20 秒 +0.5 级、上限 min(玩家+4, 6)、首 120 秒冻结
+	# 成长直接加隐藏经验等级与体型（与玩家/NPC 进食成长共用 jia_jing_yan_nei 的曲线口径除外：
+	# 这里按提案固定步长涨，不喂经验条——静默成长是独立时钟，和进食成长叠加）
+	if not man_yang_pin or si_le or shi_boss:
+		return
+	var wan_jia_deng := 0
+	var wan := get_tree().get_first_node_in_group("player")
+	if wan != null:
+		wan_jia_deng = int(ZhangBen.deng_ji)
+	if not YING_YANG.ke_cheng_zhang(deng_ji_nei, wan_jia_deng, ZhangBen.ju_nei_shi_jian):
+		return
+	_man_yang_ji_shi += delta
+	while _man_yang_ji_shi >= SHU_ZHI.MAN_YANG_CHENG_ZHANG_JIAN_GE:
+		_man_yang_ji_shi -= SHU_ZHI.MAN_YANG_CHENG_ZHANG_JIAN_GE
+		if not YING_YANG.ke_cheng_zhang(deng_ji_nei, wan_jia_deng, ZhangBen.ju_nei_shi_jian):
+			break
+		deng_ji_nei += 1
+		tixing += SHU_ZHI.MAN_YANG_CHENG_ZHANG_MEI_CI
+		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
+		_ying_she_ti_xing()
+	_geng_xin_dang_qian_fang_jian_ji_lu()
+
+
+func _geng_xin_dang_qian_fang_jian_ji_lu() -> void:
+	# 静默成长后把体型/隐藏等级即时回写当前房记录（雷达与换房加载读记录为权威）
+	if you_yu_qun_guan_li:
+		var qun := get_parent() as YuQun
+		if qun != null and qun.has_method("hui_xie_ji_lu"):
+			qun.hui_xie_ji_lu(self)
 
 
 func _dan_zhen_dong_hua(tie: Texture2D) -> SpriteFrames:
@@ -194,6 +281,7 @@ func _process(delta: float) -> void:
 		zou_boos_sheng_ji(delta)  # 首领随时间成长：就算被电麻/毒晕也照长
 	else:
 		_zou_fan_ying(delta)  # 普通鱼：反应延迟读秒（时间到了才记仇/逃跑）
+		_zou_man_yang_cheng_zhang(delta)  # 满营养鱼静默成长：独立于 AI 状态，照常推进
 	if zai_kong_zhi():
 		_kong_zhi_zhong(delta)
 		_geng_xin_bu_wei()
@@ -251,12 +339,12 @@ func _process(delta: float) -> void:
 			_si_kao()  # 想：选目标
 		_xing_dong(delta)  # 动：追、咬、吞、逃
 	_geng_xin_bu_wei()  # 朝向可能变了：把嘴/致命点挪到脸侧（咬击取点要用）
-	if shi_boss:
-		_tui_kai_zhou_wei(delta)  # 首领推挤：把挡路的 NPC 顶开（BossPengZhuangQu）
+	if shi_boss or yu_wang:
+		_tui_kai_zhou_wei(delta)  # 首领/鱼王推挤：把挡路的 NPC 顶开（BossPengZhuangQu）
 	# 以相机可视矩形为边界：相机走到哪，鱼群就在哪一屏生成/回收
-	# 首领例外：它要满地图巡逻，不能被“出屏回收”删掉
+	# 首领例外：它要满地图巡逻，不能被“出屏回收”删掉；鱼王同理（由 YuQun 按房间托管）
 	var fan_wei := _shi_jiao_fan_wei()
-	if not shi_boss and not you_yu_qun_guan_li and (position.x < fan_wei.position.x - SHOU_HUI_YU_LIANG or position.x > fan_wei.end.x + SHOU_HUI_YU_LIANG):
+	if not shi_boss and not yu_wang and not you_yu_qun_guan_li and (position.x < fan_wei.position.x - SHOU_HUI_YU_LIANG or position.x > fan_wei.end.x + SHOU_HUI_YU_LIANG):
 		queue_free()  # 游出当前镜头：释放节点，避免越积越多；托管鱼改由 YuQun 按房间边界管理
 	_chi_rou()
 	_geng_xin_hong_guang(delta)
@@ -404,13 +492,9 @@ func _chang_shi_neng_li() -> bool:
 			if ju > _yao_ji_ju_li() and ju <= _neng_li.ban_jing:
 				_qi_dong_tu_jin()
 				return true
-		&"man_li_chong_zhuang":
-			if ju <= _neng_li.ban_jing:
-				_qi_dong_chong_zhuang()
-				return true
 		&"chang_mao_chuan_ci":
 			if ju <= _neng_li.ban_jing:
-				_qi_dong_chong_zhuang()  # 剑鱼穿刺与蛮力冲撞同构：直线冲 + 路径穿透；数值各看各的表
+				_qi_dong_chong_zhuang()  # 剑鱼穿刺：直线冲 + 路径穿透；数值看能力表
 				return true
 		&"qian_fu_tu_xi":
 			if ju > _yao_ji_ju_li() and ju <= dang_qian_gan_zhi() and _yin_shen_sheng_yu <= 0.0:
@@ -532,6 +616,9 @@ func _geng_xin_neng_li(delta: float) -> void:
 
 func _tun_diao(mu) -> void:
 	# 吃 NPC 记隐藏经验（先记账再吞：经验取被吞方的鱼种分值）
+	# TASK-026：首领与鱼王不可被 NPC 整吞（双保险，选目标处也会过滤）
+	if mu is YuNpc and (mu.shi_boss or mu.yu_wang):
+		return
 	if mu is YuNpc and mu.yu_zhong != null:
 		jia_jing_yan_nei(int(mu.yu_zhong.fenzhi))
 	mu.bei_chi(false, self)  # NPC 吃 NPC：不给玩家记经验（玩家没参与）；毒鱼照样毒到吃它的鱼
@@ -593,6 +680,8 @@ func jia_zhuang_tai(ming: StringName, shi_chang: float, mu_dian := Vector2.ZERO)
 		_mei_huo_dian = mu_dian
 	if ming == &"zhi_mang":
 		_mu_biao = null  # 致盲瞬间丢失目标：要重新感知才能再锁定
+	# v2 状态光环：挂头顶、随目标体型；寿命取施加时长（循环资源默认寿命会提前淡出）
+	TeXiaoKu.gua_zhuang_tai(ming, self, 1.2, {"chi_xu": shi_chang})
 	return true
 
 
@@ -618,6 +707,7 @@ func _zou_zhuang_tai(delta: float) -> void:
 			guo_qi.append(ming)
 	for ming in guo_qi:
 		_zhuang_tai_sheng_yu.erase(ming)
+		TeXiaoKu.xia_zhuang_tai(ming, self)  # 状态结束：头顶光环跟着撤（不留在鱼头上）
 
 
 func _zhao_zui_jin_ren():
@@ -689,6 +779,8 @@ func shou_zhi_jie_shang(liang: float) -> void:
 	_shan_hong()
 	if shi_boss and tixing <= ZhangBen.BOOS_BAI_TI_XING:
 		_bei_ji_bai()
+	else:
+		_jian_cha_yu_wang_bai_tui(null)  # TASK-026：直伤也可能把鱼王打到残血
 
 
 func shi_fang_gao_liang(shi_chang: float) -> void:
@@ -803,8 +895,8 @@ func _you_dang(delta: float) -> void:
 
 
 func _feng_xi_bei(fang := Vector2.ZERO) -> float:
-	# 唤风：玩家展开骨帆期间，顺流 NPC 加速 30%、逆流 -25%；首领不吃洋流（洋流是玩家的场地技）
-	if shi_boss:
+	# 唤风：玩家展开骨帆期间，顺流 NPC 加速 30%、逆流 -25%；首领/鱼王不吃洋流（洋流是玩家的场地技）
+	if shi_boss or yu_wang:
 		return 1.0
 	var wan := _zhao_wan_jia()
 	if wan == null or not wan.has_method("zhuan_shu_feng_xi_shu"):
@@ -816,15 +908,109 @@ func jia_jing_yan_nei(fen: int) -> void:
 	# NPC 隐藏经验条（v0.4）：吃东西涨经验，涨满升级 = 体型 +1（视觉变大，顺带回 1 点血——
 	# 单值模型下「变大」与「不回血」不可兼得，拍板取变大：大鱼变强即压迫感）
 	# deng_ji_nei 只涨不降：被咬掉 tixing 不倒扣经验进度（隐藏成长永不回退）
+	# TASK-026：隐藏等级 10 级晋升鱼王；每房名额上限 2，满员停在 9 级保留溢出经验
 	if fen <= 0:
 		return
+	if YU_WANG_QI_YONG and deng_ji_nei >= YU_WANG_DENG_JI and not yu_wang and not shi_boss:
+		_geng_xin_yu_wang_zhuang_tai()  # 直接摆出的高等级鱼：先恢复身份（不加 +2）
 	jing_yan_nei += fen
-	while jing_yan_nei >= _sheng_ji_yu_zhi():  # while：鲸鲨一口吞一群可能连升
+	var bao_xian := 0
+	while jing_yan_nei >= _sheng_ji_yu_zhi() and bao_xian < 32:  # while：鲸鲨一口吞一群可能连升
+		var xia_yi := deng_ji_nei + 1
+		if YU_WANG_QI_YONG and xia_yi >= YU_WANG_DENG_JI and deng_ji_nei < YU_WANG_DENG_JI \
+				and _yu_wang_ming_e_man():
+			break  # 名额满：停在 9 级，经验留着；鱼王败退腾出名额后下一口自然晋升
 		jing_yan_nei -= _sheng_ji_yu_zhi()
-		deng_ji_nei += 1
+		deng_ji_nei = xia_yi
 		tixing += 1.0
+		if YU_WANG_QI_YONG and xia_yi >= YU_WANG_DENG_JI and not yu_wang and not shi_boss:
+			_jin_sheng_yu_wang()
 		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI  # A10：感知随体型同步长大
 		_ying_she_ti_xing()
+		bao_xian += 1
+	if yu_wang:
+		_hui_xie_dang_qian_fang_jian()  # 晋升后立即回写：同帧名额统计以记录为准
+
+
+func _yu_wang_ming_e_man() -> bool:
+	# 每房名额：父节点是 YuQun 时以九房记录为权威；裸夹具（测试）退回 yu_wang 组统计
+	var qun := get_parent() as YuQun
+	if qun != null and qun.has_method("yu_wang_shu"):
+		return qun.yu_wang_shu() >= YU_WANG_MEI_FANG_SHANG_XIAN
+	var shu := 0
+	for y in get_tree().get_nodes_in_group("yu_wang"):
+		if y is YuNpc and not y.si_le and y != self:
+			shu += 1
+	return shu >= YU_WANG_MEI_FANG_SHANG_XIAN
+
+
+func _jin_sheng_yu_wang() -> void:
+	# 晋升：+2 体型、开推挤层、入组、隐藏红光；立即回写当前房记录
+	if yu_wang or shi_boss or not YU_WANG_QI_YONG:
+		return
+	yu_wang = true
+	tixing += YU_WANG_TI_XING_JIA
+	gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
+	_ying_she_ti_xing()
+	add_to_group("yu_wang")
+	var tui := $BossPengZhuangQu as Area2D
+	if tui != null:
+		tui.monitoring = true
+	if _hong_guang != null:
+		_hong_guang.visible = false
+	_hui_xie_dang_qian_fang_jian()
+
+
+func _geng_xin_yu_wang_zhuang_tai() -> void:
+	# 换房恢复/直接摆鱼：隐藏等级 ≥10 的鱼恢复鱼王身份（载荷 ti 已含 +2，这里不再加）
+	# 名额在晋升时已核过；恢复只认记录事实，不重复占位
+	if yu_wang or shi_boss or not YU_WANG_QI_YONG:
+		return
+	if deng_ji_nei < YU_WANG_DENG_JI:
+		return
+	yu_wang = true
+	add_to_group("yu_wang")
+	var tui := $BossPengZhuangQu as Area2D
+	if tui != null:
+		tui.monitoring = true
+
+
+func _hui_xie_dang_qian_fang_jian() -> void:
+	# 鱼王晋升后立即把体型/隐藏等级写回当前房记录：名额统计不能等下一帧同步
+	var qun := get_parent() as YuQun
+	if qun != null and qun.has_method("hui_xie_ji_lu"):
+		qun.hui_xie_ji_lu(self)
+
+
+func _jian_cha_yu_wang_bai_tui(lai_yuan = null) -> void:
+	# 所有直伤入口（咬击/技能）扣完体型后统一检查：鱼王残血 → 败退
+	if not yu_wang or si_le:
+		return
+	if tixing <= YU_WANG_BAI_TUI_TI_XING:
+		_yu_wang_bai_tui(lai_yuan)
+
+
+func _yu_wang_bai_tui(lai_yuan = null) -> void:
+	# 鱼王败退：先掉 3 块大肉、给玩家 2 倍鱼种经验，再静默消失
+	# 绝不 emit bei_ji_bai（那是鲸鲨/首领早开战的专属信号）
+	if si_le or not yu_wang:
+		return
+	diao_rou(3, YU_WANG_DA_ROU_TI_XING)
+	var wan = lai_yuan
+	if wan == null or not is_instance_valid(wan) or not wan.is_in_group("player"):
+		wan = _zhao_wan_jia()
+	if wan != null and is_instance_valid(wan) and wan.is_in_group("player") and yu_zhong != null:
+		ZhangBen.jia_jing_yan(int(yu_zhong.fenzhi) * 2)
+	si_le = true
+	set_process(false)
+	TeXiaoKu.bo_fan_kui(&"bei_yao_si", get_parent(), global_position, self)  # 鱼王败退：暗红消散
+	if _hong_guang != null:
+		_hong_guang.visible = false
+	var bu_jian := create_tween()
+	bu_jian.set_parallel(true)
+	bu_jian.tween_property(self, "modulate:a", 0.0, 0.6)
+	bu_jian.tween_property(self, "scale", scale * 0.6, 0.6)
+	bu_jian.chain().tween_callback(queue_free)
 
 
 func _sheng_ji_yu_zhi() -> int:
@@ -992,6 +1178,8 @@ func jia_dian_ma(liang: float) -> void:
 	dian_ma = minf(ZhangBen.KONG_ZHI_SHANG_XIAN, dian_ma + liang)
 	if dian_ma >= ZhangBen.KONG_ZHI_SHANG_XIAN:
 		_chu_fa_yun_xuan()
+		# 电麻光环：满条才挂，寿命=失控时长；和毒晕光环互斥（条清空后只剩一个）
+		TeXiaoKu.gua_zhuang_tai(&"dian_ma", self, 1.2, {"chi_xu": ZhangBen.YUN_XUAN_SHI_CHANG})
 
 
 func jia_du_yun(liang: float) -> void:
@@ -1001,6 +1189,8 @@ func jia_du_yun(liang: float) -> void:
 	du_yun = minf(ZhangBen.KONG_ZHI_SHANG_XIAN, du_yun + liang)
 	if du_yun >= ZhangBen.KONG_ZHI_SHANG_XIAN:
 		_chu_fa_yun_xuan()
+		# 毒晕光环：满条才挂，寿命=失控时长
+		TeXiaoKu.gua_zhuang_tai(&"du_yun", self, 1.2, {"chi_xu": ZhangBen.YUN_XUAN_SHI_CHANG})
 
 
 func zai_kong_zhi() -> bool:
@@ -1075,6 +1265,7 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, bu := "shen") -> void:
 	tixing = maxf(ZUI_XIAO_TI_XING, tixing - shang_hai)
 	_ying_she_ti_xing()
 	_shan_hong()
+	TeXiaoKu.bo_fan_kui(&"shou_ji", get_parent(), global_position, self)  # v2 受击红闪：宽度=目标当前体长
 	# 蓑鲉反毒：谁咬我，谁就叠毒晕条（被咬也中毒，逼玩家换目标或速战速决）
 	# 能力表 bian_hao = du_ji_hu_ti；NPC 用 npc_zhi()（没覆写就是 45）
 	if _neng_li != null and _neng_li.bian_hao == &"du_ji_hu_ti" and _neng_li.npc_zhi() > 0.0 \
@@ -1084,6 +1275,10 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, bu := "shen") -> void:
 	# 首领被咬到残血 = 击败：不是被吞，而是“打服了”——发信号给 Main 触发提前开战
 	if shi_boss and tixing <= ZhangBen.BOOS_BAI_TI_XING:
 		_bei_ji_bai()
+		return
+	if yu_wang:
+		# TASK-026：鱼王残血败退（给肉给经验、静默消失）；否则锁仇站着打，绝不逃跑
+		_jian_cha_yu_wang_bai_tui(lai_yuan)
 		return
 	if shi_boss:
 		# 被玩家咬就回头：歇战窗口只在“玩家也停手”时成立，不能站着白挨 5 秒
@@ -1111,6 +1306,11 @@ func _ji_zhang_chou_hen(lai_yuan) -> void:
 	if lai_yuan == null or not is_instance_valid(lai_yuan):
 		return
 	_chou_hen = lai_yuan
+	if yu_wang:
+		# TASK-026：鱼王不逃跑：锁死仇人继续追打（它是第二梯队挑战，不是猎物）
+		_mu_biao = lai_yuan
+		zhuang_tai = ZhuangTai.ZHUI_ZHU
+		return
 	if float(lai_yuan.tixing) >= tixing:
 		_tao_pao_lai_yuan = lai_yuan
 		_tao_pao_ji_shi = TAO_PAO_SHI_CHANG
@@ -1134,6 +1334,7 @@ func _bei_ji_bai() -> void:
 	# 首领败退：立死旗、停 AI、淡出并释放；广播放在最前面，Main 立刻能收到
 	si_le = true
 	set_process(false)
+	TeXiaoKu.bo_fan_kui(&"bei_yao_si", get_parent(), global_position, self)  # 首领败退：暗红消散
 	bei_ji_bai.emit()
 	var bu_jian := create_tween()
 	bu_jian.set_parallel(true)
@@ -1142,9 +1343,29 @@ func _bei_ji_bai() -> void:
 	bu_jian.chain().tween_callback(queue_free)
 
 
+func _chong_suan_ti_xing_ji_zhun() -> void:
+	# 量当前 you 动画的内容宽高，算出「同体型等宽」的归一化因子（与玩家同一套工具）
+	var ti: AnimatedSprite2D = $AnimatedSprite2D
+	if ti == null or ti.sprite_frames == null:
+		return
+	xing_xiang_bi = TiXingGuiYi.xing_xiang_bi(ti.sprite_frames, &"you")
+	_ti_xing_nei_rong = TiXingGuiYi.zui_da_nei_rong(ti.sprite_frames, &"you")
+
+
 func _ying_she_ti_xing() -> void:
 	# 体型变了，贴图大小跟着变：玩家能一眼看出“这条鱼被我咬小了”
-	scale = Vector2.ONE * ZhangBen.ti_xing_dao_chi_du(tixing)
+	scale = Vector2.ONE * ZhangBen.ti_xing_dao_chi_du(tixing) * xing_xiang_bi
+
+
+func ti_chang() -> float:
+	# 视觉体长（世界像素）：you 动画内容宽 × 体型缩放——与玩家 yu.gd 同一条尺子
+	# 状态光环 / 命中特效靠它随目标体型放大（TASK-031 用户硬要求）
+	return _ti_xing_nei_rong.x * maxf(scale.x, 0.01)
+
+
+func ti_gao() -> float:
+	# 视觉体高（世界像素）：同 ti_chang 用内容高——头顶光环的挂点高度
+	return _ti_xing_nei_rong.y * maxf(scale.x, 0.01)
 
 
 func _shan_hong() -> void:
@@ -1227,7 +1448,8 @@ func _yao_ji_ju_li() -> float:
 	# 随每 30 秒的成长（zou_boos_sheng_ji）逐渐变大；不再一出场就是超视觉的大判定圈，
 	# 玩家从鲸鲨旁边路过不会被隔空咬死（试玩反馈 2026-10-30）
 	if shi_boss:
-		return BOOS_YAO_JI_JI_CHU * ZhangBen.ti_xing_dao_chi_du(tixing)
+		# 直接读 root scale：已含体型曲线 + 形态归一化因子，判定圈与眼睛看到的鱼身同宽
+		return BOOS_YAO_JI_JI_CHU * maxf(scale.x, 0.01)
 	return 55.0 + 14.0 * tixing
 
 
@@ -1238,8 +1460,22 @@ func _chi_yu_ju_li(mu) -> float:
 
 func _geng_xin_hong_guang(delta: float) -> void:
 	# “玩家能不能吃我”与 yu.gd 嘴圈的判定共用同一常数 Yu.TUN_CHI_BEI_LV——两边永不分叉
+	# TASK-026：鱼王不是猎物——永远不亮红光（它只能被打到败退）
+	if yu_wang:
+		if _hong_guang != null:
+			_hong_guang.visible = false
+		return
 	if _wan_jia == null:
 		_wan_jia = get_tree().get_first_node_in_group("player") as Yu
+	# 满营养体表微光（提案 3.4）：淡金色慢呼吸，复用同一叠加层，无新增美术资源
+	# 放在可吃红光之前：微光是隐藏信息、优先级更高；帧/朝向同样对齐本体
+	if man_yang_pin and not si_le and not _zai_gong_ji:
+		_guang_shi_jian += delta
+		_hong_guang.visible = true
+		_hong_guang.flip_h = $AnimatedSprite2D.flip_h
+		_hong_guang.frame = $AnimatedSprite2D.frame
+		_hong_guang.modulate = Color(1.6, 1.35, 0.5, 0.28 + 0.16 * sin(_guang_shi_jian * 2.5))
+		return
 	if _zai_gong_ji:
 		_hong_guang.visible = false  # 咬击帧和游动帧不是同一套图：红光层先让位
 		return
@@ -1267,15 +1503,42 @@ func bei_chi(ji_yu_jiang_li := true, chi_zhe = null) -> void:
 	# 被吃掉的统一入口：先记账再释放（第 3 课挖好的挂钩点在此兑现）
 	# ji_yu_jiang_li=false：被别的 NPC 吃掉 / 玩家走消化槽时调用——这里不记玩家经验
 	# chi_zhe：吞它的那张嘴。蓑鲉有毒 → 吞下去的人叠毒晕条（策划案 8.6.3）
-	if si_le or shi_boss:
-		return  # 首领不可整吞：只能一口口咬到残血（TASK-017）
+	if si_le or shi_boss or yu_wang:
+		return  # 首领/鱼王不可整吞：只能一口口咬到残血（TASK-017 / TASK-026）
 	si_le = true
+	# v2 被吞两段：水青水花 + 白烟散，尺寸吃目标当前体长（吞大鱼时不会只剩个小点）
+	TeXiaoKu.bo_fan_kui(&"tun_shui", get_parent(), global_position, self)
+	TeXiaoKu.bo_fan_kui(&"tun_yan", get_parent(), global_position, self)
 	if _neng_li != null and _neng_li.bian_hao == &"du_ji_hu_ti" and _neng_li.npc_zhi() > 0.0 \
-			and chi_zhe != null and is_instance_valid(chi_zhe) and chi_zhe.has_method("jia_du_yun"):
-		chi_zhe.jia_du_yun(_neng_li.npc_zhi())
+			and chi_zhe != null and is_instance_valid(chi_zhe):
+		# 玩家吃毒鱼走递减入口（TASK-026）；NPC 吃毒鱼仍走原来的满额入口
+		if chi_zhe.has_method("chi_du_yu"):
+			chi_zhe.chi_du_yu(_neng_li.npc_zhi())
+		elif chi_zhe.has_method("jia_du_yun"):
+			chi_zhe.jia_du_yun(_neng_li.npc_zhi())
 	if ji_yu_jiang_li and yu_zhong != null:
 		ZhangBen.jia_jing_yan(int(yu_zhong.fenzhi))  # 吃兜底鱼不给经验
+	# 营养肉块（提案 3.5）：满营养鱼死亡掉 1 块，经验 = 基础分值 × 该鱼营养值
+	# 体型/饥饿按普通鱼肉块结算（A7）；营养不转移给 NPC 捕食者——NPC 吃掉即消失（提案③默认）
+	if man_yang_pin and yu_zhong != null:
+		_diao_ying_yang_rou()
 	queue_free()
+
+
+func _diao_ying_yang_rou() -> void:
+	# 满营养鱼的遗产：掉一块金色营养肉块，经验已含营养乘算
+	var rou: RouKuai = ROU_KUAI_CHANGJING.instantiate()
+	rou.ying_yang_rou = true
+	rou.jing_yan = YING_YANG.jing_yan_cheng_shu(int(yu_zhong.fenzhi), ying_yang_zhi)
+	rou.ti_xing_liang = MEI_KUAI_ROU_TI_XING  # 体型/饥饿按普通鱼肉块（A7）
+	var jiao := randf_range(0.0, TAU)
+	rou.position = position + Vector2(cos(jiao), sin(jiao)) * randf_range(46.0, 58.0)
+	rou.position.x = clampf(rou.position.x, 40.0, Yu.DI_TU_DA_XIAO.x - 40.0)
+	rou.position.y = clampf(rou.position.y, 40.0, Yu.DI_TU_DA_XIAO.y - 40.0)
+	if Engine.is_in_physics_frame():
+		get_parent().add_child.call_deferred(rou)
+	else:
+		get_parent().add_child(rou)
 
 
 func _shi_jiao_fan_wei() -> Rect2:

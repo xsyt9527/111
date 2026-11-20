@@ -1,0 +1,224 @@
+{
+ "frames": [
+  {
+   "filename": "kong_jian 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 1",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 2",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 3",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 4",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 5",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 6",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  },
+  {
+   "filename": "kong_jian 7",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 52
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_kong_jian.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 960,
+   "h": 52
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 7,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "projectiles/energy-disc",
+   "name": "kong_jian",
+   "fps": 15,
+   "loop": false,
+   "frames": 8,
+   "frameSize": [
+    120,
+    52
+   ],
+   "pivot": [
+    0.0,
+    26.0
+   ],
+   "columns": 8,
+   "visible": [
+    96,
+    48
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

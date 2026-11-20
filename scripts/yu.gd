@@ -7,10 +7,20 @@ class_name Yu
 
 const TUN_CHI_BEI_LV := 1.1  # A1 吞噬门槛：体型 ≥ 对方 ×1.1 才能整吞
 const YAO_JI_LENG_QUE := 0.5  # A3 自动咬击冷却（秒，策划案 8.6.3）
+const SHOU_DONG_YAO_JI_JIAN_GE := 2.0  # 手动攻击键独立冷却（秒）：与自动咬分开，不共享 _yao_ji_leng_que
+const SHOU_DONG_YAO_SHANG_BEI := 1.5  # 手动命中伤害倍率：比自动咬高一些，鼓励主动操作（已拍板 1.5）
+const YAO_SHANG_JING_YAN_MEI_TI := 5.0  # 咬伤经验：目标每实际掉 1 点体型给 5 经验（TASK-026）
+const YAO_JI_MIAN_SHANG_SHI_JIAN := 0.6  # 咬中后的接触伤害减免窗口（秒）：同一目标
+const YAO_JI_MIAN_SHANG_BEI := 0.2  # 窗口内同一目标接触伤害倍率（减免 80%）
 const YAO_JI_BAN_JING_JI_CHU := 85.0  # 咬击圈基础半径（像素 @ scale 1.0，与 Yu.tscn 的 YaoQu 一致）：随体型缩放
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表（2026-11-08）
 const ZHUAN_SHU := preload("res://scripts/zhuan_shu_ku.gd")  # 进化专属技模块分派（2026-11-09）
+const YING_YANG := preload("res://scripts/ying_yang.gd")  # 隐藏营养值系统纯逻辑层（2026-11-20）
 const DI_TU_DA_XIAO := Vector2(4128, 2304)  # 3×3 拼图世界尺寸（3 × 1376, 3 × 768）
+# 地图边界夹取：食物可达上限（与 ZhiWuQun.BIAN_JU / ZhiWu 珊瑚碰撞半径同步）
+const SHI_WU_ZUI_DA_BIAN_JU := 120.0  # 植物株位离房间四边的最小距离（见 zhi_wu_qun.gd BIAN_JU）
+const SHI_WU_ZUI_DA_BAN_JING := 40.0  # 植物碰撞半径上限：珊瑚 192×0.38×0.55≈40（海草约 35）
+const SHI_WU_AN_QUAN := 6.0  # 吃到判定安全余量：别让植物正好卡在触碰边缘
 const ROU_KUAI_CHANGJING := preload("res://scenes/RouKuai.tscn")  # 鱼肉块蓝图
 const DIAO_ROU_SHU := 2  # 受伤一次掉 2 块（伤害量的临时映射，TASK-012 调参）
 const MEI_KUAI_ROU_TI_XING := 0.5  # 每块鱼肉默认携带的体型量（直接调 diao_rou 时的兜底）
@@ -21,7 +31,7 @@ const XU_YING_SHAN_XIAN := 0.55  # 替身虚影放大到最大的时长（秒）
 const XU_YING_TOU_MING := 0.55  # 虚影峰值透明度：半透明，不挡住玩家本体
 const XU_YING_DA_XIAO := 1.9  # 虚影初始大小 = 玩家贴图 ×这个倍数（JOJO 式“身后罩住”）
 const SHEN_WEI_JI_CHU := 100.0  # 一「身位」的贴图基准长度（像素 @ scale 1.0）：进化技射程换算用
-const TI_CHANG_HUI_TUI := 208.0  # 读不到当前动画帧时的体长兜底（像素 @ scale 1.0）：范围下限用
+const TI_CHANG_HUI_TUI := 152.0  # 内容宽兜底（像素 @ scale 1.0）：与默认玩家 you 帧可见体宽一致
 # 能力来源鱼 → 鱼种表：按 lai_yuan 中文名映射，数据文件改名不影响这里
 const XU_YING_YU_LU := {
 	"电鳗": "res://data/yuzhong/lv_yu.tres",
@@ -35,13 +45,10 @@ const XU_YING_YU_LU := {
 # 只影响听感，不改任何判定；同一技能升档后仍用同一条
 const SHI_FANG_YIN := {
 	&"yu_lei_chong_ci": &"chong_ci",
-	&"man_li_chong_zhuang": &"chong_ci",
 	&"chang_mao_chuan_ci": &"chong_ci",
 	&"fang_dian_ma_bi": &"dian_xi",
-	&"dian_mai_chong": &"dian_xi",
 	&"she_fa_pen_du": &"du_xi",
 	&"xuan_wo": &"xuan_wo",
-	&"sheng_na_mai_chong": &"sheng_na",
 }
 
 var fang_xiang := Vector2.ZERO  # 摇杆方向（单位向量），由 Main 每帧写入；零向量 = 松手
@@ -54,12 +61,19 @@ var dang_qian_su_du := 0.0  # 当前实际速度（像素/秒）：松手后平�
 var tixing: float:
 	get:
 		return ZhangBen.dang_qian_ti_xing  # 体型=当前血量：账本是唯一所有者，玩家不另存一份
+var xing_xiang_bi := 1.0  # 体型归一化因子：同体型所有鱼「可见内容宽」等宽（见 TiXingGuiYi）
+var _ti_xing_nei_rong := Vector2(TI_CHANG_HUI_TUI, 101.0)  # 当前形态 you 动画的最大内容宽/高
+var _ti_xing_tui: Tween = null  # 体型补间：连续触发先杀旧 tween，避免多条抢同一个 scale
 var wudi := false  # 受伤后的短暂无敌标记
 var _sheng_ji_tui: Tween = null  # 升级精灵脉冲补间：重复升级先杀掉旧的，避免两条抢子节点 scale
 var yan_chu_kong_zhi := false  # 九图拼合演出锁：不回方向、不游、不咬、不吃（冷却与消化照走）
 var bai_shi_jian := 0.0  # 摆尾相位时钟：游动时累积，驱动 sin 摆动
 var zi_dong_yao_ji := true  # 自动咬击总闸：测试夹具关掉它，避免咬死布置好的靶鱼
-var _yao_ji_leng_que := 0.0  # 咬击冷却剩余（秒）
+var _yao_ji_leng_que := 0.0  # 自动咬击冷却剩余（秒）
+var _shou_dong_leng_que := 0.0  # 手动攻击键冷却剩余（秒）：独立计时，自动咬不占这条
+var _yao_shang_jing_yan := 0.0  # 咬伤经验小数池：满 1 点才进账本（避免每口 0.15 被 int 截没）
+var _yao_ji_mian_shang_mu: Node2D = null  # 上一条被咬中的目标：只有它对玩家的接触伤害减免
+var _yao_ji_mian_shang_ji_shi := 0.0  # 接触减免窗口剩余（秒）
 var _xiao_hua: Array = []  # 消化队列：[{fen: 经验, sheng_yu: 剩余秒数, neng: 能力}]，先进先出
 var xiao_hua_jin_du := 0.0  # 当前第一口的消化进度 0~1（HUD 只读）
 var zhu_dong_leng_que := {}  # 主动冷却表：bian_hao(StringName) -> 剩余秒；各主动独立计时
@@ -102,6 +116,7 @@ var _tui_kai_sheng_yu := 0.0  # 击退剩余（秒）：船锚横扫
 var _tui_kai_fang := Vector2.ZERO  # 击退方向（单位向量）
 var _tui_kai_su_du := 0.0  # 击退速度（像素/秒）：总位移 ÷ 持续时间
 var _boos_yao_bu_dong_ti_shi := false  # “咬不动鲸鲨”提示只弹一次：避免每口刷屏
+var _bian_jie_te_xiao_shi_jian := 0  # 上次边界警告特效（毫秒）：触边每 3 秒最多播一次，不刷屏
 # ---- 进化专属技扩展状态（2026-11-06）----
 var _nei_bu_leng_que := {}  # 被动/触发技内部冷却：bian_hao(StringName) -> 剩余秒
 var _mei_ju_yong_ci := {}  # 每局次数已用：bian_hao(StringName) -> 已用次数
@@ -165,6 +180,7 @@ func _ready() -> void:
 	# 继续游戏：账本已经恢复了进化形态 → 关掉已进化的数值与外观（未进化时是 null，不动）
 	if ZhangBen.dang_qian_jin_hua != null:
 		_ying_yong_jin_hua(ZhangBen.dang_qian_jin_hua)
+	_chong_suan_ti_xing_ji_zhun()  # 形态 + 进化外观都定下来后再量内容宽：因子只认最终贴图
 	dang_qian_jiao = 0.0  # 开局朝右（贴图默认方向）
 	scale = _ti_xing_vector()  # 开局体型=开局血量：场景里的 scale 只是编辑器占位
 	add_to_group("player")  # NPC 靠这个组找到玩家，判断自己是不是“红光可吃”
@@ -196,11 +212,24 @@ func ying_yong_xing_tai(xing_tai: XingTai) -> void:
 		$AnimatedSprite2D.play("you")
 	$AnimatedSprite2D.flip_h = false
 	$AnimatedSprite2D.rotation = 0.0
+	_chong_suan_ti_xing_ji_zhun()  # 换了形态就换贴图：归一化因子要跟着重算（scale 仍由体型补间管）
+
+
+func _chong_suan_ti_xing_ji_zhun() -> void:
+	# 量当前 you 动画的内容宽高，算出「同体型等宽」的归一化因子
+	# 只量站姿动画（you）：玩家判断大小看的就是这一帧，攻击帧的挥砍/水花不参与
+	var jing_ling := get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if jing_ling == null or jing_ling.sprite_frames == null:
+		return
+	var kuang := jing_ling.sprite_frames
+	xing_xiang_bi = TiXingGuiYi.xing_xiang_bi(kuang, &"you")
+	_ti_xing_nei_rong = TiXingGuiYi.zui_da_nei_rong(kuang, &"you")
 
 
 func _ti_xing_vector() -> Vector2:
-	# 体型→缩放向量：走账本的统一换算入口，玩家与 NPC 共用同一条曲线
-	return Vector2.ONE * ZhangBen.ti_xing_dao_chi_du(tixing)
+	# 体型→缩放向量：曲线 × 形态归一化因子
+	# 玩家与 NPC 共用同一条曲线；因子让「可见内容宽」只由体型决定，不吃画布留白的亏
+	return Vector2.ONE * ZhangBen.ti_xing_dao_chi_du(tixing) * xing_xiang_bi
 
 
 func _on_jin_hua_wan_cheng(jin_hua: JinHua) -> void:
@@ -210,6 +239,8 @@ func _on_jin_hua_wan_cheng(jin_hua: JinHua) -> void:
 	if jin_hua == null:
 		return
 	_ying_yong_jin_hua(jin_hua)
+	TeXiaoKu.bo_fan_kui(&"jin_hua", get_parent(), global_position, null,
+			1.0, {"shi_zhe": self})  # 进化完成：环身白金爆发，随体型
 	jin_ru_wudi(ZhangBen.jin_hua_yan_chu_shi_chang)  # 进化演出 1.7 秒免伤（策划案 v0.18 8.6）
 	YinXiang.fang(&"sheng_ji")  # 复用升级琶音：专属进化音效待音频补
 	var ben := $AnimatedSprite2D as AnimatedSprite2D
@@ -226,6 +257,8 @@ func _on_sheng_ji(_deng_ji: int) -> void:
 	# TASK-019：升级瞬间给 0.6 秒无敌（避免刚升级就被同一口咬残）+ 子精灵 1→1.16→1 脉冲
 	# 只动 AnimatedSprite2D.scale；根节点 scale 仍归 ti_xing_bian_hua 的体型补间
 	jin_ru_wudi(0.6)
+	TeXiaoKu.bo_fan_kui(&"sheng_ji", get_parent(), global_position, null,
+			1.0, {"shi_zhe": self})  # 升级金光，随体型放大
 	if _sheng_ji_tui != null:
 		_sheng_ji_tui.kill()  # 连续升级：旧脉冲先停，避免两条 tween 抢同一个子节点 scale
 	var jing_ling := get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
@@ -274,6 +307,12 @@ func _ying_yong_jin_hua(jin_hua: JinHua) -> void:
 	ben.flip_h = false
 	ben.rotation = 0.0
 	ben.play(&"you")
+	# 进化换了整套贴图：归一化因子必须重算并立刻落 scale
+	# 账本的体型补间可能正往旧形态的目标值跑——先杀掉，否则旧目标会把鱼拉到错误大小
+	_chong_suan_ti_xing_ji_zhun()
+	if _ti_xing_tui != null and _ti_xing_tui.is_valid():
+		_ti_xing_tui.kill()
+	scale = _ti_xing_vector()
 
 
 func _dan_zhen_dong_hua(tu: Texture2D) -> SpriteFrames:
@@ -289,6 +328,11 @@ func _dan_zhen_dong_hua(tu: Texture2D) -> SpriteFrames:
 
 func _process(delta: float) -> void:
 	_yao_ji_leng_que = maxf(0.0, _yao_ji_leng_que - delta)
+	_shou_dong_leng_que = maxf(0.0, _shou_dong_leng_que - delta)  # 手动键独立冷却：自动咬不碰它
+	# 咬中后的接触减免窗口：演出/失控里也照常倒数，不因早退卡住
+	_yao_ji_mian_shang_ji_shi = maxf(0.0, _yao_ji_mian_shang_ji_shi - delta)
+	if _yao_ji_mian_shang_ji_shi <= 0.0:
+		_yao_ji_mian_shang_mu = null
 	_zou_xiao_hua(delta)  # 消化槽照走：失控时肚子里的东西也在消化
 	_geng_xin_zhu_dong(delta)  # 主动冷却/持续效果：失控也倒数，但失控会打断施放
 	# 九图拼合演出：位置/朝向由演出主动画接管；不扫嘴圈、不自动咬、不吃鱼肉
@@ -393,6 +437,8 @@ func _zou_xiao_hua(delta: float) -> void:
 			ZhangBen.ji_chi_yu(neng)
 		if int(dang_qian["fen"]) > 0:
 			ZhangBen.jia_jing_yan(int(dang_qian["fen"]))
+		TeXiaoKu.bo_fan_kui(&"xiao_hua", get_parent(), global_position, null,
+				1.0, {"shi_zhe": self})  # 消化完成：环身橙爆
 		xiao_hua_jin_du = 0.0
 		if not _xiao_hua.is_empty():
 			_xiao_hua[0]["sheng_yu"] = shi_chang  # 下一口从满时长开始，不吃上一口的余数
@@ -636,31 +682,23 @@ func shi_fang_zhu_dong(neng: NengLi) -> bool:
 			_shi_fang_fang_dian(neng, dang)
 		&"ji_su_tu_jin":
 			_shi_fang_ji_su(neng)
-		&"man_li_chong_zhuang":
-			_shi_fang_chong_zhuang(neng)
 		&"chang_mao_chuan_ci":
-			_shi_fang_chong_zhuang(neng)  # 剑鱼穿刺与冲撞同构：直线冲刺 + 路径伤害，数值各看各的表
+			_shi_fang_chong_zhuang(neng)  # 剑鱼穿刺：直线冲刺 + 路径伤害
 		&"ruo_dian_dong_cha":
 			if not _shi_fang_ruo_dian(neng, dang):
 				return false  # 视野里没有鱼：空放不扣冷却、不响技能音
 		&"qian_fu_tu_xi":
 			_shi_fang_qian_fu(neng)
 		&"yu_lei_chong_ci":
-			_shi_fang_chong_zhuang(neng)  # 鱼雷冲刺与蛮力冲撞同构：走同一分支，数值各看各的表
+			_shi_fang_chong_zhuang(neng)  # 鱼雷冲刺：直线冲刺 + 路径伤害
 		&"ni_liu_shan_bi":
 			_shi_fang_ni_liu(neng, dang)
 		&"xuan_wo":
 			_shi_fang_xuan_wo(neng, dang)
-		&"yu_ni_dan":
-			_shi_fang_yu_ni(neng, dang)
 		&"kuang_bao_si_yao":
 			_shi_fang_kuang_bao(neng, dang)
-		&"sheng_na_mai_chong":
-			_shi_fang_sheng_na(neng, dang)
 		&"ying_ke_hu_ti":
 			_shi_fang_ying_ke(neng, dang)
-		&"dian_mai_chong":
-			_shi_fang_dian_mai(neng, dang)
 		&"you_er_qi_pao":
 			_shi_fang_you_er(neng, dang)
 		&"xue_xing_kuang_re":
@@ -822,7 +860,9 @@ func _shi_fang_fang_dian(neng: NengLi, dang: int) -> void:
 		if global_position.distance_to(mu.global_position) <= ban and mu.has_method("jia_dian_ma"):
 			mu.call("jia_dian_ma", liang)
 	_dian_ma_biao_xian = 0.15  # 闪蓝 0.15 秒（表现层，_process 里读）
-	TE_XIAO.fang_dian(get_parent(), global_position, 1.3)  # 范围型技能放大 30%：手机上一眼能看见电圈
+	# v2：电圈直径 = 实际判定直径（ban 已含体型缩放与鸣雷鳞加成），缺资源回退旧电圈
+	if TeXiaoKu.bo_ming(&"jn_fang_dian", get_parent(), global_position, ban * 2.0) == null:
+		TE_XIAO.fang_dian(get_parent(), global_position, 1.3)  # 范围型技能放大 30%：手机上一眼能看见电圈
 
 
 func _shi_fang_ji_su(neng: NengLi) -> void:
@@ -831,6 +871,13 @@ func _shi_fang_ji_su(neng: NengLi) -> void:
 	_su_du_sheng_yu = maxf(0.01, neng.chi_xu)
 	if fang_xiang != Vector2.ZERO:
 		dang_qian_su_du = maxf(dang_qian_su_du, yidong_sudu * _su_du_bei_lv)
+	# v2 极速突进：青白冲刺条沿朝向甩出，长度跟当前体长；旧版没有特效，缺资源即静默跳过
+	var fang := fang_xiang
+	if fang == Vector2.ZERO:
+		fang = Vector2.RIGHT.rotated(dang_qian_jiao)
+	TeXiaoKu.bo_ming(&"jn_ji_su", get_parent(),
+			global_position + fang.normalized() * ti_chang() * 0.6,
+			ti_chang() * 1.5, {"fan": fang.x < 0.0})
 
 
 func _shi_fang_chong_zhuang(neng: NengLi) -> void:
@@ -846,9 +893,16 @@ func _shi_fang_chong_zhuang(neng: NengLi) -> void:
 	dang_qian_jiao = _chong_zhuang_fang.angle()
 	if absf(_chong_zhuang_fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = _chong_zhuang_fang.x < 0.0
+	var fan_xiang := _chong_zhuang_fang.x < 0.0
 	if neng.bian_hao == &"yu_lei_chong_ci":
 		# 鱼雷冲刺起手：在施放位置甩出一道冲刺水花；长矛穿刺 / 蛮力冲撞不播这套特效
-		TE_XIAO.yu_lei(get_parent(), global_position)
+		if TeXiaoKu.bo_ming(&"fb_tun_shui", get_parent(), global_position,
+				ti_chang() * 1.2, {"fan": fan_xiang}) == null:
+			TE_XIAO.yu_lei(get_parent(), global_position)
+	elif neng.bian_hao == &"chang_mao_chuan_ci":
+		# 长矛穿刺：钢白矛影沿冲刺方向甩出，长度随体长（v2 补全分配）
+		TeXiaoKu.bo_ming(&"jn_chang_mao", get_parent(), global_position,
+				ti_chang() * 1.8, {"fan": fan_xiang})
 
 
 func _shi_fang_ruo_dian(neng: NengLi, dang: int) -> bool:
@@ -874,6 +928,10 @@ func _shi_fang_ruo_dian(neng: NengLi, dang: int) -> bool:
 	_ruo_dian_bei_lv = maxf(1.0, neng.dang_zhi(&"shu_zhi", dang))
 	if mu.has_method("xian_shi_deng_ji"):
 		mu.call("xian_shi_deng_ji", _ruo_dian_sheng_yu)  # 头顶亮 Lv.N：看穿目标的分量
+	# v2 弱点洞察：青绿扫描框套在锁定目标头顶，尺寸随目标体型
+	TeXiaoKu.bo_ming(&"jn_ruo_dian", get_parent(),
+			mu.global_position + Vector2(0.0, -TeXiaoKu.ti_gao(mu) * 0.9),
+			TeXiaoKu.ti_kuan(mu) * 0.9, {"gen_sui": mu})
 	return true
 
 
@@ -883,12 +941,17 @@ func _shi_fang_qian_fu(neng: NengLi) -> void:
 	_yin_shen_sheng_yu = maxf(0.01, neng.chi_xu)
 	_qian_fu_zhun_bei = true
 	$AnimatedSprite2D.modulate.a = 0.45
+	# v2 潜伏突袭：暗青解构粒子在玩家身上收束，尺寸随体长
+	TeXiaoKu.bo_ming(&"jn_qian_fu", get_parent(), global_position, ti_chang() * 1.2)
 
 
 func _shi_fang_ni_liu(neng: NengLi, dang: int) -> void:
 	# 逆流闪避：短无敌窗（档 2 起加长）；档 3（shu_zhi 覆写 ≥ 1）把身边的鱼推开一段
 	_ni_liu_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
-	TE_XIAO.ni_liu(get_parent(), global_position)  # 无敌窗开启瞬间的闪身特效
+	# 无敌窗开启瞬间的闪身特效；v2 青白相位残影，缺资源回退旧 ni_liu
+	if TeXiaoKu.bo_ming(&"jn_ni_liu", get_parent(), global_position,
+			ti_chang() * 1.2, {"fan": fang_xiang.x < 0.0}) == null:
+		TE_XIAO.ni_liu(get_parent(), global_position)
 	if neng.dang_zhi(&"shu_zhi", dang) >= 1.0:
 		var ban := ji_neng_ban_jing(neng, dang, 0.5)
 		for mu in di_ren_lie():
@@ -907,46 +970,24 @@ func _shi_fang_xuan_wo(neng: NengLi, dang: int) -> void:
 	_xuan_wo_la_li = maxf(0.1, neng.shu_zhi)
 	_xuan_wo_ji_shi = 0.0  # 第一拍立刻拉
 	_xuan_wo_sheng_yu = maxf(0.01, neng.chi_xu)
-	TE_XIAO.xuan_wo(get_parent(), global_position)  # 专属涡纹：以玩家为涡心
-
-
-func _shi_fang_yu_ni(neng: NengLi, dang: int) -> void:
-	# 淤泥弹：朝朝向前方丢一团淤泥雾——雾里 NPC 感知打折（YuNiWu 自带寿命，到点自散）
-	var fang := fang_xiang
-	if fang == Vector2.ZERO:
-		fang = Vector2.RIGHT.rotated(dang_qian_jiao)
-	var wu := YuNiWu.new()
-	wu.ban_jing = ji_neng_ban_jing(neng, dang, 0.5)
-	wu.gan_zhi_xi_shu = neng.shu_zhi
-	wu.shi_chang = neng.dang_zhi(&"chi_xu", dang)
-	wu.wan_jia_yin_bi = neng.dang_zhi(&"yin_bi", dang)  # 档 3 才有：雾里玩家可见度再打折
-	wu.position = global_position + fang.normalized() * 150.0
-	TE_XIAO.yu_ni(get_parent(), wu.position)  # 落点一团淤泥：告诉玩家雾在哪
-	if Engine.is_in_physics_frame():
-		get_parent().add_child.call_deferred(wu)  # 物理帧里加节点要推迟（同掉肉的处理）
-	else:
-		get_parent().add_child(wu)
+	# 专属涡纹：以玩家为涡心；v2 直径 = 判定直径，涡纹循环到技能结束
+	if TeXiaoKu.bo_ming(&"jn_xuan_wo", get_parent(), global_position,
+			_xuan_wo_ban_jing * 2.0, {"chi_xu": _xuan_wo_sheng_yu}) == null:
+		TE_XIAO.xuan_wo(get_parent(), global_position)
 
 
 func _shi_fang_kuang_bao(neng: NengLi, dang: int) -> void:
 	# 狂暴撕咬：窗口期内自动咬击全部按倍率结算（档 2 起窗口加长）
 	_kuang_bao_bei_lv = maxf(1.0, neng.shu_zhi)
 	_kuang_bao_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
-	TE_XIAO.kuang_bao(get_parent(), global_position, 1.25)  # 狂暴窗口开启：玩家身上亮出撕咬特效（放大 25%）
-
-
-func _shi_fang_sheng_na(neng: NengLi, dang: int) -> void:
-	# 声呐脉冲：半径内 NPC 全部泛黄高亮（简化版：不做致命区单独描边）；
-	# 档 3 起附赠定身 1 秒（复用 NPC 反应延迟通道——定身里不索敌、不转头）
-	var ban := ji_neng_ban_jing(neng, dang, 0.5)
-	for mu in di_ren_lie():
-		if global_position.distance_to(mu.global_position) > ban:
-			continue
-		if mu.has_method("shi_fang_gao_liang"):
-			mu.call("shi_fang_gao_liang", neng.dang_zhi(&"chi_xu", dang))
-		if dang >= 3 and mu.has_method("ding_zhu"):
-			mu.call("ding_zhu", neng.dang_zhi(&"shu_zhi", dang))
-	TE_XIAO.sheng_na(get_parent(), global_position)  # 专属声呐波纹：以玩家为圆心扩散
+	# v2：猩红怒气罩身 + 前方爪影，尺寸随体长；缺资源回退旧狂暴特效
+	var fang := _chao_xiang_fang()
+	if TeXiaoKu.bo_ming(&"jn_kuang_bao", get_parent(), global_position, ti_chang() * 1.3,
+			{"gen_sui": self}) == null:
+		TE_XIAO.kuang_bao(get_parent(), global_position, 1.25)  # 狂暴窗口开启：玩家身上亮出撕咬特效（放大 25%）
+	TeXiaoKu.bo_ming(&"jn_kuang_bao_zhua", get_parent(),
+			global_position + fang * ti_chang() * 0.8,
+			ti_chang() * 0.9, {"fan": fang.x < 0.0})
 
 
 func _shi_fang_ying_ke(neng: NengLi, dang: int) -> void:
@@ -956,27 +997,10 @@ func _shi_fang_ying_ke(neng: NengLi, dang: int) -> void:
 	_ying_ke_ban_jing = maxf(1.0, ji_neng_ban_jing(neng, dang, 0.5))
 	_ying_ke_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
 	var bi := clampf(_ying_ke_ban_jing / 90.0, 0.9, 2.0)
-	TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, bi)  # 缩壳成形：罩住玩家
-
-
-func _shi_fang_dian_mai(neng: NengLi, dang: int) -> void:
-	# 电脉冲：先清自己的电麻条，再把半径内所有 NPC 的电麻条往上推
-	# 满档附加：这一发电到失控的鱼会掉一块肉（被电到吐食）
-	ZhangBen.qing_dian_ma()
-	var ban_jing := ji_neng_ban_jing(neng, dang, 0.5) * _dian_xi_fan_bei()
-	var liang := maxf(0.0, neng.dang_zhi(&"shu_zhi", dang)) * _dian_xi_ji_bei()
-	var diao_rou := dang >= 3 and neng.dang_zhi(&"diao_rou", dang) > 0.0
-	for mu in di_ren_lie():
-		if global_position.distance_to(mu.global_position) > ban_jing:
-			continue
-		var yi_kong := bool(mu.call("zai_kong_zhi")) if mu.has_method("zai_kong_zhi") else false
-		if mu.has_method("jia_dian_ma"):
-			mu.call("jia_dian_ma", liang)
-		var xian_kong := bool(mu.call("zai_kong_zhi")) if mu.has_method("zai_kong_zhi") else false
-		if diao_rou and not yi_kong and xian_kong and mu.has_method("diao_rou"):
-			mu.call("diao_rou", 1, 0.3)  # 刚被这一发电晕的才掉肉/掉 HP：不重复收割
-	var bi := clampf(ban_jing / 220.0, 0.9, 2.0)
-	TE_XIAO.dian_mai_chong(get_parent(), global_position, bi)  # 电环爆发：范围一眼可见
+	# v2 硬壳护体：灰白护盾成形，直径 = 实际判定圈；缺资源回退旧壳特效
+	if TeXiaoKu.bo_ming(&"jn_ying_ke", get_parent(), global_position,
+			_ying_ke_ban_jing * 2.0, {"gen_sui": self}) == null:
+		TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, bi)  # 缩壳成形：罩住玩家
 
 
 func _shi_fang_you_er(neng: NengLi, dang: int) -> void:
@@ -989,7 +1013,10 @@ func _shi_fang_you_er(neng: NengLi, dang: int) -> void:
 	qi.ban_jing = maxf(1.0, ji_neng_ban_jing(neng, dang, 0.5))
 	qi.zha_yun = neng.dang_zhi(&"zha_yun", dang) > 0.0  # 满档：咬破会被炸晕
 	qi.position = global_position + fang.normalized() * 110.0
-	TE_XIAO.you_er_qi_pao(get_parent(), qi.position)  # 吐泡起手：先亮一下再漂走
+	# 吐泡起手：v2 金色气泡先亮一下再漂走，尺寸随玩家体长；缺资源回退旧泡
+	if TeXiaoKu.bo_ming(&"jn_you_er", get_parent(), qi.position,
+			maxf(70.0, ti_chang() * 0.9), {"chi_xu": qi.chi_xu}) == null:
+		TE_XIAO.you_er_qi_pao(get_parent(), qi.position)
 	if Engine.is_in_physics_frame():
 		get_parent().add_child.call_deferred(qi)
 	else:
@@ -1001,7 +1028,10 @@ func _shi_fang_xue_xing(neng: NengLi, dang: int) -> void:
 	_xue_xing_hui_bei = maxf(0.0, neng.dang_zhi(&"shu_zhi", dang))
 	_xue_xing_yao_shang = maxf(0.0, neng.dang_zhi(&"yao_shang", dang))
 	_xue_xing_sheng_yu = maxf(0.01, neng.dang_zhi(&"chi_xu", dang))
-	TE_XIAO.xue_xing_kuang_re(get_parent(), global_position, 1.3)  # 血雾卷起：狂热开始
+	# 血雾卷起：狂热开始；v2 红雾开花随体长，缺资源回退旧特效
+	if TeXiaoKu.bo_ming(&"jn_xue_xing", get_parent(), global_position, ti_chang() * 1.3,
+			{"gen_sui": self}) == null:
+		TE_XIAO.xue_xing_kuang_re(get_parent(), global_position, 1.3)
 
 
 func _xue_xing_hui(liang: float) -> float:
@@ -1019,16 +1049,14 @@ func _shen_wei() -> float:
 
 
 func ti_chang() -> float:
-	# 当前实际体长（世界像素）：优先读当前动画帧贴图宽，读不到用 208px 兜底
-	# 技能范围下限按「半条鱼」算，用真实贴图而不是固定 100，才不会把画出来的圈和鱼身脱节
-	var jing_ling := get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-	if jing_ling != null and jing_ling.sprite_frames != null \
-			and jing_ling.sprite_frames.has_animation(jing_ling.animation):
-		var zhen := jing_ling.sprite_frames.get_frame_texture(
-				jing_ling.animation, jing_ling.frame)
-		if zhen != null:
-			return zhen.get_width() * maxf(scale.x, 0.01)
-	return TI_CHANG_HUI_TUI * maxf(scale.x, 0.01)
+	# 当前实际体长（世界像素）：当前形态 you 动画的最大「可见内容宽」× root scale
+	# 不用画布宽：美术留白不算鱼身，否则技能圈/地图边距会把空气当身体
+	return _ti_xing_nei_rong.x * maxf(scale.x, 0.01)
+
+
+func ti_gao() -> float:
+	# 当前实际体高（世界像素）：同 ti_chang，用内容高——上下边界、上下夹取按鱼身真实高度算
+	return _ti_xing_nei_rong.y * maxf(scale.x, 0.01)
 
 
 func fan_wei_xiu_zheng(shijie_ban_jing: float, zui_xiao_bei := 0.5) -> float:
@@ -1115,6 +1143,9 @@ func _shi_fang_tai_sui_ge_rou(neng: NengLi) -> bool:
 	qie = minf(qie, ke_qie)
 	ZhangBen.shou_shang(qie)
 	_sa_you_er_rou(qie, maxf(1.0, neng.fu_shu_zhi), maxf(60.0, neng.ban_jing))
+	# v2 太岁割肉：粉白肉雾在割肉处爆开，尺寸随当前体长；缺资源回退旧鳞闪
+	if TeXiaoKu.bo_ming(&"tai_sui_poof", get_parent(), global_position, ti_chang() * 1.1) == null:
+		TE_XIAO.ying_lin(get_parent(), global_position, 0.8)
 	return true
 
 
@@ -1154,7 +1185,10 @@ func _shi_fang_qiang_suan_pen_tu(neng: NengLi, dang: int) -> void:
 			continue
 		if mu.has_method("jia_qiang_suan"):
 			mu.call("jia_qiang_suan", shi_chang, mei_miao)  # 船：酸蚀折算 HP/s
-	TE_XIAO.zhong_du(get_parent(), global_position + fang * ban_jing * 0.5, 1.6)  # 锥心处的酸雾团
+	# v2 强酸喷吐：锥心处紫绿酸雾，长轴 = 技能半径，朝向跟手；缺资源回退旧毒雾
+	if TeXiaoKu.bo_ming(&"qiang_suan", get_parent(), global_position + fang * ban_jing * 0.5,
+			ban_jing * 1.2, {"fan": fang.x < 0.0}) == null:
+		TE_XIAO.zhong_du(get_parent(), global_position + fang * ban_jing * 0.5, 1.6)
 
 
 func _shi_fang_chao_ya_shui_dao(neng: NengLi, dang: int) -> void:
@@ -1190,7 +1224,10 @@ func _fang_shui_dao() -> void:
 			continue
 		# 首领减半（boss 口径）：普通鱼直扣当前体型；机械船按 max(xue)×百分比×0.5
 		zhan_dou_bai_fen_shang(mu, bai_fen)
-	TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.45, 1.8)  # 水刃轨迹：复用冲刺水花
+	# v2 超压水刀：水刃沿射线铺开，长度 = 技能射程；缺资源回退旧水花
+	if TeXiaoKu.bo_ming(&"chao_ya", get_parent(), global_position + fang * ju_li * 0.45,
+			ju_li * 0.9, {"fan": fang.x < 0.0}) == null:
+		TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.45, 1.8)
 	# 泄压机动：水刀放出后自动后座 1 身位，弹开途中 0.3 秒无敌（无独立冷却）
 	var bei_dong := ZhangBen.zhao_bei_dong(&"xie_ya_ji_dong")
 	if bei_dong != null:
@@ -1259,7 +1296,10 @@ func _shi_fang_lei_bao(neng: NengLi, dang: int) -> void:
 	_lei_bao_ban_jing = _zhuan_shu_zhi(neng, &"ban_jing", dang) * _shen_wei() * _dian_xi_fan_bei()
 	_lei_bao_sheng_yu = _zhuan_shu_zhi(neng, &"chi_xu", dang)
 	_lei_bao_ji_shi = 0.0  # 施放瞬间先落第一道：按下就有反馈
-	TE_XIAO.xuan_wo(get_parent(), global_position, maxf(1.0, _lei_bao_ban_jing / 110.0))
+	# v2 雷暴召唤：紫电云盖住整个雷暴半径，持续到窗口结束；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"lei_bao_yun", get_parent(), global_position,
+			_lei_bao_ban_jing * 2.0, {"chi_xu": _lei_bao_sheng_yu}) == null:
+		TE_XIAO.xuan_wo(get_parent(), global_position, maxf(1.0, _lei_bao_ban_jing / 110.0))
 
 
 func _geng_xin_lei_bao(delta: float) -> void:
@@ -1283,8 +1323,10 @@ func _luo_lei() -> void:
 	var shang := _zhuan_shu_zhi(neng, &"shu_zhi", dang)
 	var dian := SHU_ZHI.LEI_BAO_DIAN_MA * _dian_xi_ji_bei()
 	var wei := global_position + Vector2.RIGHT.rotated(randf() * TAU) * randf_range(0.0, _lei_bao_ban_jing)
-	TE_XIAO.fang_dian(get_parent(), wei, 0.9)
 	var ban := SHU_ZHI.LEI_BAO_LUO_LEI_BAN_JING * maxf(1.0, scale.x) * _dian_xi_fan_bei()
+	# v2 落雷：单道闪电砸在随机落点，宽度 = 落雷判定直径；缺资源回退旧电圈
+	if TeXiaoKu.bo_ming(&"lei_bao_lei", get_parent(), wei, ban * 2.0) == null:
+		TE_XIAO.fang_dian(get_parent(), wei, 0.9)
 	for mu in di_ren_lie():
 		if wei.distance_to(mu.global_position) <= ban:
 			_zhuan_shu_shang_npc(mu, shang, dian)
@@ -1296,7 +1338,10 @@ func _shi_fang_dian_wang(neng: NengLi, dang: int) -> void:
 	_dian_wang_qi_dian = global_position
 	_dian_wang_ban_jing = _zhuan_shu_zhi(neng, &"ban_jing", dang) * _shen_wei() * _dian_xi_fan_bei()
 	_dian_wang_ming_zhong.clear()
-	TE_XIAO.dian_mai_chong(get_parent(), global_position, 1.5)
+	# v2 九头电网：八向电弧阵覆盖整个电网半径，持续到窗口结束；缺资源回退旧电脉冲
+	if TeXiaoKu.bo_ming(&"jiu_tou", get_parent(), global_position,
+			_dian_wang_ban_jing * 2.0, {"chi_xu": _dian_wang_sheng_yu}) == null:
+		TE_XIAO.dian_mai_chong(get_parent(), global_position, 1.5)
 
 
 func _geng_xin_dian_wang(delta: float) -> void:
@@ -1336,7 +1381,11 @@ func _shi_fang_ci_chang(neng: NengLi, dang: int) -> void:
 	# 磁场护壁：6 秒内偏转机器船弹道招（深水炸弹/鱼叉），并画一圈磁场
 	_ci_chang_sheng_yu = _zhuan_shu_zhi(neng, &"chi_xu", dang)
 	_ci_chang_ban_jing = _zhuan_shu_zhi(neng, &"ban_jing", dang) * _shen_wei() * _dian_xi_fan_bei()
-	TE_XIAO.fang_dian(get_parent(), global_position, maxf(1.0, _ci_chang_ban_jing / 90.0))
+	# v2 磁场护壁：电力场罩住判定圈，持续到磁场结束；缺资源回退旧电圈
+	if TeXiaoKu.bo_ming(&"ci_chang", get_parent(), global_position,
+			_ci_chang_ban_jing * 2.0,
+			{"chi_xu": _ci_chang_sheng_yu, "gen_sui": self}) == null:
+		TE_XIAO.fang_dian(get_parent(), global_position, maxf(1.0, _ci_chang_ban_jing / 90.0))
 
 
 func zhuan_shu_pi_bi_dan_dao(dian := Vector2.INF) -> bool:
@@ -1371,7 +1420,10 @@ func _shi_fang_zuan_tu(neng: NengLi, dang: int) -> void:
 	dang_qian_jiao = _zuan_tu_fang.angle()
 	if absf(_zuan_tu_fang.x) > 0.05:
 		$AnimatedSprite2D.flip_h = _zuan_tu_fang.x < 0.0
-	TE_XIAO.yu_lei(get_parent(), global_position, 1.2)
+	# v2 螺旋钻突：钻头水花随冲刺朝向，尺寸随体长；缺资源回退旧水花
+	if TeXiaoKu.bo_ming(&"luo_xuan", get_parent(), global_position, ti_chang() * 1.5,
+			{"fan": _zuan_tu_fang.x < 0.0}) == null:
+		TE_XIAO.yu_lei(get_parent(), global_position, 1.2)
 
 
 func _zuan_tu(delta: float) -> void:
@@ -1404,7 +1456,9 @@ func _zuan_tu(delta: float) -> void:
 			cha = _zuan_tu_fang
 		if mu.has_method("tui_kai"):
 			mu.call("tui_kai", cha.normalized(), _zuan_tu_ji_tui)  # 船：no-op
-		TE_XIAO.yu_lei(get_parent(), mu.global_position, 0.8)
+		if TeXiaoKu.bo_ming(&"luo_xuan", get_parent(), mu.global_position,
+				TeXiaoKu.ti_kuan(mu) * 0.9) == null:
+			TE_XIAO.yu_lei(get_parent(), mu.global_position, 0.8)
 		if _zuan_tu_shu >= _zuan_tu_zui_duo:
 			return
 
@@ -1439,7 +1493,10 @@ func _shi_fang_ju_du(neng: NengLi, dang: int) -> bool:
 	# 机械船 tixing=99 会爆表：走船的参照体型（玩家当前体型），再由 _zhuan_shu_shang_npc 换 HP
 	var shang := ZhanDou.yao_ji_shang_hai(tixing, _ji_neng_dui_bi_ti(mu), zui_ba) * SHU_ZHI.JU_DU_TU_CI_BEI_LV
 	_zhuan_shu_shang_npc(mu, shang, 0.0, _zhuan_shu_zhi(neng, &"shu_zhi", dang))
-	TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
+	# v2 剧毒突刺：毒牙命中点紫绿毒花，尺寸随目标体长；缺资源回退旧毒雾
+	if TeXiaoKu.bo_ming(&"ju_du", get_parent(), mu.global_position,
+			TeXiaoKu.ti_kuan(mu) * 1.2) == null:
+		TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
 	return true
 
 
@@ -1459,7 +1516,10 @@ func _shi_fang_kong_jian(neng: NengLi, dang: int) -> void:
 			continue
 		# 普通鱼直扣体型；机械船按 max(xue)×百分比×0.5（都是无视防御通道）
 		zhan_dou_bai_fen_shang(mu, bai_fen)
-	TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.5, 2.0)
+	# v2 空间裂缝：紫黑裂隙沿射线撕开，长度 = 技能射程；缺资源回退旧水花
+	if TeXiaoKu.bo_ming(&"kong_jian", get_parent(), global_position + fang * ju_li * 0.5,
+			ju_li, {"fan": fang.x < 0.0}) == null:
+		TE_XIAO.yu_lei(get_parent(), global_position + fang * ju_li * 0.5, 2.0)
 
 
 func _shi_fang_huan_feng(neng: NengLi, dang: int) -> void:
@@ -1468,7 +1528,11 @@ func _shi_fang_huan_feng(neng: NengLi, dang: int) -> void:
 	_huan_feng_fang = _chao_xiang_fang()
 	_huan_feng_bei = 1.0 + _zhuan_shu_zhi(neng, &"shu_zhi", dang) / 100.0
 	_huan_feng_ni_bei = 1.0 - _zhuan_shu_zhi(neng, &"fu_shu_zhi", dang) / 100.0
-	TE_XIAO.xuan_wo(get_parent(), global_position, 2.6)
+	# v2 唤风：顺流风带绕在玩家周围，持续到窗口结束；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"huan_feng", get_parent(), global_position,
+			ti_chang() * 2.6, {"chi_xu": _huan_feng_sheng_yu,
+			"fan": _huan_feng_fang.x < 0.0}) == null:
+		TE_XIAO.xuan_wo(get_parent(), global_position, 2.6)
 
 
 func zhuan_shu_feng_xi_shu(npc: Node2D, fang := Vector2.ZERO) -> float:
@@ -1529,7 +1593,9 @@ func _bao_you_ling_dan(dan: Dictionary) -> void:
 	var ban := float(dan["ban_jing"])
 	var shang := float(dan["shang"])
 	var ji_tui := SHU_ZHI.YOU_LING_QI_SHE_JI_TUI * _shen_wei()
-	TE_XIAO.xuan_wo(get_parent(), dian, maxf(0.8, ban / 110.0))
+	# v2 幽灵齐射：幽蓝炮弹在落点炸开，尺寸随玩家体长；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"you_ling", get_parent(), dian, ti_chang() * 1.2) == null:
+		TE_XIAO.xuan_wo(get_parent(), dian, maxf(0.8, ban / 110.0))
 	for mu in di_ren_lie():
 		if dian.distance_to(mu.global_position) > ban:
 			continue
@@ -1552,7 +1618,9 @@ func _shi_fang_fu_chong(neng: NengLi, dang: int) -> void:
 		_fu_chong_sheng_yu += yi.dang_zhi(&"shu_zhi", 1)
 	dang_qian_jiao = _chao_xiang_fang().angle()
 	jin_ru_wudi(_fu_chong_sheng_yu)
-	TE_XIAO.you_er_qi_pao(get_parent(), global_position, 1.4)
+	# v2 破空俯冲：跃出水面时幽紫冲击，尺寸随体长；缺资源回退旧气泡
+	if TeXiaoKu.bo_ming(&"po_kong", get_parent(), global_position, ti_chang() * 1.5) == null:
+		TE_XIAO.you_er_qi_pao(get_parent(), global_position, 1.4)
 
 
 func _luo_di_fu_chong() -> void:
@@ -1560,7 +1628,9 @@ func _luo_di_fu_chong() -> void:
 	_fu_chong_li_chang = false  # 落地回到正常态：嘴圈/咬/吃恢复
 	var ban := _fu_chong_ban_jing
 	var shang := _fu_chong_shang_hai
-	TE_XIAO.xuan_wo(get_parent(), global_position, maxf(1.0, ban / 110.0))
+	# v2 破空俯冲落点：落地冲击波盖住判定圈；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"po_kong", get_parent(), global_position, ban * 2.0) == null:
+		TE_XIAO.xuan_wo(get_parent(), global_position, maxf(1.0, ban / 110.0))
 	for mu in di_ren_lie():
 		if global_position.distance_to(mu.global_position) > ban:
 			continue
@@ -1595,6 +1665,9 @@ func _shi_fang_kong_que(neng: NengLi, dang: int) -> void:
 		ying.position = global_position + Vector2.RIGHT.rotated(float(i) * PI) * 2.2 * _shen_wei()
 		get_parent().add_child(ying)
 		_kong_que_ying.append(ying)
+	# v2 孔雀幻影：开技瞬间虹彩环展开，尺寸随体长；缺资源回退旧漩涡
+	if TeXiaoKu.bo_ming(&"kong_que", get_parent(), global_position, ti_chang() * 1.6) == null:
+		TE_XIAO.xuan_wo(get_parent(), global_position, 1.2)
 
 
 func _geng_xin_kong_que(delta: float) -> void:
@@ -1635,7 +1708,9 @@ func _kong_que_ying_bei_yao(yu_npc: Node2D, du: float, shang: float) -> void:
 		return
 	_kong_que_ming_zhong[jian] = true
 	_zhuan_shu_shang_npc(yu_npc, shang, 0.0, du)
-	TE_XIAO.zhong_du(get_parent(), yu_npc.global_position, 0.5)
+	if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), yu_npc.global_position,
+			TeXiaoKu.ti_kuan(yu_npc) * 0.8, {"chi_xu": 0.8}) == null:
+		TE_XIAO.zhong_du(get_parent(), yu_npc.global_position, 0.5)
 
 
 func _qing_kong_que_ying() -> void:
@@ -1654,7 +1729,9 @@ func _shi_fang_shi_hua(neng: NengLi, dang: int) -> bool:
 	_shi_hua_neng = neng
 	_shi_hua_qian_yao = SHU_ZHI.SHI_HUA_QIAN_YAO
 	dang_qian_jiao = fang.angle()
-	TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, 0.8)
+	# v2 石化之瞳：灰白瞳光在眼部聚起（前摇提示），尺寸随体长；缺资源回退旧壳光
+	if TeXiaoKu.bo_ming(&"shi_hua_tong", get_parent(), global_position, ti_chang() * 1.4) == null:
+		TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, 0.8)
 	return true
 
 
@@ -1677,7 +1754,10 @@ func _fang_shi_hua() -> void:
 		if mu.has_method("jia_zhuang_tai") and bool(mu.call("jia_zhuang_tai", &"shi_hua", shi)):
 			# 船：状态限时（1.2 秒上限 + 抗性），受击倍率只对玩家来源生效
 			mu.set("shi_hua_shou_shang_bei", 1.0 + _zhuan_shu_zhi(neng, &"shu_zhi", dang) / 100.0)
-			TE_XIAO.dian_gan(get_parent(), mu.global_position, 0.9)
+			# v2 石化生效：目标身上灰白石化裂纹，尺寸随目标体长；缺资源回退旧电光
+			if TeXiaoKu.bo_ming(&"shi_hua_tong", get_parent(), mu.global_position,
+					TeXiaoKu.ti_kuan(mu) * 1.2) == null:
+				TE_XIAO.dian_gan(get_parent(), mu.global_position, 0.9)
 
 
 func _shi_fang_ji_guan(neng: NengLi, dang: int) -> void:
@@ -1685,7 +1765,10 @@ func _shi_fang_ji_guan(neng: NengLi, dang: int) -> void:
 	_ji_guan_sheng_yu = _zhuan_shu_zhi(neng, &"chi_xu", dang)
 	_ji_guan_fan_bei = _zhuan_shu_zhi(neng, &"shu_zhi", dang) / 100.0
 	_ji_guan_du = _zhuan_shu_zhi(neng, &"fu_shu_zhi", dang)
-	TE_XIAO.ying_lin(get_parent(), global_position, 1.2)
+	# v2 棘冠反甲：荆棘环展开，直径随体长；缺资源回退旧鳞闪
+	if TeXiaoKu.bo_ming(&"ji_guan", get_parent(), global_position,
+			ti_chang() * 1.4, {"chi_xu": _ji_guan_sheng_yu}) == null:
+		TE_XIAO.ying_lin(get_parent(), global_position, 1.2)
 
 
 func _geng_xin_zhuan_shu(delta: float) -> void:
@@ -1762,7 +1845,9 @@ func _gong_sheng_hai_kui_ji(delta: float) -> void:
 		shi = SHU_ZHI.GONG_SHENG_HAI_KUI_SHI_CHANG
 	if mu.has_method("jia_qiang_suan"):
 		mu.call("jia_qiang_suan", shi, neng.dang_zhi(&"fu_shu_zhi", 1), false)  # 毒雾的酸蚀不带「被咬 ×2」
-	TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
+	if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), mu.global_position,
+			TeXiaoKu.ti_kuan(mu) * 0.9, {"chi_xu": 1.0}) == null:
+		TE_XIAO.zhong_du(get_parent(), mu.global_position, 0.8)
 
 
 func _duo_tou_rong_cuo_chu_fa() -> void:
@@ -1781,7 +1866,8 @@ func _duo_tou_rong_cuo_chu_fa() -> void:
 			you = true
 	_dong_nei_bu_leng_que(&"duo_tou_rong_cuo", neng.nei_bu_leng_que)
 	if you:
-		TE_XIAO.dian_gan(get_parent(), global_position, 1.0)
+		if TeXiaoKu.bo_ming(&"jn_dian_gan", get_parent(), global_position, ti_chang() * 1.1) == null:
+			TE_XIAO.dian_gan(get_parent(), global_position, 1.0)
 
 
 func _chong_zhuang(delta: float) -> void:
@@ -1843,6 +1929,7 @@ func _chi_rou() -> void:
 				ZhangBen.hui_ji_e(fu_jia)  # 食腐者满层附加：腐肉额外垫 3 点饥饿
 			# F12：鱼肉块用咀嚼音；海草/珊瑚（ti_xing_liang=0）沿用旧吞吃音
 			YinXiang.fang(&"jiao_zhi" if wu.ti_xing_liang > 0.0 else &"chi")
+			TeXiaoKu.bo_fan_kui(&"chi_rou", get_parent(), wu.global_position, null)  # 吃肉小点：固定尺寸不缩放
 			wu.bei_chi()
 
 
@@ -1874,12 +1961,36 @@ func _ti_xing_zhuan_xiang_bi() -> float:
 
 
 func _xian_zhi_zai_di_tu_nei() -> void:
-	# 别游出九宫格大地图：边距至少 30px，并按当前体长留半个鱼身。
-	# TASK-022：后期鱼身很大，固定 30px 会让鱼在地图上下边缘被屏幕切掉半个身子；
-	# 动态边距保证整条鱼仍在地图内，决战镜头贴到地图边时能看到完整鱼身（也不会露出灰区）。
-	var ban_ti_chang := maxf(30.0, ti_chang() * 0.5)
-	position.x = clampf(position.x, ban_ti_chang, DI_TU_DA_XIAO.x - ban_ti_chang)
-	position.y = clampf(position.y, ban_ti_chang, DI_TU_DA_XIAO.y - ban_ti_chang)
+	# 别游出九宫格大地图：X 按体宽、Y 按体高各留半个鱼身。
+	# 旧版两个轴都用体长（画布宽）：上排 1/2/3 图、下排 7/8/9 图的半高只有 384px，
+	# 大体型鱼被顶在地图中间（y≈384），上下边缘的植物永远吃不到。
+	# 边距上限再按「食物可达」压一次：植物株位离房间四边至少 120px、碰撞半径最大约 40px、
+	# 玩家 RouQu=55×scale；四角植物要吃到，玩家中心离房间边最多 120+(55×scale+40-6)/√2。
+	# 极端体型下鱼身可能被镜头裁掉最外缘一点：优先保证“食物吃得到”。
+	var yuan := position  # 钳制前的坐标：用来判断“这一帧是不是撞边了”
+	var ban_kuan := maxf(30.0, ti_chang() * 0.5)
+	var ban_gao := maxf(30.0, ti_gao() * 0.5)
+	var shi_wu_shang_xian := SHI_WU_ZUI_DA_BIAN_JU + maxf(0.0,
+			(55.0 * maxf(scale.x, 0.01) + SHI_WU_ZUI_DA_BAN_JING - SHI_WU_AN_QUAN) / sqrt(2.0))
+	# 上限同时不越过「地图一半再减 1」：极端 scale 时 clamp 上下界不会反序
+	ban_kuan = minf(ban_kuan, minf(shi_wu_shang_xian, DI_TU_DA_XIAO.x * 0.5 - 1.0))
+	ban_gao = minf(ban_gao, minf(shi_wu_shang_xian, DI_TU_DA_XIAO.y * 0.5 - 1.0))
+	position.x = clampf(position.x, ban_kuan, DI_TU_DA_XIAO.x - ban_kuan)
+	position.y = clampf(position.y, ban_gao, DI_TU_DA_XIAO.y - ban_gao)
+	# 边界警告（v2）：撞边那一下按“朝地图外的方向”贴屏幕边缘，3 秒最多一次——连续顶边不刷屏
+	if Time.get_ticks_msec() >= _bian_jie_te_xiao_shi_jian:
+		var chao := Vector2.ZERO
+		if yuan.x < ban_kuan:
+			chao.x = -1.0
+		elif yuan.x > DI_TU_DA_XIAO.x - ban_kuan:
+			chao.x = 1.0
+		elif yuan.y < ban_gao:
+			chao.y = -1.0
+		elif yuan.y > DI_TU_DA_XIAO.y - ban_gao:
+			chao.y = 1.0
+		if chao != Vector2.ZERO:
+			_bian_jie_te_xiao_shi_jian = Time.get_ticks_msec() + 3000
+			TeXiaoKu.bian_jie(chao)
 
 
 func _on_zui_qu_entered(_qu: Area2D) -> void:
@@ -1900,6 +2011,8 @@ func _chi_zui_bian() -> void:
 			continue
 		if yu_npc.get("shi_boss") == true:
 			continue  # 首领只能咬死，不能整吞（鲸鲨要打到残血才算击败）
+		if yu_npc.get("yu_wang") == true:
+			continue  # TASK-026：鱼王只能打到残血败退，禁止整吞
 		# 吞噬门槛：我要比它大 10% 才吞得下；同体型/略大略小都吞不动（咬击带，TASK-012 兑现）
 		# 专属被动可放大「有效体型」（巨口鱼吞天门，默认 ×1 不变）
 		if tixing * ZHUAN_SHU.wen(self, &"tun_men_kan", {"mu": yu_npc}) >= yu_npc.tixing * TUN_CHI_BEI_LV:
@@ -1911,12 +2024,19 @@ func _chi_diao(yu_npc: YuNpc) -> void:
 	# 吃掉一条鱼：回体型/回饥饿立即生效；经验先进消化槽，3 秒后才入账（策划案 8.4）
 	# 吞下去 ≠ 拿到手——消化中死亡，这一口就白吞了
 	# 能力也走同一条消化槽：消化完成才记进“本局食谱”，冲撞/放电击杀不算
+	# TASK-026：首领与鱼王不可整吞（双保险：调用方也过滤，这里兜底）
+	if yu_npc == null or not is_instance_valid(yu_npc) or yu_npc.si_le \
+			or yu_npc.shi_boss or yu_npc.yu_wang:
+		return
 	var dui_fang_ti_xing := yu_npc.tixing
 	var fen := 0
 	var neng: NengLi = null
 	if yu_npc.yu_zhong != null:
 		fen = int(yu_npc.yu_zhong.fenzhi)
 		neng = yu_npc.yu_zhong.neng_li
+	# 隐藏营养值（提案 3.3）：吃鱼经验 = 基础经验 × 对方营养值——挑着吃的核心动机
+	# 只乘经验，不碰体型/饥饿（两条收益线分开，防双乘算失控）；营养值下限 0.6 已由 roll 保证
+	fen = YING_YANG.jing_yan_cheng_shu(fen, yu_npc.ying_yang_zhi)
 	yu_npc.bei_chi(false, self)  # 经验由消化槽结算；毒鱼会把毒传给吞它的人
 	_bao_shi_chu_fa()  # 暴食连锁：吞下鱼就刷新加成窗口（经验走消化槽，加成先到手）
 	# A7：吞一条回复自身上限 4% 的体型（再走 ÷1.5 恢复系数与贪食加成）
@@ -1952,19 +2072,35 @@ func _boos_yao_bu_dong() -> void:
 		chang_jing.call("_xian_shi_xiao_xi", "鲸鲨皮糙肉厚，Lv.5 才咬得动")
 
 
-func _chang_shi_yao_ji() -> void:
+func yao_ji_shou_dong() -> bool:
+	# 手动咬击入口：右下角攻击键按下时调用（仅在机械船战斗期间显示）
+	# 2026-11-17：与自动咬完全分开——自己的 2 秒冷却、命中伤害 ×1.5
+	# 手动冷却中/冲撞中/失控/九图演出锁 → 直接拒绝；空挥由 _chang_shi_yao_ji 返回 false 且不进冷却
+	# 返回 true 表示真的咬中（按钮侧只看返回值，不重复结算伤害）
+	if _shou_dong_leng_que > 0.0 or _chong_zhuang_sheng_yu > 0.0 \
+			or ZhangBen.zai_kong_zhi() or yan_chu_kong_zhi:
+		return false
+	return _chang_shi_yao_ji(true)
+
+
+func _chang_shi_yao_ji(shou_dong := false) -> bool:
+	# 咬击结算：自动（shou_dong=false）与手动（shou_dong=true）同一套目标/伤害/联动
 	# 自动咬击：咬击区里挑最近的、咬得动的目标；咬头且体型够大 → 直接带走
+	# 返回是否真的咬中（TASK-029 手动攻击键与 TASK-026 咬伤经验都靠它；旧调用可忽略返回值）
 	var mu_biao := _yao_ji_mu_biao()
 	if mu_biao == null:
-		return
+		return false  # 空挥不进冷却
 	# A3：基础 0.5 秒一口；狂暴撕咬窗口翻倍攻速（0.25 秒）
 	# A8：消化期间再咬，咬速 -30%（冷却 ×1/(1-0.3)）
-	var jian_ge := YAO_JI_LENG_QUE
-	if _kuang_bao_sheng_yu > 0.0:
-		jian_ge = SHU_ZHI.KUANG_BAO_JIAN_GE
-	if not _xiao_hua.is_empty():
-		jian_ge *= 1.0 / (1.0 - SHU_ZHI.XIAO_HUA_JIAN_SU)
-	_yao_ji_leng_que = jian_ge  # 有目标才进冷却：空挥不计时
+	if shou_dong:
+		_shou_dong_leng_que = SHOU_DONG_YAO_JI_JIAN_GE  # 手动键独立 2 秒：自动咬的冷却不占这条
+	else:
+		var jian_ge := YAO_JI_LENG_QUE
+		if _kuang_bao_sheng_yu > 0.0:
+			jian_ge = SHU_ZHI.KUANG_BAO_JIAN_GE
+		if not _xiao_hua.is_empty():
+			jian_ge *= 1.0 / (1.0 - SHU_ZHI.XIAO_HUA_JIAN_SU)
+		_yao_ji_leng_que = jian_ge  # 有目标才进冷却：空挥不计时
 	YinXiang.fang(&"yao")  # 咬击音跟冷却同一时机：有声的一口才算真咬
 	var bu := _zui_jin_bu_wei(mu_biao)
 	var mu_ti_xing := float(mu_biao.get("tixing"))
@@ -1972,17 +2108,19 @@ func _chang_shi_yao_ji() -> void:
 	# 2026-11-10 难度修正：鲸鲨是 Lv.5 之后的高危猎物，Lv.5 前普通咬击咬不动
 	if shi_yu and not ke_yao_mu_biao(mu_biao):
 		_boos_yao_bu_dong()
-		return
+		return false
 	# 2026-11-09 专属技模块：吞食门槛可被放大（巨口鱼吞天门；默认 ×1 完全不影响旧数值）
 	if bu == "zhi_ming" and ZhanDou.zhi_ming_ke_sha(
 			tixing * ZHUAN_SHU.wen(self, &"tun_men_kan", {"mu": mu_biao}), mu_ti_xing):
 		var yu_mu := mu_biao as YuNpc
-		# 首领不可整吞（鲸鲨要咬到残血、机器船要打沉），只有普通鱼才走吞食分支
-		if yu_mu != null and yu_mu.get("shi_boss") != true:
+		# 首领/鱼王不可整吞（鲸鲨要咬到残血、鱼王要打到败退），只有普通鱼才走吞食分支
+		if yu_mu != null and yu_mu.get("shi_boss") != true and yu_mu.get("yu_wang") != true:
 			_jie_chu_yin_shen()  # 整吞也算“咬中”：潜伏状态消耗掉，不把 ×2 留到下一次
+			if shou_dong:
+				_bo_shou_dong_ming_zhong(yu_mu, bu)  # 整吞也在吞下前播一次手动命中特效
 			_chi_diao(yu_mu)
 			_tun_chi_maichong()
-			return
+			return true  # 整吞不给普通咬伤经验：经验已按鱼种分值走消化槽
 	# A2：普通咬击 = 对方当前体型 3%；机器船拿不到鱼体型，沿用旧公式（船战节奏不动）
 	# A4：咬中鱼/首领的致命区 = ×3；机器船玻璃舱的 ×3 在 JiQiChuan 内部结算，不能叠两次
 	var shang_hai := ZhanDou.yao_ji_shang_hai(tixing, mu_ti_xing, zui_ba) if shi_yu \
@@ -2008,13 +2146,62 @@ func _chang_shi_yao_ji() -> void:
 		shang_hai *= 1.0 + po_jia / 100.0
 	# 2026-11-09 专属技模块：咬伤倍率（默认 ×1）；模块可读 mu/bu 做条件判定（如只对某鱼种生效）
 	shang_hai *= ZHUAN_SHU.wen(self, &"yao_shang_bei", {"mu": mu_biao, "bu": bu})
+	if shou_dong:
+		# 手动命中 ×1.5：放在全部被动/专属倍率之后、真正掉肉之前；
+		# 致命区整吞分支在上面已返回，不吃这个倍率，吞噬门槛也照旧
+		shang_hai *= SHOU_DONG_YAO_SHANG_BEI
 	# B2 战绩：玩家对鱼/首领造成的掉肉总量（机器船不掉肉，不计）
 	if shi_yu:
 		ZhangBen.ji_zao_cheng_diao_rou(shang_hai)
 	mu_biao.call("shou_dao_yao_ji", shang_hai, self, bu)
+	if shou_dong:
+		_bo_shou_dong_ming_zhong(mu_biao, bu)  # 手动攻击命中才播像素命中特效
 	# 2026-11-09 专属技模块：命中事件（吸血/上状态类被动在此结算）
 	ZHUAN_SHU.shi_jian(self, &"yao_zhong", {"mu": mu_biao, "bu": bu, "shang_hai": shang_hai})
 	_yao_ji_lian_dong(mu_biao, shang_hai)  # 咬击落定后的被动联动：毒腺上毒 / 撕裂齿掉肉
+	# TASK-026 咬伤经验：必须放在全部联动之后，读目标最终体型——撕裂齿/腐肉诱饵额外掉的肉也算
+	if shi_yu:
+		_ji_suan_yao_shang_jing_yan(mu_biao as YuNpc, mu_ti_xing)
+		# 咬中后 0.6 秒内，同一目标蹭到我的接触伤害 ×0.2：给“咬住再贴身”留缓冲，不双倍惩罚
+		if mu_biao != null and is_instance_valid(mu_biao) and not bool(mu_biao.get("si_le")):
+			_yao_ji_mian_shang_mu = mu_biao
+			_yao_ji_mian_shang_ji_shi = YAO_JI_MIAN_SHANG_SHI_JIAN
+	return true
+
+
+func _bo_shou_dong_ming_zhong(mu_biao: Node2D, bu: String) -> void:
+	# 手动攻击命中特效（v2）：自动咬 / 空挥 / 咬不动都不播
+	# 位置优先目标部位点（嘴 / 致命区 / 船体），没有 qu_dian 的目标退回身体中心；
+	# 大小随施放者体长放大；致命区额外叠金色暴击爆点 + CRIT 数字
+	var gen := get_parent()
+	var wei := mu_biao.global_position
+	if mu_biao.has_method("qu_dian"):
+		wei = mu_biao.call("qu_dian", bu)
+	if TeXiaoKu.bo_fan_kui(&"ming_zhong", gen, wei, mu_biao, 1.0, {"shi_zhe": self}) == null:
+		# 资源缺失：回退旧的“待用”像素火花（选项 1 永久保留路径）
+		var mu_ti_xing := float(mu_biao.get("tixing"))
+		var bi := clampf(0.9 + mu_ti_xing * 0.06, 0.9, 2.2)
+		TE_XIAO.shou_dong_yao_zhong(gen, wei, bi)
+	if bu == "zhi_ming" and mu_biao is YuNpc:
+		TeXiaoKu.bo_fan_kui(&"zhi_ming", gen, wei, mu_biao, 1.0, {"shi_zhe": self})  # 金色暴击爆点
+		TeXiaoKu.bo_fan_kui(&"zhi_ming_shu", gen, wei, mu_biao)  # CRIT! 数字浮在致命区上方
+
+
+func _ji_suan_yao_shang_jing_yan(mu_biao: YuNpc, mu_ti_xing: float) -> void:
+	# 咬伤经验按「实际掉肉」结算：5 经验/点；零伤害不给，首领/鱼王不重复给
+	# 读的是联动结算后的最终体型，所以撕裂齿/毒腺额外掉肉也能算进来
+	if mu_biao == null or not is_instance_valid(mu_biao) or mu_biao.si_le:
+		return
+	if mu_biao.shi_boss or mu_biao.yu_wang:
+		return  # 鲸鲨残血败退、鱼王败退各走专项奖励（TASK-017 / TASK-026）
+	var sun_shi := maxf(0.0, mu_ti_xing - mu_biao.tixing)
+	if sun_shi <= 0.0:
+		return
+	_yao_shang_jing_yan += sun_shi * YAO_SHANG_JING_YAN_MEI_TI
+	var zheng := int(floor(_yao_shang_jing_yan))
+	if zheng > 0:
+		_yao_shang_jing_yan -= float(zheng)
+		ZhangBen.jia_jing_yan(zheng)
 
 
 func _yao_ji_lian_dong(mu_biao: Node2D, shang_hai: float) -> void:
@@ -2107,7 +2294,8 @@ func shi_fang_yu_jing() -> void:
 	var xian_zai := Time.get_ticks_msec()
 	if xian_zai - _dian_gan_fx_ji_shi >= 500:
 		_dian_gan_fx_ji_shi = xian_zai
-		TE_XIAO.dian_gan(get_parent(), global_position)
+		if TeXiaoKu.bo_ming(&"jn_dian_gan", get_parent(), global_position, ti_chang() * 1.1) == null:
+			TE_XIAO.dian_gan(get_parent(), global_position)
 
 
 func _bao_shi_chu_fa() -> void:
@@ -2120,6 +2308,7 @@ func _bao_shi_chu_fa() -> void:
 		return
 	_bao_shi_bei_lv = maxf(1.0, neng.shu_zhi)
 	_bao_shi_sheng_yu = maxf(_bao_shi_sheng_yu, neng.dang_zhi(&"chi_xu", ceng))
+	TeXiaoKu.lian_suo()  # 暴食连锁触发：UI 层金数字（x2 COMBO），不随体型缩放
 
 
 func _yao_ji_mu_biao() -> Node2D:
@@ -2169,6 +2358,9 @@ func _on_shang_qu_entered(qu: Area2D) -> void:
 		var jie_chu := ZhanDou.yao_ji_shang_hai(yu_npc.tixing, tixing, yu_npc.zui_ba)
 		if yu_npc.shi_boss:
 			jie_chu *= YuNpc.BOOS_PENG_ZHUANG_HAI_BEI
+		# TASK-026：刚咬中它 0.6 秒内，同一目标的接触伤害 ×0.2（首领倍率先算，再乘减免）
+		if yu_npc == _yao_ji_mian_shang_mu and _yao_ji_mian_shang_ji_shi > 0.0:
+			jie_chu *= YAO_JI_MIAN_SHANG_BEI
 		shou_dao_yao_ji(jie_chu, yu_npc, "shen")
 
 
@@ -2199,6 +2391,7 @@ func _shoushang(shang_hai: float = 1.0, lai_yuan = null) -> void:
 		ZhangBen.ji_lu_sha_shou(lai_yuan, ZhangBen.dang_qian_ti_xing)
 	wudi = true
 	modulate = Color(1.0, 0.4, 0.4)  # 闪红示警
+	TeXiaoKu.bo_fan_kui(&"shou_ji", get_parent(), global_position, self)  # v2 受击红闪，随自身体型
 	wudi_dingshi.start()
 	YinXiang.fang(&"shou_shang")  # 受伤音：闪红和声音同一帧，反馈才对得上
 	ZhangBen.shou_shang(shang_hai)  # 账本扣血 → ti_xing_bian_hua → 平滑缩小；归零时账本广播 si_wang
@@ -2230,7 +2423,8 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 		position += chao.normalized() * lie.dang_zhi(&"shu_zhi", 1) * _shen_wei()
 		_xian_zhi_zai_di_tu_nei()
 		_ni_liu_sheng_yu = maxf(_ni_liu_sheng_yu, 0.3)  # 瞬移后 0.3 秒无敌：挡掉同一帧的连续接触
-		TE_XIAO.ni_liu(get_parent(), global_position, 0.9)
+		if TeXiaoKu.bo_ming(&"jn_ni_liu", get_parent(), global_position, ti_chang() * 0.9) == null:
+			TE_XIAO.ni_liu(get_parent(), global_position, 0.9)
 		return
 	# G T1 被动：幽灵船骸——25% 概率虚化穿身免掉这一口；内部 CD 4 秒
 	# 只认鱼咬：船炮/炸弹不是“被咬”，不能靠虚化白免
@@ -2239,7 +2433,8 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 			and nei_bu_leng_que_sheng(&"you_ling_chuan_hai") <= 0.0 \
 			and randf() * 100.0 < ZhangBen.bei_dong_zhi(&"you_ling_chuan_hai"):
 		_dong_nei_bu_leng_que(&"you_ling_chuan_hai", you.nei_bu_leng_que)
-		TE_XIAO.ni_liu(get_parent(), global_position, 0.9)
+		if TeXiaoKu.bo_ming(&"jn_ni_liu", get_parent(), global_position, ti_chang() * 0.9) == null:
+			TE_XIAO.ni_liu(get_parent(), global_position, 0.9)
 		return
 	# G T1 被动：破甲龙鳞——咬我的比我大，这一口再 -10%
 	var po := ZhangBen.zhao_bei_dong(&"po_jia_long_lin")
@@ -2253,7 +2448,9 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 			and lai_yuan != self and lai_yuan.has_method("jia_dian_ma"):
 		lai_yuan.jia_dian_ma(xiu)
 		var dian_wei: Vector2 = lai_yuan.global_position if lai_yuan is Node2D else global_position
-		TE_XIAO.fang_dian(get_parent(), dian_wei, 0.5)  # 小电圈挂在攻击者身上：一眼看出是谁被电
+		if TeXiaoKu.bo_ming(&"jn_dian_gan", get_parent(), dian_wei,
+				TeXiaoKu.ti_kuan(lai_yuan) * 0.8) == null:
+			TE_XIAO.fang_dian(get_parent(), dian_wei, 0.5)  # 小电圈挂在攻击者身上：一眼看出是谁被电
 	# 凝胶弹肤（进化专属被动）：掉体型伤害 -20%，其中 20% 反弹给咬击者
 	var ning := ZhangBen.bei_dong_zhi(&"ning_jiao_tan_fu")
 	if ning > 0.0:
@@ -2264,7 +2461,8 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 	# 硬壳护体：先削伤害，再把咬我的人顶开（顶退不改变伤害结算）
 	if _ying_ke_sheng_yu > 0.0:
 		shang_hai *= 1.0 - clampf(_ying_ke_jian_shang, 0.0, 0.9)
-		TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, 0.7)  # 壳被咬中：亮一圈
+		if TeXiaoKu.bo_ming(&"jn_ying_ke", get_parent(), global_position, ti_chang() * 0.9) == null:
+			TE_XIAO.ying_ke_hu_ti(get_parent(), global_position, 0.7)  # 壳被咬中：亮一圈
 		if lai_yuan is YuNpc and is_instance_valid(lai_yuan) and not lai_yuan.si_le \
 				and lai_yuan.has_method("tui_kai"):
 			var cha: Vector2 = lai_yuan.global_position - global_position
@@ -2278,7 +2476,10 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 			and lai_yuan.has_method("jia_du_yun"):
 		_dong_nei_bu_leng_que(&"she_fa_pen_du", she.nei_bu_leng_que)
 		lai_yuan.jia_du_yun(she.dang_zhi(&"shu_zhi", 1))
-		TE_XIAO.zhong_du(get_parent(), global_position, 0.6)
+		var du_wei: Vector2 = lai_yuan.global_position if lai_yuan is Node2D else global_position
+		if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), du_wei,
+				TeXiaoKu.ti_kuan(lai_yuan) * 0.9, {"chi_xu": 0.8}) == null:
+			TE_XIAO.zhong_du(get_parent(), global_position, 0.6)
 	# 毒棘护体：被动层数从账本读，数值从能力表读；咬我的人叠毒晕条
 	# 反毒放在扣血之前：即使这一口把我咬死，对方也得中毒（高风险食物的定位）
 	var ceng := ZhangBen.dang_qian_bei_dong_ceng(&"du_ji_hu_ti")
@@ -2287,21 +2488,29 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 		var neng := _zhao_bei_dong(&"du_ji_hu_ti")
 		if neng != null:
 			lai_yuan.jia_du_yun(neng.ceng_shu_zhi(ceng))
-			TE_XIAO.zhong_du(get_parent(), global_position)  # 毒棘反弹：让玩家看到“这一口带毒”
+			var du_wei2: Vector2 = lai_yuan.global_position if lai_yuan is Node2D else global_position
+			if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), du_wei2,
+					TeXiaoKu.ti_kuan(lai_yuan) * 0.8, {"chi_xu": 0.8}) == null:
+				TE_XIAO.zhong_du(get_parent(), global_position)  # 毒棘反弹：让玩家看到“这一口带毒”
 	# 硬鳞反击：这一口的部分伤害弹回攻击者（20/25/30%）
 	# 反伤也走 shou_dao_yao_ji：NPC 那边会闪红记仇——“打了反而更凶”是设计的一部分
 	var fan := ZhangBen.bei_dong_zhi(&"ying_lin_fan_ji")
 	if fan > 0.0 and lai_yuan != null and is_instance_valid(lai_yuan) \
 			and lai_yuan != self and lai_yuan.has_method("shou_dao_yao_ji"):
 		lai_yuan.shou_dao_yao_ji(shang_hai * fan, self)
-		TE_XIAO.ying_lin(get_parent(), global_position)  # 硬鳞真正弹伤时才亮，普通受击不播
+		# 硬鳞真正弹伤时才亮：v2 白青弹片；缺资源回退旧鳞片闪光
+		if TeXiaoKu.bo_fan_kui(&"fan_shang", get_parent(), global_position, null,
+				1.0, {"shi_zhe": self}) == null:
+			TE_XIAO.ying_lin(get_parent(), global_position)  # 硬鳞真正弹伤时才亮，普通受击不播
 	# G T1 被动：棘冠反甲——窗口期内反弹所受伤害 40%，反弹带毒晕 25%/次
 	if _ji_guan_sheng_yu > 0.0 and lai_yuan != null and is_instance_valid(lai_yuan) \
 			and lai_yuan != self and lai_yuan.has_method("shou_dao_yao_ji"):
 		lai_yuan.shou_dao_yao_ji(shang_hai * _ji_guan_fan_bei, self)
 		if lai_yuan.has_method("jia_du_yun"):
 			lai_yuan.jia_du_yun(_ji_guan_du)
-		TE_XIAO.ying_lin(get_parent(), global_position, 1.0)
+		if TeXiaoKu.bo_ming(&"ji_guan", get_parent(), global_position,
+				ti_chang() * 1.2, {"chi_xu": 0.8}) == null:
+			TE_XIAO.ying_lin(get_parent(), global_position, 1.0)
 	# G T1 被动：亡灵骨躯——这一口本来会致死时改成掉 3 级体型，每局 2 次
 	# 只认鱼咬（船炮不是“致命区被咬”）；判定放在所有减伤之后，按最终伤害算，转换后至少留 1 级
 	var wang := ZhangBen.zhao_bei_dong(&"wang_ling_gu_qu")
@@ -2309,7 +2518,9 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 			and shang_hai >= ZhangBen.dang_qian_ti_xing and hai_neng_yong_mei_ju(wang):
 		_ji_mei_ju_yong_ci(wang.bian_hao)
 		shang_hai = clampf(wang.dang_zhi(&"shu_zhi", 1), 0.0, maxf(0.0, ZhangBen.dang_qian_ti_xing - 1.0))
-		TE_XIAO.ying_lin(get_parent(), global_position, 1.2)
+		if TeXiaoKu.bo_fan_kui(&"si_wang", get_parent(), global_position, null,
+				1.0, {"shi_zhe": self}) == null:
+			TE_XIAO.ying_lin(get_parent(), global_position, 1.2)
 	# 2026-11-09 专属技模块：受击结算的两道钩子——
 	# 1) shou_shang_bei：专属被动的受击减伤/增伤倍率（默认 ×1，旧数值完全不变）
 	# 2) bei_yao：闪避类被动可整口吃掉（返回 true = 这一口免伤，模块自己播特效/扣次数）
@@ -2326,13 +2537,25 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 func jia_dian_ma(liang: float) -> void:
 	# 被电鳗电到：只记进账本（玩家不自己存控制条，HUD 与失控判定都读账本）
 	ZhangBen.jia_dian_ma(liang)
-	TE_XIAO.fang_dian(get_parent(), global_position, 0.5)  # 小号电圈：告诉玩家“你被电了”
+	if TeXiaoKu.bo_ming(&"jn_fang_dian", get_parent(), global_position,
+			ti_chang() * 0.8) == null:
+		TE_XIAO.fang_dian(get_parent(), global_position, 0.5)  # 小号电圈：告诉玩家“你被电了”
 
 
 func jia_du_yun(liang: float) -> void:
-	# 被蓑鲉毒到（被它咬 / 吞了它）：同样记进账本
+	# 被蓑鲉毒到（被它咬）：同样记进账本
 	ZhangBen.jia_du_yun(liang)
-	TE_XIAO.zhong_du(get_parent(), global_position, 0.4)  # 小号毒雾：中毒反馈
+	if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), global_position,
+			ti_chang() * 0.8, {"chi_xu": 0.6}) == null:
+		TE_XIAO.zhong_du(get_parent(), global_position, 0.4)  # 小号毒雾：中毒反馈
+
+
+func chi_du_yu(liang: float) -> void:
+	# 吃毒鱼（吞下带毒鱼种）：走递减入口——8 秒内连吃收益 ×0.7/0.4/0.3；被咬仍走 jia_du_yun
+	ZhangBen.jia_du_yun_chi_du_yu(liang)
+	if TeXiaoKu.bo_ming(&"jn_du_puddle", get_parent(), global_position,
+			ti_chang() * 0.8, {"chi_xu": 0.6}) == null:
+		TE_XIAO.zhong_du(get_parent(), global_position, 0.4)
 
 
 func tui_kai(fang_xiang: Vector2, ju_li: float, shi_chang: float) -> void:
@@ -2376,6 +2599,8 @@ func diao_rou(shu: int, mei_kuai_ti_xing := MEI_KUAI_ROU_TI_XING) -> void:
 func _si_wang() -> void:
 	# 体型跌破死亡线：切结算页。change_scene_to_file 整场景销毁重建——
 	# Main 全树（玩家 buff/bei_xi 标记/鱼群/弹窗）就地释放，账本（Autoload）常驻带走数据
+	# v2 转场挂根节点：场景切走后像素溶解还能盖在结算页上走完，不会随 Main 一起被拆掉
+	TeXiaoKu.zhuan_chang()
 	get_tree().change_scene_to_file("res://scenes/JieSuan.tscn")
 
 
@@ -2387,8 +2612,11 @@ func _jiechu_wudi() -> void:
 func _on_ti_xing_bian_hua(_dang_qian: float, _shang_xian: float) -> void:
 	# 显示体型变了（升级回满 / 受伤变小 / 吃东西回血）：账本已是新值，显示层 Tween 追过去
 	# 0.25 秒——受伤要立刻看得见“我变小了”，回血也别慢吞吞
-	var tween := create_tween()
-	tween.tween_property(self, "scale", _ti_xing_vector(), 0.25).set_ease(Tween.EASE_OUT)
+	# 记住这条 Tween：连续受伤 / 进化换外观时先杀掉旧的，避免两条抢同一个 scale
+	if _ti_xing_tui != null and _ti_xing_tui.is_valid():
+		_ti_xing_tui.kill()
+	_ti_xing_tui = create_tween()
+	_ti_xing_tui.tween_property(self, "scale", _ti_xing_vector(), 0.25).set_ease(Tween.EASE_OUT)
 
 
 func _tun_chi_maichong() -> void:

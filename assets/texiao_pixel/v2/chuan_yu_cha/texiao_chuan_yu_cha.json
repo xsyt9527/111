@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "chuan_yu_cha 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  },
+  {
+   "filename": "chuan_yu_cha 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 32
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_chuan_yu_cha.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1008,
+   "h": 32
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "projectiles/arrow",
+   "name": "chuan_yu_cha",
+   "fps": 15,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    112,
+    32
+   ],
+   "pivot": [
+    0.0,
+    16.0
+   ],
+   "columns": 9,
+   "visible": [
+    94,
+    18
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

@@ -5,21 +5,17 @@ class_name NengLiKu
 
 const ZHU_DONG: Array[NengLi] = [
 	preload("res://data/nengli/chang_mao_chuan_ci.tres"),
-	preload("res://data/nengli/dian_mai_chong.tres"),
 	preload("res://data/nengli/fang_dian_ma_bi.tres"),
 	preload("res://data/nengli/ji_su_tu_jin.tres"),
 	preload("res://data/nengli/kuang_bao_si_yao.tres"),
-	preload("res://data/nengli/man_li_chong_zhuang.tres"),
 	preload("res://data/nengli/ni_liu_shan_bi.tres"),
 	preload("res://data/nengli/qian_fu_tu_xi.tres"),
 	preload("res://data/nengli/ruo_dian_dong_cha.tres"),
-	preload("res://data/nengli/sheng_na_mai_chong.tres"),
 	preload("res://data/nengli/xuan_wo.tres"),
 	preload("res://data/nengli/xue_xing_kuang_re.tres"),
 	preload("res://data/nengli/ying_ke_hu_ti.tres"),
 	preload("res://data/nengli/you_er_qi_pao.tres"),
 	preload("res://data/nengli/yu_lei_chong_ci.tres"),
-	preload("res://data/nengli/yu_ni_dan.tres"),
 	# 进化专属主动（2026-11-06，P0：凹凸蜗牛鱼 3 分支）——只在对应形态装配，不入通用池
 	preload("res://data/nengli/tai_sui_ge_rou.tres"),
 	preload("res://data/nengli/qiang_suan_pen_tu.tres"),
@@ -54,10 +50,6 @@ const ZHU_DONG: Array[NengLi] = [
 	preload("res://data/nengli/tao_tie_ju_tun.tres"),
 	preload("res://data/nengli/lie_kou_xian_jing.tres"),
 	preload("res://data/nengli/she_hun.tres"),
-	# 铜眼鱼
-	preload("res://data/nengli/guan_xing.tres"),
-	preload("res://data/nengli/feng_kuang_guang_xian.tres"),
-	preload("res://data/nengli/ji_guang_ju_zhen.tres"),
 	# 钻光鱼
 	preload("res://data/nengli/ying_ju_cheng_long.tres"),
 	preload("res://data/nengli/zu_zhou_bao_zi.tres"),
@@ -118,10 +110,6 @@ const BEI_DONG: Array[NengLi] = [
 	preload("res://data/nengli/gang_tie_liao_ya.tres"),
 	preload("res://data/nengli/ji_ci_kou_nei.tres"),
 	preload("res://data/nengli/kong_ju_zhi_kou.tres"),
-	# 铜眼鱼
-	preload("res://data/nengli/xian_jian_zhi_ming.tres"),
-	preload("res://data/nengli/xie_shen_zhu_shi.tres"),
-	preload("res://data/nengli/chong_neng_yan.tres"),
 	# 钻光鱼
 	preload("res://data/nengli/ju_qun.tres"),
 	preload("res://data/nengli/xing_chuan_bo_san.tres"),

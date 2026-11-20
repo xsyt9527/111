@@ -42,6 +42,9 @@ const HUI_TI_CHU_SHU := 1.5  # 体型恢复除数：吃进肚子的体型 ÷1.5 
 const KONG_ZHI_SHANG_XIAN := 100.0  # 电麻条/毒晕条上限：任一条满 → 失控（策划案 8.6.3）
 const KONG_ZHI_XIA_JIANG := 20.0    # 控制条每秒自然消退：离开危险源约 5 秒清空
 const YUN_XUAN_SHI_CHANG := 2.0     # 条满后的失控时长（秒）：任人宰割
+const DU_KANG_BEI_LV := [1.0, 0.7, 0.4, 0.3]  # 吃毒鱼连吃倍率：第 1/2/3/4+ 条 → 45/31.5/18/13.5
+const DU_KANG_CHUANG_KOU := 8.0     # 连吃毒鱼窗口（秒）：距上次吃毒鱼满 8 秒才开始退层
+const DU_KANG_TUI_CENG_SHI_JIAN := 2.0  # 停吃后每 2 秒退一层耐受
 const JIN_HUA_DENG_JI := 6          # 进化等级门槛：Lv.6 起可进化（策划案 8.6 拍板）
 const JIN_HUA_SHU_ZHI_BEI := 1.5    # 进化基础倍率：所有数值 ×1.5（策划案 8.6 拍板）
 var sheng_ji_biao := preload("res://data/shengji/sheng_ji_biao.tres")  # 升级曲线参数（改表零代码调曲线）
@@ -63,6 +66,10 @@ var sheng_cun_zhong := true  # 局内活着才掉饥饿：死亡后停止，重�
 var _e_si_lei_ji := 0.0  # 饥饿归零后的计时器：攒满 1 秒扣一次体型
 var dian_ma := 0.0  # 电麻条（0~100）：被电鳗放电/电麻猎物叠满 → 失控
 var du_yun := 0.0   # 毒晕条（0~100）：被蓑鲉咬/吞蓑鲉叠满 → 失控
+var du_kang := 1.0  # 毒晕耐受倍率（1.0/0.7/0.4/0.3）：吃毒鱼连吃时递减；非进食毒源不受影响
+var _du_kang_ceng := 0  # 连吃毒鱼累计层数：决定下一条的倍率
+var _du_kang_shi_jian := 0.0  # 距上次吃毒鱼的秒数：连吃窗口 8 秒
+var _du_kang_tui_ji := 0.0  # 停吃后的退层计时：每 2 秒退一层
 var yun_xuan_ji_shi := 0.0  # 失控剩余时间（秒）：>0 时玩家不能游、不能咬、不能吃
 var dang_qian_jin_hua: JinHua = null  # 本局已选进化形态；null = 还没进化（每局一次）
 var jin_hua_ti_xing_bei := 1.0        # 进化倍率：体型上限也跟着 ×1.5，未进化时恒为 1.0
@@ -96,6 +103,7 @@ func _process(delta: float) -> void:
 	# Autoload 自己走时钟：局内时间 + 饥饿下降 + 控制条消退，伤害仍统一走 shou_shang
 	zou_ju_shi_jian(delta)
 	xia_jiang_ji_e(delta)
+	_geng_xin_du_kang(delta)  # 毒鱼连吃耐受窗口：独立于失控判断（失控中也要退层）
 	geng_xin_kong_zhi(delta)
 
 
@@ -320,6 +328,37 @@ func jia_du_yun(liang: float) -> void:
 		_chu_fa_yun_xuan(&"du_xi")  # F8 毒晕失控：气泡破裂音
 
 
+func jia_du_yun_chi_du_yu(liang: float) -> void:
+	# 吃毒鱼专属入口：8 秒窗口内连吃，毒晕收益按层递减（45 → 31.5 → 18 → 13.5，之后恒 13.5）
+	# 狮子鱼咬人等非进食毒源仍走 jia_du_yun，原数值 45 不受影响（2026-11-14 用户反馈）
+	if not sheng_cun_zhong or yun_xuan_ji_shi > 0.0:
+		return  # 与原入口同口径：死了/已失控不叠层也不加条
+	var bei: float = DU_KANG_BEI_LV[mini(_du_kang_ceng, DU_KANG_BEI_LV.size() - 1)]
+	du_kang = bei
+	_du_kang_ceng += 1
+	_du_kang_shi_jian = 0.0  # 连吃重置窗口
+	_du_kang_tui_ji = 0.0
+	jia_du_yun(liang * bei)
+
+
+func _geng_xin_du_kang(delta: float) -> void:
+	# 毒鱼耐受窗口与退层：停吃满 8 秒后，每 2 秒退一层；条本身仍由 geng_xin_kong_zhi 消退
+	if _du_kang_ceng <= 0:
+		return
+	var qian := _du_kang_shi_jian
+	_du_kang_shi_jian += delta
+	if _du_kang_shi_jian < DU_KANG_CHUANG_KOU:
+		_du_kang_tui_ji = 0.0
+		return
+	# 跨过窗口的那一帧只把窗口外的部分记进退层计时：8.5 秒不等于已过 8.5 秒退层期
+	var chuang_kou_nei := maxf(0.0, DU_KANG_CHUANG_KOU - qian)
+	_du_kang_tui_ji += delta - chuang_kou_nei
+	while _du_kang_tui_ji >= DU_KANG_TUI_CENG_SHI_JIAN and _du_kang_ceng > 0:
+		_du_kang_tui_ji -= DU_KANG_TUI_CENG_SHI_JIAN
+		_du_kang_ceng -= 1
+	du_kang = DU_KANG_BEI_LV[mini(_du_kang_ceng, DU_KANG_BEI_LV.size() - 1)]
+
+
 func zai_kong_zhi() -> bool:
 	# 玩家此刻是否失控：玩家鱼与 HUD 都读这一个判断，不各存一份状态
 	return yun_xuan_ji_shi > 0.0
@@ -424,6 +463,10 @@ func chong_zhi() -> void:
 	_e_si_lei_ji = 0.0
 	dian_ma = 0.0  # 控制条回零
 	du_yun = 0.0
+	du_kang = 1.0  # 毒鱼耐受回零：新一局第一口毒鱼按满额结算
+	_du_kang_ceng = 0
+	_du_kang_shi_jian = 0.0
+	_du_kang_tui_ji = 0.0
 	yun_xuan_ji_shi = 0.0
 	sheng_cun_zhong = true  # 重开复活：饥饿时钟重新走
 	ju_nei_shi_jian = 0.0  # 局内时钟归零

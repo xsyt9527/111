@@ -2,7 +2,7 @@ extends SceneTree
 # 局外存档测试（TASK-018；2026-11-08 D 选角解锁 + B1 成就值语义）
 # 默认值 / D 四类解锁（mian 免费 / guang_gao 广告 / cheng_jiu 累计成就 / tong_guan 累计通关）
 # / 选择 / 读写档 / 损坏回退 / 调试
-# 当前注册表 12 个：凹凸蜗牛鱼 + 10 NPC 鱼 + 鲸鲨；0 胜只解锁默认免费的 ao_tu_wo_niu_yu
+# 当前注册表 10 个：凹凸蜗牛鱼 + 9 NPC 鱼（含鲸鲨）；0 胜只解锁默认免费的 ao_tu_wo_niu_yu
 # 不上树裸实例：_init 只装形态表，_ready 才读正式存档并连 ZhangBen 信号
 # 全程用临时存档路径，结束时删除；测试不得碰玩家的正式存档
 
@@ -21,21 +21,19 @@ func _initialize() -> void:
 	cd.lu_jing = lu_jing
 	cd.zai_ru()
 
-	# ---- 用例 1：没存档时的默认值（12 形态，0 胜只解锁默认免费 1 个）----
+	# ---- 用例 1：没存档时的默认值（10 形态，0 胜只解锁默认免费 1 个）----
 	assert_eq(cd.sheng_li_ci_shu, 0, "默认胜场 0")
 	assert_string(String(cd.dang_qian_bian_hao), ZHU_JUE, "默认形态是凹凸蜗牛鱼")
-	assert_eq(cd.suo_you_xing_tai().size(), 12, "形态表 12 个：玩家 + 10 NPC 鱼 + 鲸鲨")
+	assert_eq(cd.suo_you_xing_tai().size(), 10, "形态表 10 个：玩家 + 9 NPC 鱼（含鲸鲨）")
 	assert_eq(cd.ke_xuan_xing_tai().size(), 1, "0 胜只解锁默认免费的蜗牛鱼")
 	assert_bool(cd.shi_fou_jie_suo(&"ao_tu_wo_niu_yu"), true, "mian：蜗牛鱼默认解锁")
 	assert_bool(cd.shi_fou_jie_suo(&"lan_yu"), false, "cheng_jiu：钻光鱼需累计成就 400")
-	assert_bool(cd.shi_fou_jie_suo(&"hong_yu"), false, "cheng_jiu：红鱼需累计成就 100")
 	assert_bool(cd.shi_fou_jie_suo(&"ju_kou_yu"), false, "cheng_jiu：巨口鱼需累计成就 200")
 	assert_bool(cd.shi_fou_jie_suo(&"zong_yu"), false, "cheng_jiu：金枪鱼需累计成就 300")
 	assert_bool(cd.shi_fou_jie_suo(&"cheng_yu"), false, "guang_gao：橙鱼未看广告锁定")
 	assert_bool(cd.shi_fou_jie_suo(&"lv_yu"), false, "guang_gao：绿鱼未看广告锁定")
 	assert_bool(cd.shi_fou_jie_suo(&"qi_yu"), false, "guang_gao：旗鱼未看广告锁定")
 	assert_bool(cd.shi_fou_jie_suo(&"jian_yu"), false, "guang_gao：剑鱼未看广告锁定")
-	assert_bool(cd.shi_fou_jie_suo(&"an_ying_jian_yu"), false, "tong_guan：暗影剑鱼需通关 3 次")
 	assert_bool(cd.shi_fou_jie_suo(&"ye_deng_long_yu"), false, "tong_guan：夜灯龙鱼需通关 2 次")
 	assert_bool(cd.shi_fou_jie_suo(&"fen_yu"), false, "tong_guan：鲸鲨需通关 1 次")
 	assert_bool(cd.shi_fou_jie_suo(&"deng_long_yu"), false, "旧形态灯笼鱼不再是玩家选项")
@@ -67,18 +65,16 @@ func _initialize() -> void:
 	assert_eq(cd.sheng_li_ci_shu, 2, "第二胜后累计 2")
 	assert_bool(cd.shi_fou_jie_suo(&"dian_yao"), false, "2 胜也不会解锁旧电鳗形态")
 	xin = cd.ji_lu_sheng_li()
-	assert_eq(xin.size(), 1, "第三胜解锁暗影剑鱼（tong_guan 3）")
-	if xin.size() == 1:
-		assert_string(String(xin[0].bian_hao), "an_ying_jian_yu", "第三胜解锁的正是暗影剑鱼")
+	assert_eq(xin.size(), 0, "第三胜不再解锁新形态（暗影剑鱼已删除）")
 	assert_eq(cd.sheng_li_ci_shu, 3, "第三胜后累计 3")
-	assert_eq(cd.ke_xuan_xing_tai().size(), 4, "三胜后可选蜗牛鱼 + 鲸鲨 + 夜灯龙鱼 + 暗影剑鱼")
+	assert_eq(cd.ke_xuan_xing_tai().size(), 3, "三胜后可选蜗牛鱼 + 鲸鲨 + 夜灯龙鱼")
 
 	# ---- 用例 4：选择与重读（只允许已解锁形态）----
 	assert_bool(cd.xuan_ze(&"ao_tu_wo_niu_yu"), true, "默认主角可选")
 	assert_string(String(cd.dang_qian_bian_hao), ZHU_JUE, "选择后当前形态为蜗牛鱼")
 	assert_bool(cd.xuan_ze(&"jian_yu"), false, "广告位剑鱼未看广告不可选")
-	assert_bool(cd.xuan_ze(&"an_ying_jian_yu"), true, "通关 3 次解锁的暗影剑鱼可选")
-	assert_string(String(cd.dang_qian_bian_hao), "an_ying_jian_yu", "选择后当前形态为暗影剑鱼")
+	assert_bool(cd.xuan_ze(&"ye_deng_long_yu"), true, "通关 2 次解锁的夜灯龙鱼可选")
+	assert_string(String(cd.dang_qian_bian_hao), "ye_deng_long_yu", "选择后当前形态为夜灯龙鱼")
 	assert_bool(cd.xuan_ze(&"fen_yu"), true, "通关 1 次解锁的鲸鲨可选")
 	assert_string(String(cd.dang_qian_bian_hao), "fen_yu", "选择后当前形态为鲸鲨")
 	assert_bool(cd.xuan_ze(&"dian_yao"), false, "旧形态不可选")
@@ -93,9 +89,9 @@ func _initialize() -> void:
 	cd2.free()
 
 	# ---- 用例 4b：成就值购买永久开局技能 ----
-	assert_eq(NengLiKu.quan_bu().size(), 101, "能力总表 101 个（35 通用 + 66 专属）")
-	assert_eq(NengLiKu.quan_bu().size() - NengLiKu.tong_yong_chi().size(), 66,
-			"专属技 66 个（101 总表 − 35 通用池）")
+	assert_eq(NengLiKu.quan_bu().size(), 91, "能力总表 91 个（31 通用 + 60 专属）")
+	assert_eq(NengLiKu.quan_bu().size() - NengLiKu.tong_yong_chi().size(), 60,
+			"专属技 60 个（91 总表 − 31 通用池）")
 	assert_bool(NengLiKu.zhao(&"yu_lei_chong_ci") != null, true, "按 id 反查主动能力")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"yu_lei_chong_ci")), 30, "主动永久解锁 30 成就值")
 	assert_eq(cd.cheng_jiu_dai_jia(NengLiKu.zhao(&"ruan_lin")), 20, "被动永久解锁 20 成就值")
@@ -153,7 +149,7 @@ func _initialize() -> void:
 	zhuan.bian_hao = &"ce_zhuan_shu"
 	zhuan.suoshu_xing_tai = &"lei_yuan_ming_she"
 	assert_eq(1 if zhuan.shi_zhuan_shu() else 0, 1, "带归属形态的能力是专属技")
-	assert_eq(NengLiKu.tong_yong_chi().size(), 35, "通用池 35 个（专属技已入库但不入池）")
+	assert_eq(NengLiKu.tong_yong_chi().size(), 31, "通用池 31 个（专属技已入库但不入池）")
 	var chi_you_zhuan := 0
 	for neng in NengLiKu.tong_yong_chi():
 		if neng.shi_zhuan_shu():
@@ -170,7 +166,7 @@ func _initialize() -> void:
 	# 调试解锁按 D 三类来源（通关/成就/广告）补满：通关档最高 3，已累计 3 胜就保持 3，主角仍可选
 	cd.tiao_shi_jie_suo_quan_bu()
 	assert_eq(cd.sheng_li_ci_shu, 3, "调试解锁不降已有胜场（通关档最高 3，保持 3）")
-	assert_eq(cd.ke_xuan_xing_tai().size(), 12, "调试解锁后 12 个形态全可选")
+	assert_eq(cd.ke_xuan_xing_tai().size(), 10, "调试解锁后 10 个形态全可选")
 	assert_eq(cd.lei_ji_cheng_jiu_zhi, 400, "调试解锁把累计成就抬到成就档最高 400")
 	assert_eq(cd.cheng_jiu_zhi, 130, "调试解锁只抬累计成就，不动可消费余额")
 	assert_bool(cd.shi_fou_jie_suo(&"lan_yu"), true, "调试解锁：成就档钻光鱼解锁")

@@ -1,0 +1,334 @@
+{
+ "frames": [
+  {
+   "filename": "liu_xing 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  },
+  {
+   "filename": "liu_xing 12",
+   "frame": {
+    "x": 0,
+    "y": 136,
+    "w": 160,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 136
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_liu_xing.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 272
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 12,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "fire/meteor",
+   "name": "liu_xing",
+   "fps": 12,
+   "loop": false,
+   "frames": 13,
+   "frameSize": [
+    160,
+    136
+   ],
+   "pivot": [
+    80.0,
+    68.0
+   ],
+   "columns": 12,
+   "visible": [
+    151,
+    121
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "lie_kong 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "lie_kong 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_lie_kong.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1232,
+   "h": 92
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "spawn/poof",
+   "name": "lie_kong",
+   "fps": 12,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    112,
+    92
+   ],
+   "pivot": [
+    56.0,
+    46.0
+   ],
+   "columns": 11,
+   "visible": [
+    91,
+    77
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -1,0 +1,180 @@
+{
+ "frames": [
+  {
+   "filename": "fb_bao_lie 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_bao_lie 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_bao_lie 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_bao_lie 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_bao_lie 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_bao_lie 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_bao_lie.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 960,
+   "h": 90
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 5,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "impacts/impact-frame",
+   "name": "fb_bao_lie",
+   "fps": 15,
+   "loop": false,
+   "frames": 6,
+   "frameSize": [
+    160,
+    90
+   ],
+   "pivot": [
+    80.0,
+    45.0
+   ],
+   "columns": 6,
+   "visible": [
+    160,
+    90
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

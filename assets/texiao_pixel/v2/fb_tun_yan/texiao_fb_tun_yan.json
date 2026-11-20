@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "fb_tun_yan 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_tun_yan 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 92
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_tun_yan.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1232,
+   "h": 92
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "spawn/poof",
+   "name": "fb_tun_yan",
+   "fps": 12,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    112,
+    92
+   ],
+   "pivot": [
+    56.0,
+    46.0
+   ],
+   "columns": 11,
+   "visible": [
+    91,
+    76
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

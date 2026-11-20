@@ -1,0 +1,312 @@
+{
+ "frames": [
+  {
+   "filename": "fb_xiao_hua 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_xiao_hua 11",
+   "frame": {
+    "x": 1232,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 108
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 108
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_xiao_hua.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1344,
+   "h": 108
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "pickups/collect-burst",
+   "name": "fb_xiao_hua",
+   "fps": 12,
+   "loop": false,
+   "frames": 12,
+   "frameSize": [
+    112,
+    108
+   ],
+   "pivot": [
+    56.0,
+    54.0
+   ],
+   "columns": 12,
+   "visible": [
+    77,
+    87
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

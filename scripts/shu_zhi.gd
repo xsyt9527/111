@@ -67,6 +67,22 @@ const NPC_HU_CHI_JIAN_GE := 20.0  # 每 20 秒全局判定一次
 const NPC_HU_CHI_GAI_LV := 0.35  # 相邻 NPC 每次判定的捕食概率（体型+随机）
 const NPC_HU_CHI_BAN_JING := 140.0  # "相邻"判定半径（像素）
 
+# ---- 隐藏营养值系统（2026-11-20 设计提案·A 方案核心闭环）----
+# 每条 NPC 出生 roll 一个营养值，玩家吃鱼经验 = 基础经验 × 营养值（挑着吃的核心动机）
+# 注意：营养只管经验，不动体型成长/饥饿回复（两条收益线分开，防双乘算失控）
+const YING_YANG_DANG_1 := Vector2(0.6, 0.9)  # 1 档（小型速生鱼种）营养区间
+const YING_YANG_DANG_2 := Vector2(0.8, 1.2)  # 2 档（中型鱼种）营养区间
+const YING_YANG_DANG_3 := Vector2(1.2, 1.6)  # 3 档（大型/顶级鱼种）营养区间
+const YING_YANG_XIA_XIAN := 0.6  # 营养值下限兜底：不会出现「白吃」
+const MAN_YANG_GE_LV := 0.03  # 满营养鱼概率 3%（提案②默认值：平均每屏 1~2 条微光鱼）
+const MAN_YANG_BEI := 1.33  # 满营养鱼营养值 = 档位上限 ×1.33（≈1.6~2.1，一口顶两条半）
+const MAN_YANG_CHENG_ZHANG_JIAN_GE := 20.0  # 满营养鱼静默成长节拍：每 20 秒 +0.5 级
+const MAN_YANG_CHENG_ZHANG_MEI_CI := 0.5  # 每拍成长量（级）
+const MAN_YANG_DENG_JI_SHANG_XIAN := 6  # 满营养鱼成长绝对上限（初始 1 级 ×6）
+const MAN_YANG_DONG_JIE_SHI_JIAN := 120.0  # 开局保护：前 120 秒满营养鱼不成长（A12）
+const MAN_YANG_TONG_PING_SHANG_XIAN := 1  # 同屏满营养成长鱼上限（已有 1 条时新 roll 不生效）
+const GAO_YING_YANG_BI_LI := 1.0 / 3.0  # 高营养信号阈值：区间上 1/3 起体色更饱满发亮
+
 # ---- G 专属技 T1（2026-11-08）：能力表没写的节奏/概率细项统一收口 ----
 # 电鳗组
 const LEI_BAO_LUO_LEI_JIAN_GE := 0.8  # 雷暴召唤：每 0.8 秒随机落雷 1 道

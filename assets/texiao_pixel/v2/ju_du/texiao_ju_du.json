@@ -1,0 +1,246 @@
+{
+ "frames": [
+  {
+   "filename": "ju_du 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 1",
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 2",
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 3",
+   "frame": {
+    "x": 432,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 4",
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 5",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 6",
+   "frame": {
+    "x": 864,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 7",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  },
+  {
+   "filename": "ju_du 8",
+   "frame": {
+    "x": 1152,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 60
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_ju_du.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1296,
+   "h": 60
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "projectiles/plasma-shot",
+   "name": "ju_du",
+   "fps": 15,
+   "loop": false,
+   "frames": 9,
+   "frameSize": [
+    144,
+    60
+   ],
+   "pivot": [
+    0.0,
+    30.0
+   ],
+   "columns": 9,
+   "visible": [
+    128,
+    56
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

@@ -1,0 +1,180 @@
+{
+ "frames": [
+  {
+   "filename": "fb_shou_ji 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_shou_ji 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_shou_ji 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_shou_ji 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_shou_ji 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  },
+  {
+   "filename": "fb_shou_ji 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 90
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 90
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_shou_ji.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 960,
+   "h": 90
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 5,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "impacts/impact-frame",
+   "name": "fb_shou_ji",
+   "fps": 15,
+   "loop": false,
+   "frames": 6,
+   "frameSize": [
+    160,
+    90
+   ],
+   "pivot": [
+    80.0,
+    45.0
+   ],
+   "columns": 6,
+   "visible": [
+    160,
+    90
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

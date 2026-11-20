@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "jn_yu_lei 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_yu_lei 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 42
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_jn_yu_lei.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1760,
+   "h": 42
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "projectiles/rocket",
+   "name": "jn_yu_lei",
+   "fps": 15,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    160,
+    42
+   ],
+   "pivot": [
+    0.0,
+    21.0
+   ],
+   "columns": 11,
+   "visible": [
+    138,
+    40
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

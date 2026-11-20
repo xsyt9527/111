@@ -1,0 +1,67 @@
+extends RefCounted
+class_name YingYang
+# 隐藏营养值系统·纯逻辑层（2026-11-20 设计提案·A 方案核心闭环）
+# 职责：营养值 roll、满营养判定、经验乘算、满营养成长上限——全部是纯函数，不碰节点/时间/随机源注入。
+# 用法：const YING_YANG := preload("res://scripts/ying_yang.gd")，再 YING_YANG.xxx()。
+# 口径来自 shu_zhi.gd 常量表；随机源以参数注入（randf 由调用方给），便于无头测试喂固定值。
+# 重要：营养只影响「经验」，不进体型成长与饥饿回复——两条收益线分开，防双乘算失控。
+
+const SHU_ZHI := preload("res://scripts/shu_zhi.gd")
+
+
+static func qu_jian(dang: int) -> Vector2:
+	# 鱼种营养档 → 营养区间：1/2/3 档，越级夹到边界档（数据配置错也不崩）
+	match clampi(dang, 1, 3):
+		2:
+			return SHU_ZHI.YING_YANG_DANG_2
+		3:
+			return SHU_ZHI.YING_YANG_DANG_3
+		_:
+			return SHU_ZHI.YING_YANG_DANG_1
+
+
+static func roll_ying_yang(dang: int, suiji: float) -> float:
+	# 刷新时一次 roll：在区间内按随机数线性取值（suiji ∈ [0,1]）
+	# 下限再兜一层 SHU_ZHI.YING_YANG_XIA_XIAN，杜绝 0 或负数的「白吃」
+	var qu := qu_jian(dang)
+	var zhi := lerpf(qu.x, qu.y, clampf(suiji, 0.0, 1.0))
+	return maxf(zhi, SHU_ZHI.YING_YANG_XIA_XIAN)
+
+
+static func shi_man_yang(suiji: float) -> bool:
+	# 满营养判定：全局统一概率（默认 3%），与鱼种档无关
+	return suiji < SHU_ZHI.MAN_YANG_GE_LV
+
+
+static func man_yang_ying_yang(dang: int) -> float:
+	# 满营养鱼的营养值 = 该档上限 ×1.33（≈1.6~2.1，一口顶两条半）
+	return qu_jian(dang).y * SHU_ZHI.MAN_YANG_BEI
+
+
+static func jing_yan_cheng_shu(jichu_fen: int, ying_yang: float) -> int:
+	# 玩家吃鱼经验 = 基础经验 × 对方营养值（提案 3.3 唯一乘算点）
+	# 四舍五入后至少 1 点（基础经验 >0 时），避免 floor 把小鱼吃成 0
+	if jichu_fen <= 0:
+		return 0
+	return maxi(1, int(round(float(jichu_fen) * maxf(ying_yang, SHU_ZHI.YING_YANG_XIA_XIAN))))
+
+
+static func shi_gao_ying_yang(dang: int, ying_yang: float) -> bool:
+	# 半隐藏信号·高营养档：营养值落在区间上 1/3 → 体色更饱满发亮
+	var qu := qu_jian(dang)
+	var yu_zhi := lerpf(qu.x, qu.y, 1.0 - SHU_ZHI.GAO_YING_YANG_BI_LI)
+	return ying_yang >= yu_zhi
+
+
+static func man_yang_cheng_zhang_shang_xian(wan_jia_deng_ji: int) -> int:
+	# 满营养鱼成长上限 = min(玩家当前等级 + 4, 绝对上限 6)
+	# 玩家等级越高威胁可以越大，但封顶 6 级杜绝超模鱼
+	return mini(wan_jia_deng_ji + 4, SHU_ZHI.MAN_YANG_DENG_JI_SHANG_XIAN)
+
+
+static func ke_cheng_zhang(dang_qian_deng: int, wan_jia_deng_ji: int,
+		ju_nei_shi_jian: float) -> bool:
+	# 满营养鱼本拍是否可成长：开局 120 秒冻结 + 未到成长上限
+	if ju_nei_shi_jian < SHU_ZHI.MAN_YANG_DONG_JIE_SHI_JIAN:
+		return false
+	return float(dang_qian_deng) < float(man_yang_cheng_zhang_shang_xian(wan_jia_deng_ji))

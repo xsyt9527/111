@@ -1,0 +1,1321 @@
+{
+  "task_id": "TASK-029",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "current_step": "step-03",
+  "current_checkpoint": null,
+  "next_action": "TASK-029 已实现并验证（八步全绿 3273 passed / 0 failed，scope 0 violation）：等待用户 F5 目检技能栏布局、攻击键咬击/冷却/换边镜像，再进入学习检查点。",
+  "implementation_baseline": {
+    "captured_at": "2026-11-14T18:16:31.188023Z",
+    "commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "preexisting_changes": [
+      {
+        "path": "Godot引擎词总表.docx",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:66a4d40c99a7ab9b2d87dbd67baae632e17b233e5d6d716748fe66296033bd45"
+      },
+      {
+        "path": "LEARNING_ROADMAP.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:bfd92fa5c95082129bf8608fdabfab453cde654ab710e19fa5483c9d2bc34b3f"
+      },
+      {
+        "path": "addons/ai_rig_2d/CLAUDE_RIG_GUIDE.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7806c6a641fbdd6056db11340750931658a1b4227034922a35fb1fba61fe3606"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/rig_builder.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7281c932566c1fc1e331eb9e076391fd248e24c246638b4f60cd15266d893053"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/rig_builder.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a39730bfe3fd758750af85b5d8c51f513ea0876e190450293851fdc53a593c5"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/schema_validator.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a10999e7da017b46cdaf8530cb37f78ccc6870a8de18e203ff9d004e8c6853c"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/schema_validator.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c888911d9bced5dde5eb19176a6d7ff2766dc9cf8330a8c1a405a1bba5eefa2f"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/weight_calculator.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fac9e08367b9cfd2fa15c29a7d21b9c199b83d7dd6ddf98ba3f3aaa59c2192dc"
+      },
+      {
+        "path": "addons/ai_rig_2d/core/weight_calculator.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4eb79e939c82b191d275ecb9f06e58f75f3c22e5bc2756118ea2d18764f3f6e8"
+      },
+      {
+        "path": "addons/ai_rig_2d/editor/rig_dock.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e9c1804469142add744b1db6f4db2f0468755d494685d80d9fb8be6f5ce26a1f"
+      },
+      {
+        "path": "addons/ai_rig_2d/editor/rig_dock.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9866e4724ee20b5840132b271193a0e1c988e5d23d7fa3c6512ade25972fb398"
+      },
+      {
+        "path": "addons/ai_rig_2d/extensions/procedural_registry.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:333d713cca1be5d8925dcf968259166dea8a0d7ce96bac0e452606703a6bd25f"
+      },
+      {
+        "path": "addons/ai_rig_2d/extensions/procedural_registry.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:6e8a037e355963e1f4d5da84c912f9d31c7ef6cd67932b9016bd424f98f4ac98"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.cfg",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:171553ccf66fcb704a1daed9a0c9b6e838b50029dfe61dcef55d4b2c86617673"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:aa11ff40eacd7c5b4fbe8a476b1d2e0d7ea7c176c4480336c4b64c74d7d4f2ec"
+      },
+      {
+        "path": "addons/ai_rig_2d/plugin.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:009ae1cbb3883fc111d680966bbb196b3e96578393d5aabb52183585ad5a4329"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/layered_atlas_provider.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bc2cf5c576639ee84fcfabccee102e9dd2cb22f09de0434036a34e5198fb66d9"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/layered_atlas_provider.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:12d1995f356496d88a706eb326d9b9677580e39d82fa54c5875dbe1b2b0aacf8"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/provider_base.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:83346346c6360ba1967a30f2f7f82a6b8059f71036d38cdb77658db7d138a338"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/provider_base.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:28d66baaf4f29e44ab9df9e361c58978080838ee8e465c745938f3ec40a2ee7e"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/single_image_provider.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fef8bce5664409b458e5e66ad913bad1ac8c8f731674efdacd841abdaf94c6fe"
+      },
+      {
+        "path": "addons/ai_rig_2d/providers/single_image_provider.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:77fe2d87f07b80e1ed1d0c3770995fce00057b25d9847d076be88dcb9e8c89e8"
+      },
+      {
+        "path": "addons/ai_rig_2d/validate_rig.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c32fb5fd83b4b6df3030eb4657c3af39961300dbaa2116c33a0d78fac672dea7"
+      },
+      {
+        "path": "addons/ai_rig_2d/validate_rig.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:58487a7e120bd1418b2d1d46034ef7b77ed16c4975147a458ef361f89310a078"
+      },
+      {
+        "path": "assets/yinxiao/an_niu.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:307d422f88e0246171198e9fb30b3842c0405a5da92bacc9abb696bbebd8d599"
+      },
+      {
+        "path": "assets/yinxiao/an_niu.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:eddaa2549b3927dd2e18b511bb17cb2fdae0d137f1b8cadaea85cd17adc3ae55"
+      },
+      {
+        "path": "assets/yinxiao/bgm_jue_zhan.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:72ae30996210f2c4a96403fa60fbb8abcf6c40ae2c86fefc66b87397c0721d83"
+      },
+      {
+        "path": "assets/yinxiao/bgm_shen_hai.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:16f940da61a4e5ddba79ff20d050195e2cdbeb8c24f4034f1ca8bc335a4dfeec"
+      },
+      {
+        "path": "assets/yinxiao/bgm_tan_suo.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:91594a27f70f57084e0d21dcfe4ed30fdfd6585b1de168fce889c25022867357"
+      },
+      {
+        "path": "assets/yinxiao/chi.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:d5aff02cc91806020eb44ed72f17bc1d80aa3d7d79dfa5f559ae440213e0cd30"
+      },
+      {
+        "path": "assets/yinxiao/chi.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:de08e271749bdc366a2283ed39769b38d0604067441f065c43428a6f61d6bb7f"
+      },
+      {
+        "path": "assets/yinxiao/fang_neng_li.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:1092d62e471a0bee164b26e954a405cd185f5cb85c2d313c94f69f4b6cc51e06"
+      },
+      {
+        "path": "assets/yinxiao/fang_neng_li.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:47ebd85a9fafea6ace620955c1ce5a4149075e3ab9f60a9417438402e4200ecd"
+      },
+      {
+        "path": "assets/yinxiao/sheng_ji.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:1463ad33756cdb8045c58e8a1f534ae606b4bcda7872a7b75151d8ff9a867c7b"
+      },
+      {
+        "path": "assets/yinxiao/sheng_ji.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8c88159f84b4643e495b9d4ec3bff96061fcf25b8416b5a50c3252e13de16d2c"
+      },
+      {
+        "path": "assets/yinxiao/sheng_li.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:80919efa9cff80e8bd16ce9ae6f688fe357ee5887176ee0e09d2fbbcb7170132"
+      },
+      {
+        "path": "assets/yinxiao/sheng_li.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:62b1e05c737fd6da39b72c7dd594bfac2886d481fc2449b7e92cbea22eb3697e"
+      },
+      {
+        "path": "assets/yinxiao/shi_bai.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3c4bf49fd86baacea85459d254282fcd21f9476a808a03ab29437a1908862405"
+      },
+      {
+        "path": "assets/yinxiao/shi_bai.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3c567cd01c8bde30dc6bb13b83e2e3296ce59625e4ba22cebe9e91afe6eb1398"
+      },
+      {
+        "path": "assets/yinxiao/shi_kong.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:0b59a5483d02f0470d12d13d0c3929c4f45e2c693a749369006f5ba35f15f02c"
+      },
+      {
+        "path": "assets/yinxiao/shi_kong.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:58a6b70b5093bd53a3c53a7f4e15425b6f87ede335b83181b01272b0ddce409d"
+      },
+      {
+        "path": "assets/yinxiao/shou_shang.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:9be1c8a245f94585c49d78ded449d6e00fc328b2519a53b52d746f77b700d3b3"
+      },
+      {
+        "path": "assets/yinxiao/shou_shang.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:9ea66e631718f98ad47c264d678e7eb8e26063ac56dae836a7b56bd976cb48a4"
+      },
+      {
+        "path": "assets/yinxiao/si_wang.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:d9e84bbaf51e7d11fd74f92690e06ae976c250a99908011a6c0093a5405b4414"
+      },
+      {
+        "path": "assets/yinxiao/si_wang.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a6fec710447adb5ec61c08ae0cf4698879bf60ca0ffb4e79b577d1a06c8d2d67"
+      },
+      {
+        "path": "assets/yinxiao/tan_chuang.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:d8b0e88597f6269e1e9215b974952fc2c32e90638020689c21e416a85c19dab1"
+      },
+      {
+        "path": "assets/yinxiao/tan_chuang.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:88a03659829c680449a867878cab003bc25100d9a329a75c52c1e580ef318b8f"
+      },
+      {
+        "path": "assets/yinxiao/yao.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:755cc033c3b28ec6cdcf622326d0a174efba72ffc43d04d2288f2a1e2c749ef3"
+      },
+      {
+        "path": "assets/yinxiao/yao.wav.import",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:cbf8e08bec9b9b347ed586b428a937394e40ed7186464e4e2d68c1304407273e"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_an_niu.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:35d44483fe0b280354c49356c1ca5b0cc709125e279525bf6ac679f0d95c5a85"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_an_niu.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ec19d9bb586d7d756aca65f12387430e5ae3ec9978604689f2eee39fe8c0f403"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_chi.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f45b01d16010c0c8eec56d9080a49b1fc946f4c0bd1233eecaab571c8494e9ad"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_chi.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1f91c52e2fdc1ed0d4d24f43879914105581d385ecc298de2da87d85038315e9"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_chong_ci.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:343b0e4fcb7dcc358f4b9a457f1c274b74bd1ef56ba1d7c941f857a761e7b12f"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_dian_xi.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b62b4a1b70ca65e139014a8ab42681ab9d4c9d5ed31274815a349a989438c4da"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_du_xi.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:71078ea7214f3e77a8450dc51b1ab96481178482cd2d5a735c94ef116636f9b7"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_fang_neng_li.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d5cc186f15a0699aa09acffa76d076e0848a7a219b39e998e3257937669ff9c9"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_fang_neng_li.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fa40ce90332bc328d5dd20657b28d082754dd743f2654da1d304498baeaa2e81"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_jiao_zhi.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f1067dfbdd0e11ebecf97bc8d6be015119a7a8e672f510590cbffcb853eda325"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_jing_bao.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:cd56e3ea7ed740026c16500885181c051202a15b21dc3059ca5562b20d0b99a3"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_sheng_ji.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:fdb3909aa1810e19f5c0282bd5055b7b50239b90bc01633503ee3a1ea8b6ba02"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_sheng_li.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f39f378ec90b915d25cc9d975671c866996e6f5e57ddb1292ab14175967f8eb0"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_sheng_li.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4fecfbe4cbae0fb9460054682429baa949cbe8fb337e1a12b316697fff1bbfda"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_sheng_na.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:63b025cb8176f5806d006eaed6166fadd7d6f81d01f22cad4954a375941e847f"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_shi_bai.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:13dac24c4e7c42b3376d8af1cc2932e8473e940802cb23e5b70012342e1f88e7"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_shi_bai.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d1e5c0c59fc1bd57d275b4572db6699d2749e71d62f9a2b80c03176349e0e62b"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_shi_kong.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d8691b66df2deaffcb3528c3a1e2ecb30a87ada3e240cf38250508570ad47bd5"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_shi_kong.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e3df923d86796a2bfbddfba3ccde4c5e5aa3e2569b244090971415537765e2ad"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_shou_shang.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:145ef4752c859dd4a9423825ba55e9e8a1c543e1adb0c4cd0644e42a17fef050"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_si_wang.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:acda71517da21581d37fcc15cdb71968848d54b01046aed975fb63fa29a193fc"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_tan_chuang.wav",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:af6535c16292dd0817ce98b1dabc82e53a8de68cd1f4ebeea1c2217afa593f9e"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_tan_chuang.wav.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d15394619012dc2af68d0fb7ff4b3adbaa83d5ae063b3f3ad4b0c70d03470ad2"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_tun_xia.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e7234b1ffe49bdd8b8317560b00452e5c21107b7834ca64ba733410ab772dec3"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_xuan_wo.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:d731c5af22509c7b3baf54d35cd486f7ab565fee8c31464e7299bb6d957db044"
+      },
+      {
+        "path": "assets/yinxiao/yin_xiao_yao_ji.wav",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8b647779b09c9254c9985b3effd81606ce30a4c5d8254717296678dd9a602736"
+      },
+      {
+        "path": "docs/TASK_INDEX.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c24917ab143a590fa0418d586955e55a5a61f07b3d963a76ba46dfd4cd109d64"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:32b7395078472aa5565945200f5a353027de1defb5aeb7562ab53a0d78c30e1e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7dcc030946677b490648ecd88e9a17185c8a40e9555084822f921500fe8ec2f3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ffa6fcdd291904d2ed508332faf7624fd03a51ae72c84e2759735cc2bbbb388d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1052dbd2d40de9feaf0566ee7fcde11df4b99527ce279d20e93739802be4fd60"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ed7f5094ca5a5937720c45d68df6a5482fdb0374845a3b97a3390a16d78709eb"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b2bbbc9ad7091727e97f7d4037d5f5d33d4249dbedc5c2e39cdaafe80496c2ed"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:230975e81155bd4cee4b08cde1608977125271ab988c8d6aee47d6c9790dcbad"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0b924cdcac3a4c4f858aaeff3d0e0e7e79ec09bf584e2ff854a5bfcb604ad16d"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d047e2bc908f65db47a47fe14644d314ef4ac6507377669bed4bdf9ea445617f"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:becf7ec15b2e4be0c6b8061845a2d2dcc0cd44a335c7d7652fbfa06f46c01809"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:981b4c16e4ae42cc11c2361975d18ad9e4bec7a002682eaf03b1df9976fa0bd0"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:880538541a278f12e7346afe464f05f3f12d856c95da2b5bf55df9c8c4e188f8"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f5e3a4bce35740a941075f2d7568b486554f6778a3960b7369f4e778606abed3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:464354ff6aa10c68811c654333cceabc5ef7800fc00db28f5bab0fef81cc2957"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e36df1752c6fb00a59df710a745920ac483e272c611f765a387724c23bfd64ef"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:71e1e41b97a3ffe5af00263730230da7e2a26fc13655aa636bd21ae01774acf9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:4153fa5299a0767335d644d949159d39f82e39998b8fba800a95feb153ef42f2"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b443d9dde6cb361c96d757db036e28f9a972a56ce3d64e256ff27b94c76a068"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8bbd0336b66c1e65d813635362fa7376950d2875a51277548148d41a1f99e977"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:10f40a9594d93557fec9657794691d120468c5993d698ce26cd5515614903c48"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:85bc9dc11205be3478ae444baa0c33b8d696bfbc78ff86bfc7673ffc223dabf4"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a965de05a92a61342f089e2056545cdd88d27aecf7a5382508e3829e37fed0c"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:863413135af1ec3876b0c1fac9308aa373adcb537f6f9af844f0d378c3aba183"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:68ba56ad8d2b7de373d961320fc605efbeede3a84c57520fd7121b1500ce6914"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cdfc77bd09aa7185a87de5fd11c81b4e96e0bd8be1953c2f872f4b46f67ce5fa"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:076d2511e3fe66c094b7a09a61589d4e32531c82a938fe2a029b41e60900c5f9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3e25c9bd76cbdcc32e33b2ede25e6231cfdaed45219655d2e168beb6864e2ae6"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e206e71752b1bfe7be6d57fcedbb9be3b201a1e45346b1631b6c0889d6c43bc2"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:159a55a9db6426a1bc23bfc400d2b35fc415e2396083f3877b58f3df016c6a2e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2d6bd27f3b3554b44979f5b14ed90f2960c5a55646a35492ac9b6da2bed1c99e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0140511d172df619ac4f61c8e1ab3a461602a5e78cf311775869c617179fb2c4"
+      },
+      {
+        "path": "docs/引擎词总表.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a8ea79fba13c42ab15744394d9365d4039c8a77c593074b7f53404371efb687a"
+      },
+      {
+        "path": "project.godot",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a144e4a0f2111adbe5d951f8ed3a406d7c6dfac757ee2c75da4f6b35bf7ccd15"
+      },
+      {
+        "path": "rigs/capture_preview.gd",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:dd44f1bc0d7a86e89faec7a1e75ec79a0a5eea221798770a59d9ac3377d6a294"
+      },
+      {
+        "path": "rigs/capture_preview.gd.uid",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:74497952667c30644c23756e1f3551b9e2c19bcebbf240f45c7c4c88ca9f2628"
+      },
+      {
+        "path": "rigs/examples/hero_pixel_64.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a3818dec9cdfc02a59877c3d47919ec37547d31d68b95fa7c812fad1b8d310d3"
+      },
+      {
+        "path": "rigs/examples/portrait_hires_mesh.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:952e604c7a14847d2a14b1589fd62cadd6a04c5a2f55a365b526ba99190a462f"
+      },
+      {
+        "path": "rigs/generated/WoNiuYuShiDian.tscn",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:fc3fe3a3b4dc183dd1d145554e8cdf36135ed9a14f6ed61a8a6f7bbba4cd026e"
+      },
+      {
+        "path": "rigs/generated/WoNiuYuShiDian_anims.tres",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9d5dde48e428658faae4d106f8ea0addd198b11e08b17d9262779a3daf77e60f"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f00.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ebba0a0afab5eeeec047576f459e279a40f55a134adc4916741481f1ae3ed947"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f00.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b23d1447e6d8652689733b70a066ccca8271b4e6c40c6094963bc0ec3f39e65f"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f01.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a5deb9d01023ab94ca0aa1c757ac833c0a2c49117d59e90a13601fb5597bc2f6"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f01.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7b89be3955218437092ce37b5fccc8e6d226afe2d5db88318fc2bec2880647f7"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f02.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1229ed6a063cc17ccb68476645cd3ac9893f91a94119200c2b1d154538e5cd2e"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f02.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:397ed0cba67ba1febeab1c4488b72dcb983585a6fd3d20e40989b4dfea1c32aa"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f03.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b07af9e8919b78b68580f89e9e441f8033056254c670423bc05c5e8fca8bc80"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f03.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5dc5185392883b9ac27ced744abd30a6af772d16477cd8d07d70f65273718f19"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f04.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:9fd84523b18d53c41b621df2d8860b43ad50493c7494ba1255c7c535d7f908c6"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f04.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:c7b0a499ae42d18d8096f99fbc64b9d91de565da8ee690ce5cb543df2cc4f52d"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f05.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:71701943b94e300d894e9de516e7ad815715e8c2aff5d68fe3e5faada254fe06"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f05.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8ac2396dce253ce2c6d03dd0ad69e7c5ba8a80dd81be4cb351e733618c849db5"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f06.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f5df1b88284ba1498deff9a8cea82fb1ff639731813b0db6e48916efcff9e940"
+      },
+      {
+        "path": "rigs/previews/WoNiuYuShiDian_you_yong_f06.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0ea30a3d561f633571b6fd6995bebbd5bb4b1008a887c560e5432be90ccce665"
+      },
+      {
+        "path": "rigs/previews/visual_f0.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:94afa0d9394951c0d220547911af4ac353a35222ee40260a2569bcfe5364f3e0"
+      },
+      {
+        "path": "rigs/previews/visual_f0.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1740d3c6ca18eeaa672f908d1b2e7d4fd3fb2d130a7d4d26f722c44450a3c6f9"
+      },
+      {
+        "path": "rigs/previews/visual_f1.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2ab63a5c54563d2466d7442dea3efbad42d76294aebe35880b6d81ff00b1d379"
+      },
+      {
+        "path": "rigs/previews/visual_f1.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d3bda17b9a0ad928b8d1fba547cfceb611f2554cfe2965607cb1d74d866be612"
+      },
+      {
+        "path": "rigs/previews/visual_f2.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:79022e5e5b936d3e75a0858bddd7ab3e25bb1488ca5dbe8406bdabc46093efd5"
+      },
+      {
+        "path": "rigs/previews/visual_f2.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3e6184ef31478f741d0efc21e26652df21c56fdbfadb4faa63dca239f2ef664e"
+      },
+      {
+        "path": "rigs/previews/visual_f3.png",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:30b308a4328985734e4716155fc35569a29b20f6c975e2cb799086342e672abd"
+      },
+      {
+        "path": "rigs/previews/visual_f3.png.import",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cb2c72c38777a8e4908107f1f09292218affd1c160278c10e896339225d5dbbf"
+      },
+      {
+        "path": "rigs/wo_niu_yu_shidian.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:824947652d49a87e1ce7ce9412a735890fbaa83a79109448a8db1091a55a6787"
+      },
+      {
+        "path": "scripts/di_tu_pin_jie_yan_chu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:81ae1ffd9eeab416b7cd8579f08eafd63f9d026ac9d0813e7642b592d6c08944"
+      },
+      {
+        "path": "scripts/main.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:e8acd33bfa7e7777166b33206c88a751a940dedbfb30e38ed3442fe721556793"
+      },
+      {
+        "path": "scripts/neng_li_ui.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:defbe3185082d2c3efc9407d1acb4513bc65c14e1881b29a9117add7c6b6ce24"
+      },
+      {
+        "path": "scripts/xiao_di_tu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:f7b7e5c6c89919c42b683b8fdfc22519f478fb6c7e50822765a757c4c29a2b33"
+      },
+      {
+        "path": "scripts/yin_xiang.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4d883324b8a82abdceb051d10375e49ddadeab8c297072cba99105305a697805"
+      },
+      {
+        "path": "scripts/yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3d264fb13c016d275efae58e4a7b34dcc68a57b6fc845d1333cf3c4f04e457d2"
+      },
+      {
+        "path": "scripts/yu_npc.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:37263e5582ddb0c969958fe770da44b58bff6c9c85dc2a199fbdc6760aaeca9a"
+      },
+      {
+        "path": "scripts/yu_qun.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b8e32c1a88884d9fd28f336cc7d4ee9159a780eb9bd026f495837ed1d66fa1c4"
+      },
+      {
+        "path": "scripts/zhang_ben.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:2825e01443ef82fd425d9869c733fb5929561c33b51b6f5843815147b1499d69"
+      },
+      {
+        "path": "scripts/zhuan_shu_ku/fen_yu.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:89da1d135deac75ba8576da4ed91f56ce1f32477b61f3a15b7e94d79700479be"
+      },
+      {
+        "path": "tests/ce_panding.gd",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8844ba44e32c8d7d4b6b67d43046a670dd99dd559ab732da596caac40f64eee4"
+      },
+      {
+        "path": "tools/yinyue/bgm_jue_zhan.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:af2092f22c3bce28b6cfccaf1bfa30f7c377dadd53901b8001303cbb47f653b6"
+      },
+      {
+        "path": "tools/yinyue/bgm_shen_hai.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:7051ddd344015a24f24a434e7b2182b0e37eafd864cd94a956affe12b8c52a8b"
+      },
+      {
+        "path": "tools/yinyue/bgm_tan_suo.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:4258413b4118ccac35cc9c34d6ea8a8cf2fd750b0390b145cb8f6585e369cc65"
+      },
+      {
+        "path": "tools/yinyue/shengcheng_yin_xiao.py",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:9875e5b0ee3b5d272b79f5f17feaefc9b70d3f775e2fceb071d4fd3991d5cb2d"
+      },
+      {
+        "path": "tools/yinyue/shengcheng_yinyue.py",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8217affbb96889855673ecb0b7ad317eda230bc10e971ebdd1221ae1ed19552d"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_an_niu.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:1f1968252effd1de1fe5527ee84ea5165f5cb709583de04a169f018d1c872696"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_chi.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:543ffe09f16b9a58fe38d5520169b588a6a27ca1bf4c3e79aa36c53bf8b08d1b"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_chong_ci.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:ad5f40853fbea8f78d13d274b08fdd2884a27e40bbef73b81d5619284af31ee3"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_dian_xi.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:02215bbb3866ec23edd246f2dcf0eb1d5eb573770aa356a7c52cc3a55b97ba69"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_du_xi.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:30fff057f184d56ac84d388cb5c2a897102341e94cb7ae1454f5a8eb53ba2a05"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_fang_neng_li.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7ad7c55daa6cbf6c2d6104a040570aa1ff135e50cc1445fd24317cbed0faba03"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_jiao_zhi.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:3f7081a7102225192adf1d3d742c71dd8d0ee101aee5f61dfb66af725ba6cc87"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_jing_bao.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8099ccea9ca170660929ebe79e188952f0105097e7109f1d382ab54ac5a1d472"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_sheng_ji.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:eb5d3f2f9e2aeaa5085111baa7c61fc20fb933b8243a26d6fbf4dfc78dff82eb"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_sheng_li.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:d60b425ec425fcb386cb14e6b8166cda182666c46756ecaa42862c6c1b370ddc"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_sheng_na.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:06ce22d8625c7cdc661221981ebd354958fb0b959293e119b46eae51dd8de6b8"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_shi_bai.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2dd3cc9cd802b70180ca8aacb7b04d638ad52bbc986617b94bedf8a6815bdf09"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_shi_kong.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:ec5be36c612a12d751641bc439a9aceaf954ff28534b92417fb7b370ae2ae793"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_shou_shang.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:c84bf1862be217d44dedbee429a493459773a5e3e28b2105c12ff2ba87b75143"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_si_wang.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:88f0dc08babc4c1640e2a5a76edf1074bcaaef407311730aaf14409fa49a395b"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_tan_chuang.mmp",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2fbc724b52c00808b33a6508d6468eaacec65c28bfd14d66080a4bf502bea478"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_tun_xia.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:8109b34cb3035f1edc1d723e27d2a05a7c211b06720319c540e4113be543f4e2"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_xuan_wo.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:b3fa4f43ab678876b700829afd23e7ddb91fea5deb14ba5fa00044246cd6933a"
+      },
+      {
+        "path": "tools/yinyue/yin_xiao_yao_ji.mmp",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:a15a76574f9e01ffe0314bcb3a7778c4e6fd9d8d260fd8430f71d646968a540b"
+      }
+    ]
+  },
+  "last_verified_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/neng_li_ui.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ji_neng_bu_ju 纯函数（6zg）",
+          "result": "1/5/10/11/20 个的列数、尺寸、屏内、互不重叠、镜像全部通过"
+        },
+        {
+          "check": "ce_panding 单文件",
+          "result": "1422 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3273 断言"
+        }
+      ],
+      "next_action": "等用户 F5 目检 10~20 个主动技能是否溢出、列序是否正确"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/neng_li_ui.gd",
+        "scripts/yu.gd"
+      ],
+      "check_results": [
+        {
+          "check": "手动攻击键（6zh）",
+          "result": "空挥不进冷却、冷却/冲撞/失控/演出锁拒绝、咬中进入同一冷却"
+        },
+        {
+          "check": "统一冷却",
+          "result": "与自动咬共用 _yao_ji_leng_que，按钮不重复结算伤害"
+        },
+        {
+          "check": "headless --import",
+          "result": "0 ERROR"
+        }
+      ],
+      "next_action": "等用户 F5 验证攻击键咬鱼/咬船、冷却读秒与换边镜像"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "tests/ce_panding.gd",
+        "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/"
+      ],
+      "check_results": [
+        {
+          "check": "八步门禁",
+          "result": "232 / 25 / 1422 / 8 / 20 / 144 / 1422 = 3273 passed, 0 failed，输出「全绿：可以交付」"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-029 v1 (plan_driven)"
+        },
+        {
+          "check": "check_task_scope.py",
+          "result": "12 allowed, 168 unchanged pre-existing, 0 violation"
+        },
+        {
+          "check": "check_task_scope.py（文档收尾后复跑）",
+          "result": "23 allowed, 159 unchanged pre-existing, 0 violation"
+        }
+      ],
+      "next_action": "F5 目检通过后收尾学习检查点"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-11-14T21:21:38+08:00",
+    "exact_user_text": "TASK-029 已创建，awaiting 停等你的批准，通过"
+  },
+  "capability_decisions": {
+    "superpowers": "not_needed",
+    "godot_skill": "available",
+    "code_review": "available"
+  }
+}

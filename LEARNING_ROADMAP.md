@@ -173,6 +173,31 @@
   - 八步门禁 232 / 25 / 1422 / 8 / 20 / 144 / 1236 全绿，合计 3087 断言（净减 51：删旧欢迎鱼断言 + 新增九房用例）；`validate_task` VALID；`check_task_scope` 0 violation（8 allowed / 214 unchanged）
   - 机器人自动通关 576.9 秒、Lv.19、体型峰值 30、换房 34 次覆盖九房全部、船 1140 HP 约 59.5 秒击沉；真人 F5 与手机雷达帧率待拍板；未 commit/push
   - 引擎词见 `docs/引擎词总表.md`「插课 · TASK-025：房间预置鱼群与九房虚拟模拟」
+- [x] **插课 · TASK-026 生态精简 + 毒鱼耐受 + 咬伤经验 + NPC 鱼王**（2026-11-15，实现完成，学习未开始）
+  - 退池 `hong_yu` / `an_ying_jian_yu`，狮子鱼 `_dang>=2` 才可抽；`shua_xin_zui_di()` 恒 1 保证低等级全期可刷
+  - `ZhangBen.jia_du_yun_chi_du_yu()`：连吃 45/31.5/18/13.5，8 秒窗口，停吃每 2 秒退一层；原 `jia_du_yun()` 不动
+  - 咬伤按实际掉肉 ×5 给经验（小数池），同目标 0.6 秒接触伤害 ×0.2
+  - NPC `deng_ji_nei>=10` 晋升鱼王（每房 2 只、不可整吞、不逃跑、败退 3 大肉 + 2 倍鱼种经验、绝不 emit `bei_ji_bai`）；雷达金点
+  - 八步门禁 3164 断言全绿（`ce_panding` 1313）；机器人两次连续胜利 532.0 / 541.5 秒；未 commit/push
+  - 引擎词见 `docs/引擎词总表.md`「插课 · TASK-026」
+- [x] **插课 · TASK-027 全部音乐与音效重制**（2026-11-15，实现完成，学习未开始）
+  - 3 BGM 重编曲（56/96/140 BPM，51.4/40.0/41.1 秒），19 条 SFX 统一生成（12 重写 + 7 新增），删 11 条旧 wav
+  - `yin_xiang.gd` 只改 7 个 preload，键名与 24 处调用点零改动
+  - 决战曲去刺耳高频：全曲 ≤200Hz 占 91.2%、≥4kHz 仅 0.4%；`inst_triple` 左右失谐成对修复
+  - 八步门禁 3273 断言全绿；F5 试听待用户
+  - 引擎词见 `docs/引擎词总表.md`「插课 · TASK-027」
+- [x] **插课 · TASK-028 九图拼合结尾演出重做**（2026-11-15，实现完成，学习未开始）
+  - 保持 `YAN_CHU_SHI_CHANG = 7.3` 与静态契约；`pin_jie_shun_xu=[0..8]` 左上角起逐张显影
+  - 显影不飞入（初始即在最终中心、alpha 0→1、scale 0.96→1 + 波纹）；慢推镜、打字机、4 帧船体 + 冷蓝背光
+  - 删红闪/震屏/震惊气泡；ESC 与按钮跳过共用 `_jie_shu_yan_chu()`，`jie_shu` 只发一次
+  - 演出期间隐藏 HUD 气泡层与设置按钮，结束恢复；八步门禁 3273 全绿
+  - 引擎词见 `docs/引擎词总表.md`「插课 · TASK-028」
+- [x] **插课 · TASK-029 技能栏自适应布局 + 手动攻击键**（2026-11-15，实现完成，学习未开始）
+  - `ji_neng_bu_ju()` 纯函数按数量算列数（每列≤5、最多 4 列、宽 132~210、高 44~64），20 个主动不溢出 1280×720
+  - 右下角代码生成 96×96「咬」按钮；`Yu.yao_ji_shou_dong()` 与自动咬共用 `_yao_ji_leng_que`，空挥不进冷却
+  - 摇杆换右手侧时技能栏与攻击键整体镜像；不改 `Main.tscn` / `project.godot`
+  - 八步门禁 3273 断言全绿（`ce_panding` 1422，比 026 净增 109）
+  - 引擎词见 `docs/引擎词总表.md`「插课 · TASK-029」
 - [ ] **第 11 课 · 安卓导出与 TapTap**（TASK-010，暂缓后恢复）
   - Export Template、签名 APK、真机验证、开发者后台提审
 
@@ -236,3 +261,7 @@
 | 2026-11-13 | 插课·TASK-023 雷达小地图 + 地图透明度设置 | ✅ 实现完成，学习未开始（`not_started`）：小地图移到右上设置按钮正下方 `(1008,52)-(1248,212)`，删除海图背景 `beijing_3x3.webp` preload，改 Control 立即模式雷达绘制（半透明黑底 0.82、淡化 3×3 网格、同心椭圆环、当前房亮青框、玩家蓝/NPC 红/植物绿/首领与机械船金点白描边）；设置面板运行时创建透明度行（0.3~1.0、步进 0.05、默认 0.85），`value_changed` 即推 `XiaoDiTu.she_tou_ming_du`，`drag_ended` 落盘 `xiao_di_tu_tou_ming`；`CunDang` 读档缺键回退 0.85、坏值夹取，`SHE_ZHI_BAN_BEN` 保持 1；`Main._ready` 开局应用；测试隔离真实设置文件后断言布局/映射/透明度。门禁 232/25/1422/8/20/144/1287 全绿合计 3138 断言，validate VALID，scope 0 violation；F5 目检与红测待用户；未 commit/push |
 | 2026-11-13 | 插课·TASK-024 技能/被动对机械船生效 + 自动通关 | ✅ 实现完成，学习未开始（`not_started`）：机械船加入独立组 `ji_qi_chuan`（不混入 `yu_npc`）并标记 `shi_boss`，补齐鸭子契约——`ji_neng_dui_bi_ti_xing()` 用玩家体型参照、`shou_dao_ji_neng` 1 级=8 HP、`shou_dao_ji_neng_bai_fen` 按 max HP×百分比×0.5、定身/状态单次 1.2 秒上限+3 秒抗性窗口×0.35、酸蚀 DoT 每秒按级折 HP、`tui_kai` 单次≤3px、`bei_chi` no-op；玩家 `di_ren_lie()` 合并两组合并去重过滤死亡，全部主动/被动扫描改用统一列表，`zhan_dou_bai_fen_shang`/`_zhuan_shu_shang_npc` 分单位结算，六份进化模块同步；普通鱼路径数值不变。新增 21 条船兼容断言；八步门禁 3138 断言全绿；临时无头探针（3 倍速）真实跑一局：胜利 557.1 秒、Lv.15/体型 24、累计掉体型 43.9、饥饿最低 87.5、技能 174 次、卡 15/进化 1、船 487.3 秒出现 840 HP、约 65~70 秒击沉；机器人上限操作下难度偏中低，真人 F5 待拍板；未 commit/push |
 | 2026-11-14 | 插课·TASK-025 房间预置鱼群：取消换房整批刷新 + 雷达九房 NPC | ✅ 实现完成，学习未开始（`not_started`）：换房不再清空旧房并整批补满；九宫格 9 房首次换房时各预置 `dang_qian_shang_xian()` 条记录（0 压力 35 条），未加载房只存 `Dictionary`、不建节点。换房固定顺序：保存实体状态回记录 → 释放旧房实体 → 更新房间/房号 → 按目标房记录加载（`add_child` 前写恢复载荷，离玩家 <240px 推开）→ 重排 `Dingshi`；停刷期只保存不加载。未加载房每 0.25 秒虚拟游动、每 20 秒 35% 概率同房互吃（最小鱼优先），每档淘汰最小 20% 并从房边补新鱼、`maxi(8, 上限×0.6)` 保底；当前房保留原 0.6~1.8 秒补鱼节奏。雷达 `_hu_npc()` 优先读九房记录：当前房点稍大稍亮、其他房略小略暗；再补画未托管教学鱼，Boss 金点与图例不变。八步门禁 232 / 25 / 1422 / 8 / 20 / 144 / 1236 全绿，合计 3087 断言（净减 51：删旧欢迎鱼断言 + 新增九房用例）；`validate_task` VALID；`check_task_scope` 0 violation（8 allowed / 214 unchanged）。机器人自动通关 576.9 秒、Lv.19、体型峰值 30、换房 34 次覆盖九房全部、船 1140 HP 约 59.5 秒击沉；真人 F5 与手机雷达帧率待拍板；未 commit/push。引擎词见 `docs/引擎词总表.md`「插课 · TASK-025」 |
+| 2026-11-15 | 插课·TASK-026 生态精简、毒鱼耐受、咬伤经验、NPC 鱼王成长与雷达红点对账 | ✅ 实现完成，学习未开始（`not_started`）：①鱼池——`TUI_CHU_PAI_CHI` 退掉 `hong_yu`/`an_ying_jian_yu`，狮子鱼 `DU_YU_ZUI_DI_DANG=2`（约 40 秒后才进池），`shua_xin_zui_di()` 恒 1 保证后期仍有 1 级小鱼。②毒抗递减——新入口 `ZhangBen.jia_du_yun_chi_du_yu()`，连吃 45/31.5/18/13.5、第 5 条封底 13.5，8 秒窗口，停吃满 8 秒后每 2 秒退一层；跨窗口帧只计溢出时间，原 `jia_du_yun()` 数值 45 不动。③咬伤经验——按实际掉肉 ×5，小数经验池满 1 才入账；同一目标 0.6 秒内接触伤害 ×0.2。④NPC 鱼王——隐藏等级 `deng_ji_nei>=10` 晋升、每房最多 2 只、+2 体型、不可整吞、不逃跑；残血败退掉 3 块大肉 + 2 倍鱼种经验、绝不 emit `bei_ji_bai`；名额以九房记录为权威，晋升同帧 `hui_xie_ji_lu()` 回写。⑤雷达红点——`XiaoDiTu.ji_lu_ke_hua()` 纯函数过滤死鱼/无效节点，人类战停刷 `qing_chu_qi_ta_fang_ji_lu()` 清非当前房记录。八步门禁 232 / 25 / 1422 / 8 / 20 / 144 / 1313 全绿，合计 3164 断言（净增 77）；`validate_task` VALID；`check_task_scope` 产品代码 0 越界（3 条 VIOLATION 为任务包元数据，已如实记录）。机器人探针两次连续胜利：532.0 秒 / 541.5 秒，Lv.16 / 体型峰值 25.5 / 最低 2.0，船 487.3 秒出现 960 HP，44.6 / 54.2 秒击沉；鱼王峰值 0 属节奏风险待 F5。本轮未 commit、未 push。引擎词见 `docs/引擎词总表.md`「TASK-026 引擎词」 |
+| 2026-11-15 | 插课·TASK-027 全部音乐与音效重制（3 BGM + 19 SFX） | ✅ 实现完成，学习未开始（`not_started`）：①SFX——`tools/yinyue/shengcheng_yin_xiao.py` 的 `JOBS` 从 12 扩到 19（12 条现有 `qu_*` 全部重写 + 7 条旧键新增生成），统一 44.1kHz/16bit/单声道、峰值 -1.5 dBFS、时长误差 0；`validate()` 检查格式/时长/峰值/循环接缝。②BGM——`shengcheng_yinyue.py` 三首重编曲，保持 56/96/140 BPM 与 51.4/40.0/41.1 秒；新增 `validate_bgm()`（格式/时长 ±0.05 秒/首尾 10ms 静默）；决战曲全曲 FFT ≤200Hz 91.2%、≥4kHz 0.4%；修复 `inst_triple` `finel1`/`finer1` 成对设置，消除降混拍频。③接线——`yin_xiang.gd` 只改 7 个旧键 preload、键名零改动；先导入新文件跑通再删 11 条旧 wav 与 `.import`。八步门禁 3273 断言全绿；`validate_task` VALID；scope 107/73/0；F5 试听待用户。引擎词见 `docs/引擎词总表.md`「插课 · TASK-027」 |
+| 2026-11-15 | 插课·TASK-028 九图拼合结尾演出重做（7.3 秒） | ✅ 实现完成，学习未开始（`not_started`）：整脚本重写 `scripts/di_tu_pin_jie_yan_chu.gd`——保持 `YAN_CHU_SHI_CHANG=7.3` 与静态纯函数契约；`pin_jie_shun_xu=[0..8]` 左上角起行优先，九块图初始即在 `ge_zi_zhong_xin`、不再飞入，只做 alpha 0→1 + scale 0.96→1 + 波纹圆环（`XIAN_YING_JIAN_GE=0.15`、`BO_WEN_ZUI_DA_BAN_JING=220`）；2.5~3.6 秒玩家格金框 + 打字机（`visible_ratio`，0.05 秒/字）；4.5~5.9 秒船体 4 帧 `AnimatedSprite2D` 压入 + 冷蓝背光 `LENG_GUANG_YAN_SE`（alpha≤0.12）；删除红闪/震屏/震惊气泡/翘头。ESC 与跳过按钮共用 `_jie_shu_yan_chu()` + `_jie_shu_le` 守卫，`jie_shu` 只发一次；`main.gd` 演出期间隐藏并恢复 `QiPaoCeng` 与设置按钮。`ce_panding` 新增 6zf 静态/运行时断言；八步门禁 3273 全绿；`validate_task` VALID；scope 13/167/0；F5 目检待用户。引擎词见 `docs/引擎词总表.md`「插课 · TASK-028」 |
+| 2026-11-15 | 插课·TASK-029 主动技能栏自适应布局 + 右下角手动攻击键 | ✅ 实现完成，学习未开始（`not_started`）：①布局——`neng_li_ui.gd` 新增纯函数 `ji_neng_bu_ju(shu, shi_kou, you_yuan, yao_gan_ce, zuo_yuan)`，列数 `clampi(ceili(shu/5),1,4)`，尺寸三档（行距 72/60/52、高 64/52/44、宽 210/168/132），任意数量不溢出 1280×720；`_tong_bu_an_niu()` 每帧按实际数量重建，`focus_mode=FOCUS_NONE`。②攻击键——`gong_ji_an_niu_wei_zhi()` 纯函数给出 (1154,584)/(30,584)，懒创建 96×96 圆形 `GongJiAnNiu`（StyleBoxFlat 圆角 48），冷却读秒「咬 x.xs」+ 变暗，入口缺失显示「待接入」。③统一冷却——`Yu.yao_ji_shou_dong()` 冷却/冲撞/失控/演出锁直接 false，否则复用 `_chang_shi_yao_ji()`（与自动咬共用 `_yao_ji_leng_que`，空挥不进冷却）。④镜像——摇杆换右手侧时技能栏与攻击键整体镜像（首列 x=134）。`ce_panding` 新增 6zg 布局 20 条 + 6zh 攻击键断言（含出屏回收夹具调试），达 1422 passed（比 026 净增 109）；八步门禁 3273 全绿；`validate_task` VALID；scope 12/168/0；F5 手测待用户。引擎词见 `docs/引擎词总表.md`「插课 · TASK-029」 |

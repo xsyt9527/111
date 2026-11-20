@@ -5,7 +5,7 @@ extends Node
 # 素材全部是程序合成 WAV（免版税·自制，见 docs/美术资源首装记录/引擎词总表）
 
 const YIN_XIAO_BIAO: Dictionary = {
-	# F 2026-11-08 12 条新音效（LMMS 自制，全部 44.1kHz/16bit/单声道，峰值 -1.5dBFS）
+	# F 2026-11-15 19 条音效全量重制（LMMS 自制，全部 44.1kHz/16bit/单声道，峰值 -1.5dBFS）
 	&"yao": preload("res://assets/yinxiao/yin_xiao_yao_ji.wav"),        # F1 每次咬中：短噪声脉冲+低频 thump
 	&"tun_xia": preload("res://assets/yinxiao/yin_xiao_tun_xia.wav"),    # F2 吞噬成功：上滑滑音+咕咚
 	&"sheng_ji": preload("res://assets/yinxiao/yin_xiao_sheng_ji.wav"),  # F3 升级三选一：大调琶音铃
@@ -18,14 +18,14 @@ const YIN_XIAO_BIAO: Dictionary = {
 	&"sheng_na": preload("res://assets/yinxiao/yin_xiao_sheng_na.wav"),  # F10 声呐脉冲：800Hz ping
 	&"jing_bao": preload("res://assets/yinxiao/yin_xiao_jing_bao.wav"),  # F11 机械船入场预告：双音警报
 	&"jiao_zhi": preload("res://assets/yinxiao/yin_xiao_jiao_zhi.wav"),  # F12 吃鱼肉块：两下短咀嚼
-	# 旧音效保留：植物进食与其余按钮/结算反馈仍用原素材
-	&"chi": preload("res://assets/yinxiao/chi.wav"),            # 吃植物（海草/珊瑚）
-	&"shi_kong": preload("res://assets/yinxiao/shi_kong.wav"),  # 失控兜底（来源未知时）
-	&"tan_chuang": preload("res://assets/yinxiao/tan_chuang.wav"),  # 升级三选一弹出
-	&"fang_neng_li": preload("res://assets/yinxiao/fang_neng_li.wav"),  # 主动能力释放（通用兜底）
-	&"sheng_li": preload("res://assets/yinxiao/sheng_li.wav"),  # 胜利结算
-	&"shi_bai": preload("res://assets/yinxiao/shi_bai.wav"),    # 失败结算
-	&"an_niu": preload("res://assets/yinxiao/an_niu.wav"),      # 按钮点击
+	# 旧键 2026-11-15 全部改接统一生成器产物：键名不变，24 处 an_niu 调用点零改动
+	&"chi": preload("res://assets/yinxiao/yin_xiao_chi.wav"),                  # F14 吃植物
+	&"shi_kong": preload("res://assets/yinxiao/yin_xiao_shi_kong.wav"),       # F17 失控兜底
+	&"tan_chuang": preload("res://assets/yinxiao/yin_xiao_tan_chuang.wav"),    # F15 升级三选一弹出
+	&"fang_neng_li": preload("res://assets/yinxiao/yin_xiao_fang_neng_li.wav"),  # F16 主动能力释放
+	&"sheng_li": preload("res://assets/yinxiao/yin_xiao_sheng_li.wav"),        # F18 胜利结算
+	&"shi_bai": preload("res://assets/yinxiao/yin_xiao_shi_bai.wav"),          # F19 失败结算
+	&"an_niu": preload("res://assets/yinxiao/yin_xiao_an_niu.wav"),            # F13 按钮点击
 }
 const BGM_SHEN_HAI := preload("res://assets/yinxiao/bgm_shen_hai.wav")  # 深海摇篮：主界面/选角/结算/默认氛围
 const BGM_QU_MU: Dictionary = {

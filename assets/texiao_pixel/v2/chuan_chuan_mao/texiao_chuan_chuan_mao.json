@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "chuan_chuan_mao 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 1",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 2",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 3",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 4",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 5",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 6",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 7",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 8",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 9",
+   "frame": {
+    "x": 1080,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_chuan_mao 10",
+   "frame": {
+    "x": 1200,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 132
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_chuan_chuan_mao.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1320,
+   "h": 132
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "scifi/tractor-beam",
+   "name": "chuan_chuan_mao",
+   "fps": 12,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    120,
+    132
+   ],
+   "pivot": [
+    60.0,
+    132.0
+   ],
+   "columns": 11,
+   "visible": [
+    76,
+    127
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "bottom"
+  }
+ }
+}

@@ -142,7 +142,7 @@ static func _zao_gui_huo(yu, neng: NengLi, dang: int) -> Node2D:
 		return null
 	var huo := Sprite2D.new()
 	huo.name = GUI_HUO_ZHEN_MING
-	huo.texture = DIAN_TE_XIAO.get_frame_texture(&"bao", 0)
+	huo.texture = _gui_huo_tu()
 	huo.scale = Vector2.ONE * GUI_HUO_CHU_SHI_BIAN
 	huo.modulate = Color(0.55, 1.0, 0.82, 1.0)
 	huo.z_index = 5
@@ -159,6 +159,18 @@ static func _zao_gui_huo(yu, neng: NengLi, dang: int) -> Node2D:
 	huo.add_child(timer)
 	timer.start()
 	return huo
+
+
+static func _gui_huo_tu() -> Texture2D:
+	# 鬼火外观优先用 v2 图集首帧（灰绿光球）；资源缺失回退旧电光帧
+	var zi := TeXiaoKu.zi_yuan(&"gui_huo")
+	if not zi.is_empty():
+		var jie := XiangSuTeXiao.qu_lu(String(zi["lu"]))
+		if not jie.is_empty():
+			var kuang: SpriteFrames = jie["kuang"]
+			if kuang.has_animation(&"bao") and kuang.get_frame_count(&"bao") > 0:
+				return kuang.get_frame_texture(&"bao", 0)
+	return DIAN_TE_XIAO.get_frame_texture(&"bao", 0)
 
 
 static func _geng_gui_huo(yu, neng: NengLi, delta: float) -> void:
@@ -185,7 +197,10 @@ static func _geng_gui_huo(yu, neng: NengLi, delta: float) -> void:
 		if mu.has_method("jia_zhuang_tai"):
 			mu.call("jia_zhuang_tai", &"mei_huo", maxf(0.0, _zhi(neng, &"chi_xu", 1)), huo.global_position)
 		if yu.get_parent() != null:
-			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, huo.global_position, 0.9)
+			# v2 鬼火抵达：灰绿鬼火在目标身上爆开；尺寸随目标体长；缺资源回退旧电光
+			if TeXiaoKu.bo_ming(&"gui_huo", yu.get_parent(), huo.global_position,
+					TeXiaoKu.ti_kuan(mu) * 1.0, {"chi_xu": 0.8}) == null:
+				TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, huo.global_position, 0.9)
 		huo.queue_free()
 		yu.remove_meta(META_GUI_HUO)
 		return
@@ -262,7 +277,10 @@ static func _gei_xing_zuo_yu_hui(yu) -> void:
 		return
 	yu._ni_liu_sheng_yu = maxf(yu._ni_liu_sheng_yu, miao)
 	if yu.get_parent() != null:
-		TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, yu.global_position, 0.8)
+		# v2 星座余晖：淡蓝星尘在玩家身上亮起；尺寸随玩家体长；缺资源回退旧电光
+		if TeXiaoKu.bo_ming(&"xing_chen", yu.get_parent(), yu.global_position,
+				TeXiaoKu.ti_kuan(yu) * 1.2, {"chi_xu": miao}) == null:
+			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, yu.global_position, 0.8)
 
 
 static func _wen_xing_chen(yu, neng: NengLi, jian: StringName, shu_ju: Dictionary) -> float:
@@ -364,7 +382,10 @@ static func _geng_lin_guang(yu, neng: NengLi, delta: float) -> void:
 		if npc.has_method("shou_zhi_jie_shang"):
 			npc.call("shou_zhi_jie_shang", zhi_shang * (0.5 if bool(npc.get("shi_boss")) else 1.0))
 		if yu.get_parent() != null:
-			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, npc.global_position, 1.0)
+			# v2 磷光爆闪：每个被致盲目标头上炸一朵青绿磷光；尺寸随目标体长；缺资源回退旧电光
+			if TeXiaoKu.bo_ming(&"lin_guang", yu.get_parent(), npc.global_position,
+					TeXiaoKu.ti_kuan(npc) * 0.9, {"chi_xu": chi_xu}) == null:
+				TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, npc.global_position, 1.0)
 	var fan_zhi := maxf(0.0, _zhi(neng, &"npc_shu_zhi", 1))
 	if fan_zhi <= 0.0:
 		yu.remove_meta(META_LIN_GUANG)
@@ -373,7 +394,10 @@ static func _geng_lin_guang(yu, neng: NengLi, delta: float) -> void:
 		zhuang["fan_zhi_mang"] = fan_zhi
 		yu.set_meta(META_LIN_GUANG, zhuang)
 	if yu.get_parent() != null:
-		TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, yuan, 1.5)
+		# v2 磷光爆闪中心：以玩家为圆心的磷光冲击波，宽度等于判定直径；缺资源回退旧电光
+		if TeXiaoKu.bo_ming(&"lin_guang", yu.get_parent(), yuan,
+				ban_jing * 2.0) == null:
+			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, yuan, 1.5)
 
 
 static func _wen_lin_guang(yu, _neng: NengLi, jian: StringName, _shu_ju: Dictionary) -> float:
@@ -418,5 +442,8 @@ static func _shi_jian_bao_lie(yu, neng: NengLi, jian: StringName, shu_ju: Dictio
 	npc.jia_dian_ma(dian_ma)
 	yu._dong_nei_bu_leng_que(&"bao_lie_ti_zhi", maxf(0.0, neng.nei_bu_leng_que))
 	if yu.get_parent() != null:
-		TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, npc.global_position, 0.8)
+		# v2 爆裂体质：被咬触发时咬击者身上炸白绿光；尺寸随其体长；缺资源回退旧电光
+		if TeXiaoKu.bo_ming(&"fb_bao_lie", yu.get_parent(), npc.global_position,
+				TeXiaoKu.ti_kuan(npc) * 0.8) == null:
+			TE_XIAO.bo(yu.get_parent(), DIAN_TE_XIAO, npc.global_position, 0.8)
 	return false

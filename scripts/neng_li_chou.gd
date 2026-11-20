@@ -11,9 +11,9 @@ const SAN_ZHANG := 3  # 每次弹窗给几张
 # E2 保底用：进攻向主动技（造成伤害/控制/突进压制）。防御、位移闪避、召唤诱饵不在此列。
 # 只用于「首次三选一必含 1 个进攻主动」，不改变常规抽卡概率。
 const JIN_GONG_ZHU_DONG: Array[StringName] = [
-	&"chang_mao_chuan_ci", &"chao_ya_shui_dao", &"dian_mai_chong", &"fang_dian_ma_bi",
+	&"chang_mao_chuan_ci", &"chao_ya_shui_dao", &"fang_dian_ma_bi",
 	&"jiu_tou_dian_wang", &"ju_du_tu_ci", &"kong_jian_lie_feng", &"kuang_bao_si_yao",
-	&"lei_bao_zhao_huan", &"luo_xuan_zuan_tu", &"man_li_chong_zhuang", &"po_kong_fu_chong",
+	&"lei_bao_zhao_huan", &"luo_xuan_zuan_tu", &"po_kong_fu_chong",
 	&"qian_fu_tu_xi", &"qiang_suan_pen_tu", &"shi_hua_zhi_tong", &"you_ling_qi_she",
 	&"yu_lei_chong_ci", &"xuan_wo", &"xue_xing_kuang_re", &"ji_su_tu_jin",
 ]

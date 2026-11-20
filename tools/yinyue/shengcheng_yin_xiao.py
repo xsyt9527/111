@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-深海食纪 · 12 条 LMMS 音效生成器（LMMS 1.2.2）
-依据：开发交接_2026-11-08_待实装清单.md 的 F 节（F1~F12）。
+深海食纪 · 19 条 LMMS 音效生成器（LMMS 1.2.2）
+依据：TASK-027 任务包；原 12 条来自开发交接_2026-11-08_待实装清单.md 的 F 节（F1~F12），
+      TASK-027 全量重制音色/包络，并补齐 7 个旧键对应的 F13~F19。
 做法：每条音效写一个 LMMS .mmp 工程（TripleOscillator/Kicker/SFXR/AudioFileProcessor + reverbsc），
      用 LMMS 命令行渲染，再由 Python 做必要的后处理（单声道下混、定长裁剪、去直流、淡入淡出、归一化、循环校验）。
      不在 Python 里从零合成整条音效；LMMS 始终是主体声源。
 
 产物：
-  assets/yinxiao/yin_xiao_*.wav   12 条正式音效（44100Hz / 16bit / 单声道）
+  assets/yinxiao/yin_xiao_*.wav   19 条正式音效（44100Hz / 16bit / 单声道）
   tools/yinyue/yin_xiao_*.mmp     对应的 LMMS 工程（正式产物，可复现）
 临时：
   tools/yinyue/render/*.wav       LMMS 原始立体声渲染，处理完即删
@@ -59,8 +60,8 @@ def _fmt(v):
 
 
 def triple(wave0=0, coarse0=0, finel0=0, finer0=0, vol0=100,
-           wave1=2, coarse1=0, finel1=0, vol1=0,
-           wave2=0, coarse2=0, finel2=0, vol2=0, detune=0):
+           wave1=2, coarse1=0, fine1=0, vol1=0,
+           wave2=0, coarse2=0, fine2=0, vol2=0, detune=0):
     """三振荡器：0=正弦 1=三角 2=锯齿 3=方波；coarse 为半音偏移，finel/finer 为音分。
     实测 LMMS 1.2.2：finel 只作用于左声道、finer 只作用于右声道；
     单声道成品若只设 finel，下混后左右两声道会差半个音程形成拍频，必须两者设同一值。"""
@@ -68,9 +69,9 @@ def triple(wave0=0, coarse0=0, finel0=0, finer0=0, vol0=100,
         "vol0": vol0, "wavetype0": wave0, "coarse0": coarse0,
         "finel0": finel0, "finer0": finer0, "pan0": 0,
         "vol1": vol1, "wavetype1": wave1, "coarse1": coarse1,
-        "finel1": finel1, "finer1": 0, "pan1": 0,
+        "finel1": fine1, "finer1": fine1, "pan1": 0,
         "vol2": vol2, "wavetype2": wave2, "coarse2": coarse2,
-        "finel2": finel2, "finer2": 0, "pan2": 0,
+        "finel2": fine2, "finer2": fine2, "pan2": 0,
         "modalgo1": 0, "modalgo2": 0, "modalgo3": 0,
         "stphdetun0": detune, "stphdetun1": 0, "stphdetun2": 0,
         "phoffset0": 0, "phoffset1": 90, "phoffset2": 180,
@@ -142,7 +143,8 @@ def reverb(wet=0.85, size=0.8, color=0.6):
             '</effect></fxchain>' % (_fmt(wet), _fmt(size), _fmt(color)))
 
 
-def track(name, instrument, env, notes, vol=100, pan=0, fx=None):
+def track(name, instrument, env, notes, vol=100, pan=0, fx=None,
+          pattern_len=TICKS_PER_BAR):
     """一条乐器轨 + 铺满 2 秒的 pattern。notes 为 (pos_tick, len_tick, key, vol)。"""
     note_xml = "\n".join(
         '          <note key="%d" vol="%d" pos="%d" pan="%d" len="%d"/>'
@@ -157,7 +159,7 @@ def track(name, instrument, env, notes, vol=100, pan=0, fx=None):
           <midiport outputchannel="1" outputcontroller="0" basevelocity="127" outputprogram="1" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1" inputchannel="0" inputcontroller="0" readable="0" writable="-1"/>
           {fx_xml}
         </instrumenttrack>
-        <pattern type="1" muted="0" steps="16" name="{name}" pos="0" len="{TICKS_PER_BAR}">
+        <pattern type="1" muted="0" steps="16" name="{name}" pos="0" len="{pattern_len}">
 {note_xml}
         </pattern>
       </track>"""
@@ -203,205 +205,301 @@ def gliss(pos_sec, dur_sec, key0, key1, step_tick=2, note_len_tick=3,
     return notes
 
 
-# ---------------------------------------------------------------- F1~F12 声音设计
+# ---------------------------------------------------------------- F1~F19 声音设计
+# 2026-11-15 全量重制：用户反馈原音效/音乐「怪怪的」，主因是高频锯齿、镲片堆叠、
+# 半音堆砌与 SFXR 白噪过亮。新版统一改成「正弦/三角为主 + 低通噪声点缀」，
+# 保留每条音效的语义与原时长，峰值仍由 postprocess/validate 统一管到 -1.5 dBFS。
+
+
 def qu_yao_ji():
-    """F1 每次咬中：短噪声脉冲 + 80Hz 低频 thump，“啵”的一声。"""
+    """F1 每次咬中：低频 thump + 柔软咬合脉冲，短促不刺耳。"""
     return [
-        track("咬合噪声", afp("drums/snare_short01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.055, sustain=0.0, rel=0.03),
-              [nt(0.0, 0.03, 57, 110)], vol=100),
-        track("低频 thump", kicker(startfreq=180, endfreq=50, decay=180,
-                                  noise=0.05, click=0.2, dist=0.7),
-              eldata(amt=0.0), [nt(0.0, 0.25, 57, 100)], vol=100),
+        track("咬合软脉冲", afp("drums/snare_short01.ogg"),
+              eldata(amt=1.0, att=0.002, dec=0.04, sustain=0.0, rel=0.02),
+              [nt(0.0, 0.03, 57, 70)], vol=65),
+        track("低频 thump", kicker(startfreq=160, endfreq=45, decay=160,
+                                  noise=0.02, click=0.15, dist=0.6),
+              eldata(amt=0.0), [nt(0.0, 0.22, 57, 100)], vol=100),
+        track("啵", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=10),
+              eldata(amt=1.0, att=0.002, dec=0.06, sustain=0.0, rel=0.02),
+              [nt(0.0, 0.05, 45, 100)], vol=45),
     ], 0.3, dict(fade_in=0.002, fade_out=0.025)
 
 
 def qu_tun_xia():
-    """F2 吞噬成功：上滑滑音 + “咕咚”低频收尾，满足感。"""
+    """F2 吞噬成功：正弦上滑 + 低频咕咚，圆润满足。"""
     return [
-        track("上滑", triple(wave0=0, vol0=100, wave1=2, vol1=16,
-                             wave2=0, coarse2=12, vol2=12),
-              eldata(amt=1.0, att=0.004, dec=0.08, sustain=0.8, rel=0.03),
-              gliss(0.0, 0.42, 45, 60, step_tick=2, note_len_tick=3), vol=85),
-        track("咕咚", kicker(startfreq=120, endfreq=45, decay=320,
-                             noise=0.08, click=0.25, dist=0.7),
-              eldata(amt=0.0), [nt(0.42, 0.32, 57, 100)], vol=100),
+        track("上滑", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=14),
+              eldata(amt=1.0, att=0.006, dec=0.08, sustain=0.8, rel=0.03),
+              gliss(0.0, 0.42, 45, 64, step_tick=2, note_len_tick=3), vol=80),
+        track("咕咚", kicker(startfreq=120, endfreq=45, decay=300,
+                             noise=0.03, click=0.2, dist=0.6),
+              eldata(amt=0.0), [nt(0.42, 0.32, 57, 100)], vol=95),
         track("低频垫", triple(wave0=0, vol0=100),
               eldata(amt=1.0, att=0.01, dec=0.35, sustain=0.0, rel=0.05),
-              [nt(0.42, 0.30, 33, 60)], vol=50),
+              [nt(0.42, 0.30, 33, 100)], vol=45),
     ], 0.8, dict(fade_in=0.003, fade_out=0.04)
 
 
 def qu_sheng_ji():
-    """F3 升级三选一弹出：大调琶音铃 C-E-G-C，明亮。"""
-    notes = [nt(0.000, 0.62, 60, 100),
-             nt(0.188, 0.62, 64, 100),
-             nt(0.375, 0.62, 67, 100),
-             nt(0.563, 0.68, 72, 100)]
+    """F3 升级三选一弹出：三角琶音铃 C-E-G-C，明亮但不尖。"""
+    notes = [nt(0.000, 0.55, 60, 100),
+             nt(0.160, 0.55, 64, 100),
+             nt(0.320, 0.55, 67, 100),
+             nt(0.480, 0.62, 72, 100)]
     return [
-        track("大调琶音铃", triple(wave0=0, vol0=100,
-                                wave1=0, coarse1=12, vol1=28,
-                                wave2=0, coarse2=24, vol2=8),
-              eldata(amt=1.0, att=0.003, dec=0.55, sustain=0.0, rel=0.30),
-              notes, vol=85),
+        track("大调琶音铃", triple(wave0=1, vol0=100,
+                                wave1=0, coarse1=0, vol1=24,
+                                wave2=1, coarse2=12, vol2=10),
+              eldata(amt=1.0, att=0.004, dec=0.42, sustain=0.02, rel=0.30),
+              notes, vol=82),
     ], 1.2, dict(fade_in=0.003, fade_out=0.06)
 
 
 def qu_shou_shang():
-    """F4 玩家被咬掉肉：织物撕裂声 + 下滑音，痛感。"""
+    """F4 玩家被咬掉肉：柔和撕裂 + 三角下滑，痛感但不刺耳。"""
     return [
         track("撕裂", afp("effects/scratch01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.18, sustain=0.0, rel=0.08),
-              [nt(0.0, 0.20, 57, 100)], vol=100),
-        track("下滑", triple(wave0=2, vol0=100, wave1=2, vol1=28, detune=7),
-              eldata(amt=1.0, att=0.004, dec=0.10, sustain=0.65, rel=0.04),
-              gliss(0.02, 0.36, 75, 45, step_tick=2, note_len_tick=3), vol=85),
-        track("电刺", afp("drums/zap01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.05, sustain=0.0, rel=0.02),
-              [nt(0.03, 0.04, 57, 80)], vol=60),
+              eldata(amt=1.0, att=0.001, dec=0.14, sustain=0.0, rel=0.06),
+              [nt(0.0, 0.16, 57, 100)], vol=72),
+        track("下滑", triple(wave0=1, vol0=100, wave1=0, coarse1=-12, vol1=18),
+              eldata(amt=1.0, att=0.006, dec=0.10, sustain=0.6, rel=0.04),
+              gliss(0.02, 0.32, 72, 45, step_tick=2, note_len_tick=3), vol=72),
+        track("闷响", kicker(startfreq=140, endfreq=45, decay=180,
+                             noise=0.02, click=0.15, dist=0.6),
+              eldata(amt=0.0), [nt(0.02, 0.20, 57, 100)], vol=85),
     ], 0.6, dict(fade_in=0.002, fade_out=0.03)
 
 
 def qu_si_wang():
-    """F5 玩家死亡：低频下潜 → 静默半秒 → 单音回声，留白。"""
+    """F5 玩家死亡：正弦下潜 → 静默半秒 → 单音混响，留白。"""
     return [
-        track("下潜", triple(wave0=0, vol0=100, wave1=2, vol1=14),
+        track("下潜", triple(wave0=0, vol0=100, wave1=1, vol1=10),
               eldata(amt=1.0, att=0.01, dec=0.30, sustain=0.7, rel=0.05),
-              gliss(0.0, 0.80, 45, 24, step_tick=2, note_len_tick=3), vol=80),
-        track("下潜重击", kicker(startfreq=200, endfreq=40, decay=500,
-                                noise=0.03, click=0.3, dist=0.7),
-              eldata(amt=0.0), [nt(0.0, 0.50, 57, 100)], vol=90),
-        track("收尾闷响", kicker(startfreq=90, endfreq=35, decay=250,
-                                noise=0.02, click=0.15, dist=0.7),
-              eldata(amt=0.0), [nt(0.68, 0.30, 57, 90)], vol=85),
+              gliss(0.0, 0.80, 45, 26, step_tick=2, note_len_tick=3), vol=75),
+        track("下潜重击", kicker(startfreq=190, endfreq=40, decay=480,
+                                noise=0.02, click=0.2, dist=0.65),
+              eldata(amt=0.0), [nt(0.0, 0.50, 57, 100)], vol=88),
+        track("收尾闷响", kicker(startfreq=90, endfreq=35, decay=220,
+                                noise=0.01, click=0.1, dist=0.65),
+              eldata(amt=0.0), [nt(0.68, 0.26, 57, 90)], vol=82),
         track("死亡回声", triple(wave0=0, vol0=100),
-              eldata(amt=1.0, att=0.002, dec=0.25, sustain=0.0, rel=0.10),
-              [nt(1.42, 0.10, 57, 100)], vol=90,
-              fx=reverb(wet=0.80, size=0.80, color=0.60)),
+              eldata(amt=1.0, att=0.002, dec=0.25, sustain=0.0, rel=0.12),
+              [nt(1.42, 0.10, 45, 100)], vol=80,
+              fx=reverb(wet=0.78, size=0.80, color=0.60)),
     ], 2.0, dict(fade_in=0.003, fade_out=0.05)
 
 
 def qu_chong_ci():
-    """F6 鱼雷冲刺：白噪带通扫频 whoosh（高频→低频）。"""
+    """F6 鱼雷冲刺：低通噪声 whoosh + 正弦下滑，去掉高通尖叫。"""
     return [
         track("whoosh 主体", afp("effects/filter_sweep01.ogg"),
-              eldata(amt=1.0, att=0.03, dec=0.0, sustain=1.0, rel=0.08),
-              [nt(0.0, 0.45, 57, 100)], vol=80),
-        track("下滑白噪", sfxr(wave=3, attack=0.005, sustain=0.30, decay=0.12,
-                              startfreq=0.5, lp_cut=0.8, lp_sweep=0.4),
-              eldata(amt=1.0, att=0.02, dec=0.15, sustain=0.4, rel=0.03),
-              gliss(0.0, 0.42, 69, 50, step_tick=2, note_len_tick=8), vol=55),
+              eldata(amt=1.0, att=0.04, dec=0.0, sustain=1.0, rel=0.10),
+              [nt(0.0, 0.42, 57, 100)], vol=75),
+        track("下滑", triple(wave0=0, vol0=100, wave1=1, vol1=20),
+              eldata(amt=1.0, att=0.02, dec=0.15, sustain=0.35, rel=0.04),
+              gliss(0.0, 0.40, 69, 50, step_tick=2, note_len_tick=8), vol=52),
     ], 0.5, dict(fade_in=0.02, fade_out=0.06)
 
 
 def qu_dian_xi():
-    """F7 电系技能：锯齿波快速扫频 + 颗粒抖动。"""
+    """F7 电系技能：正弦/三角颗粒 + 柔和扫频，不用锯齿。"""
     rng = random.Random(77)
     grains = []
-    for i in range(14):
-        pos = 0.02 + i * 0.047 + rng.uniform(-0.012, 0.012)
-        key = rng.randint(50, 75)
-        wave = 1 if i % 2 == 0 else 3
-        vol = rng.randint(45, 85)
-        grains.append((nt(max(0.0, pos), 0.03, key, vol), wave))
+    for i in range(12):
+        pos = 0.02 + i * 0.052 + rng.uniform(-0.010, 0.010)
+        key = rng.randint(55, 72)
+        wave = 1 if i % 2 == 0 else 0
+        vol = rng.randint(40, 70)
+        grains.append((nt(max(0.0, pos), 0.025, key, vol), wave))
     grain_tracks = []
-    for wave in (1, 3):
+    for wave in (0, 1):
         notes = [g[0] for g in grains if g[1] == wave]
         grain_tracks.append(
             track("电颗粒%d" % wave,
-                  sfxr(wave=wave, attack=0.002, sustain=0.06, decay=0.06,
-                       startfreq=0.55, lp_cut=1.0),
-                  eldata(amt=1.0, att=0.002, dec=0.06, sustain=0.0, rel=0.03),
-                  sorted(notes), vol=65))
+                  triple(wave0=wave, vol0=100, wave1=0, vol1=12),
+                  eldata(amt=1.0, att=0.002, dec=0.05, sustain=0.0, rel=0.02),
+                  sorted(notes), vol=58))
     return [
-        track("锯齿扫频", triple(wave0=2, vol0=100, wave1=3, vol1=18,
-                                coarse2=-12, wave2=2, vol2=15, detune=9),
-              eldata(amt=1.0, att=0.003, dec=0.10, sustain=0.75, rel=0.03),
-              gliss(0.0, 0.48, 72, 48, step_tick=2, note_len_tick=3), vol=80),
+        track("柔和扫频", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=18),
+              eldata(amt=1.0, att=0.004, dec=0.10, sustain=0.6, rel=0.03),
+              gliss(0.0, 0.46, 72, 48, step_tick=2, note_len_tick=3), vol=55),
         track("电刺1", afp("drums/zap01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.06, sustain=0.0, rel=0.03),
-              [nt(0.00, 0.05, 57, 80)], vol=70),
+              eldata(amt=1.0, att=0.001, dec=0.04, sustain=0.0, rel=0.02),
+              [nt(0.00, 0.04, 57, 60)], vol=40),
         track("电刺2", afp("drums/zap03.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.06, sustain=0.0, rel=0.03),
-              [nt(0.26, 0.05, 57, 70)], vol=70),
+              eldata(amt=1.0, att=0.001, dec=0.04, sustain=0.0, rel=0.02),
+              [nt(0.26, 0.04, 57, 55)], vol=38),
     ] + grain_tracks, 0.8, dict(fade_in=0.002, fade_out=0.03)
 
 
 def qu_du_xi():
-    """F8 毒系触发：气泡串上浮 + 破裂，黏腻感。"""
+    """F8 毒系触发：正弦气泡串 + 低沉破裂，黏腻但不吵。"""
     rng = random.Random(311)
     bubble_notes = []
     for i in range(10):
-        pos = 0.02 + i * 0.072 + rng.uniform(-0.008, 0.008)
-        key = 48 + i * 2 + rng.randint(0, 2)
+        pos = 0.02 + i * 0.068 + rng.uniform(-0.008, 0.008)
+        key = 45 + i * 2 + rng.randint(0, 1)
         bubble_notes.append(nt(max(0.0, pos), 0.035, key, 90 + rng.randint(0, 10)))
     return [
-        track("气泡串", triple(wave0=0, vol0=100, wave1=0, coarse1=12, vol1=10),
-              eldata(amt=1.0, att=0.004, dec=0.12, sustain=0.0, rel=0.06),
-              bubble_notes, vol=90),
-        track("破裂", kicker(startfreq=260, endfreq=70, decay=130,
-                             noise=0.35, click=0.45, dist=0.7),
-              eldata(amt=0.0), [nt(0.82, 0.15, 57, 100)], vol=100),
+        track("气泡串", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=8),
+              eldata(amt=1.0, att=0.004, dec=0.10, sustain=0.0, rel=0.05),
+              bubble_notes, vol=82),
+        track("破裂", kicker(startfreq=240, endfreq=70, decay=120,
+                             noise=0.12, click=0.25, dist=0.6),
+              eldata(amt=0.0), [nt(0.78, 0.14, 57, 100)], vol=62),
+        track("黏腻低频", triple(wave0=0, vol0=100),
+              eldata(amt=1.0, att=0.02, dec=0.5, sustain=0.15, rel=0.10),
+              [nt(0.02, 0.60, 33, 100)], vol=35),
     ], 1.0, dict(fade_in=0.003, fade_out=0.04)
 
 
 def qu_xuan_wo():
-    """F9 漩涡释放：反向吸聚声（音高上旋循环）。"""
+    """F9 漩涡释放：反向噪声 + 正弦上旋，吸聚感柔和。"""
     return [
         track("反向噪声", afp("drums/crash01.ogg", reversed_=1),
-              eldata(amt=0.0), [nt(0.0, 1.0, 57, 100)], vol=85),
-        track("上旋", triple(wave0=0, vol0=100, wave1=2, vol1=12),
-              eldata(amt=1.0, att=0.01, dec=0.20, sustain=0.5, rel=0.05),
-              gliss(0.10, 1.25, 33, 69, step_tick=2, note_len_tick=4,
-                    curve=1.35), vol=50),
+              eldata(amt=0.0), [nt(0.0, 0.95, 57, 100)], vol=52),
+        track("上旋", triple(wave0=0, vol0=100, wave1=1, vol1=12),
+              eldata(amt=1.0, att=0.01, dec=0.25, sustain=0.5, rel=0.08),
+              gliss(0.08, 1.20, 33, 69, step_tick=2, note_len_tick=4,
+                    curve=1.35), vol=48),
         track("反向 whoosh", afp("effects/warp02.ogg", reversed_=1),
               eldata(amt=1.0, att=0.05, dec=0.0, sustain=1.0, rel=0.20),
-              [nt(0.0, 1.25, 55, 100)], vol=70),
+              [nt(0.0, 1.20, 55, 100)], vol=55),
     ], 1.5, dict(fade_in=0.01, fade_out=0.12)
 
 
 def qu_sheng_na():
-    """F10 声呐脉冲：800Hz 正弦 ping，长衰减混响。
-    音分 35 需 finel/finer 成对设置；仅设 finel 会左右声道各偏一个音分、下混出拍频。"""
+    """F10 声呐脉冲：正弦 ping（key 67 ≈ 784Hz）+ 长衰减混响。"""
     return [
-        track("800Hz 声呐", triple(wave0=0, finel0=35, finer0=35, vol0=100),
-              eldata(amt=1.0, att=0.002, dec=0.12, sustain=0.0, rel=0.05),
-              [nt(0.0, 0.08, 67, 100)], vol=100,
+        track("声呐", triple(wave0=0, finel0=35, finer0=35, vol0=100),
+              eldata(amt=1.0, att=0.002, dec=0.15, sustain=0.0, rel=0.06),
+              [nt(0.0, 0.08, 67, 100)], vol=90,
               fx=reverb(wet=0.85, size=0.80, color=0.60)),
     ], 1.0, dict(fade_in=0.002, fade_out=0.03)
 
 
 def qu_jing_bao():
-    """F11 机械船入场预告：双音交替（小二度，不和谐），金属质感；2 秒循环。"""
-    tones = [nt(0.0, 0.46, 57, 100), nt(0.5, 0.46, 58, 100),
-             nt(1.0, 0.46, 57, 100), nt(1.5, 0.46, 58, 100)]
-    metal = [nt(0.0, 0.02, 57, 45), nt(0.5, 0.02, 58, 45),
-             nt(1.0, 0.02, 57, 45), nt(1.5, 0.02, 58, 45)]
+    """F11 机械船入场预告：三角双音 A4/E5（纯五度）交替，干净警报；2 秒循环。"""
+    tones = [nt(0.0, 0.46, 57, 100), nt(0.5, 0.46, 64, 100),
+             nt(1.0, 0.46, 57, 100), nt(1.5, 0.46, 64, 100)]
+    metal = [nt(0.0, 0.02, 57, 45), nt(0.5, 0.02, 64, 45),
+             nt(1.0, 0.02, 57, 45), nt(1.5, 0.02, 64, 45)]
     return [
-        track("警报双音", triple(wave0=3, vol0=100,
-                                wave1=2, coarse1=12, vol1=12,
-                                wave2=3, coarse2=-12, vol2=20),
-              eldata(amt=1.0, att=0.004, dec=0.05, sustain=0.75, rel=0.02),
-              tones, vol=85),
+        track("警报双音", triple(wave0=1, vol0=100,
+                                wave1=0, coarse1=12, vol1=12),
+              eldata(amt=1.0, att=0.004, dec=0.05, sustain=0.72, rel=0.02),
+              tones, vol=80),
         track("金属敲击", afp("misc/metalish_dong01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.07, sustain=0.0, rel=0.03),
-              metal, vol=35),
+              eldata(amt=1.0, att=0.001, dec=0.06, sustain=0.0, rel=0.03),
+              metal, vol=24),
     ], 2.0, dict(fade_in=0.004, fade_out=0.004, loop=True)
 
 
 def qu_jiao_zhi():
-    """F12 吃鱼肉块：两下短咀嚼，音高随机 ±10%。"""
+    """F12 吃鱼肉块：两下短咀嚼，音高随机 ±6%。"""
     rng = random.Random(20261108)
-    k1 = rng.choice([56, 57, 58])          # ±1 半音 ≈ ±6%，听感在 ±10% 范围内
+    k1 = rng.choice([56, 57, 58])
     k2 = rng.choice([k for k in (56, 57, 58) if k != k1])
     return [
         track("咀嚼噪声", afp("drums/snare_short01.ogg"),
-              eldata(amt=1.0, att=0.001, dec=0.05, sustain=0.0, rel=0.03),
-              [nt(0.0, 0.03, k1, 100), nt(0.198, 0.03, k2, 100)], vol=100),
+              eldata(amt=1.0, att=0.001, dec=0.04, sustain=0.0, rel=0.02),
+              [nt(0.0, 0.03, k1, 85), nt(0.198, 0.03, k2, 85)], vol=82),
         track("咀嚼闷响", afp("drums/tom_hi01.ogg"),
-              eldata(amt=1.0, att=0.002, dec=0.11, sustain=0.0, rel=0.06),
-              [nt(0.0, 0.06, k1, 100), nt(0.198, 0.06, k2, 100)], vol=70),
+              eldata(amt=1.0, att=0.002, dec=0.10, sustain=0.0, rel=0.05),
+              [nt(0.0, 0.06, k1, 100), nt(0.198, 0.06, k2, 100)], vol=62),
     ], 0.4, dict(fade_in=0.002, fade_out=0.025, note_pitch=(k1, k2))
+
+
+# ---------------------------------------------------------------- 旧键补齐（F13~F19）
+def qu_an_niu():
+    """F13 按钮点击：短正弦 blip，圆润干脆。"""
+    return [
+        track("按钮 blip", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=16),
+              eldata(amt=1.0, att=0.001, dec=0.04, sustain=0.0, rel=0.02),
+              [nt(0.0, 0.06, 64, 100)], vol=80),
+        track("低八度", triple(wave0=0, vol0=100),
+              eldata(amt=1.0, att=0.002, dec=0.05, sustain=0.0, rel=0.02),
+              [nt(0.0, 0.05, 52, 100)], vol=28),
+    ], 0.12, dict(fade_in=0.001, fade_out=0.012)
+
+
+def qu_chi():
+    """F14 吃植物：柔和两下咀嚼 + 短低音，与鱼肉块区分更轻。"""
+    return [
+        track("植物咀嚼", afp("drums/tom_hi01.ogg"),
+              eldata(amt=1.0, att=0.003, dec=0.08, sustain=0.0, rel=0.04),
+              [nt(0.0, 0.06, 57, 100), nt(0.16, 0.06, 57, 80)], vol=58),
+        track("植物低音", triple(wave0=0, vol0=100, wave1=1, vol1=10),
+              eldata(amt=1.0, att=0.004, dec=0.10, sustain=0.0, rel=0.04),
+              [nt(0.0, 0.10, 45, 100)], vol=35),
+    ], 0.35, dict(fade_in=0.002, fade_out=0.025)
+
+
+def qu_tan_chuang():
+    """F15 升级弹窗弹出：两声上行三角铃，轻柔提示。"""
+    return [
+        track("弹窗铃", triple(wave0=1, vol0=100, wave1=0, vol1=20),
+              eldata(amt=1.0, att=0.003, dec=0.30, sustain=0.02, rel=0.18),
+              [nt(0.0, 0.30, 64, 95), nt(0.12, 0.30, 67, 100)], vol=75),
+    ], 0.5, dict(fade_in=0.002, fade_out=0.04)
+
+
+def qu_fang_neng_li():
+    """F16 主动能力释放（通用兜底）：干净的上行扫频。"""
+    return [
+        track("上行扫频", triple(wave0=0, vol0=100, wave1=1, coarse1=12, vol1=16),
+              eldata(amt=1.0, att=0.004, dec=0.10, sustain=0.55, rel=0.04),
+              gliss(0.0, 0.26, 55, 67, step_tick=2, note_len_tick=3), vol=70),
+        track("气口", afp("effects/filter_sweep01.ogg"),
+              eldata(amt=1.0, att=0.02, dec=0.10, sustain=0.0, rel=0.05),
+              [nt(0.0, 0.10, 57, 60)], vol=14),
+    ], 0.4, dict(fade_in=0.002, fade_out=0.03)
+
+
+def qu_shi_kong():
+    """F17 失控兜底（来源未知）：三角下滑 + 低频晃动，不安但不刺耳。"""
+    return [
+        track("下滑", triple(wave0=1, vol0=100, wave1=0, vol1=14),
+              eldata(amt=1.0, att=0.008, dec=0.18, sustain=0.5, rel=0.05),
+              gliss(0.0, 0.42, 60, 40, step_tick=2, note_len_tick=3), vol=65),
+        track("低频晃动", triple(wave0=0, vol0=100),
+              eldata(amt=1.0, att=0.01, dec=0.30, sustain=0.25, rel=0.08),
+              [nt(0.0, 0.22, 33, 100), nt(0.24, 0.22, 36, 80)], vol=40),
+        track("闷噪", afp("drums/tom_hi01.ogg"),
+              eldata(amt=1.0, att=0.005, dec=0.12, sustain=0.0, rel=0.05),
+              [nt(0.0, 0.10, 57, 70)], vol=22),
+    ], 0.7, dict(fade_in=0.003, fade_out=0.05)
+
+
+def qu_sheng_li():
+    """F18 胜利结算：上行大调琶音 + 混响长尾，明亮收束。"""
+    return [
+        track("胜利琶音", triple(wave0=1, vol0=100, wave1=0, vol1=22,
+                            wave2=1, coarse2=12, vol2=8),
+              eldata(amt=1.0, att=0.004, dec=0.45, sustain=0.04, rel=0.5),
+              [nt(0.00, 0.50, 60, 100), nt(0.18, 0.50, 64, 100),
+               nt(0.36, 0.50, 67, 100), nt(0.54, 0.55, 72, 100),
+               nt(0.72, 0.80, 76, 100)], vol=78,
+              fx=reverb(wet=0.70, size=0.80, color=0.55), pattern_len=240),
+        track("低音收束", triple(wave0=0, vol0=100),
+              eldata(amt=1.0, att=0.01, dec=0.60, sustain=0.30, rel=0.5),
+              [nt(0.54, 0.60, 48, 100)], vol=30, pattern_len=240),
+    ], 2.5, dict(fade_in=0.003, fade_out=0.20)
+
+
+def qu_shi_bai():
+    """F19 失败结算：下行小调琶音 + 低频垫，低沉但不惊悚。"""
+    return [
+        track("失败琶音", triple(wave0=1, vol0=100, wave1=0, vol1=18),
+              eldata(amt=1.0, att=0.006, dec=0.40, sustain=0.05, rel=0.4),
+              [nt(0.00, 0.45, 57, 100), nt(0.22, 0.45, 53, 100),
+               nt(0.44, 0.45, 50, 100), nt(0.66, 0.55, 45, 100)], vol=72,
+              fx=reverb(wet=0.75, size=0.80, color=0.60)),
+        track("低频垫", triple(wave0=0, vol0=100),
+              eldata(amt=1.0, att=0.02, dec=0.80, sustain=0.20, rel=0.5),
+              [nt(0.0, 0.90, 33, 100)], vol=34),
+    ], 2.0, dict(fade_in=0.003, fade_out=0.15)
 
 
 JOBS = [
@@ -417,6 +515,13 @@ JOBS = [
     ("yin_xiao_sheng_na", qu_sheng_na),
     ("yin_xiao_jing_bao", qu_jing_bao),
     ("yin_xiao_jiao_zhi", qu_jiao_zhi),
+    ("yin_xiao_an_niu", qu_an_niu),
+    ("yin_xiao_chi", qu_chi),
+    ("yin_xiao_tan_chuang", qu_tan_chuang),
+    ("yin_xiao_fang_neng_li", qu_fang_neng_li),
+    ("yin_xiao_shi_kong", qu_shi_kong),
+    ("yin_xiao_sheng_li", qu_sheng_li),
+    ("yin_xiao_shi_bai", qu_shi_bai),
 ]
 
 

@@ -1,0 +1,546 @@
+{
+  "task_id": "TASK-026",
+  "task_spec_version": 1,
+  "approval_status": "approved",
+  "delivery_status": "complete",
+  "learning_status": "not_started",
+  "handoff_status": "ready",
+  "current_step": "step-07",
+  "current_checkpoint": "verification-handoff",
+  "next_action": "TASK-026 已实现并验证；2026-11-15 已按用户反馈修补雷达红点残留（freed 节点记录），门禁 3278 全绿。等待用户 F5 验收与学习检查点；机器人探针已删除。",
+  "implementation_baseline": {
+    "captured_at": "2026-11-14T13:20:07.594932Z",
+    "commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "preexisting_changes": [
+      {
+        "path": "docs/TASK_INDEX.md",
+        "status": [
+          "unstaged"
+        ],
+        "fingerprint": "sha256:ee5c6b0f1cb5b3c1fc2a74fc897b27fea7f61dae30a16f8642cc802a79ad2af8"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:7dcc030946677b490648ecd88e9a17185c8a40e9555084822f921500fe8ec2f3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:75ecc23583f8e97767797a376c670de8425cbc90ca74b24930436b3883e1ac3a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:71327f2a99c8023ded14ec84cea1d11ec8132a73e606a5d7f9b4e21d8391e45e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f606da71e316a761cfda57ab2be1bd2340f8aab6f259996523eaa4a457f23af6"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:230975e81155bd4cee4b08cde1608977125271ab988c8d6aee47d6c9790dcbad"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:bd4b6cab91d53f0cbe199e943f108677496697a4b74ec36c99477e5f9cce4de7"
+      },
+      {
+        "path": "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2481bb1d1cf580bd9df8312d84f9134673485363405dffdf8a9f919a049c90be"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:981b4c16e4ae42cc11c2361975d18ad9e4bec7a002682eaf03b1df9976fa0bd0"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:880538541a278f12e7346afe464f05f3f12d856c95da2b5bf55df9c8c4e188f8"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:f5e3a4bce35740a941075f2d7568b486554f6778a3960b7369f4e778606abed3"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:464354ff6aa10c68811c654333cceabc5ef7800fc00db28f5bab0fef81cc2957"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e36df1752c6fb00a59df710a745920ac483e272c611f765a387724c23bfd64ef"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:690397eb31da406dae9b3be7741d67a6eebcb00fe92efef6d9013b313c27148c"
+      },
+      {
+        "path": "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:2964f5b2c2971ba95635340b7157ff9bdc8ee3e062375d304e5734d43520076a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3b443d9dde6cb361c96d757db036e28f9a972a56ce3d64e256ff27b94c76a068"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:8bbd0336b66c1e65d813635362fa7376950d2875a51277548148d41a1f99e977"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:10f40a9594d93557fec9657794691d120468c5993d698ce26cd5515614903c48"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:85bc9dc11205be3478ae444baa0c33b8d696bfbc78ff86bfc7673ffc223dabf4"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:5a965de05a92a61342f089e2056545cdd88d27aecf7a5382508e3829e37fed0c"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:07b7ea0050769aeb08855ec2fb288a3930dba00c7ae800a976e37cb09a6324a5"
+      },
+      {
+        "path": "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:b5cf8374cd8428a53adf1971fc7394c71641d8ccbf07c4aa499eb467881d69d9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/DEVELOPMENT_PROMPT.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:cdfc77bd09aa7185a87de5fd11c81b4e96e0bd8be1953c2f872f4b46f67ce5fa"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:076d2511e3fe66c094b7a09a61589d4e32531c82a938fe2a029b41e60900c5f9"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:3e25c9bd76cbdcc32e33b2ede25e6231cfdaed45219655d2e168beb6864e2ae6"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:e206e71752b1bfe7be6d57fcedbb9be3b201a1e45346b1631b6c0889d6c43bc2"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/SCOPE_PROPOSAL.md",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:159a55a9db6426a1bc23bfc400d2b35fc415e2396083f3877b58f3df016c6a2e"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_MANIFEST.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:0f1b707952fd57de3c8ca993d505ed7715f7574df7576382db2fd7dcea8a050a"
+      },
+      {
+        "path": "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+        "status": [
+          "untracked"
+        ],
+        "fingerprint": "sha256:a35c77bb4923a9fcf87f993d734415f79f2d535723bc88ed0fbf04693189e96f"
+      }
+    ]
+  },
+  "last_verified_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "integration_baseline_commit": null,
+  "step_state": [
+    {
+      "step_id": "step-01",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yu_qun.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-02",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/zhang_ben.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-03",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-04",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yu_npc.gd",
+        "scripts/yu_qun.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-05",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yu_npc.gd",
+        "scripts/yu.gd",
+        "scripts/xiao_di_tu.gd",
+        "scripts/zhuan_shu_ku/fen_yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-06",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "scripts/yu_qun.gd",
+        "scripts/xiao_di_tu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    },
+    {
+      "step_id": "step-07",
+      "implementation_status": "implemented",
+      "verification_status": "verified",
+      "participation_status": "pending_user",
+      "changed_files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "check_results": [
+        {
+          "check": "ce_panding 单文件",
+          "result": "1313 passed, 0 failed"
+        },
+        {
+          "check": "八步门禁 pao_pi.bat",
+          "result": "全绿，合计 3164 断言"
+        },
+        {
+          "check": "机器人通关探针",
+          "result": "两次连续胜利：532.0s / 541.5s"
+        },
+        {
+          "check": "validate_task.py",
+          "result": "VALID: TASK-026 v1 (plan_driven)"
+        }
+      ],
+      "next_action": "用户验收；若 F5 手感需调整，按包内回滚口径另开任务"
+    }
+  ],
+  "approval_record": {
+    "approved_version": 1,
+    "approved_at": "2026-11-14T20:53:42+08:00",
+    "exact_user_text": "三包都批准"
+  },
+  "capability_decisions": {
+    "superpowers": "not_needed",
+    "godot_skill": "available",
+    "code_review": "available"
+  },
+  "verification": {
+    "gate": {
+      "command": "MSYS_NO_PATHCONV=1 cmd.exe /c \"tests\\pao_pi.bat\"",
+      "steps": 7,
+      "assertions": [
+        232,
+        25,
+        1422,
+        8,
+        20,
+        144,
+        1313
+      ],
+      "total": 3164,
+      "result": "全绿"
+    },
+    "unit_single": {
+      "command": "ce_panding 场景",
+      "result": "1313 passed, 0 failed"
+    },
+    "probe": {
+      "file": "tests/_tmp_yu_wang_probe.gd/.tscn（已删除）",
+      "runs": [
+        {
+          "result": "SHENG_LI",
+          "T": 532.0,
+          "Lv": 16,
+          "BodyMax": 25.5,
+          "BodyMin": 2.0,
+          "Damage": 129.0,
+          "HungerMin": 94.6,
+          "Skills": 346,
+          "Cards": 15,
+          "Evolutions": 1,
+          "Rooms": 19,
+          "RoomSet": "341052",
+          "ShipSpawn": 487.3,
+          "ShipHP": 960.0,
+          "ShipSink": 532.0,
+          "ShipBattle": 44.6,
+          "Wang": 0,
+          "WangMax": 0,
+          "WangBai": 0
+        },
+        {
+          "result": "SHENG_LI",
+          "T": 541.5,
+          "Lv": 16,
+          "BodyMax": 25.5,
+          "BodyMin": 2.0,
+          "Damage": 141.5,
+          "HungerMin": 87.7,
+          "Skills": 286,
+          "Cards": 15,
+          "Evolutions": 1,
+          "Rooms": 13,
+          "RoomSet": "54210",
+          "ShipSpawn": 487.3,
+          "ShipHP": 960.0,
+          "ShipSink": 541.5,
+          "ShipBattle": 54.2,
+          "Wang": 0,
+          "WangMax": 0,
+          "WangBai": 0
+        }
+      ],
+      "baseline": "TASK-025：576.9s / Lv.19 / 峰值30.0 / 换房34 / 船517.4s 1140HP",
+      "conclusion": "两次连续胜利且均低于 650 秒，无需按包内回滚口径调鱼王参数；探针机器人是重建的等价上限操作，绝对数值不与 TASK-025 原探针逐项等同。"
+    },
+    "scope": {
+      "result": "0 产品代码越界（scripts/**、tests/**、scenes/** 均无 VIOLATION）。收尾复跑共 49 条 VIOLATION：48 new + 1 existing，全部为任务包元数据与外部未跟踪文件——docs/development_tasks 9 条（TASK-026 包文档 5、TASK-027 MANIFEST 1、TASK-028 MANIFEST 1、TASK-029 MANIFEST/STATE 2）、addons/ai_rig_2d 22 条外部插件、rigs 17 条外部素材/预览、project.godot 1 条外部已有改动。均非本任务产品代码，未做隐藏或篡改基线。"
+    },
+    "hong_dian_patch_2026_11_15": {
+      "reason": "用户反馈吃完鱼后雷达仍有红点残留，机械船降临后地图无鱼也有红点",
+      "root_cause": "queue_free 后的节点留在 Dictionary 里时 node==null 为真、typeof 仍是 TYPE_OBJECT；_tong_bu_dang_qian_fang_jian 与 _bao_cun_dang_qian_fang_jian 用 ==null 当\"未加载记录\"跳过，已吃鱼的记录永远删不掉，雷达按最后位置一直画红点",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scripts/xiao_di_tu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "fix": "两处记录清理先判 typeof(node)==TYPE_NIL 再走 is_instance_valid/si_le；已释放节点直接 remove_at；ji_lu_ke_hua 对已释放节点返回 false；yu_wang_shu 排除已释放节点",
+      "gate": {
+        "command": "MSYS_NO_PATHCONV=1 cmd.exe /c \"tests\\pao_pi.bat\"",
+        "assertions": [
+          232,
+          25,
+          1422,
+          8,
+          20,
+          144,
+          1427
+        ],
+        "total": 3278,
+        "result": "全绿"
+      },
+      "unit_single": "ce_panding 场景 1427 passed, 0 failed",
+      "validate": "VALID: TASK-026 v1 (plan_driven)",
+      "scope": "SCOPE: 169 allowed, 13 unchanged pre-existing, 0 violation(s)",
+      "probe": "真实 Main.tscn：吃 3 条后当前房记录 45→42、已释放残留 0；停刷并吃光当前房 42 条后九房记录全 0，雷达截图无红点；探针与调试截图已删除"
+    }
+  }
+}

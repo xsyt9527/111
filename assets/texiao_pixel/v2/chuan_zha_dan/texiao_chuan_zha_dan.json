@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "chuan_zha_dan 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  },
+  {
+   "filename": "chuan_zha_dan 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 133
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_chuan_zha_dan.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1760,
+   "h": 133
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "explosions/big-explosion",
+   "name": "chuan_zha_dan",
+   "fps": 12,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    160,
+    133
+   ],
+   "pivot": [
+    80.0,
+    66.5
+   ],
+   "columns": 11,
+   "visible": [
+    120,
+    78
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

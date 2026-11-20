@@ -1,0 +1,598 @@
+{
+ "frames": [
+  {
+   "filename": "fb_jing_sha 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 1",
+   "frame": {
+    "x": 208,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 2",
+   "frame": {
+    "x": 416,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 3",
+   "frame": {
+    "x": 624,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 4",
+   "frame": {
+    "x": 832,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 5",
+   "frame": {
+    "x": 1040,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 6",
+   "frame": {
+    "x": 1248,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 7",
+   "frame": {
+    "x": 1456,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 8",
+   "frame": {
+    "x": 1664,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 9",
+   "frame": {
+    "x": 0,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 10",
+   "frame": {
+    "x": 208,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 11",
+   "frame": {
+    "x": 416,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 12",
+   "frame": {
+    "x": 624,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 13",
+   "frame": {
+    "x": 832,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 14",
+   "frame": {
+    "x": 1040,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 15",
+   "frame": {
+    "x": 1248,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 16",
+   "frame": {
+    "x": 1456,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 17",
+   "frame": {
+    "x": 1664,
+    "y": 150,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 18",
+   "frame": {
+    "x": 0,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 19",
+   "frame": {
+    "x": 208,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 20",
+   "frame": {
+    "x": 416,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 21",
+   "frame": {
+    "x": 624,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 22",
+   "frame": {
+    "x": 832,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 23",
+   "frame": {
+    "x": 1040,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  },
+  {
+   "filename": "fb_jing_sha 24",
+   "frame": {
+    "x": 1248,
+    "y": 300,
+    "w": 208,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 150
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_fb_jing_sha.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1872,
+   "h": 450
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 24,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "spawn/spawn-portal",
+   "name": "fb_jing_sha",
+   "fps": 12,
+   "loop": false,
+   "frames": 25,
+   "frameSize": [
+    208,
+    150
+   ],
+   "pivot": [
+    104.0,
+    75.0
+   ],
+   "columns": 9,
+   "visible": [
+    192,
+    132
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

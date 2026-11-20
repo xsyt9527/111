@@ -1,0 +1,356 @@
+{
+ "frames": [
+  {
+   "filename": "gui_huo 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 1",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 2",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 3",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 4",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 5",
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 6",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 7",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 8",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 9",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 10",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 11",
+   "frame": {
+    "x": 880,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 12",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  },
+  {
+   "filename": "gui_huo 13",
+   "frame": {
+    "x": 1040,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 124
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_gui_huo.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1120,
+   "h": 124
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 13,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "fire/spirit-flame",
+   "name": "gui_huo",
+   "fps": 12,
+   "loop": true,
+   "frames": 14,
+   "frameSize": [
+    80,
+    124
+   ],
+   "pivot": [
+    40.0,
+    62.0
+   ],
+   "columns": 14,
+   "visible": [
+    78,
+    98
+   ],
+   "fit": "native",
+   "lifetime": 1.2,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

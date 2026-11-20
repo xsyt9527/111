@@ -1,0 +1,268 @@
+{
+ "frames": [
+  {
+   "filename": "jn_chang_mao 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  },
+  {
+   "filename": "jn_chang_mao 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 62
+   },
+   "duration": 67
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_jn_chang_mao.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1600,
+   "h": 62
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 9,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "melee/spear-sweep",
+   "name": "jn_chang_mao",
+   "fps": 15,
+   "loop": false,
+   "frames": 10,
+   "frameSize": [
+    160,
+    62
+   ],
+   "pivot": [
+    0.0,
+    31.0
+   ],
+   "columns": 10,
+   "visible": [
+    120,
+    54
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

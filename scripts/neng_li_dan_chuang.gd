@@ -113,6 +113,7 @@ func _kai_shi() -> void:
 		else:
 			ka_pian[i].visible = false  # 候选不足 3 个：藏掉多余卡位
 	get_tree().paused = true  # 引擎级暂停：玩家/鱼群/Timer 全停
+	TeXiaoKu.san_xuan()  # v2 三选一登场：红/蓝/绿三根光柱立在卡片位（界面层，暂停中也播）
 	visible = true
 	YinXiang.fang(&"tan_chuang")  # 弹窗音：升级琶音（账本侧）之后紧跟“请做选择”
 

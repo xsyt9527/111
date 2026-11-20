@@ -9,7 +9,7 @@ extends Node
 const YU_NPC_CHANGJING := preload("res://scenes/YuNpc.tscn")
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")
 const ZHONG_XIAO := preload("res://data/yuzhong/lan_yu.tres")  # 钻光鱼：小型路人
-const ZHONG_YU := preload("res://data/yuzhong/hong_yu.tres")  # 铜眼鱼：中型追猎
+const ZHONG_YU := preload("res://data/yuzhong/lv_yu.tres")  # 电鳗：中型追猎
 const DA_YU := preload("res://data/yuzhong/zong_yu.tres")  # 大眼金枪鱼：黑影/尾巴大鱼
 
 var zhu_chang: Node = null  # Main：生成 NPC、弹字幕都走它
@@ -87,8 +87,7 @@ func _sheng_jiao_xue(zhong: YuZhong, ti_xing: float, su_du: float,
 	xin_yu.sudu = su_du
 	xin_yu.gan_zhi = xin_yu.tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
 	xin_yu.jiao_xue_wu_shi = wu_shi
-	if wu_shi:
-		xin_yu.gong_ji_yu_wang = false  # 教学猎物不反击
+	xin_yu.gong_ji_yu_wang = not wu_shi  # 教学猎物不反击；追猎型教学鱼显式开攻击（鱼种默认值不统一）
 	return xin_yu
 
 

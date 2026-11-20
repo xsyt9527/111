@@ -1,0 +1,290 @@
+{
+ "frames": [
+  {
+   "filename": "jiu_tou 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 1",
+   "frame": {
+    "x": 124,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 2",
+   "frame": {
+    "x": 248,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 3",
+   "frame": {
+    "x": 372,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 4",
+   "frame": {
+    "x": 496,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 5",
+   "frame": {
+    "x": 620,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 6",
+   "frame": {
+    "x": 744,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 7",
+   "frame": {
+    "x": 868,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 8",
+   "frame": {
+    "x": 992,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 9",
+   "frame": {
+    "x": 1116,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  },
+  {
+   "filename": "jiu_tou 10",
+   "frame": {
+    "x": 1240,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 120
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_jiu_tou.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1364,
+   "h": 120
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 10,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "lightning/spark-arc",
+   "name": "jiu_tou",
+   "fps": 12,
+   "loop": false,
+   "frames": 11,
+   "frameSize": [
+    124,
+    120
+   ],
+   "pivot": [
+    0.0,
+    60.0
+   ],
+   "columns": 11,
+   "visible": [
+    90,
+    103
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "left"
+  }
+ }
+}

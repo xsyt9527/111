@@ -162,12 +162,16 @@ func _hua_dian(shijie: Vector2, yan_se: Color, ban_jing: float, tou_ming_xi_shu 
 	draw_circle(_dao_di_tu(shijie), ban_jing, se)
 
 
-func _hua_shou_ling(shijie: Vector2) -> void:
+func _hua_shou_ling(shijie: Vector2, tou_ming_xi_shu := 1.0) -> void:
 	if not _zai_shi_jie_nei(shijie):
 		return
 	var dian := _dao_di_tu(shijie)
-	draw_circle(dian, 5.8, _yan_se_biao_ji(YAN_SE_BAI_BIAN))  # 白色描边：深色底上也看得见
-	draw_circle(dian, 4.5, _yan_se_biao_ji(YAN_SE_SHOU_LING))  # 金色圆点标明首领/机械船
+	var bai := _yan_se_biao_ji(YAN_SE_BAI_BIAN)
+	var jin := _yan_se_biao_ji(YAN_SE_SHOU_LING)
+	bai.a *= tou_ming_xi_shu  # 其他房间的鱼王点同样压暗
+	jin.a *= tou_ming_xi_shu
+	draw_circle(dian, 5.8, bai)  # 白色描边：深色底上也看得见
+	draw_circle(dian, 4.5, jin)  # 金色圆点标明首领/鱼王/机械船
 
 
 func _hu_zhi_wu() -> void:
@@ -183,6 +187,19 @@ func _hu_zhi_wu() -> void:
 		_hua_dian(jie_dian.global_position, YAN_SE_ZHI_WU, 1.6)
 
 
+func ji_lu_ke_hua(rec: Dictionary) -> bool:
+	# TASK-026：死鱼记录不画（si_le 立旗到 queue_free 之间还有一帧残留）
+	# 纯函数：不碰绘制，测试可直接断言；node 为 null 的是未加载房记录，照常画
+	var jie_dian = rec.get("node")
+	if typeof(jie_dian) == TYPE_NIL:
+		return true
+	# TASK-026 补丁：queue_free 后的节点 == null 为真、typeof 仍是 OBJECT。
+	# 这种“已释放但记录还没删”的鱼只剩最后位置，画出来就是用户实机看到的残留红点
+	if not is_instance_valid(jie_dian):
+		return false
+	return jie_dian.get("si_le") != true
+
+
 func _hu_npc() -> void:
 	# 优先读 YuQun 的九房记录：未加载房也有点，当前房稍大稍亮、其他房略小略暗
 	var zhu_jie_mian := _qu_zhu_jie_mian()
@@ -196,6 +213,9 @@ func _hu_npc() -> void:
 			var ji_lu: Array = qun.fang_jian_ji_lu(pian)  # 直接返回内部数组：不复制、不新建
 			var shi_dang_qian := pian == dang_qian
 			for rec in ji_lu:
+				# TASK-026：死鱼记录不画（si_le 立旗到 queue_free 之间还有一帧残留）
+				if not ji_lu_ke_hua(rec):
+					continue
 				var wei: Vector2 = rec.get("wei", Vector2.ZERO)
 				var ti := float(rec.get("ti", 1.0))
 				var ban_jing := 2.0
@@ -205,7 +225,10 @@ func _hu_npc() -> void:
 				else:
 					ban_jing = clampf(1.3 + 0.1 * ti, 1.3, 1.9)
 					an = 0.72
-				_hua_dian(wei, YAN_SE_NPC, ban_jing, an)
+				if int(rec.get("nei_deng", 1)) >= 10:
+					_hua_shou_ling(wei, an)  # 鱼王金色点：与首领/机械船同一套标记
+				else:
+					_hua_dian(wei, YAN_SE_NPC, ban_jing, an)
 				you_ji_lu = true
 	var yu_men := get_tree().get_nodes_in_group("yu_npc")
 	# 记录画完补扫：只画未托管鱼（教学鱼/临时鱼），避免它们不进记录而在雷达上消失
@@ -217,10 +240,12 @@ func _hu_npc() -> void:
 			continue  # 已死（queue_free 前先立旗）：不画残留点
 		if npc.get("shi_boss") == true:
 			continue
+		if npc.get("yu_wang") == true:
+			continue  # 鱼王另走金点循环，不画普通红点
 		if you_ji_lu and npc.get("you_yu_qun_guan_li") == true:
 			continue  # 九房记录已经画过
 		_hua_dian(jie_dian.global_position, YAN_SE_NPC, 2.0)
-	# 首领金点；鲸鲨也在 yu_npc 组里，这里自然识别
+	# 首领/鱼王金点；鲸鲨也在 yu_npc 组里，这里自然识别
 	for npc in yu_men:
 		var jie_dian := npc as Node2D
 		if jie_dian == null:
@@ -228,6 +253,10 @@ func _hu_npc() -> void:
 		if npc.get("si_le") == true:
 			continue
 		if npc.get("shi_boss") == true:
+			_hua_shou_ling(jie_dian.global_position)
+		elif npc.get("yu_wang") == true:
+			if you_ji_lu and npc.get("you_yu_qun_guan_li") == true:
+				continue  # 当前房记录已画过鱼王金点：实体不重复画
 			_hua_shou_ling(jie_dian.global_position)
 
 

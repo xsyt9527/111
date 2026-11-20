@@ -37,15 +37,11 @@ const QUAN_BU: Array[JinHua] = [
 	preload("res://data/jinhua/jiu_wei_du_yu_yao.tres"),
 	preload("res://data/jinhua/mei_du_sha_du_guan.tres"),
 	preload("res://data/jinhua/shan_hu_ji_guan_shou.tres"),
-	# 9 桶眼鱼（游戏内鱼种叫铜眼鱼）
-	preload("res://data/jinhua/bi_yan_guan_xing_shou.tres"),
-	preload("res://data/jinhua/shen_yuan_quan_shi_zhi_yan.tres"),
-	preload("res://data/jinhua/ji_guang_ju_zhen_yu.tres"),
-	# 10 钻光鱼
+	# 9 钻光鱼
 	preload("res://data/jinhua/shi_xing_ying_huo_chong.tres"),
 	preload("res://data/jinhua/zu_zhou_xing_chen_chong.tres"),
 	preload("res://data/jinhua/deng_li_zi_chuan_jia_yu.tres"),
-	# 11 凹凸蜗牛鱼（玩家默认角色）：三类特殊分支，同样走三选一
+	# 10 凹凸蜗牛鱼（玩家默认角色）：三类特殊分支，同样走三选一
 	preload("res://data/jinhua/tai_sui_rou_ling_zhi_shou.tres"),
 	preload("res://data/jinhua/shen_hai_shi_lai_mu_nv_wang.tres"),
 	preload("res://data/jinhua/chao_ya_ning_jiao_pao.tres"),
@@ -66,8 +62,7 @@ static func zhao(bian_hao: StringName) -> JinHua:
 
 
 static func wan_jia_fen_zhi(yu_zhong_bian_hao: StringName) -> Array[JinHua]:
-	# 当前鱼种的可选分支：33 条全部开放，按 ji_yu_bian_hao 精确过滤
-	# 暗影剑鱼没有独立分支，数据里映射到剑鱼组，所以这里也能拿到剑鱼 3 条
+	# 当前鱼种的可选分支：30 条全部开放，按 ji_yu_bian_hao 精确过滤
 	var jie_guo: Array[JinHua] = []
 	for jin_hua in QUAN_BU:
 		if jin_hua.wan_jia_ke_yong and jin_hua.ji_yu_bian_hao == yu_zhong_bian_hao:

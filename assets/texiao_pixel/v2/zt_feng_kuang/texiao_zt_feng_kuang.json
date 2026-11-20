@@ -1,0 +1,312 @@
+{
+ "frames": [
+  {
+   "filename": "zt_feng_kuang 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 1",
+   "frame": {
+    "x": 60,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 2",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 3",
+   "frame": {
+    "x": 180,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 4",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 5",
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 6",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 7",
+   "frame": {
+    "x": 420,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 8",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 9",
+   "frame": {
+    "x": 540,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 10",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_feng_kuang 11",
+   "frame": {
+    "x": 660,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 78
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_zt_feng_kuang.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 720,
+   "h": 78
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "status/confused",
+   "name": "zt_feng_kuang",
+   "fps": 10,
+   "loop": true,
+   "frames": 12,
+   "frameSize": [
+    60,
+    78
+   ],
+   "pivot": [
+    30.0,
+    39.0
+   ],
+   "columns": 12,
+   "visible": [
+    52,
+    41
+   ],
+   "fit": "native",
+   "lifetime": 1.2,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

@@ -1,0 +1,488 @@
+{
+ "frames": [
+  {
+   "filename": "sys_cheng_jiu 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 1",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 2",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 3",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 4",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 5",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 6",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 7",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 8",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 9",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 10",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 11",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 12",
+   "frame": {
+    "x": 0,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 13",
+   "frame": {
+    "x": 160,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 14",
+   "frame": {
+    "x": 320,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 15",
+   "frame": {
+    "x": 480,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 16",
+   "frame": {
+    "x": 640,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 17",
+   "frame": {
+    "x": 800,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 18",
+   "frame": {
+    "x": 960,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  },
+  {
+   "filename": "sys_cheng_jiu 19",
+   "frame": {
+    "x": 1120,
+    "y": 52,
+    "w": 160,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 52
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_sys_cheng_jiu.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1920,
+   "h": 104
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 19,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "ui/achievement",
+   "name": "sys_cheng_jiu",
+   "fps": 12,
+   "loop": false,
+   "frames": 20,
+   "frameSize": [
+    160,
+    52
+   ],
+   "pivot": [
+    80.0,
+    26.0
+   ],
+   "columns": 12,
+   "visible": [
+    137,
+    46
+   ],
+   "fit": "native",
+   "lifetime": 0.0,
+   "blend": "normal",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

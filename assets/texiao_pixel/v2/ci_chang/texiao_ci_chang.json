@@ -1,0 +1,422 @@
+{
+ "frames": [
+  {
+   "filename": "ci_chang 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 11",
+   "frame": {
+    "x": 1232,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 12",
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 13",
+   "frame": {
+    "x": 1456,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 14",
+   "frame": {
+    "x": 1568,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 15",
+   "frame": {
+    "x": 1680,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  },
+  {
+   "filename": "ci_chang 16",
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 100
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_ci_chang.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1904,
+   "h": 100
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 16,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "scifi/energy-core",
+   "name": "ci_chang",
+   "fps": 12,
+   "loop": true,
+   "frames": 17,
+   "frameSize": [
+    112,
+    100
+   ],
+   "pivot": [
+    56.0,
+    50.0
+   ],
+   "columns": 17,
+   "visible": [
+    98,
+    96
+   ],
+   "fit": "native",
+   "lifetime": 1.4,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

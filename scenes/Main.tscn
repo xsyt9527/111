@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://cuhw2cc365t6" path="res://scripts/yu_qun.gd" id="4_yuqun"]
 [ext_resource type="Resource" uid="uid://bb38ynj8rbphg" path="res://data/yuzhong/lan_yu.tres" id="5_lan"]
 [ext_resource type="Script" uid="uid://coi0pm6q5sdc" path="res://scripts/yu_zhong.gd" id="5_wp0k4"]
-[ext_resource type="Resource" path="res://data/yuzhong/hong_yu.tres" id="6_hong"]
 [ext_resource type="Resource" path="res://data/yuzhong/lv_yu.tres" id="7_lv"]
 [ext_resource type="Resource" path="res://data/yuzhong/cheng_yu.tres" id="8_cheng"]
 [ext_resource type="Resource" path="res://data/yuzhong/zong_yu.tres" id="9_zong"]
@@ -17,7 +16,6 @@
 [ext_resource type="Resource" path="res://data/yuzhong/jian_yu.tres" id="16_jian"]
 [ext_resource type="Resource" path="res://data/yuzhong/ju_kou_yu.tres" id="17_ju"]
 [ext_resource type="Resource" path="res://data/yuzhong/ye_deng_long_yu.tres" id="20_yedeng"]
-[ext_resource type="Resource" path="res://data/yuzhong/an_ying_jian_yu.tres" id="21_anying"]
 [ext_resource type="Script" path="res://scripts/zhi_wu_qun.gd" id="18_zhiwuqun"]
 [ext_resource type="Script" path="res://scripts/neng_li_ui.gd" id="19_nengliui"]
 [ext_resource type="PackedScene" path="res://scenes/SheZhi.tscn" id="20_shezhi"]
@@ -55,7 +53,7 @@ position = Vector2(2064, 1152)
 
 [node name="YuQun" type="Node2D" parent="." unique_id=71082821]
 script = ExtResource("4_yuqun")
-yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("6_hong"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("15_qi"), ExtResource("16_jian"), ExtResource("17_ju"), ExtResource("20_yedeng"), ExtResource("21_anying")])
+yu_zhong_zu = Array[ExtResource("5_wp0k4")]([ExtResource("5_lan"), ExtResource("7_lv"), ExtResource("8_cheng"), ExtResource("9_zong"), ExtResource("15_qi"), ExtResource("16_jian"), ExtResource("17_ju"), ExtResource("20_yedeng")])
 
 [node name="Dingshi" type="Timer" parent="YuQun" unique_id=1736663921]
 one_shot = true

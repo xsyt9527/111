@@ -111,6 +111,7 @@ func _jie_suo(bian_hao: StringName) -> void:
 	if not CunDang.jie_suo_yong_jiu(bian_hao):
 		return
 	YinXiang.fang(&"an_niu")
+	TeXiaoKu.bo_jie_mian(&"cheng_jiu")  # v2 成就解锁弹窗：屏幕顶部金光
 	_shua_xin()
 
 

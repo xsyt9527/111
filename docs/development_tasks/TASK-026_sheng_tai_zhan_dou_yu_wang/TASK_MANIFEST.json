@@ -1,0 +1,539 @@
+{
+  "manifest_schema_version": 2,
+  "generated_by_skill_version": "2.0.0",
+  "task_id": "TASK-026",
+  "task_spec_version": 1,
+  "slug": "sheng-tai-zhan-dou-yu-wang",
+  "title": "生态精简、毒鱼耐受、咬伤经验与 NPC 鱼王成长",
+  "engine_version": "4.7",
+  "development_strategy": "plan_driven",
+  "participation_mode": "guided_co_development",
+  "execution_mode": "teaching",
+  "approval_status": "approved",
+  "delivery_status": "approved",
+  "learning_status": "not_started",
+  "handoff_status": "not_started",
+  "baseline_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+  "objective": "按用户 2026-11-14 反馈，把野外鱼池收敛为 8 种并让低等级鱼全期可刷；狮子鱼延后到第 40 秒（_dang>=2）才出现；新增只对「连吃毒鱼」生效的毒晕递减耐受；普通咬击按目标实际掉肉给经验，并给同一目标的接触伤害 0.6 秒减免；NPC 隐藏等级达到 10 时晋升为不可整吞、不逃跑、可继续成长的鱼王，每房最多 2 只，雷达以金点显示，败退给 3 块大肉与 2 倍鱼种经验且绝不触发鲸鲨的 bei_ji_bai。同时修复用户实机反馈的雷达红点残留：吃完鱼后当前房记录即时对账并跳过已死实体，机械船降临进入人类战后清空不可达的其他房记录，雷达不再显示永远碰不到的红点。",
+  "audit_freshness": {
+    "audited_commit": "f27ae56893aed50db99ca6572659966bbca09b27",
+    "environment_checked_at": "2026-11-14T20:10:03+08:00",
+    "engine_executable_source": "GODOT_4_7_BIN",
+    "engine_version_detected": "4.7.2.stable.official.ed1daf0bf",
+    "audit_invalidation_triggers": [
+      "YuQun 刷鱼池/档位/九房记录接口变化",
+      "XiaoDiTu 雷达记录/实体点生命周期或人类战清房行为变化",
+      "ZhangBen 毒晕字段或 jia_du_yun 行为变化",
+      "Yu 咬击/接触伤害结算顺序变化",
+      "YuNpc 隐藏成长、bei_chi、逃跑或 bei_ji_bai 行为变化",
+      "XiaoDiTu 雷达 NPC 点绘制变化",
+      "存档 schema、Autoload 或主场景结构变化",
+      "引擎版本变化"
+    ]
+  },
+  "feature_ownership": {
+    "owner_id": "student-01",
+    "owned_systems": [
+      "野外鱼池与刷新档位",
+      "玩家毒晕耐受状态",
+      "玩家咬击经验与接触减免",
+      "NPC 隐藏成长与鱼王身份",
+      "雷达鱼王标记与记录/实体生命周期对账"
+    ],
+    "owned_scenes": [],
+    "owned_scripts": [
+      "res://scripts/yu_qun.gd",
+      "res://scripts/yu_npc.gd",
+      "res://scripts/zhang_ben.gd",
+      "res://scripts/yu.gd",
+      "res://scripts/xiao_di_tu.gd",
+      "res://scripts/zhuan_shu_ku/fen_yu.gd"
+    ],
+    "owned_config_tables": []
+  },
+  "integration_contract": {
+    "depends_on_tasks": [
+      "TASK-025（九房预置鱼群与虚拟互吃，直接修改对象）",
+      "TASK-019（体型战斗与咬击结算）",
+      "TASK-024（机械船技能兼容与统一结算入口）",
+      "TASK-023（雷达小地图绘制）"
+    ],
+    "consumed_interfaces": [
+      "YuQun._chou_yu_zhong / _dang / shua_xin_zui_di / shua_xin_shang_xian / deng_ji_gai_lv",
+      "YuQun._bao_cun_dang_qian_fang_jian / _tong_bu_dang_qian_fang_jian / ting_zhi_shua_xin / _fang_jian_yu_qun",
+      "YuQun 九房记录字段 zhong / wei / ti / nei_deng / nei_jing_yan / node",
+      "YuNpc.tixing / deng_ji_nei / jing_yan_nei / shi_boss / si_le / yu_zhong",
+      "YuNpc._sheng_ji_yu_zhi / _ying_she_ti_xing / diao_rou / bei_chi",
+      "ZhangBen.du_yun / jia_du_yun / KONG_ZHI_SHANG_XIAN / chong_zhi",
+      "Yu._chang_shi_yao_ji / _yao_ji_lian_dong / _on_shang_qu_entered / _shoushang",
+      "ZhanDou.yao_ji_shang_hai / zhi_ming_ke_sha",
+      "XiaoDiTu._hua_dian / _hua_shou_ling / _hu_npc"
+    ],
+    "provided_interfaces": [
+      "YuQun.TUI_CHU_PAI_CHI: Array[StringName]",
+      "YuQun.DU_YU_ZUI_DI_DANG: int",
+      "YuQun.shua_xin_zui_di(dang) 恒返回 1",
+      "YuQun.yu_wang_shu() -> int（九房记录与当前实体去重统计）",
+      "YuQun.qing_chu_qi_ta_fang_ji_lu()（人类战开始后清空不可达的其他房记录）",
+      "YuNpc.yu_wang: bool",
+      "YuNpc._yu_wang_bai_tui(lai_yuan)",
+      "YuNpc._jian_cha_yu_wang_bai_tui(lai_yuan)",
+      "ZhangBen.jia_du_yun_chi_du_yu(liang: float)",
+      "ZhangBen.du_kang / _du_kang_ceng / _du_kang_shi_jian / _du_kang_tui_ji",
+      "Yu.chi_du_yu(liang: float)"
+    ],
+    "emitted_signals": [
+      "无新增全局信号",
+      "鱼王败退不 emit bei_ji_bai；bei_ji_bai 仍只属于鲸鲨 _bei_ji_bai"
+    ],
+    "received_signals": [
+      "YuNpc.bei_ji_bai 由 Main/测试接收，TASK-026 不改变其语义",
+      "ZhangBen.sheng_ji 由 YinXiang 监听，升级音效沿用"
+    ],
+    "shared_state": [
+      "九房鱼群记录是鱼王名额的唯一权威；记录字段 nei_deng>=10 推导鱼王身份，不新增记录键",
+      "ZhangBen 毒抗字段只在单局内存在，chong_zhi() 清零，不写存档",
+      "Yu 咬伤经验小数池只属于玩家，不写存档",
+      "yu_wang 组由 YuNpc 晋升时加入、败退释放时随节点销毁"
+    ],
+    "registered_shared_changes": [
+      "新增 yu_wang 组名，不新增 Autoload",
+      "YuNpc 新增 yu_wang 字段与鱼王推挤层开关",
+      "ZhangBen 新增毒抗字段与新入口，不改 jia_du_yun 签名"
+    ],
+    "conflict_hotspots": [
+      "scripts/yu_qun.gd 与 TASK-025 九房初始化/虚拟互吃/档位保底",
+      "scripts/yu_npc.gd 与 TASK-019/024 的 AI、伤害与状态机",
+      "scripts/zhang_ben.gd 与现有毒晕精确断言 45/55/60",
+      "scripts/yu.gd 与 TASK-024 的统一技能结算入口",
+      "scripts/xiao_di_tu.gd 与 TASK-023 雷达图例与透明度",
+      "tests/ce_panding.gd 的 shua_xin_zui_di 与 biao_1/biao_8 旧断言"
+    ],
+    "required_integration_checks": [
+      "validate_task.py 输出 VALID",
+      "headless --import 退出码 0 且 0 ERROR",
+      "tests/pao_pi.bat 八步全绿",
+      "check_task_scope.py check 零违规",
+      "机器人自动通关探针仍胜利并输出时长/等级/体型/鱼王数量"
+    ]
+  },
+  "allowed_existing_files": [
+    "Godot引擎词总表.docx",
+    "LEARNING_ROADMAP.md",
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/an_niu.wav",
+    "assets/yinxiao/an_niu.wav.import",
+    "assets/yinxiao/bgm_jue_zhan.wav",
+    "assets/yinxiao/bgm_jue_zhan.wav.import",
+    "assets/yinxiao/bgm_shen_hai.wav",
+    "assets/yinxiao/bgm_shen_hai.wav.import",
+    "assets/yinxiao/bgm_tan_suo.wav",
+    "assets/yinxiao/bgm_tan_suo.wav.import",
+    "assets/yinxiao/chi.wav",
+    "assets/yinxiao/chi.wav.import",
+    "assets/yinxiao/fang_neng_li.wav",
+    "assets/yinxiao/fang_neng_li.wav.import",
+    "assets/yinxiao/sheng_ji.wav",
+    "assets/yinxiao/sheng_ji.wav.import",
+    "assets/yinxiao/sheng_li.wav",
+    "assets/yinxiao/sheng_li.wav.import",
+    "assets/yinxiao/shi_bai.wav",
+    "assets/yinxiao/shi_bai.wav.import",
+    "assets/yinxiao/shi_kong.wav",
+    "assets/yinxiao/shi_kong.wav.import",
+    "assets/yinxiao/shou_shang.wav",
+    "assets/yinxiao/shou_shang.wav.import",
+    "assets/yinxiao/si_wang.wav",
+    "assets/yinxiao/si_wang.wav.import",
+    "assets/yinxiao/tan_chuang.wav",
+    "assets/yinxiao/tan_chuang.wav.import",
+    "assets/yinxiao/yao.wav",
+    "assets/yinxiao/yao.wav.import",
+    "assets/yinxiao/yin_xiao_chong_ci.wav",
+    "assets/yinxiao/yin_xiao_chong_ci.wav.import",
+    "assets/yinxiao/yin_xiao_dian_xi.wav",
+    "assets/yinxiao/yin_xiao_dian_xi.wav.import",
+    "assets/yinxiao/yin_xiao_du_xi.wav",
+    "assets/yinxiao/yin_xiao_du_xi.wav.import",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav",
+    "assets/yinxiao/yin_xiao_jiao_zhi.wav.import",
+    "assets/yinxiao/yin_xiao_jing_bao.wav",
+    "assets/yinxiao/yin_xiao_jing_bao.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav",
+    "assets/yinxiao/yin_xiao_sheng_ji.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_na.wav",
+    "assets/yinxiao/yin_xiao_sheng_na.wav.import",
+    "assets/yinxiao/yin_xiao_shou_shang.wav",
+    "assets/yinxiao/yin_xiao_shou_shang.wav.import",
+    "assets/yinxiao/yin_xiao_si_wang.wav",
+    "assets/yinxiao/yin_xiao_si_wang.wav.import",
+    "assets/yinxiao/yin_xiao_tun_xia.wav",
+    "assets/yinxiao/yin_xiao_tun_xia.wav.import",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav",
+    "assets/yinxiao/yin_xiao_xuan_wo.wav.import",
+    "assets/yinxiao/yin_xiao_yao_ji.wav",
+    "assets/yinxiao/yin_xiao_yao_ji.wav.import",
+    "docs/TASK_INDEX.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/TASK_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/TASK_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/TASK_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/INTEGRATION_HANDOFF.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_RECORD.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/LEARNING_STATE.json",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/TASK_STATE.json",
+    "docs/引擎词总表.md",
+    "project.godot",
+    "rigs/",
+    "scripts/di_tu_pin_jie_yan_chu.gd",
+    "scripts/main.gd",
+    "scripts/neng_li_ui.gd",
+    "scripts/xiao_di_tu.gd",
+    "scripts/yin_xiang.gd",
+    "scripts/yu.gd",
+    "scripts/yu_npc.gd",
+    "scripts/yu_qun.gd",
+    "scripts/zhang_ben.gd",
+    "scripts/zhuan_shu_ku/fen_yu.gd",
+    "tests/ce_panding.gd",
+    "tools/yinyue/",
+    "tools/yinyue/shengcheng_yin_xiao.py",
+    "tools/yinyue/shengcheng_yinyue.py"
+  ],
+  "allowed_new_files": [
+    "addons/ai_rig_2d/",
+    "assets/yinxiao/yin_xiao_an_niu.wav",
+    "assets/yinxiao/yin_xiao_an_niu.wav.import",
+    "assets/yinxiao/yin_xiao_chi.wav",
+    "assets/yinxiao/yin_xiao_chi.wav.import",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav",
+    "assets/yinxiao/yin_xiao_fang_neng_li.wav.import",
+    "assets/yinxiao/yin_xiao_sheng_li.wav",
+    "assets/yinxiao/yin_xiao_sheng_li.wav.import",
+    "assets/yinxiao/yin_xiao_shi_bai.wav",
+    "assets/yinxiao/yin_xiao_shi_bai.wav.import",
+    "assets/yinxiao/yin_xiao_shi_kong.wav",
+    "assets/yinxiao/yin_xiao_shi_kong.wav.import",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav",
+    "assets/yinxiao/yin_xiao_tan_chuang.wav.import",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-026_sheng_tai_zhan_dou_yu_wang/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-027_yin_yue_yin_xiao_chong_zhi/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-028_di_tu_pin_jie_yan_chu_huan_xin/VERIFICATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/CODE_REVIEW.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/IMPLEMENTATION_REPORT.md",
+    "docs/development_tasks/TASK-029_ji_neng_lan_bu_ju_yu_gong_ji_jian/VERIFICATION_REPORT.md",
+    "project.godot",
+    "rigs/",
+    "tests/_tmp_yu_wang_probe.gd",
+    "tests/_tmp_yu_wang_probe.gd.uid",
+    "tests/_tmp_yu_wang_probe.tscn",
+    "tools/yinyue/"
+  ],
+  "forbidden_systems": [
+    "新增 Autoload 或修改存档 schema",
+    "修改 scenes/Main.tscn 顶层结构、project.godot 或换房黑场流程",
+    "删除鱼种 .tres、图鉴 11 条、选角 12 卡、进化树或专属技",
+    "给鱼王调用 _bei_ji_bai 或 emit bei_ji_bai",
+    "改鲸鲨 shi_boss 的 15 倍咬伤、30 秒成长或 Main 提前开战逻辑",
+    "重做九图结尾演出（属于 TASK-028）",
+    "重制音频资源（属于 TASK-027）",
+    "commit/push 由主代理统一执行"
+  ],
+  "steps": [
+    {
+      "step_id": "step-01",
+      "title": "野外鱼池精简、狮子鱼延后与低等级全期可刷",
+      "behavior": "野外抽鱼永不返回 hong_yu 与 an_ying_jian_yu；_dang<2 时也不返回 cheng_yu，_dang>=2 后按原等级概率可抽到；shua_xin_zui_di(dang) 在所有档位返回 1，使 1 级鱼全期保留；玩家/图鉴/选角/进化树仍可加载全部 11 种 .tres。",
+      "main_concept": "池内过滤：刷鱼池是运行时抽样集合，不是鱼种注册表",
+      "files": [
+        "scripts/yu_qun.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "野外抽 1000 次不含 hong_yu / an_ying_jian_yu",
+        "档位 0/1 不含 cheng_yu，档位 2 及以上可含",
+        "shua_xin_zui_di 期望 1/1/1/1/1",
+        "鱼种 .tres 数量与图鉴/选角加载不变"
+      ],
+      "manual_checks": [
+        "F5 开局 40 秒内不出现狮子鱼",
+        "F5 后期仍能看到 1 级蓝鱼"
+      ]
+    },
+    {
+      "step_id": "step-02",
+      "title": "毒鱼连吃递减耐受",
+      "behavior": "玩家连续吃毒鱼时，8 秒窗口内第一次毒晕 +45，第二次 +31.5，第三次 +18，第四次及以后 +13.5；停吃 8 秒后每 2 秒消退一层；被狮子鱼咬、毒腺、剧毒突刺等非进食毒源仍按原值累积；chong_zhi() 清零毒抗。",
+      "main_concept": "状态窗口与递减层数：同一事件短时间重复时收益递减",
+      "files": [
+        "scripts/zhang_ben.gd",
+        "scripts/yu.gd",
+        "scripts/yu_npc.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "连吃数值 45/31.5/18/13.5，第 5 条仍 13.5",
+        "8 秒后每 2 秒退层，层数归零后停止",
+        "重新吃毒刷新窗口",
+        "直接 jia_du_yun(45) 仍为 45，原精确断言不变",
+        "chong_zhi() 清零 du_kang 相关字段"
+      ],
+      "manual_checks": [
+        "F5 连续吃两条狮子鱼不再立即毒晕"
+      ]
+    },
+    {
+      "step_id": "step-03",
+      "title": "咬大鱼按掉肉给经验与同目标接触减免",
+      "behavior": "普通咬击在所有结算完成后读取目标最终 tixing，按 max(0, 咬前体型-咬后体型) × 5 累加经验，小数池满 1 转整数；咬到最小体型后不再给；机械船不给；整吞/致命区分支提前返回不重复给。咬中同一目标后 0.6 秒内该目标造成的接触伤害 ×0.2。",
+      "main_concept": "按实际状态差结算：以结算后的真实掉肉为依据，而不是按命中次数",
+      "files": [
+        "scripts/yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "掉 1 点体型给 5 经验并保留小数",
+        "咬到 0.5 后不再给",
+        "机械船不给经验",
+        "同目标 0.6 秒内接触伤害 ×0.2，换目标/超时恢复",
+        "整吞消化经验仍按鱼种 fenzhi"
+      ],
+      "manual_checks": [
+        "F5 咬大鱼经验条会涨，不再出现双方缩小僵局"
+      ]
+    },
+    {
+      "step_id": "step-04",
+      "title": "NPC 隐藏等级晋升鱼王与名额控制",
+      "behavior": "deng_ji_nei 达到 10 且每房名额未满时晋升鱼王：yu_wang=true、tixing+2、开启 BossPengZhuangQu、加入 yu_wang 组、隐藏红光；每房最多 2 只，第 3 只停在 9 级并保留溢出经验；换房恢复按记录 nei_deng>=10 恢复身份且不再加 2；虚拟互吃跨 10 时同样检查名额。",
+      "main_concept": "由数据推导身份：鱼王不是新鱼种，而是记录隐藏等级达到阈值后的运行时身份",
+      "files": [
+        "scripts/yu_npc.gd",
+        "scripts/yu_qun.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "10 级晋升、+2 体型、推挤层开、组计数",
+        "第 3 只停在 9 并保留经验",
+        "名额释放后下一次获得经验再晋升",
+        "换房恢复不再重复加 2",
+        "虚拟记录跨 10 加 2 且受名额限制"
+      ],
+      "manual_checks": [
+        "F5 雷达出现金色鱼王点",
+        "F5 鱼王比同种普通鱼更大"
+      ]
+    },
+    {
+      "step_id": "step-05",
+      "title": "鱼王战斗规则、败退与雷达金点",
+      "behavior": "鱼王不可被整吞（直接吞、致命区、技能、虚拟互吃、分玉全部守卫），不逃跑、不套用鲸鲨 AI 与 15 倍咬伤，可继续吃长、可吃洋流；tixing<=2.0 时先掉 3 块大肉并给玩家 2 倍鱼种经验，再静默淡出，绝不 emit bei_ji_bai；雷达记录与实体去重后以金色首领点显示。",
+      "main_concept": "同一套伤害入口，不同身份分支：用 yu_wang 守卫扩展既有规则而不是复制一套战斗系统",
+      "files": [
+        "scripts/yu_npc.gd",
+        "scripts/yu.gd",
+        "scripts/yu_qun.gd",
+        "scripts/xiao_di_tu.gd",
+        "scripts/zhuan_shu_ku/fen_yu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "bei_chi/_chi_diao/_tun_diao/致命区/分玉均拒绝鱼王",
+        "鱼王不进入 TAO_PAO，不调用 zou_boos_sheng_ji",
+        "败退给 3 块大肉与 2 倍鱼种经验",
+        "败退 bei_ji_bai 信号计数为 0",
+        "雷达记录与实体不重复画，鱼王为金点"
+      ],
+      "manual_checks": [
+        "F5 鱼王残血败退后雷达金点消失",
+        "F5 鱼王败退不触发机械船提前生成"
+      ]
+    },
+    {
+      "step_id": "step-06",
+      "title": "雷达红点残留对账与人类战清房",
+      "behavior": "当前房记录每帧回写时同步删除 si_le/失效实体（加固现有 _tong_bu_dang_qian_fang_jian），XiaoDiTu._hu_npc 记录循环额外跳过 si_le 实体，避免删除前的一帧残留；玩家吃掉当前房鱼后雷达点数与场上实体数一致；机械船降临进入人类战后由 ting_zhi_shua_xin() 调用 YuQun.qing_chu_qi_ta_fang_ji_lu() 清空非当前房记录与虚拟鱼，雷达只显示当前房存量鱼、鲸鲨/船金点与玩家蓝点，不再出现永远碰不到的其他房红点。",
+      "main_concept": "记录与实体生命周期对账：雷达只画仍然存在且可达的鱼",
+      "files": [
+        "scripts/yu_qun.gd",
+        "scripts/xiao_di_tu.gd",
+        "tests/ce_panding.gd"
+      ],
+      "automated_checks": [
+        "吃掉当前房一条鱼后该房记录数减 1，雷达不再画它",
+        "si_le 实体在记录删除前也不被记录循环画出",
+        "ting_zhi_shua_xin 后非当前房记录为空，当前房记录保留",
+        "人类战雷达不再出现其他房红点，船/鱼王金点仍画"
+      ],
+      "manual_checks": [
+        "F5 本场景吃完鱼后无残留红点",
+        "F5 机械船降临后雷达红点与场上实际鱼一致"
+      ]
+    },
+    {
+      "step_id": "step-07",
+      "title": "测试改写、探针、门禁与文档收尾",
+      "behavior": "改写 shua_xin_zui_di 与低等级退场旧断言，新增鱼池/毒抗/咬伤/鱼王用例；跑机器人自动通关探针并对比 TASK-025 基线；八步门禁全绿；validate 与 scope 零违规；更新任务索引、引擎词表与学习路线。",
+      "main_concept": "回归基线：用同一机器人探针比较改动前后的难度与稳定性",
+      "files": [
+        "tests/ce_panding.gd",
+        "docs/TASK_INDEX.md",
+        "docs/引擎词总表.md",
+        "LEARNING_ROADMAP.md",
+        "Godot引擎词总表.docx"
+      ],
+      "automated_checks": [
+        "validate_task.py VALID",
+        "check_task_scope.py check 0 violation",
+        "headless --import 0 ERROR",
+        "tests/pao_pi.bat 八步全绿",
+        "临时机器人探针 RESULT=SHENG_LI"
+      ],
+      "manual_checks": [
+        "用户 F5 验收生态、毒抗、咬伤经验与鱼王观感"
+      ]
+    }
+  ],
+  "participation_checkpoints": [
+    {
+      "checkpoint_id": "orientation",
+      "type": "orientation",
+      "required": true,
+      "evidence_types": [
+        "project_navigation",
+        "concept_explanation"
+      ]
+    },
+    {
+      "checkpoint_id": "godot-inspection",
+      "type": "inspection",
+      "required": true,
+      "evidence_types": [
+        "editor_operation",
+        "scene_tree_inspection"
+      ]
+    },
+    {
+      "checkpoint_id": "verification-handoff",
+      "type": "verification_handoff",
+      "required": true,
+      "evidence_types": [
+        "test_execution",
+        "result_interpretation"
+      ]
+    }
+  ],
+  "learning_contract": {
+    "objectives": [
+      "能解释刷鱼池过滤与鱼种注册表为什么分离",
+      "能说出毒抗窗口、层数与递减倍率的关系",
+      "能解释为什么咬伤经验必须在 _yao_ji_lian_dong 之后读取最终体型",
+      "能说明鱼王身份如何从记录 nei_deng 推导，以及为什么不复用 shi_boss",
+      "能定位鱼王败退不 emit bei_ji_bai 的原因与失败后果"
+    ],
+    "concepts": [
+      "池内过滤与运行时抽样",
+      "状态窗口与递减层数",
+      "按实际状态差结算",
+      "由数据推导的运行时身份",
+      "身份守卫与信号语义隔离"
+    ],
+    "required_evidence_types": [
+      "project_navigation",
+      "concept_explanation",
+      "editor_operation",
+      "scene_tree_inspection",
+      "test_execution",
+      "result_interpretation"
+    ],
+    "required_student_outcomes": [
+      "pre_implementation_orientation",
+      "godot_inspection_or_action",
+      "verification_participation",
+      "input_output_dependency_explanation",
+      "integration_handoff_confirmation"
+    ]
+  },
+  "scene_architecture": {
+    "architecture_change": false,
+    "entry_scene": "res://scenes/Main.tscn",
+    "lifecycle_rationale": "只在既有 Autoload 与脚本内新增字段、规则分支和运行时组；不新增/删除主场景节点、不改 Autoload 顺序、不改存档 schema、不改九房记录字段结构，节点生命周期与 TASK-025 一致。",
+    "current_tree": null,
+    "target_tree": null,
+    "ownership": [],
+    "signal_contracts": [],
+    "loading_policy": null,
+    "state_persistence": [],
+    "animation_dependencies": [],
+    "lifecycle_checks": []
+  },
+  "required_automated_checks": [
+    "validate_task.py 退出码 0",
+    "headless --import 退出码 0 且 0 ERROR",
+    "tests/pao_pi.bat 八步全绿",
+    "check_task_scope.py check 零违规",
+    "临时机器人自动通关探针 RESULT=SHENG_LI"
+  ],
+  "required_manual_checks": [
+    "F5 开局 40 秒内无狮子鱼，后期仍见 1 级鱼",
+    "F5 连续吃毒鱼毒晕条收益递减",
+    "F5 咬大鱼经验条增长且接触僵局缓解",
+    "F5 鱼王雷达金点、不可整吞、残血败退",
+    "F5 鱼王败退不触发机械船提前生成",
+    "F5 本场景吃完鱼后雷达无残留红点",
+    "F5 机械船降临后雷达红点与场上实际鱼一致",
+    "用户确认整体难度与观感可接受"
+  ],
+  "comparison_analysis": {
+    "available": false,
+    "scope": "none",
+    "read_only": true,
+    "behavior_spec": null,
+    "observed_contracts": [],
+    "deliberate_differences": [],
+    "unknowns": [
+      "9 级普通鱼空档会让玩家 Lv7+ 的 A11 大鱼抽样返回 null，需探针/F5 评估",
+      "前 40 秒 2 级档被狮子鱼过滤后只剩 1 级鱼，前期可能偏单调",
+      "咬伤经验系数 5 是否让升级曲线过快，需对比 TASK-025 探针",
+      "2 只不可吞鱼王对后期节奏的压制程度需要实机评估",
+      "雷达红点残留的根因是记录删除延迟还是其他房虚拟鱼，需探针复现确认"
+    ]
+  },
+  "scope_change_triggers": [
+    "需要新增 Autoload 或修改存档 schema",
+    "需要改主场景顶层结构或 project.godot",
+    "需要删除鱼种 .tres 或改动图鉴/选角/进化树",
+    "需要复用 shi_boss 或 emit bei_ji_bai 给鱼王",
+    "需要让鱼王接管鲸鲨 AI 或 15 倍咬伤",
+    "需要改九图结尾演出或音频资源"
+  ],
+  "approval": {
+    "approved": true,
+    "approved_version": 1,
+    "approved_at": "2026-11-14T20:53:42+08:00",
+    "exact_user_text": "三包都批准",
+    "canonical_example": "确认 TASK-026 v1 进入开发"
+  }
+}

@@ -63,6 +63,8 @@ var ji_qi_chuan: JiQiChuan = null  # 人类战机器船：生成后 Main 持有�
 var _jing_sha: YuNpc = null  # 祭坛首领（鲸鲨）：8 分钟内打到残血 → 机器船提前降临
 var _yi_ti_shi_boos := false  # 第 6 分钟的巨影位置提示只弹一次
 var yan_chu_zhong := false  # 九图拼合演出期间：锁输入 + 不吃不发招 + 暂不接管相机
+var _yan_chu_qian_qi_pao_ke_jian := true  # TASK-028：演出前装饰气泡层的可见性，结束还原
+var _yan_chu_qian_she_zhi_ke_jian := true  # TASK-028：演出前设置按钮层的可见性，结束还原
 var tou_ding_xue_tiao: Node2D = null  # 玩家头顶体型血条（演出时一起藏）
 var dang_qian_fang_jian := 4  # 当前房间：0..8，行优先；开局正中
 var _qie_huan_zhong := false  # 换房过渡中：锁移动，禁止再次触发
@@ -215,6 +217,7 @@ func _sheng_cheng_jing_sha() -> void:
 	_jing_sha.xian_ding_qu = fang_jian_qu(8)
 	add_child(_jing_sha)
 	_jing_sha.bei_ji_bai.connect(_on_jing_sha_bei_ji_bai)
+	# 开局不再放全屏漩涡门（用户拍板：进游戏的开场特效没必要）；首领已固定盘踞东南房间
 
 
 func _on_jing_sha_bei_ji_bai() -> void:
@@ -248,6 +251,15 @@ func _bo_fang_ren_lei_yan_chu() -> void:
 	if is_instance_valid(_jing_sha):
 		_jing_sha.visible = false
 	_qie_huan_hud(false)
+	# TASK-028：黑边/标题期间装饰气泡与设置按钮不应浮在演出层上；先记原值，结束再还
+	var qi_pao := get_node_or_null("QiPaoCeng") as Node2D
+	if qi_pao != null:
+		_yan_chu_qian_qi_pao_ke_jian = qi_pao.visible
+		qi_pao.visible = false
+	var she_zhi := get_node_or_null("SheZhi") as CanvasLayer
+	if she_zhi != null:
+		_yan_chu_qian_she_zhi_ke_jian = she_zhi.visible
+		she_zhi.visible = false
 	var yan_chu: DiTuPinJieYanChu = DI_TU_PIN_JIE_YAN_CHU.new()
 	yan_chu.name = "DiTuPinJieYanChu"
 	yan_chu.jie_shu.connect(_on_ren_lei_yan_chu_jie_shu)
@@ -267,6 +279,13 @@ func _on_ren_lei_yan_chu_jie_shu() -> void:
 	if is_instance_valid(_jing_sha):
 		_jing_sha.visible = true
 	_qie_huan_hud(true)
+	# TASK-028：还原演出期间藏起的装饰气泡与设置按钮（只还原可见性，不动流程时序）
+	var qi_pao := get_node_or_null("QiPaoCeng") as Node2D
+	if qi_pao != null:
+		qi_pao.visible = _yan_chu_qian_qi_pao_ke_jian
+	var she_zhi := get_node_or_null("SheZhi") as CanvasLayer
+	if she_zhi != null:
+		she_zhi.visible = _yan_chu_qian_she_zhi_ke_jian
 	# 演完先恢复全图 limit 并清零 offset（旧版固定 -260 上移就是灰区根因）。
 	# 先让船落位，再按玩家+船实际位置取景；若船因故不存在，取景函数会自动以玩家为中心。
 	_suo_quan_tu()

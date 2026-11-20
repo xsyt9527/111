@@ -1,0 +1,356 @@
+{
+ "frames": [
+  {
+   "filename": "zt_mei_huo 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 1",
+   "frame": {
+    "x": 60,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 2",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 3",
+   "frame": {
+    "x": 180,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 4",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 5",
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 6",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 7",
+   "frame": {
+    "x": 420,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 8",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 9",
+   "frame": {
+    "x": 540,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 10",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 11",
+   "frame": {
+    "x": 660,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 12",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  },
+  {
+   "filename": "zt_mei_huo 13",
+   "frame": {
+    "x": 780,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 60,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 60,
+    "h": 76
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_zt_mei_huo.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 840,
+   "h": 76
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 13,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "status/charmed",
+   "name": "zt_mei_huo",
+   "fps": 10,
+   "loop": true,
+   "frames": 14,
+   "frameSize": [
+    60,
+    76
+   ],
+   "pivot": [
+    30.0,
+    38.0
+   ],
+   "columns": 14,
+   "visible": [
+    54,
+    60
+   ],
+   "fit": "native",
+   "lifetime": 1.4,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}

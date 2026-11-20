@@ -1,0 +1,422 @@
+{
+ "frames": [
+  {
+   "filename": "kong_que 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 1",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 2",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 3",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 4",
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 5",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 6",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 7",
+   "frame": {
+    "x": 784,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 8",
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 9",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 10",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 11",
+   "frame": {
+    "x": 1232,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 12",
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 13",
+   "frame": {
+    "x": 1456,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 14",
+   "frame": {
+    "x": 1568,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 15",
+   "frame": {
+    "x": 1680,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kong_que 16",
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 104
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "https://github.com/patch-gg/pixelfx",
+  "version": "1",
+  "image": "texiao_kong_que.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1904,
+   "h": 104
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "bao",
+    "from": 0,
+    "to": 16,
+    "direction": "forward"
+   }
+  ],
+  "pixelfx": {
+   "id": "scifi/hologram",
+   "name": "kong_que",
+   "fps": 12,
+   "loop": true,
+   "frames": 17,
+   "frameSize": [
+    112,
+    104
+   ],
+   "pivot": [
+    56.0,
+    52.0
+   ],
+   "columns": 17,
+   "visible": [
+    62,
+    93
+   ],
+   "fit": "native",
+   "lifetime": 1.4,
+   "blend": "add",
+   "zIndex": 5,
+   "anchorMode": "center"
+  }
+ }
+}
