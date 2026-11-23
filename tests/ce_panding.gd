@@ -1308,7 +1308,14 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	chuan.set_process(false)  # 定住船：本用例只测咬击与两招，不让跟随每帧改坐标
 	chuan._gong_ji_dingshi.stop()  # 关掉自动出招：招式由用例逐个手动放
-	assert_eq(_xiang_deng(chuan.xue, 360.0), 1, "机器船满血 360（2026-11-02 再拍板：180→360）")
+	assert_eq(_xiang_deng(chuan.xue, 400.0), 1, "机器船满血 400（11-23 A13 拍板：定值，与玩家体型脱钩）")
+	assert_eq(_xiang_deng(JiQiChuan.chu_shi_xue(), 400.0), 1, "出生血量入口固定 400")
+	# 换掉玩家当前体型再读一次：出生船血不变（≠ f(玩家体型)），且不碰等级/血量本身
+	var ti_xian := ZhangBen.dang_qian_ti_xing
+	ZhangBen.dang_qian_ti_xing = 4.0
+	var xue_xiao_ti := JiQiChuan.chu_shi_xue()
+	ZhangBen.dang_qian_ti_xing = ti_xian
+	assert_eq(_xiang_deng(xue_xiao_ti, 400.0), 1, "不同体型开局船血一致（不随体型变）")
 	assert_eq(_xiang_deng(JiQiChuan.GONG_JI_JIAN_GE, 1.0), 1, "机器船攻击间隔 9.0→1.0：1 秒一击")
 	assert_eq(_xiang_deng(JiQiChuan.ZHA_DAN_BAN_JING, 240.0), 1, "深水炸弹半径 240（120 × 2）")
 	assert_eq(_xiang_deng(JiQiChuan.MAO_WAI_BAN_JING, 480.0), 1, "船锚外径 480（240 × 2）")
@@ -1359,10 +1366,10 @@ func _ready() -> void:
 	chuan.shou_dao_ji_neng(1.0)
 	assert_eq(_xiang_deng(xue_ji_neng - chuan.xue, 8.0), 1, "1『级』技能伤害 = 8 船体 HP")
 	chuan.shou_dao_ji_neng_bai_fen(10.0)
-	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 18.0), 1,
-			"10% 百分比对首领船减半：360×10%×0.5 = 18 HP")
+	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 20.0), 1,
+			"10% 百分比对首领船减半：400×10%×0.5 = 20 HP")
 	chuan.shou_dao_ji_neng_hp(4.0)
-	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 18.0 - 4.0), 1,
+	assert_eq(_xiang_deng(chuan.xue, xue_ji_neng - 8.0 - 20.0 - 4.0), 1,
 			"已换算 HP 的技能伤害直接扣船体")
 	chuan._ding_zhu_sheng_yu = 0.0
 	chuan._kong_zhi_kang_xing_sheng_yu = 0.0
@@ -1407,7 +1414,7 @@ func _ready() -> void:
 	assert_eq(1 if di_lie.has(si_zhu) else 0, 0, "di_ren_lie 过滤 si_le 的鱼")
 	huo_zhu.queue_free()
 	si_zhu.queue_free()
-	# 复原：后面还要按满血 360 测普通咬击
+	# 复原：后面还要按满血 400 测普通咬击
 	chuan.xue = chuan.zui_da_xue
 	chuan._zhuang_tai_sheng_yu.clear()
 	chuan._ding_zhu_sheng_yu = 0.0
@@ -1424,10 +1431,10 @@ func _ready() -> void:
 	var chuan_yao_shang := ZhanDou.jiu_yao_ji_shang_hai(9.0, yu.zui_ba)
 	assert_eq(_xiang_deng(chuan_yao_shang, 2.24), 1,
 			"船战普通咬：0.24×9+0.08=2.24（此前 1.4）")
-	assert_eq(int(ceil(360.0 / (chuan_yao_shang * 3.0))), 54,
-			"满血船：弱点每口 2.24×3=6.72，54 口咬沉（53.57 向上取整）")
-	assert_eq(_xiang_deng(chuan.xue, 360.0 - chuan_yao_shang * 0.7), 1,
-			"A13：咬船体 0.24×9+0.08=2.24，再吃 30% 护甲减伤（2.24×0.7=1.568，360 → 358.432）")
+	assert_eq(int(ceil(400.0 / (chuan_yao_shang * 3.0))), 60,
+			"满血船 400：弱点每口 2.24×3=6.72，60 口咬沉（59.52 向上取整）")
+	assert_eq(_xiang_deng(chuan.xue, 400.0 - chuan_yao_shang * 0.7), 1,
+			"A13：咬船体 0.24×9+0.08=2.24，再吃 30% 护甲减伤（2.24×0.7=1.568，400 → 398.432）")
 	# 机械船受击闪白必须染根节点：出招动画期间 _chuan_ti 被隐藏、_zhao_ti 可见，
 	# 只染船体会让玩家在 0.7~1.0 秒的出招期完全看不到受击反馈
 	assert_eq(1 if chuan.modulate.r > 2.0 and chuan.modulate.g > 2.0 \
@@ -1440,8 +1447,8 @@ func _ready() -> void:
 	yu._yao_ji_leng_que = 0.0
 	yu._chang_shi_yao_ji()
 	assert_eq(_xiang_deng(chuan.xue,
-			360.0 - chuan_yao_shang * 0.7 - chuan_yao_shang * 3.0), 1,
-			"咬玻璃舱（弱点）：2.24×3=6.72 且跳过护甲（358.432 → 351.712）")
+			400.0 - chuan_yao_shang * 0.7 - chuan_yao_shang * 3.0), 1,
+			"咬玻璃舱（弱点）：2.24×3=6.72 且跳过护甲（398.432 → 391.712）")
 	assert_eq(_xiang_deng(chuan.tixing, 99.0), 1, "机器船体型 99：玩家永远吞不掉，只能咬沉")
 	# 失控保护：1 秒节拍 + 控制会接成「控住→下一招必中」，失控期间整拍必须跳过
 	ZhangBen.yun_xuan_ji_shi = 1.5
@@ -4423,6 +4430,26 @@ func _ready() -> void:
 	assert_eq(1 if not ce_tj._yu_lan_zhe.visible else 0, 1, "关闭预览后遮罩隐藏")
 	ce_tj.queue_free()
 	await get_tree().process_frame
+
+	# ---- 用例 6z：濒死逃逸爆发（缺口 11）——真实受伤路径验证 ----
+	ZhangBen.chong_zhi()
+	_she_deng_ji(5)  # 上限 6.0 → 阈值 0.9
+	ZhangBen.dang_qian_ti_xing = 1.2  # 先高于阈值
+	yu.wudi = false
+	yu._ni_liu_sheng_yu = 0.0
+	yu._ying_ke_sheng_yu = 0.0
+	var bin_si_npc: YuNpc = _zao_yu(1)
+	yu.shou_dao_yao_ji(0.35, bin_si_npc, "shen")  # 1.2 → 0.85，跌破 15%
+	assert_eq(1 if ZhangBen.bin_si_yi_chu_fa else 0, 1, "受伤跌破 15% 自动触发保底")
+	assert_eq(_xiang_deng(zhang_ben_tixing(yu), 0.85), 1, "触发这一口按原值扣血")
+	assert_eq(_xiang_deng(ZhangBen.bin_si_sheng_yu, 5.0), 1, "逃逸窗口 5 秒")
+	assert_eq(1 if yu.get_node_or_null("BinSiBianYuan") != null else 0, 1, "屏幕边缘暗红脉冲层已挂上")
+	# 第二口 1.0：窗口内应只扣 0.5，0.85 → 0.35，不被连吞
+	yu.wudi = false
+	yu.shou_dao_yao_ji(1.0, bin_si_npc, "shen")
+	assert_eq(_xiang_deng(zhang_ben_tixing(yu), 0.35), 1, "窗口内 1.0 伤害只扣 0.5（受伤 -50%）")
+	assert_eq(1 if ZhangBen.sheng_cun_zhong else 0, 1, "窗口内不被一口连吞致死")
+	assert_eq(1 if ZhangBen.chu_fa_bin_si(0.1) == false else 0, 1, "每局一次：窗口内不复发")
 
 	# ---- 用例 7：血量归零 → 死亡（放最后：切场景会拆掉本测试）----
 	yu.wudi = false  # 清无敌，确保受伤入口真的执行

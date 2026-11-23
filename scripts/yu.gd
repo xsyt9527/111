@@ -64,6 +64,7 @@ var tixing: float:
 var xing_xiang_bi := 1.0  # 体型归一化因子：同体型所有鱼「可见内容宽」等宽（见 TiXingGuiYi）
 var _ti_xing_nei_rong := Vector2(TI_CHANG_HUI_TUI, 101.0)  # 当前形态 you 动画的最大内容宽/高
 var _ti_xing_tui: Tween = null  # 体型补间：连续触发先杀旧 tween，避免多条抢同一个 scale
+var _bin_si_ceng: CanvasLayer = null  # 濒死爆发的屏幕边缘脉冲层（独立 CanvasLayer，挂在自己身上随死亡清理）
 var wudi := false  # 受伤后的短暂无敌标记
 var _sheng_ji_tui: Tween = null  # 升级精灵脉冲补间：重复升级先杀掉旧的，避免两条抢子节点 scale
 var yan_chu_kong_zhi := false  # 九图拼合演出锁：不回方向、不游、不咬、不吃（冷却与消化照走）
@@ -377,7 +378,7 @@ func _process(delta: float) -> void:
 	# 探照灯减速：只压目标速度，不碰冲刺/冲撞（那些分支在前面直接 return）
 	if _wai_bu_jian_su_sheng_yu > 0.0:
 		mu_biao_su_du *= _wai_bu_jian_su_bei
-	mu_biao_su_du *= 1.0 + _shen_shang_xian_jia_su() \
+	mu_biao_su_du *= 1.0 + _shen_shang_xian_jia_su() + ZhangBen.bin_si_jia_su() \
 			+ ZhangBen.bei_dong_fu_jia(&"ling_min_wei_qi", &"zhui_jia")
 	dang_qian_su_du = move_toward(dang_qian_su_du, mu_biao_su_du, jia_su_du * delta)
 
@@ -2413,6 +2414,8 @@ func shou_dao_yao_ji(shang_hai: float, lai_yuan = null, _bu := "shen") -> void:
 	# lai_yuan/_bu 有默认值：机器船等旧调用方仍可单参调用；_bu 预留给分部位反应
 	if wudi or _ni_liu_sheng_yu > 0.0:
 		return  # 无敌：受伤后的短暂无敌 / 逆流闪避窗口都从这里挡下
+	# 濒死逃逸爆发：最终伤害 ×0.5，放在所有减伤之前——致命判定/反伤都按减半后的数算
+	shang_hai *= ZhangBen.bin_si_shang_hai_xi_shu()
 	# G T1 被动：裂空步——每 5 秒一次，受击瞬间朝攻击者反方向瞬移 0.5 身位，并免掉这一口
 	var lie := ZhangBen.zhao_bei_dong(&"lie_kong_bu")
 	if lie != null and nei_bu_leng_que_sheng(&"lie_kong_bu") <= 0.0:
@@ -2611,14 +2614,67 @@ func _jiechu_wudi() -> void:
 	modulate = Color.WHITE  # 恢复原色
 
 
-func _on_ti_xing_bian_hua(_dang_qian: float, _shang_xian: float) -> void:
+func _on_ti_xing_bian_hua(dang_qian: float, _shang_xian: float) -> void:
 	# 显示体型变了（升级回满 / 受伤变小 / 吃东西回血）：账本已是新值，显示层 Tween 追过去
-	# 0.25 秒——受伤要立刻看得见“我变小了”，回血也别慢吞吞
+	# 0.25 秒——受伤要立刻看得见"我变小了"，回血也别慢吞吞
 	# 记住这条 Tween：连续受伤 / 进化换外观时先杀掉旧的，避免两条抢同一个 scale
 	if _ti_xing_tui != null and _ti_xing_tui.is_valid():
 		_ti_xing_tui.kill()
 	_ti_xing_tui = create_tween()
 	_ti_xing_tui.tween_property(self, "scale", _ti_xing_vector(), 0.25).set_ease(Tween.EASE_OUT)
+	# 保底在体型变化时判定：受伤掉到 15% 以下立刻给逃逸窗口，不等下一帧输入
+	_try_chu_fa_bin_si(dang_qian)
+
+
+func _try_chu_fa_bin_si(dang_qian: float) -> void:
+	# 濒死逃逸爆发（缺口 11）：每局 1 次，触发后 5 秒速度/受伤/NPC 感知三效果同时生效
+	if not ZhangBen.chu_fa_bin_si(dang_qian):
+		return
+	# 死亡爆发特效就近取用（小尺寸挂在身上，避免误读成"已经死了"）
+	TeXiaoKu.bo_ming(&"fb_si_wang", get_parent(), global_position, ti_chang() * 0.6)
+	_bin_si_bian_yuan_mai_chong()
+
+
+func _bin_si_bian_yuan_mai_chong() -> void:
+	# 屏幕边缘暗红脉冲：4 条 ColorRect 挂在独立 CanvasLayer（layer=50，盖住世界、不挡 HUD 输入）
+	# 20 个 0.25 秒半周期 = 5 秒，与账本窗口同步；层随玩家节点一起释放，不留残影
+	if _bin_si_ceng != null and is_instance_valid(_bin_si_ceng):
+		_bin_si_ceng.queue_free()
+	var ceng := CanvasLayer.new()
+	ceng.name = "BinSiBianYuan"
+	ceng.layer = 50
+	add_child(ceng)
+	_bin_si_ceng = ceng
+	# 四条边放进同一个容器：只 tween 容器的 modulate:a，一次调用四条一起亮/暗
+	var rong := Node2D.new()
+	rong.modulate = Color.WHITE
+	rong.modulate.a = 0.0
+	ceng.add_child(rong)
+	var hou := SHU_ZHI.BIN_SI_BIAN_YUAN_HOU_DU
+	var yu_le: Array = [
+		[Control.PRESET_TOP_WIDE, Vector2(0.0, 0.0), Vector2(0.0, hou)],
+		[Control.PRESET_BOTTOM_WIDE, Vector2(0.0, -hou), Vector2(0.0, 0.0)],
+		[Control.PRESET_LEFT_WIDE, Vector2(0.0, 0.0), Vector2(hou, 0.0)],
+		[Control.PRESET_RIGHT_WIDE, Vector2(-hou, 0.0), Vector2(0.0, 0.0)],
+	]
+	for pei in yu_le:
+		var t := ColorRect.new()
+		t.color = Color(0.55, 0.02, 0.04, 1.0)
+		t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rong.add_child(t)
+		t.set_anchors_and_offsets_preset(pei[0])
+		t.offset_left = pei[1].x
+		t.offset_top = pei[1].y
+		t.offset_right = pei[2].x
+		t.offset_bottom = pei[2].y
+	var tween := create_tween()
+	for i in range(10):  # (0.25 亮 + 0.25 暗) × 10 = 5 秒，与账本窗口同步
+		tween.tween_property(rong, "modulate:a", 0.5, 0.25)
+		tween.tween_property(rong, "modulate:a", 0.0, 0.25)
+	tween.tween_callback(func() -> void:
+		if is_instance_valid(ceng):
+			ceng.queue_free()
+		_bin_si_ceng = null)
 
 
 func _tun_chi_maichong() -> void:

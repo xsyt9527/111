@@ -58,8 +58,18 @@ const DA_YU_CHA_JI := 2  # 「大体型」定义：等级 ≥ 玩家当前等级
 const BAO_HU_SHI_JIAN := 120.0  # 前 120 秒
 const BAO_HU_CHA_JI := 3  # 不刷 ≥ 玩家等级 +3 的大体型
 
+# ---- 濒死逃逸爆发（缺口 11 / 评审 P1：死亡螺旋唯一保底）----
+const BIN_SI_TI_XING_BI := 0.15  # 当前体型 ≤ 上限 15% 触发（用上限比例，不做绝对值）
+const BIN_SI_CHI_XU := 5.0  # 持续 5 秒
+const BIN_SI_JIA_SU := 0.3  # 移动速度 +30%
+const BIN_SI_SHANG_HAI_XI_SHU := 0.5  # 受到伤害 -50%（最终伤害乘数）
+const BIN_SI_GAN_ZHI_XI_SHU := 0.5  # NPC 感知玩家 -50%
+const BIN_SI_MEI_JU_CI_SHU := 1  # 每局仅 1 次
+const BIN_SI_BIAN_YUAN_HOU_DU := 96.0  # 屏幕边缘暗红脉冲厚度（像素），可调
+
 # ---- A13 机械船 ----
-const CHUAN_XUE_MEI_TI := 40.0  # 船血量 = 玩家当前体型 ×40
+const CHUAN_XUE_GU_DING := 400.0  # 11-23 A13 拍板：船血固定 400（可调区间 300~500），与玩家体型脱钩
+const CHUAN_XUE_MEI_TI := 40.0  # 旧公式系数：仅留档，主流程已不用（别删，老存档/工具可能还读）
 const CHUAN_HU_JIA_JIAN_SHANG := 0.3  # 非致命区护甲减伤 30%
 
 # ---- A14 NPC 互吃 ----

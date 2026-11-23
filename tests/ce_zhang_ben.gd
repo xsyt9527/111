@@ -559,6 +559,31 @@ func _initialize() -> void:
 	assert_eq(1 if zb21.neng_li_ke_yong(pu_tong) else 0, 1, "无归属的普通能力始终可用")
 	zb21.free()
 
+	# ---- 用例：濒死逃逸爆发（缺口 11 / 评审 P1：死亡螺旋唯一保底）----
+	var zb_bs: Node = load("res://scripts/zhang_ben.gd").new()
+	zb_bs.deng_ji = 0  # 上限 1.0，阈值 = 1.0 × 15% = 0.15
+	assert_float(zb_bs.ti_xing_shang_xian(), 1.0, "濒死测试基准：Lv.0 上限 1.0")
+	assert_eq(1 if zb_bs.bin_si_ke_chu_fa(0.2) else 0, 0, "体型 0.2 > 15% 不触发")
+	assert_eq(1 if zb_bs.chu_fa_bin_si(0.2) else 0, 0, "未达阈值时触发被拒，不消耗次数")
+	assert_eq(1 if zb_bs.bin_si_yi_chu_fa else 0, 0, "被拒后次数仍未用")
+	assert_eq(1 if zb_bs.chu_fa_bin_si(0.15) else 0, 1, "体型恰好 15% 触发保底")
+	assert_float(zb_bs.bin_si_sheng_yu, SHU_ZHI.BIN_SI_CHI_XU, "触发后窗口 = 5 秒")
+	assert_float(zb_bs.bin_si_jia_su(), SHU_ZHI.BIN_SI_JIA_SU, "窗口内速度 +30%")
+	assert_float(zb_bs.bin_si_shang_hai_xi_shu(), SHU_ZHI.BIN_SI_SHANG_HAI_XI_SHU, "窗口内受伤 -50%")
+	assert_float(zb_bs.bin_si_gan_zhi_xi_shu(), SHU_ZHI.BIN_SI_GAN_ZHI_XI_SHU, "窗口内 NPC 感知 -50%")
+	assert_eq(1 if zb_bs.chu_fa_bin_si(0.05) else 0, 0, "每局只触发一次：更濒死也不复发")
+	zb_bs.zou_ju_shi_jian(2.0)
+	assert_float(zb_bs.bin_si_sheng_yu, 3.0, "走 2 秒后窗口剩 3 秒")
+	assert_float(zb_bs.bin_si_jia_su(), SHU_ZHI.BIN_SI_JIA_SU, "窗口未结束仍在生效")
+	zb_bs.zou_ju_shi_jian(3.0)
+	assert_float(zb_bs.bin_si_sheng_yu, 0.0, "满 5 秒窗口归零")
+	assert_float(zb_bs.bin_si_shang_hai_xi_shu(), 1.0, "窗口结束后伤害恢复原值")
+	assert_float(zb_bs.wan_jia_yin_bi_xi_shu(), 1.0, "窗口结束后 NPC 感知恢复原值")
+	zb_bs.chong_zhi()
+	assert_eq(1 if zb_bs.bin_si_yi_chu_fa else 0, 0, "重开一局次数复位")
+	assert_eq(1 if zb_bs.chu_fa_bin_si(0.15) else 0, 1, "新局可再次触发")
+	zb_bs.free()
+
 	# ---- 收卷：退出码是唯一门禁语言 ----
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)

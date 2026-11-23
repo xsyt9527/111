@@ -24,6 +24,9 @@ enum JieDuan { ZHENG_CHANG, REN_LEI_ZHAN, JIE_SHU }  # 阶段：正常生态 / �
 enum JieJu { WEI_DING, SHENG_LI, SHI_BAI, SI_WANG }  # 结局：未定 / 胜利 / 超时失败 / 死亡
 
 var ju_nei_shi_jian := 0.0  # 局内时钟（秒）：只统计活着且未结算的时间
+# 濒死逃逸爆发（缺口 11）：当前体型 ≤ 上限 15% 时一次性保底，账本管状态，Yu 管表现
+var bin_si_yi_chu_fa := false  # 每局已用标记：chong_zhi 才复位，中途回血也不再给第二次
+var bin_si_sheng_yu := 0.0  # 剩余秒数（秒）；>0 即爆发窗口生效中
 var ren_lei_yan_chi := 0.0  # C 首局节奏脚本：人类战整体推迟（秒）；0 = 标准 8:00 降临
 var jie_duan := JieDuan.ZHENG_CHANG  # 当前阶段
 var jie_ju := JieJu.WEI_DING          # 本局结局：只写一次，结算页读它选文案
@@ -427,6 +430,9 @@ func zou_ju_shi_jian(delta: float) -> void:
 	if not sheng_cun_zhong or jie_ju != JieJu.WEI_DING:
 		return
 	ju_nei_shi_jian += delta
+	# 濒死爆发倒计时走同一只局内时钟：暂停/结算自动停表，不需要额外计时器
+	if bin_si_sheng_yu > 0.0:
+		bin_si_sheng_yu = maxf(0.0, bin_si_sheng_yu - delta)
 	if jie_duan == JieDuan.ZHENG_CHANG and ju_nei_shi_jian >= REN_LEI_ZHAN_QI_DIAN + ren_lei_yan_chi:
 		kai_shi_ren_lei_zhan()
 	if ju_nei_shi_jian >= JU_SHI_CHANG:
@@ -498,6 +504,8 @@ func chong_zhi() -> void:
 	yun_xuan_ji_shi = 0.0
 	sheng_cun_zhong = true  # 重开复活：饥饿时钟重新走
 	ju_nei_shi_jian = 0.0  # 局内时钟归零
+	bin_si_yi_chu_fa = false  # 濒死保底每局一次：新局重新可用
+	bin_si_sheng_yu = 0.0  # 上局残留的爆发窗口一并清掉
 	ren_lei_yan_chi = 0.0  # C 首局脚本的推迟不跨局
 	jie_duan = JieDuan.ZHENG_CHANG  # 阶段回到正常生态
 	jie_ju = JieJu.WEI_DING  # 结局清空：上一局的胜负不能带进新局
@@ -806,7 +814,41 @@ func bei_dong_fu_jia(bian_hao: StringName, jian: StringName) -> float:
 
 func wan_jia_yin_bi_xi_shu() -> float:
 	# NPC 看玩家时的感知折算系数：隐匿气息每层 -10% 可见度（0.9/0.8/0.7）
-	return 1.0 - clampf(bei_dong_zhi(&"yin_ni_qi_xi"), 0.0, 0.9)
+	# 濒死逃逸爆发期间再 ×0.5——NPC 索敌统一读这里，不必在每个 YuNpc 分支打补丁
+	return (1.0 - clampf(bei_dong_zhi(&"yin_ni_qi_xi"), 0.0, 0.9)) * bin_si_gan_zhi_xi_shu()
+
+
+# ---- 濒死逃逸爆发（缺口 11 / 评审 P1）----
+# 死亡螺旋（变小→更慢→更易被咬）的唯一保底：当前体型 ≤ 上限 15% 触发一次，
+# 5 秒内速度 +30% / 受伤 -50% / NPC 感知玩家 -50%；只有 chong_zhi 才能重置次数。
+func bin_si_ke_chu_fa(dang_qian_ti_xing: float) -> bool:
+	return not bin_si_yi_chu_fa and bin_si_sheng_yu <= 0.0 \
+			and dang_qian_ti_xing <= ti_xing_shang_xian() * SHU_ZHI.BIN_SI_TI_XING_BI
+
+
+func chu_fa_bin_si(dang_qian_ti_xing: float) -> bool:
+	# 返回是否真的触发：调用方据此决定要不要播屏幕边缘脉冲，失败时不做任何表现
+	if not bin_si_ke_chu_fa(dang_qian_ti_xing):
+		return false
+	bin_si_yi_chu_fa = true
+	bin_si_sheng_yu = SHU_ZHI.BIN_SI_CHI_XU
+	return true
+
+
+func bin_si_huo_yue() -> bool:
+	return bin_si_sheng_yu > 0.0
+
+
+func bin_si_jia_su() -> float:
+	return SHU_ZHI.BIN_SI_JIA_SU if bin_si_huo_yue() else 0.0
+
+
+func bin_si_shang_hai_xi_shu() -> float:
+	return SHU_ZHI.BIN_SI_SHANG_HAI_XI_SHU if bin_si_huo_yue() else 1.0
+
+
+func bin_si_gan_zhi_xi_shu() -> float:
+	return SHU_ZHI.BIN_SI_GAN_ZHI_XI_SHU if bin_si_huo_yue() else 1.0
 
 
 func ji_chi_yu(neng: NengLi) -> void:

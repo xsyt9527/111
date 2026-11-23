@@ -315,8 +315,9 @@ func _sheng_cheng_ji_qi_chuan() -> void:
 	yu_qun.ting_zhi_shua_xin()
 	ji_qi_chuan = JI_QI_CHUAN_CHANGJING.instantiate()
 	ji_qi_chuan.wan_jia = yu  # 注入玩家：船不靠组名找人，测试也好塞假玩家
-	# A13：船血量 = 玩家当前体型 ×40（生成时定格；鲸鲨战/提前开战都不另外加成）
-	var chuan_xue := maxf(1.0, ZhangBen.dang_qian_ti_xing * SHU_ZHI.CHUAN_XUE_MEI_TI)
+	# A13（11-23 拍板）：船血固定 400，与玩家体型脱钩；玩家对船伤害仍随体型增长（激励转正的另一半）
+	# 走 JiQiChuan 的静态入口，测试与编辑器兜底读同一个数，不再散落 ×40 公式
+	var chuan_xue := JiQiChuan.chu_shi_xue()
 	ji_qi_chuan.zui_da_xue = chuan_xue
 	ji_qi_chuan.xue = chuan_xue
 	# 鲸鲨还活着：船降临后先打它 8~10 秒（玩家咬船会立刻转仇）

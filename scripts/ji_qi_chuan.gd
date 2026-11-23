@@ -11,8 +11,13 @@ class_name JiQiChuan
 
 signal bei_ji_bai  # 船被打沉：Main 据此判胜
 
-const ZUI_DA_XUE := 360.0         # 默认血量：A13 起由 Main 按「玩家体型 ×40」覆写（常量只作编辑器/测试兜底）
+# 初始血量唯一入口（11-23 A13）：固定 400，与玩家体型彻底脱钩。
+# 玩家对船的伤害仍随体型增长（另一半激励），两者互不干扰。
+static func chu_shi_xue() -> float:
+	return SHU_ZHI.CHUAN_XUE_GU_DING
+
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
+const ZUI_DA_XUE := SHU_ZHI.CHUAN_XUE_GU_DING  # 固定 400（11-23 A13 拍板）：编辑器/测试兜底，Main 也读同一个入口
 const RUO_DIAN_BEI_LV := 3.0      # 弱点（玻璃舱）伤害倍率
 const GEN_SUI_SU_DU := 110.0      # 横向跟随玩家的速度（px/秒）：慢到玩家能绕到侧面
 const XUAN_FU_GAO_DU := 480.0     # 悬停在玩家上方多高（TASK-022 船体 ×0.8 后由 600 同步降到 480）
