@@ -68,6 +68,35 @@ func _initialize() -> void:
 	assert_guo_c(YING_YANG.ke_cheng_zhang(6, 9, 300.0), false, "已满 6 级 → 不再成长")
 	assert_guo_c(YING_YANG.ke_cheng_zhang(5, 9, 300.0), true, "5 级未封顶 → 可成长")
 
+	# ---- 用例 7：出生锁 1 级（A 方案）----
+	assert_eq(YING_YANG.chu_sheng_deng_ji(false), 1, "普通 NPC 出生 1 级")
+	assert_eq(YING_YANG.chu_sheng_deng_ji(true), -1, "首领保留鱼种等级（哨兵 -1）")
+
+	# ---- 用例 8：同屏满营养唯一 ----
+	assert_guo_c(YING_YANG.man_yang_tong_ping_ke_sheng(0), true, "已有 0 条 → 可 roll 满营养")
+	assert_guo_c(YING_YANG.man_yang_tong_ping_ke_sheng(1), false, "已有 1 条 → 不再 roll（同屏唯一）")
+
+	# ---- 用例 9：A11 加压期高营养概率 ----
+	assert_jin(YING_YANG.gai_lv_man_yang(false), 0.03, 0.0001, "常态满营养概率 3%")
+	assert_jin(YING_YANG.gai_lv_man_yang(true), 0.08, 0.0001, "加压期高营养专线 8%")
+
+	# ---- 用例 10：A14 互吃成长 = 对方等级 ×0.5 ----
+	assert_jin(YING_YANG.hu_chi_cheng_zhang_lian(4), 2.0, 0.001, "吞 4 级 → +2.0 级")
+	assert_jin(YING_YANG.hu_chi_cheng_zhang_lian(1), 0.5, 0.001, "吞 1 级 → +0.5 级")
+	assert_jin(YING_YANG.hu_chi_cheng_zhang_lian(0), 0.0, 0.001, "0 级 → 0")
+
+	# ---- 用例 11：暗池区域等级上限随时间 ----
+	assert_eq(YING_YANG.an_chi_deng_ji_shang_xian(0.0), 4, "开局上限 4")
+	assert_eq(YING_YANG.an_chi_deng_ji_shang_xian(60.0), 5, "1 分钟上限 5")
+	assert_eq(YING_YANG.an_chi_deng_ji_shang_xian(300.0), 6, "5 分钟上限 6")
+	assert_eq(YING_YANG.an_chi_deng_ji_shang_xian(3600.0), 6, "封顶 6 不无限涨")
+
+	# ---- 用例 12：暗池成长量 + 收缩加压 ----
+	assert_jin(YING_YANG.an_chi_cheng_zhang_liang(0), 0.3, 0.0001, "常态 +0.3")
+	assert_jin(YING_YANG.an_chi_cheng_zhang_liang(1), 0.36, 0.0001, "收缩① ×1.2 → 0.36")
+	assert_jin(YING_YANG.an_chi_cheng_zhang_liang(2), 0.45, 0.0001, "收缩② ×1.5 → 0.45")
+	assert_jin(YING_YANG.an_chi_cheng_zhang_liang(9), 0.45, 0.0001, "越级夹到收缩②")
+
 	# ---- 收卷 ----
 	print("[ce_ying_yang] passed=%d failed=%d" % [passed, failed])
 	print("结论：%s" % ("全绿：营养值系统纯逻辑通过" if failed == 0 else "有失败：需修复"))

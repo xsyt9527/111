@@ -8,6 +8,10 @@ class_name YuQun
 const YU_NPC_CHANGJING := preload("res://scenes/YuNpc.tscn")  # NPC 鱼蓝图
 const SHU_ZHI := preload("res://scripts/shu_zhi.gd")  # A 核心数值表
 const SHENG_JI_BIAO := preload("res://data/shengji/sheng_ji_biao.tres")  # 隐藏成长升级曲线：与 YuNpc 同表
+const YING_YANG := preload("res://scripts/ying_yang.gd")  # 隐藏营养值系统纯逻辑层（2026-11-20）
+const ER_LIAO_CHANGJING := preload("res://scripts/er_liao_yu.gd")  # 饵料鱼层（A 方案生态死锁防护）
+const ER_LIAO_MEI_FANG_SHU := 10  # 每房常驻饵料鱼条数：1 级 NPC 的基础食物，被吃后持续补
+const ER_LIAO_BU_HUO_JIAN_GE := 1.5  # 饵料补充检查节拍（秒）：不用每帧扫组
 const SHUA_XIN_JI_CHU := 2  # 第 0 档能刷到 2 级
 const SHUA_XIN_FENG_DING := 10  # 体型上限封顶 10 级（与鱼种表最高级一致）
 const DU_YU_ZUI_DI_DANG := 2  # 狮子鱼（cheng_yu）最低刷新档位：40 秒后（_dang>=2）才可抽到
@@ -39,12 +43,20 @@ var fang_jian_qu := Rect2(0.0, 0.0, 4128.0, 2304.0)  # 当前房间矩形：默�
 var _fang_jian_yu_qun: Array = []  # 九房鱼群记录：每房一个 Dictionary 数组；未加载房只有记录、不建节点
 var _dang_qian_fang_jian := -1  # 当前房号 0..8；-1 表示还没接管过任何房间
 var _xu_ni_you_dong_ji_shi := 0.0  # 未加载房虚拟游动累计（每 0.25 秒推进一拍）
+# A 方案饵料鱼层：当前房维护一群浮游小鱼，被吃后按节拍补充
+var _er_liao_ceng: Node2D = null  # 饵料鱼容器（_ready 里建）
+var _er_liao_bu_huo_ji_shi := 0.0  # 补充检查累计（秒）
+var _an_chi_jie_suan_ji_shi := 0.0  # 暗池统计结算累计（每 30 秒推进一次区域平均等级）
 
 @onready var dingshi: Timer = $Dingshi  # 定时器子节点（one_shot：每刷一条重新排程）
 
 
 func _ready() -> void:
 	dingshi.timeout.connect(_on_dingshi_timeout)
+	# A 方案饵料层容器：浮游小鱼是背景食物，单独一层，不进鱼群记录、不参与互吃/图鉴
+	_er_liao_ceng = Node2D.new()
+	_er_liao_ceng.name = "ErLiaoCeng"
+	add_child(_er_liao_ceng)
 	# 九房记录要等 Main 注入压力修正后，由首次 qie_huan_fang_jian 惰性初始化；
 	# 这里只排第一轮补鱼，不再 deferred 铺屏（开局与换房共用同一套记录加载）
 	_kai_xia_yi_lun()
@@ -76,8 +88,10 @@ func _process(delta: float) -> void:
 	if _dang > shang_yi_dang:
 		_dang_ti_tao_tai_he_bu_di()
 	_xu_ni_you_dong(delta)  # 未加载房后台虚拟游动（0.25 秒一拍）
-	_geng_xin_da_yu(delta)  # A11 双重加压：第 4 分钟起单独刷大体型
+	_geng_xin_da_yu(delta)  # A11 加压期：高营养专线（满营养鱼靠成长成为威胁）
 	_geng_xin_hu_chi(delta)  # A14：每 20 秒一次全局 NPC 互吃判定
+	_geng_xin_er_liao(delta)  # A 方案：维持当前房饵料鱼层（1 级 NPC 的基础食物）
+	_geng_xin_an_chi(delta)  # A 方案：暗池每 30 秒批量结算区域平均等级（提案 3.6）
 
 
 func _geng_xin_da_yu(delta: float) -> void:
@@ -89,11 +103,92 @@ func _geng_xin_da_yu(delta: float) -> void:
 	var bao_xian := 0
 	while _da_yu_ji_shi >= jian_ge and bao_xian < 8:
 		_da_yu_ji_shi -= jian_ge
-		_shengcheng_da_yu()
+		# A 方案（提案 4A）：A11 大鱼专线改为「高营养专线」——不直接刷大体型（破坏全从小长大），
+		# 而是提高这条鱼的满营养概率、营养值取上沿；威胁仍靠静默成长长出来，只是长得更快。
+		_shengcheng_gao_ying_yang()
 		bao_xian += 1
 		if jian_ge <= 0.0:
 			_da_yu_ji_shi = 0.0
 			break
+
+
+func _geng_xin_er_liao(delta: float) -> void:
+	# A 方案饵料层维护：按节拍把当前房饵料补到 ER_LIAO_MEI_FANG_SHU 条。
+	# 只维护当前房（离屏房的饵料由暗池统计模拟覆盖，不实例化）；停刷期也停补（决战冻结世界）。
+	if _er_liao_ceng == null:
+		return
+	if shua_xin_ting_zhi:
+		return
+	_er_liao_bu_huo_ji_shi += delta
+	if _er_liao_bu_huo_ji_shi < ER_LIAO_BU_HUO_JIAN_GE:
+		return
+	_er_liao_bu_huo_ji_shi = 0.0
+	var xian_you := _er_liao_ceng.get_child_count()
+	var qu := fang_jian_qu
+	for i in range(maxi(0, ER_LIAO_MEI_FANG_SHU - xian_you)):
+		var er: Node2D = ER_LIAO_CHANGJING.new()
+		var gao := randf_range(qu.position.y + FANG_JIAN_WAI_BIAN_JU, qu.end.y - FANG_JIAN_WAI_BIAN_JU)
+		var tui := randf_range(0.0, qu.size.x - 120.0)
+		er.position = Vector2(qu.position.x + tui, gao)
+		er.set("fangxiang", 1.0 if randf() < 0.5 else -1.0)
+		er.set_meta("fang_jian_qu", qu)
+		_er_liao_ceng.add_child(er)
+
+
+func _geng_xin_an_chi(delta: float) -> void:
+	# 暗池统计模拟（提案 3.6）：每 30 秒对未加载房批量推进「区域平均等级」。
+	# 不存个体成长过程、不实例化节点——只按登记表把全场隐藏等级整体抬升，避免玩家回头收割幼儿园。
+	if _fang_jian_yu_qun.is_empty() or shua_xin_ting_zhi:
+		return
+	_an_chi_jie_suan_ji_shi += delta
+	while _an_chi_jie_suan_ji_shi >= SHU_ZHI.AN_CHI_JIE_SUAN_JIAN_GE:
+		_an_chi_jie_suan_ji_shi -= SHU_ZHI.AN_CHI_JIE_SUAN_JIAN_GE
+		_an_chi_jie_suan_yi_pai()
+
+
+func _an_chi_jie_suan_yi_pai() -> void:
+	# 一拍结算：按局内时间取区域等级上限与收缩加压系数，对每条未加载房记录推进隐藏等级。
+	# 用浮点累计字段 nei_deng_f（隐藏等级浮点），整段满 1 才写回 nei_deng/ti，避免取整丢失小数。
+	var ju_miao := ZhangBen.ju_nei_shi_jian
+	var shang_xian := YING_YANG.an_chi_deng_ji_shang_xian(ju_miao)
+	var suo_duan := 0
+	if ju_miao >= SHU_ZHI.DA_YU_JIA_YA_QI_DIAN * 2.0:
+		suo_duan = 2
+	elif ju_miao >= SHU_ZHI.DA_YU_JIA_YA_QI_DIAN:
+		suo_duan = 1
+	var zeng_liang := YING_YANG.an_chi_cheng_zhang_liang(suo_duan)
+	for pian in range(JIU_FANG_SHU):
+		if pian == _dang_qian_fang_jian or pian >= _fang_jian_yu_qun.size():
+			continue
+		for rec in _fang_jian_yu_qun[pian]:
+			if bool(rec.get("man_yang", false)):
+				# 满营养鱼跨区追踪（提案 3.6）：命名个体在暗池也按 20 秒/0.5 级成长，
+				# 与实体 _zou_man_yang_cheng_zhang 同节拍；上限仍 min(玩家+4, 6)，首 120 秒冻结。
+				if ju_miao < SHU_ZHI.MAN_YANG_DONG_JIE_SHI_JIAN:
+					continue
+				var wan_deng := int(ZhangBen.deng_ji)
+				var man_shang := YING_YANG.man_yang_cheng_zhang_shang_xian(wan_deng)
+				var jin := int(rec.get("nei_deng", 1))
+				if jin >= man_shang:
+					continue
+				var lei := float(rec.get("man_yang_f", 0.0)) + SHU_ZHI.AN_CHI_JIE_SUAN_JIAN_GE
+				while lei >= SHU_ZHI.MAN_YANG_CHENG_ZHANG_JIAN_GE and jin < man_shang:
+					lei -= SHU_ZHI.MAN_YANG_CHENG_ZHANG_JIAN_GE
+					jin += 1
+					rec["ti"] = float(rec.get("ti", 1.0)) + SHU_ZHI.MAN_YANG_CHENG_ZHANG_MEI_CI
+				rec["man_yang_f"] = lei
+				rec["nei_deng"] = jin
+				continue
+			var nei_deng := int(rec.get("nei_deng", 1))
+			if nei_deng >= shang_xian:
+				continue  # 到区域上限：不随玩家等级水涨船高，出门不遇全图 boss
+			var fu := float(rec.get("nei_deng_f", float(nei_deng))) + zeng_liang
+			fu = minf(fu, float(shang_xian))
+			rec["nei_deng_f"] = fu
+			var xin_deng := int(floor(fu))
+			if xin_deng > nei_deng:
+				rec["nei_deng"] = xin_deng
+				rec["ti"] = float(rec.get("ti", 1.0)) + float(xin_deng - nei_deng)
 
 
 func da_yu_qi_dian() -> float:
@@ -520,7 +615,8 @@ func _shengcheng_yi_tiao() -> bool:
 
 
 func _shengcheng_da_yu() -> bool:
-	# A11 专用路径：无视当前档位概率，直接抽一条「玩家等级 +2 以上」的大体型
+	# A11 旧路径（保留供门禁测试与潜在回退）：无视档位概率抽「玩家等级 +2 以上」的大体型
+	# A 方案下实际刷新走 _shengcheng_gao_ying_yang：出生全 1 级，威胁靠满营养成长涌现
 	if shua_xin_ting_zhi or _dangqian_yu_shu() >= dang_qian_shang_xian():
 		return false
 	var zhong: YuZhong = _chou_da_yu_zhong()
@@ -530,10 +626,44 @@ func _shengcheng_da_yu() -> bool:
 	return true
 
 
-func _sheng_yu(zhong: YuZhong) -> void:
-	# 生成一条指定鱼种的 NPC：普通刷新与大体型专刷共用；生成后统一登记到当前房记录
+func _shengcheng_gao_ying_yang() -> bool:
+	# A11 高营养专线（提案 4A）：从普通池抽鱼种，注入「强制满营养 + 营养上沿」出生。
+	# 同屏满营养唯一（提案 3.2）：已有满营养成长鱼时不再叠加，本拍跳过——这是全图威胁的稀缺性闸门。
+	if shua_xin_ting_zhi or _dangqian_yu_shu() >= dang_qian_shang_xian():
+		return false
+	if not YING_YANG.man_yang_tong_ping_ke_sheng(_tong_ping_man_yang_shu()):
+		return false
+	var zhong: YuZhong = _chou_yu_zhong()
+	if zhong == null:
+		return false
+	_sheng_yu(zhong, {"qiang_zhi_man_yang": true, "qiang_zhi_ying_yang_shang_xian": true})
+	return true
+
+
+func _tong_ping_man_yang_shu() -> int:
+	# 同屏满营养成长鱼计数：当前房实体 + 其余房登记表里的满营养标记（全图唯一口径）
+	var shu := 0
+	for zi in get_children():
+		if zi is YuNpc and zi.man_yang_pin and not zi.si_le:
+			shu += 1
+	for pian in range(JIU_FANG_SHU):
+		if pian == _dang_qian_fang_jian or pian >= _fang_jian_yu_qun.size():
+			continue
+		for rec in _fang_jian_yu_qun[pian]:
+			if rec.get("man_yang", false):
+				shu += 1
+	return shu
+
+
+func _sheng_yu(zhong: YuZhong, zai_he: Dictionary = {}) -> void:
+	# 生成一条指定鱼种的 NPC：普通刷新与高营养专刷共用；生成后统一登记到当前房记录
+	# zai_he：生成前注入的字段载荷（如 A11 强制满营养），必须在 add_child 前写入供 _ready 读取
 	var xin_yu: YuNpc = YU_NPC_CHANGJING.instantiate()
 	xin_yu.yu_zhong = zhong  # 数据注入必须在 add_child 前：_ready 要读它
+	# A 方案出生锁 1 级（提案 4A）：刷新只定鱼种+营养，体型交给成长系统涌现；首领不受锁
+	xin_yu.chu_sheng_suo_ding = true
+	for key in zai_he.keys():
+		xin_yu.set(key, zai_he[key])
 	xin_yu.sudu = randf_range(zhong.sudu_fanwei.x, zhong.sudu_fanwei.y)
 	var qu := fang_jian_qu
 	# 出生带：房间左右边缘外 0~60px；相机 limit 裁掉房外部分，画面上仍是“从屏幕边游入”

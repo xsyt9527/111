@@ -82,6 +82,20 @@ const MAN_YANG_DENG_JI_SHANG_XIAN := 6  # 满营养鱼成长绝对上限（初�
 const MAN_YANG_DONG_JIE_SHI_JIAN := 120.0  # 开局保护：前 120 秒满营养鱼不成长（A12）
 const MAN_YANG_TONG_PING_SHANG_XIAN := 1  # 同屏满营养成长鱼上限（已有 1 条时新 roll 不生效）
 const GAO_YING_YANG_BI_LI := 1.0 / 3.0  # 高营养信号阈值：区间上 1/3 起体色更饱满发亮
+# ---- A 方案剩余机制（2026-11-20 提案 3.2/3.6/4A）----
+# 出生锁 1 级：刷新只定鱼种+营养，体型交给成长系统涌现；饵料鱼层是生态死锁防护（1 级互吃不过 1.1 门槛）
+const CHU_SHENG_DENG_JI := 1  # 所有普通 NPC 出生隐藏等级/体型统一 1（鱼种 dengji 仅用于解锁进度与图鉴）
+const ER_LIAO_TI_XING := 0.4  # 饵料鱼（浮游小鱼）体型：远小于 1 级 NPC，1.0>=0.4×1.1 保证吃得动
+const ER_LIAO_JING_YAN := 1  # 吃一条饵料鱼给的隐藏经验（对应普通鱼 +0.2 级的成长来源，见升级表）
+const HU_CHI_CHENG_ZHANG_BEI := 0.5  # A14 互吃成长：吞掉对方等级 ×0.5（提案 3.2）
+# 暗池统计模拟（提案 3.6）：不存个体，只按区域登记表批量结算
+const AN_CHI_JIE_SUAN_JIAN_GE := 30.0  # 暗池批量结算节拍：每 30 秒推进一次
+const AN_CHI_PING_JUN_CHENG_ZHANG := 0.3  # 普通鱼每 30 秒区域平均等级 +0.3（与明池进食速率对齐）
+const AN_CHI_DENG_JI_SHANG_XIAN_JI_CHU := 4  # 区域等级上限 = min(4 + 局内分钟数, 6)
+const AN_CHI_DENG_JI_SHANG_XIAN_FENG := 6  # 区域等级上限封顶 6（出门不遇全图 boss）
+const AN_CHI_SHOU_SUO_XI_SHU_1 := 1.2  # A11 水域收缩阶段①暗池成长率 ×1.2
+const AN_CHI_SHOU_SUO_XI_SHU_2 := 1.5  # A11 水域收缩阶段②暗池成长率 ×1.5
+const GAO_YING_YANG_ZHUAN_XIAN_GE_LV := 0.08  # A11 加压期高营养专线概率 3%→8%（威胁仍是长出来的）
 
 # ---- G 专属技 T1（2026-11-08）：能力表没写的节奏/概率细项统一收口 ----
 # 电鳗组

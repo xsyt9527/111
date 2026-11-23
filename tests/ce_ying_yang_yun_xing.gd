@@ -56,6 +56,47 @@ func _ready() -> void:
 	var rou_hou := _rou_shu()
 	assert_guo_c(rou_hou >= rou_qian + 1, true, "满营养鱼死亡掉 1 块营养肉块")
 
+	# ---- 用例 4：A 方案出生锁 1 级（普通鱼 1 级、首领保留鱼种等级）----
+	var yi_ban: YuNpc = YU_NPC_CHANGJING.instantiate()
+	yi_ban.yu_zhong = load("res://data/yuzhong/qi_yu.tres")  # 旗鱼鱼种 Lv.6
+	yi_ban.ai_kai_qi = false
+	yi_ban.chu_sheng_suo_ding = true  # 刷怪管线注入
+	gen.add_child(yi_ban)
+	assert_eq(yi_ban.deng_ji_nei, 1, "出生锁：旗鱼(Lv.6鱼种)实际出生隐藏等级 1")
+	assert_guo_c(is_equal_approx(yi_ban.tixing, 1.0), true, "出生锁：体型 1.0")
+
+	# ---- 用例 5：互吃成长 = 对方等级 ×0.5（普通鱼走直接加级）----
+	var chi_zhe: YuNpc = YU_NPC_CHANGJING.instantiate()
+	chi_zhe.yu_zhong = zhong
+	chi_zhe.ai_kai_qi = false
+	chi_zhe.chu_sheng_suo_ding = true
+	gen.add_child(chi_zhe)
+	var bei_tun: YuNpc = YU_NPC_CHANGJING.instantiate()
+	bei_tun.yu_zhong = zhong
+	bei_tun.ai_kai_qi = false
+	gen.add_child(bei_tun)
+	bei_tun.deng_ji_nei = 4  # 被吞方 4 级 → 吃方 +2.0 级（add_child 后设，避开 _ready 出生锁覆盖）
+	var deng_qian_chi := chi_zhe.deng_ji_nei
+	var zeng_liang := YING_YANG.hu_chi_cheng_zhang_lian(bei_tun.deng_ji_nei)
+	chi_zhe.jia_deng_ji_zhi_jie(zeng_liang)
+	assert_eq(chi_zhe.deng_ji_nei, deng_qian_chi + 2, "互吃 4 级鱼 → 吃方隐藏等级 +2")
+
+	# ---- 用例 6：饵料鱼层节点可创建、被吃回调 +0.2 级 ----
+	var er: Node2D = load("res://scripts/er_liao_yu.gd").new()
+	gen.add_child(er)
+	assert_guo_c(er.is_in_group("er_liao_yu"), true, "饵料鱼进 er_liao_yu 组")
+	var er_qian_deng := chi_zhe._deng_ji_yu_liang
+	er.bei_chi(chi_zhe)
+	assert_jin(chi_zhe._deng_ji_yu_liang, er_qian_deng + 0.2, 0.001, "吃饵料鱼 → 成长余量 +0.2")
+
+	# ---- 用例 7：埋点三条接口可调用、计数正确 ----
+	var qian_jian := int(ZhangBen.mai_dian_tun_zong)
+	ZhangBen.ji_mai_dian_tun(true)
+	assert_eq(ZhangBen.mai_dian_tun_zong, qian_jian + 1, "埋点②：吞鱼计数 +1")
+	ZhangBen.ji_mai_dian_chu_sheng(3, true)
+	assert_guo_c(int(ZhangBen.mai_dian_ying_yang_qu_jian.get("满营养", 0)) >= 1,
+			true, "埋点①：出生分布记录满营养")
+
 	# ---- 收卷 ----
 	print("[ce_ying_yang_yun_xing] passed=%d failed=%d" % [passed, failed])
 	print("结论：%s" % ("全绿：营养值运行时链路通过" if failed == 0 else "有失败：需修复"))
@@ -79,6 +120,14 @@ func assert_guo_c(shi_ji: bool, qi_wang: bool, biao_qian: String) -> void:
 	else:
 		failed += 1
 		print("FAIL: %s（期望 %s，实际 %s）" % [biao_qian, qi_wang, shi_ji])
+
+
+func assert_eq(shi_ji, qi_wang, biao_qian: String) -> void:
+	if shi_ji == qi_wang:
+		passed += 1
+	else:
+		failed += 1
+		print("FAIL: %s（期望 %s，实际 %s）" % [biao_qian, str(qi_wang), str(shi_ji)])
 
 
 func assert_jin(shi_ji: float, qi_wang: float, rong_cha: float, biao_qian: String) -> void:

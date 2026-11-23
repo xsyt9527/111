@@ -56,6 +56,7 @@ var _ti_xing_nei_rong := TiXingGuiYi.HUI_TUI_KUAN_GAO  # you 动画的最大内�
 var jiao_xue_wu_shi := false  # C 首局教学：预排布 NPC 不看玩家、不索敌（黑影/被咬尾巴的大鱼）
 var deng_ji_nei := 1  # 隐藏等级（经验曲线索引，只涨不降）：被咬掉 tixing 不倒扣经验进度
 var jing_yan_nei := 0  # 隐藏经验条：玩家看不见；吃东西涨，涨满升级=体型 +1（v0.4 生态三件套）
+var _deng_ji_yu_liang := 0.0  # A 方案直接加级的小数余量（互吃 +对方×0.5 / 饵料 +0.2，满 1 级进位）
 var sudu := 100.0  # 游速（像素/秒），由生成器写入
 var fangxiang := -1.0  # 1 向右，-1 向左，由生成器写入
 var bei_xi: Yu = null  # 吸附目标（玩家 ChiQu 打的标记）：非空 = 被吸中，朝它游
@@ -82,13 +83,17 @@ var _zai_ru_ti_xing := 0.0  # 换房恢复载荷：体型
 var _zai_ru_deng_ji := 1  # 换房恢复载荷：隐藏等级
 var _zai_ru_jing_yan := 0  # 换房恢复载荷：隐藏经验
 var _you_zai_ru_ti_xing := false  # 是否带恢复载荷进树
+# ---- A 方案出生锁 1 级（2026-11-20 提案 4A）：生成前注入，_ready 应用；换房恢复载荷优先级更高 ----
+var chu_sheng_suo_ding := false  # true = 出生体型/隐藏等级锁 1 级（普通鱼）；首领保持鱼种等级
+var qiang_zhi_man_yang := false  # 强制满营养（A11 高营养专线/C 首局脚本预排布）：跳过 3% roll 直接置满
+var qiang_zhi_ying_yang_shang_xian := false  # 营养值取档位上沿（A11 加压期）：与强制满营养独立，可单用
 var xun_luo_dian: Array[Vector2] = []  # 首领巡逻点（世界坐标）：Main 注入 4 个，循环游荡
 var xian_ding_qu := Rect2()  # 首领房限制矩形（世界坐标）：size=0 不限制；Main 给鲸鲨注入所在房间
 
 var _hong_guang: AnimatedSprite2D  # 红光层：玩家吃得下我时亮，提示“这个是猎物”
 var _wan_jia: Yu = null  # 玩家（靠 player 组找）：没有玩家（测试场景）就不亮
 var _guang_shi_jian := 0.0  # 红光呼吸相位（秒）
-var _si_kao_ji_shi := 0.0  # 距离下次思考的累计时间
+var _si_kao_ji_shi := 0.0  # 距离下次思考的累计时间（_ready 里注入随机初相位，避免同屏鱼同一帧集体思考）
 var _yao_ji_leng_que := 0.0  # 咬击冷却剩余
 var _tao_pao_ji_shi := 0.0  # 逃跑剩余时间
 var _tao_pao_lai_yuan = null  # 逃跑时背离的那个家伙
@@ -132,7 +137,23 @@ var _qiang_suan_ji_shi := 0.0  # 酸蚀节拍累计（满 1 秒结算一次）
 var _qiang_suan_bei_yao := false  # 酸蚀期间被咬 ×2：只有强酸喷吐的酸蚀开启；共生海葵毒雾不享受这条
 var shi_hua_shou_shang_bei := 1.25  # 石化期间受玩家伤害倍率（施放时按能力表 shu_zhi 覆写）
 
+# ---- 鱼群查询缓存（性能优化 2026-11-20）----
+# 原来每条 NPC 每次思考都 get_nodes_in_group("yu_npc") 全场扫一遍，45 条鱼 = 每拍 45 次组扫描 + 45 个临时数组。
+# 改为静态缓存：鱼进/出树时版本号 +1，组查询只在版本变化时刷新一次；每条鱼拿到的是过滤掉自己的新数组，
+# 调用方 append（如冲撞目标表）不会污染缓存。裸测试夹具的鱼同样入树，行为与优化前一致。
+static var _yu_qun_huan_cun: Array[Node] = []  # 缓存的 yu_npc 组快照
+static var _yu_qun_huan_cun_ban_ben := -1  # 快照对应的版本号
+static var _yu_qun_ban_ben := 0  # 鱼群变更版本号：任一 YuNpc 进/出树 +1
+
 @onready var rou_qu: Area2D = $RouQu  # 鱼肉区：NPC 也能吃鱼肉（策划案 8.1「任何鱼可进食」）
+
+
+func _enter_tree() -> void:
+	_yu_qun_ban_ben += 1  # 有新鱼入树：缓存作废，下次查询重建
+
+
+func _exit_tree() -> void:
+	_yu_qun_ban_ben += 1  # 有鱼离树：缓存作废（含 queue_free 与场景切换）
 
 
 func _ready() -> void:
@@ -149,6 +170,16 @@ func _ready() -> void:
 		shi_boss = yu_zhong.shi_boss
 		_neng_li = yu_zhong.neng_li
 	# 先装贴图再量内容：归一化因子只认最终贴图，顺序反了会读到旧帧
+	# A 方案出生锁 1 级：普通 NPC 体型/隐藏等级统一从 1 起跳，大小靠后续进食/互吃成长涌现。
+	# 鱼种 dengji 此后只保留给「解锁进度/图鉴」，不再决定出生体型；首领（shi_boss）维持原等级。
+	# 放在鱼种默认赋值之后、换房恢复之前：换房鱼的 ti/等级来自记录，重入不会被重新压回 1 级。
+	if chu_sheng_suo_ding and not shi_boss:
+		var suo_ding_deng := YING_YANG.chu_sheng_deng_ji(shi_boss)
+		if suo_ding_deng > 0:
+			tixing = float(suo_ding_deng)
+			tixing_chu_shi = tixing
+			deng_ji_nei = suo_ding_deng
+			gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
 	var ti: AnimatedSprite2D = $AnimatedSprite2D
 	if yu_zhong != null and yu_zhong.dong_hua != null:
 		ti.sprite_frames = yu_zhong.dong_hua  # 4 帧游动动画：鱼种定什么就长什么样
@@ -190,6 +221,9 @@ func _ready() -> void:
 		geng_xin_ying_yang_xin_hao()  # 恢复鱼也按最终营养值刷新体色/微光信号
 	# TASK-026：换房恢复的鱼王身份（记录里 deng_ji_nei>=10）；载荷 ti 已含晋升 +2，不再加
 	_geng_xin_yu_wang_zhuang_tai()
+	# 性能优化：AI 思考初相位随机化，把同屏 45 条鱼的首拍从「同一帧」摊到 0.3 秒窗口内，
+	# 消除开局/换房瞬间 45 条鱼一起做组扫描和索敌造成的帧尖峰。测试直接调 _si_kao() 不受影响。
+	_si_kao_ji_shi = randf() * SI_KAO_JIAN_GE
 
 
 func zai_ru_ti_xing(ti: float, nei_deng: int, nei_jing_yan: int,
@@ -211,11 +245,17 @@ func _chu_shi_ying_yang() -> void:
 	if shi_boss:
 		dang = 3
 	ying_yang_zhi = YING_YANG.roll_ying_yang(dang, randf())
-	if YING_YANG.shi_man_yang(randf()):
+	if qiang_zhi_ying_yang_shang_xian:
+		ying_yang_zhi = YING_YANG.qu_jian(dang).y  # A11 加压期：取档位上沿（不强制满营养，仍留成长差异）
+	# 强制满营养（A11 专线/C 脚本）或自然 3% roll 命中；换房恢复鱼由载荷覆盖，不在此重 roll
+	if qiang_zhi_man_yang or YING_YANG.shi_man_yang(randf()):
 		man_yang_pin = true
 		ying_yang_zhi = YING_YANG.man_yang_ying_yang(dang)
 	# 高营养/满营养的半隐藏信号：出生即按最终营养值刷新体色与微光
 	geng_xin_ying_yang_xin_hao()
+	# 埋点①：出生营养区间命中分布（提案 6 节）；换房恢复鱼不重复计，只统计新出生个体
+	if not _you_zai_ru_ti_xing:
+		ZhangBen.ji_mai_dian_chu_sheng(dang, man_yang_pin)
 
 
 func geng_xin_ying_yang_xin_hao() -> void:
@@ -287,7 +327,10 @@ func _process(delta: float) -> void:
 		_geng_xin_bu_wei()
 		_geng_xin_hong_guang(delta)  # 失控时照样亮红光：玩家可以放心去吃
 		return
-	$AnimatedSprite2D.modulate = Color.WHITE  # 失控结束：恢复本色
+	# 失控结束：恢复本色。性能优化——已是白色就不写，避免每帧触发 CanvasItem 属性更新。
+	var jing_ling := $AnimatedSprite2D as AnimatedSprite2D
+	if jing_ling != null and not jing_ling.modulate.is_equal_approx(Color.WHITE):
+		jing_ling.modulate = Color.WHITE
 	# 石化 / 束缚：完全静止——不游、不咬、不吃（受击不打断，计时走完才动）
 	if you_zhuang_tai(&"shi_hua") or you_zhuang_tai(&"shu_fu"):
 		$AnimatedSprite2D.modulate = Color(0.62, 0.62, 0.7)  # 石化发灰 / 束缚泛暗
@@ -382,6 +425,12 @@ func _si_kao() -> void:
 		zhuang_tai = ZhuangTai.ZHUI_ZHU
 		return
 	if not gong_ji_yu_wang:
+		# 路人鱼不主动索敌，但也不是饿死的：没高价值目标时啃身边的浮游饵料（世界成长主体）
+		var er_liao_lu := _zhao_er_liao_yu()
+		if er_liao_lu != null:
+			_mu_biao = er_liao_lu
+			zhuang_tai = ZhuangTai.ZHUI_ZHU
+		return
 		_mu_biao = null
 		zhuang_tai = ZhuangTai.YOU_DANG
 		return
@@ -420,6 +469,12 @@ func _si_kao() -> void:
 		zhuang_tai = ZhuangTai.ZHUI_ZHU
 		wan.shi_fang_yu_jing()
 		return
+	# A 方案饵料层兜底（攻击型鱼）：没有小鱼/玩家目标时啃浮游饵料，保证 1 级鱼有成长来源
+	var er_liao := _zhao_er_liao_yu()
+	if er_liao != null:
+		_mu_biao = er_liao
+		zhuang_tai = ZhuangTai.ZHUI_ZHU
+		return
 	_mu_biao = null
 	zhuang_tai = ZhuangTai.YOU_DANG
 
@@ -457,6 +512,17 @@ func _xing_dong(delta: float) -> void:
 			zhuang_tai = ZhuangTai.YOU_DANG
 			return
 		_xiang(cha_rou.normalized(), delta)
+		return
+	# A 方案饵料鱼：游到嘴边整吞，按「吃饵料 +0.2 级」直接成长（提案 3.2）
+	if _mu_biao is ErLiaoYu:
+		var er := _mu_biao as ErLiaoYu
+		var cha_er: Vector2 = er.global_position - global_position
+		if cha_er.length() <= _chi_yu_ju_li(er) and not er.bei_chi_le:
+			er.bei_chi(self)  # 内部回调 jia_deng_ji_zhi_jie(0.2)
+			_mu_biao = null
+			zhuang_tai = ZhuangTai.YOU_DANG
+			return
+		_xiang(cha_er.normalized(), delta)
 		return
 	if _chang_shi_neng_li():
 		return  # 旗鱼突进 / 剑鱼穿刺：本帧启动位移，交给专用分支
@@ -619,8 +685,13 @@ func _tun_diao(mu) -> void:
 	# TASK-026：首领与鱼王不可被 NPC 整吞（双保险，选目标处也会过滤）
 	if mu is YuNpc and (mu.shi_boss or mu.yu_wang):
 		return
-	if mu is YuNpc and mu.yu_zhong != null:
-		jia_jing_yan_nei(int(mu.yu_zhong.fenzhi))
+	if mu is YuNpc:
+		if shi_boss:
+			# 首领（鲸鲨）按旧口径吃 fenzhi 经验：A 方案成长系统不覆盖 boss（A13 不变）
+			jia_jing_yan_nei(int(mu.yu_zhong.fenzhi) if mu.yu_zhong != null else 1)
+		else:
+			# A 方案（提案 3.2）：实体互吃成长 = 吞掉对方的隐藏等级 ×0.5 级，直接加级不走 fenzhi 经验表
+			jia_deng_ji_zhi_jie(YING_YANG.hu_chi_cheng_zhang_lian(mu.deng_ji_nei))
 	mu.bei_chi(false, self)  # NPC 吃 NPC：不给玩家记经验（玩家没参与）；毒鱼照样毒到吃它的鱼
 	_mu_biao = null
 	zhuang_tai = ZhuangTai.YOU_DANG
@@ -930,6 +1001,29 @@ func jia_jing_yan_nei(fen: int) -> void:
 		bao_xian += 1
 	if yu_wang:
 		_hui_xie_dang_qian_fang_jian()  # 晋升后立即回写：同帧名额统计以记录为准
+
+
+func jia_deng_ji_zhi_jie(ji_shu: float) -> void:
+	# A 方案 NPC 成长（提案 3.2）：按「级」直接成长，不走 fenzhi 经验表。
+	# 互吃吞掉对方 +对方等级×0.5 级；吃饵料鱼 +0.2 级（小数累积，满 1 级进位）。
+	# 升级副作用（鱼王名额/晋升/感知/缩放/回写）与经验表口径一致，避免两套曲线。
+	if ji_shu <= 0.0 or shi_boss:
+		return
+	_deng_ji_yu_liang += ji_shu
+	while _deng_ji_yu_liang >= 1.0:
+		var xia_yi := deng_ji_nei + 1
+		if YU_WANG_QI_YONG and xia_yi >= YU_WANG_DENG_JI and deng_ji_nei < YU_WANG_DENG_JI \
+				and _yu_wang_ming_e_man():
+			break  # 鱼王名额满：余量留着，腾位后下一口自然晋升
+		_deng_ji_yu_liang -= 1.0
+		deng_ji_nei = xia_yi
+		tixing += 1.0
+		if YU_WANG_QI_YONG and xia_yi >= YU_WANG_DENG_JI and not yu_wang and not shi_boss:
+			_jin_sheng_yu_wang()
+		gan_zhi = tixing * SHU_ZHI.NPC_GAN_ZHI_MEI_TI
+		_ying_she_ti_xing()
+	if yu_wang and ji_shu > 0.0:
+		_hui_xie_dang_qian_fang_jian()
 
 
 func _yu_wang_ming_e_man() -> bool:
@@ -1399,8 +1493,15 @@ func qu_dian(bu: String) -> Vector2:
 
 
 func _zhou_wei_yu() -> Array:
+	# 性能优化：组快照按鱼群版本号缓存，避免每条鱼每拍重复全场扫描。
+	var shu := get_tree()
+	if shu == null:
+		return []  # 裸夹具离树调用：与原行为一致（空表）
+	if _yu_qun_huan_cun_ban_ben != _yu_qun_ban_ben:
+		_yu_qun_huan_cun_ban_ben = _yu_qun_ban_ben
+		_yu_qun_huan_cun = shu.get_nodes_in_group("yu_npc")
 	var jie_guo := []
-	for n in get_tree().get_nodes_in_group("yu_npc"):
+	for n in _yu_qun_huan_cun:
 		if n != self and is_instance_valid(n):
 			jie_guo.append(n)
 	return jie_guo
@@ -1433,6 +1534,25 @@ func _zhao_fu_rou_you_er() -> RouKuai:
 		if ju <= rou.xi_yin_ban_jing and ju < zui_jin_ju:
 			zui_jin_ju = ju
 			zui_jin = rou
+	return zui_jin
+
+
+func _zhao_er_liao_yu() -> ErLiaoYu:
+	# A 方案饵料层：找感知范围内最近的一条浮游饵料鱼；1 级 NPC 也吃得动（0.4×1.1 < 1.0）
+	# 放在腐肉之后、活鱼/玩家索敌之前调用：优先吃高价值目标，没肉没小鱼才啃浮游。
+	var zui_jin: ErLiaoYu = null
+	var zui_jin_ju := INF
+	var fan := dang_qian_gan_zhi()
+	for node in get_tree().get_nodes_in_group("er_liao_yu"):
+		var er := node as ErLiaoYu
+		if er == null or not is_instance_valid(er) or er.bei_chi_le:
+			continue
+		if tixing < er.tixing * CHI_YU_BEI_LV:
+			continue  # 吃不动（极小概率：被咬瘦到 0.4 以下）
+		var ju := global_position.distance_to(er.global_position)
+		if ju <= fan and ju < zui_jin_ju:
+			zui_jin_ju = ju
+			zui_jin = er
 	return zui_jin
 
 

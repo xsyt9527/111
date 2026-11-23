@@ -47,12 +47,15 @@ func _process(_delta: float) -> void:
 		_sheng_jiao_xue(ZHONG_XIAO, yu.tixing / SHU_ZHI.TUN_CHI_BEI_LV, 90.0, Vector2(560, -60), true)
 		_xian_shi("这条鱼刚好比你小 1.1 倍——撞上去，整口吞下")
 	if _dao(t, 180.0, "hei_ying"):
-		_sheng_jiao_xue(DA_YU, yu.tixing * 2.5, 60.0, Vector2(-760, -160), true)
-		_xian_shi("阴影里有更大的东西游过……它没看见你")
+		# C 脚本重排（提案 4 节 #2）：原「空降大黑影」改为「一条高营养小鱼已悄悄长到 4 级游过」。
+		# 用钻光鱼（1 级鱼种）+ 强制满营养 + 体型 4.0：玩家能看见微光鱼长成威胁的全过程伏笔。
+		_sheng_jiao_xue(ZHONG_XIAO, 4.0, 60.0, Vector2(-760, -160), true, true)
+		_xian_shi("阴影里有条微微发亮的鱼游过……它已经长得不小了")
 	if _dao(t, 240.0, "shou_suo"):
 		_xian_shi("水域正在收缩")
 	if _dao(t, 330.0, "wei_ba"):
-		_sheng_jiao_xue(DA_YU, yu.tixing * 1.2, 110.0, Vector2(-420, 60), true)
+		# C 脚本保持（提案 4 节 #3）：预排布一条「喂到约 3 级」的大鱼，教学逻辑不变（咬尾巴三口）。
+		_sheng_jiao_xue(DA_YU, maxf(3.0, yu.tixing * 1.2), 110.0, Vector2(-420, 60), true)
 		_xian_shi("大鱼的尾巴露出来了——咬它三口，体型掉下来就能吞")
 	if _dao(t, 480.0, "jing_bao"):
 		YinXiang.fang(&"jing_bao")
@@ -74,10 +77,13 @@ func _dao(shi_jian: float, shi_jian_dian: float, key: String) -> bool:
 
 
 func _sheng_jiao_xue(zhong: YuZhong, ti_xing: float, su_du: float,
-		pian_yi: Vector2, wu_shi: bool) -> YuNpc:
+		pian_yi: Vector2, wu_shi: bool, man_yang := false) -> YuNpc:
 	# 预排布一条教学 NPC：位置按玩家当前位置偏移；体型/速度/AI 在本条上覆写
+	# man_yang：C 脚本 3:00 大黑影改成「高营养鱼已长到 4 级游过」（提案 4 节 #2），出生即满营养+微光
 	var xin_yu: YuNpc = YU_NPC_CHANGJING.instantiate()
 	xin_yu.yu_zhong = zhong
+	if man_yang:
+		xin_yu.qiang_zhi_man_yang = true
 	xin_yu.position = yu.global_position + pian_yi
 	xin_yu.fangxiang = 1.0 if pian_yi.x > 0.0 else -1.0
 	zhu_chang.add_child(xin_yu)  # 先入树：_ready 会用鱼种默认值初始化

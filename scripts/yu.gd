@@ -2037,6 +2037,8 @@ func _chi_diao(yu_npc: YuNpc) -> void:
 	# 隐藏营养值（提案 3.3）：吃鱼经验 = 基础经验 × 对方营养值——挑着吃的核心动机
 	# 只乘经验，不碰体型/饥饿（两条收益线分开，防双乘算失控）；营养值下限 0.6 已由 roll 保证
 	fen = YING_YANG.jing_yan_cheng_shu(fen, yu_npc.ying_yang_zhi)
+	# 埋点②：高营养鱼优先猎杀率（提案 6 节）——用半隐藏信号命中的鱼作分子
+	ZhangBen.ji_mai_dian_tun(yu_npc.man_yang_pin or yu_npc._gao_ying_yang)
 	yu_npc.bei_chi(false, self)  # 经验由消化槽结算；毒鱼会把毒传给吞它的人
 	_bao_shi_chu_fa()  # 暴食连锁：吞下鱼就刷新加成窗口（经验走消化槽，加成先到手）
 	# A7：吞一条回复自身上限 4% 的体型（再走 ÷1.5 恢复系数与贪食加成）

@@ -65,3 +65,44 @@ static func ke_cheng_zhang(dang_qian_deng: int, wan_jia_deng_ji: int,
 	if ju_nei_shi_jian < SHU_ZHI.MAN_YANG_DONG_JIE_SHI_JIAN:
 		return false
 	return float(dang_qian_deng) < float(man_yang_cheng_zhang_shang_xian(wan_jia_deng_ji))
+
+
+# ===== A 方案剩余机制纯函数（提案 3.2/3.6/4A）=====
+
+static func chu_sheng_deng_ji(shi_boss: bool) -> int:
+	# 出生锁 1 级：普通 NPC 全部 1 级出生；首领（鲸鲨 shi_boss）保留鱼种等级（A13 不变）
+	# 鱼种 dengji 此后只用于「解锁进度 + 图鉴」，不再是出生体型
+	return SHU_ZHI.CHU_SHENG_DENG_JI if not shi_boss else -1  # -1 = 调用方保留鱼种原等级
+
+
+static func man_yang_tong_ping_ke_sheng(xian_you_man_yang_shu: int) -> bool:
+	# 同屏满营养唯一：已有满营养成长鱼 ≥ 上限时，新 roll 不生效（提案 3.2）
+	return xian_you_man_yang_shu < SHU_ZHI.MAN_YANG_TONG_PING_SHANG_XIAN
+
+
+static func gai_lv_man_yang(jia_ping_qi: bool) -> float:
+	# A11 加压期高营养 roll 概率：3% 起步，加压期抬到 8%（提案 4A）
+	return SHU_ZHI.GAO_YING_YANG_ZHUAN_XIAN_GE_LV if jia_ping_qi else SHU_ZHI.MAN_YANG_GE_LV
+
+
+static func hu_chi_cheng_zhang_lian(dui_fang_deng_ji: int) -> float:
+	# A14 互吃成长：吞掉对方等级 ×0.5（提案 3.2）
+	return maxf(0.0, float(dui_fang_deng_ji)) * SHU_ZHI.HU_CHI_CHENG_ZHANG_BEI
+
+
+static func an_chi_deng_ji_shang_xian(ju_nei_miao: float) -> int:
+	# 暗池区域等级上限 = min(4 + 局内分钟数, 6)；随时间走，不挂玩家等级（提案 3.6）
+	var fen_zhong := maxf(0.0, ju_nei_miao) / 60.0
+	return mini(SHU_ZHI.AN_CHI_DENG_JI_SHANG_XIAN_JI_CHU + int(floor(fen_zhong)),
+			SHU_ZHI.AN_CHI_DENG_JI_SHANG_XIAN_FENG)
+
+
+static func an_chi_cheng_zhang_liang(suo_duan: int) -> float:
+	# 暗池每 30 秒平均等级增量：普通 +0.3；A11 水域收缩阶段 ×1.2 / ×1.5（提案 3.6）
+	var xi_shu := 1.0
+	match clampi(suo_duan, 0, 2):
+		1:
+			xi_shu = SHU_ZHI.AN_CHI_SHOU_SUO_XI_SHU_1
+		2:
+			xi_shu = SHU_ZHI.AN_CHI_SHOU_SUO_XI_SHU_2
+	return SHU_ZHI.AN_CHI_PING_JUN_CHENG_ZHANG * xi_shu

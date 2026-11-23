@@ -83,6 +83,11 @@ var ben_ju_ji_sha_shu := 0  # 击杀数：吞鱼 + 打沉机器船（结算公�
 var ben_ju_diao_rou_liang := 0.0  # 造成的掉肉总量：玩家对敌人累计造成的咬击伤害
 var ben_ju_tun_chi_yu_zhong: Array[StringName] = []  # 本局吞过的鱼种 id（去重）
 var ben_ju_tun_chi_yu_zhong_ming: Array[String] = []  # 与上一行一一对应的显示名（B2 首次吞噬提示用）
+# ---- 隐藏营养值系统埋点（提案 6 节：实机读分布/猎杀率/致死占比，不显示给玩家）----
+var mai_dian_ying_yang_qu_jian: Dictionary = {}  # 出生营养区间命中分布：{"1档":n, "2档":n, "3档":n, "满营养":n}（分布验证）
+var mai_dian_tun_gao_ying := 0  # 高营养鱼被玩家优先猎杀数（对比普通鱼算猎杀率，期望略高于 33% 基准）
+var mai_dian_tun_zong := 0  # 玩家吞鱼总数（猎杀率分母）
+var mai_dian_man_yang_zhi_si := 0  # 满营养鱼致死次数（玩家死亡中占比警戒线 >15%）
 var ben_ju_sha_shou_ming := ""  # 死亡瞬间的击杀者显示名（B2「差一点」）
 var ben_ju_sha_shou_ti_xing := 0.0  # 击杀者当前体型
 var ben_ju_sha_shou_chu_shi := 0.0  # 击杀者初始体型（算「它还剩 X%」）
@@ -261,6 +266,26 @@ func ji_ji_sha() -> void:
 	ben_ju_ji_sha_shu += 1
 
 
+func ji_mai_dian_chu_sheng(dang: int, man_yang: bool) -> void:
+	# 埋点①：出生营养区间命中分布（验证 3%/档位分布是否与设计一致）
+	var key := "%d档" % clampi(dang, 1, 3)
+	mai_dian_ying_yang_qu_jian[key] = int(mai_dian_ying_yang_qu_jian.get(key, 0)) + 1
+	if man_yang:
+		mai_dian_ying_yang_qu_jian["满营养"] = int(mai_dian_ying_yang_qu_jian.get("满营养", 0)) + 1
+
+
+func ji_mai_dian_tun(gao_ying_yang: bool) -> void:
+	# 埋点②：玩家吞鱼的高营养优先猎杀率（分子=高营养，分母=全部；期望略高于 33% 基准）
+	mai_dian_tun_zong += 1
+	if gao_ying_yang:
+		mai_dian_tun_gao_ying += 1
+
+
+func ji_mai_dian_man_yang_zhi_si() -> void:
+	# 埋点③：满营养鱼致死次数（玩家死亡中占比，警戒线 >15%）
+	mai_dian_man_yang_zhi_si += 1
+
+
 func ji_zao_cheng_diao_rou(liang: float) -> void:
 	# 玩家对敌人造成的掉肉总量（B2 战绩②）：所有咬击/冲撞/直伤入口都调这里
 	if liang > 0.0:
@@ -276,6 +301,9 @@ func ji_lu_sha_shou(sha_shou, wan_jia_ti_xing: float) -> void:
 	if yu_zhong != null:
 		ming = str(yu_zhong.ming_zi)
 	ben_ju_sha_shou_ming = ming
+	# 埋点③：满营养鱼致死次数（提案 6 节，占比警戒线 >15%）——击杀者是满营养鱼就 +1
+	if bool(sha_shou.get("man_yang_pin", false)):
+		mai_dian_man_yang_zhi_si += 1
 	ben_ju_sha_shou_ti_xing = float(sha_shou.get("tixing"))
 	var chu_shi = sha_shou.get("tixing_chu_shi")
 	if chu_shi != null and float(chu_shi) > 0.0:
@@ -485,6 +513,11 @@ func chong_zhi() -> void:
 	ben_ju_diao_rou_liang = 0.0
 	ben_ju_tun_chi_yu_zhong.clear()
 	ben_ju_tun_chi_yu_zhong_ming.clear()
+	# 营养系统埋点：重开一局从零（提案 6 节的分布/猎杀率/致死占比都按本局统计）
+	mai_dian_ying_yang_qu_jian.clear()
+	mai_dian_tun_gao_ying = 0
+	mai_dian_tun_zong = 0
+	mai_dian_man_yang_zhi_si = 0
 	ben_ju_sha_shou_ming = ""
 	ben_ju_sha_shou_ti_xing = 0.0
 	ben_ju_sha_shou_chu_shi = 0.0
